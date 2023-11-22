@@ -60,6 +60,10 @@ flutter:
   assets:
     - lib/assets/landing_page_bg.png
     - lib/assets/logo.png
+    - lib/assets/icons/manager.png
+    - lib/assets/icons/physio.png
+    - lib/assets/icons/player.png
+    - lib/assets/icons/whistle.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

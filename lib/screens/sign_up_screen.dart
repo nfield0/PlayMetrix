@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/sign_up_choose_type_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -46,7 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Sign up',
+              const Text('Sign Up',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,
@@ -282,6 +283,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       print("surname:" + _surnameController.text);
                       print("email:" + _emailController.text);
                       print("password: " + _passwordController.text);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const SignUpChooseTypeScreen()),
+                      );
                     }
                   },
                   borderRadius: BorderRadius.circular(30),
@@ -290,7 +297,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     width: double
                         .infinity, // Set width to infinity to take up the full width
                     child: Center(
-                      child: Text('Sign up',
+                      child: Text('Continue',
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily: AppFonts.openSans,

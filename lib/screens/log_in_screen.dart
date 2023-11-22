@@ -42,7 +42,7 @@ class _LogInScreenState extends State<LogInScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Log in',
+              const Text('Log In',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,

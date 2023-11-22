@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PlayMetric',
+      title: 'PlayMetrix',
       theme: ThemeData(
           // Define your app's theme here
           ),
