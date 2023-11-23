@@ -1,21 +1,28 @@
-CREATE DATABASE playmetric;
+CREATE DATABASE playmetrix;
+/*ALTER DATABASE playmetric RENAME TO playmetrix;*/
 
 /*DROP TABLE league, manager_login, manager_info, sport, player_login, player_info, player_stats, physio_login, physio_info, team, team_physio, player_team*/
+
+/*SELECT COLUMN_NAME, DATA_TYPE 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'player_info';*/
+
+
 
 CREATE TABLE IF NOT EXISTS player_login
 (
 	player_login_id serial PRIMARY KEY,
-	player_email VARCHAR(55) UNIQUE NOT NULL,
-	player_password VARCHAR(50) NOT NULL
+	player_email VARCHAR(50) UNIQUE NOT NULL,
+	player_password VARCHAR(150) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS player_info 
 (
 	player_id serial PRIMARY KEY,
-	player_firstname VARCHAR(20) NOT NULL, 
-	player_surname VARCHAR(30) NOT NULL,
+	player_firstname VARCHAR(25) NOT NULL, 
+	player_surname VARCHAR(25) NOT NULL,
 	player_DOB DATE NOT NULL,
-	player_contact_number VARCHAR(50),
+	player_contact_number VARCHAR(20),
 	player_image bytea,
 	player_login_id INT NOT NULL,
 	FOREIGN KEY(player_login_id)
@@ -38,23 +45,23 @@ CREATE TABLE IF NOT EXISTS player_stats
 CREATE TABLE IF NOT EXISTS manager_login
 (
 	manager_login_id serial PRIMARY KEY,
-	manager_email VARCHAR (60) NOT NULL, 
-	manager_password VARCHAR (50) NOT NULL
+	manager_email VARCHAR (50) NOT NULL, 
+	manager_password VARCHAR (150) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS manager_info
 (
 	manager_id serial PRIMARY KEY,
-	manager_firstname VARCHAR (20) NOT NULL, 
-	manager_surname VARCHAR(30) NOT NULL,
-	manager_contact_number VARCHAR(50) NOT NULL,
+	manager_firstname VARCHAR (25) NOT NULL, 
+	manager_surname VARCHAR(25) NOT NULL,
+	manager_contact_number VARCHAR(20) NOT NULL,
 	manager_image bytea
 );
 
 CREATE TABLE IF NOT EXISTS sport
 (
 	sport_id serial PRIMARY KEY,
-	sport_name VARCHAR(50)
+	sport_name VARCHAR(30)
 );
 CREATE TABLE IF NOT EXISTS league
 (
@@ -65,7 +72,7 @@ CREATE TABLE IF NOT EXISTS league
 CREATE TABLE IF NOT EXISTS team
 (
 	team_id serial PRIMARY KEY, 
-	team_name VARCHAR(255) NOT NULL,
+	team_name VARCHAR(100) UNIQUE NOT NULL,
 	team_logo bytea,
 	manager_id INT NOT NULL,
 	league_id INT NOT NULL,
@@ -81,8 +88,8 @@ CREATE TABLE IF NOT EXISTS team
 CREATE TABLE IF NOT EXISTS physio_login
 (
 	physio_login_id serial PRIMARY KEY,
-	physio_email VARCHAR(50) NOT NULL,
-	physio_password VARCHAR(50) NOT NULL
+	physio_email VARCHAR(50) UNIQUE NOT NULL,
+	physio_password VARCHAR(150) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS physio_info
@@ -114,7 +121,7 @@ CREATE TABLE IF NOT EXISTS player_team
 (
 	player_id INT NOT NULL,
 	team_id INT NOT NULL, 
-	position VARCHAR (50),
+	position VARCHAR (30),
 	PRIMARY KEY (player_id, team_id),
 	FOREIGN KEY (player_id)
 		REFERENCES player_info(player_id),
