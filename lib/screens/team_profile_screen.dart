@@ -1,0 +1,199 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets/profile_pill.dart';
+
+class TeamProfileScreen extends StatefulWidget {
+  const TeamProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _TeamProfileScreenState createState() => _TeamProfileScreenState();
+}
+
+class _TeamProfileScreenState extends State<TeamProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+            padding: const EdgeInsets.only(right: 25, left: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Team Profile",
+                    style: TextStyle(
+                      color: AppColours.darkBlue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                smallButton(
+                    const Icon(
+                      Icons.edit,
+                      color: AppColours.darkBlue,
+                      size: 16,
+                    ),
+                    "Edit")
+              ],
+            )),
+        iconTheme: const IconThemeData(
+          color: AppColours.darkBlue, //change your color here
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: SingleChildScrollView(
+          child: Padding(
+              padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "Louth GAA",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFonts.gabarito,
+                        fontSize: 32,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    Image.asset(
+                      'lib/assets/icons/logo_placeholder.png',
+                      width: 150,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(height: 40),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColours.darkBlue,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Senior Football',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.pin_drop, color: Colors.red, size: 28),
+                        SizedBox(width: 10),
+                        Text("Louth", style: TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text("Divison 1", style: TextStyle(fontSize: 18)),
+                    const SizedBox(height: 20),
+                    _divider(),
+                    const Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 10, top: 10),
+                          child: Text(
+                            "Manager",
+                            style: TextStyle(
+                                color: AppColours.darkBlue,
+                                fontFamily: AppFonts.gabarito,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    profilePill(
+                        "Brian Smith",
+                        "briansmith@louthgaa.com",
+                        Image.asset(
+                            "lib/assets/icons/profile_placeholder.png")),
+                    const SizedBox(height: 20),
+                    _divider(),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10, top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Physio",
+                            style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontFamily: AppFonts.gabarito,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          smallButton(
+                            Icon(
+                              Icons.person_add,
+                              color: AppColours.darkBlue,
+                              size: 16,
+                            ),
+                            "Add",
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    profilePill(
+                        "Sophia Bloggs",
+                        "sophiabloggs@louthgaa.com",
+                        Image.asset(
+                            "lib/assets/icons/profile_placeholder.png")),
+                    const SizedBox(height: 20),
+                    _divider(),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10, top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Coaches",
+                            style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontFamily: AppFonts.gabarito,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          smallButton(
+                            Icon(
+                              Icons.person_add,
+                              color: AppColours.darkBlue,
+                              size: 16,
+                            ),
+                            "Add",
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    emptyProfile(),
+                    const SizedBox(height: 50),
+                  ],
+                ),
+              ))),
+      bottomNavigationBar: bottomNavBar([
+        bottomNavBarItem("Home", Icons.home),
+        bottomNavBarItem("Teams", Icons.group),
+        bottomNavBarItem("Schedule", Icons.calendar_month),
+        bottomNavBarItem("My Profile", Icons.person_rounded)
+      ]),
+    );
+  }
+}
+
+Widget _divider() {
+  return const Divider(
+    color: AppColours.darkBlue, // You can set the color of the divider
+    thickness: 1, // You can set the thickness of the divider
+  );
+}

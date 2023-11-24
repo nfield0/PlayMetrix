@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/home_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -147,6 +148,11 @@ class _LogInScreenState extends State<LogInScreen> {
                     // sign up functionality
                     if (_formKey.currentState!.validate()) {
                       // Only execute if all fields are valid
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
+                      );
                       print("email:" + _emailController.text);
                       print("password: " + _passwordController.text);
                     }

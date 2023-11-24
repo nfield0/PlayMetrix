@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Image.asset(
           'lib/assets/logo.png',
           width: 150,
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   padding:
@@ -50,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 180),
                 const Icon(
                   Icons.notifications,
                   color: AppColours.darkBlue,
@@ -86,33 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar: bottomNavBar([
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Icon(Icons.home),
-          ),
-          label: 'Home',
-        ),
-        const BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Icon(Icons.groups),
-            ),
-            label: 'Teams'),
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Icon(Icons.calendar_month),
-          ),
-          label: 'Schedule',
-        ),
-        const BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Icon(Icons.person_rounded),
-          ),
-          label: 'My Profile',
-        ),
+        bottomNavBarItem("Home", Icons.home),
+        bottomNavBarItem("Teams", Icons.group),
+        bottomNavBarItem("Schedule", Icons.calendar_month),
+        bottomNavBarItem("My Profile", Icons.person_rounded)
       ]),
     );
   }

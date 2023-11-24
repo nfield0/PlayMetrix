@@ -69,6 +69,8 @@ flutter:
     - lib/assets/icons/players_menu.png
     - lib/assets/icons/schedule_menu.png
     - lib/assets/icons/statistics_menu.png
+    - lib/assets/icons/logo_placeholder.png
+    - lib/assets/icons/profile_placeholder.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

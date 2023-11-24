@@ -13,3 +13,10 @@ Widget bottomNavBar(List<BottomNavigationBarItem> items) {
     items: items,
   );
 }
+
+BottomNavigationBarItem bottomNavBarItem(String label, IconData icon) {
+  return BottomNavigationBarItem(
+    icon: Icon(icon),
+    label: label,
+  );
+}
