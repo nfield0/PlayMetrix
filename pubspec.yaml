@@ -64,6 +64,11 @@ flutter:
     - lib/assets/icons/physio.png
     - lib/assets/icons/player.png
     - lib/assets/icons/whistle.png
+    - lib/assets/icons/manager_coach_menu.png
+    - lib/assets/icons/physio_menu.png
+    - lib/assets/icons/players_menu.png
+    - lib/assets/icons/schedule_menu.png
+    - lib/assets/icons/statistics_menu.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
