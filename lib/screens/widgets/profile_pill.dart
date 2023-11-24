@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 
+Widget smallPill(String text) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+    decoration: BoxDecoration(
+      color: AppColours.darkBlue,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      text,
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 16,
+      ),
+    ),
+  );
+}
+
 Widget profilePill(String title, String description, Image image) {
   return Container(
       padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),

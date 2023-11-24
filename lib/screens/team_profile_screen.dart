@@ -65,22 +65,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       fit: BoxFit.contain,
                     ),
                     const SizedBox(height: 40),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 28, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppColours.darkBlue,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        'Senior Football',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
+                    smallPill("Senior Football"),
                     const SizedBox(height: 30),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
