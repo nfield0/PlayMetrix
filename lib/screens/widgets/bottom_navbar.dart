@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 
-Widget bottomNavBar() {
+Widget bottomNavBar(List<BottomNavigationBarItem> items) {
   return BottomNavigationBar(
     backgroundColor: AppColours.darkBlue,
     type: BottomNavigationBarType
@@ -10,34 +10,6 @@ Widget bottomNavBar() {
     selectedItemColor: Colors.white,
     unselectedItemColor: Colors.white.withOpacity(.60),
     // onTap: _onItemTapped,
-    items: [
-      BottomNavigationBarItem(
-        icon: Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Icon(Icons.home),
-        ),
-        label: 'Home',
-      ),
-      BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Icon(Icons.groups),
-          ),
-          label: 'Teams'),
-      BottomNavigationBarItem(
-        icon: Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Icon(Icons.calendar_month),
-        ),
-        label: 'Schedule',
-      ),
-      BottomNavigationBarItem(
-        icon: Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Icon(Icons.person_rounded),
-        ),
-        label: 'My Profile',
-      ),
-    ],
+    items: items,
   );
 }

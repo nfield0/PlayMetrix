@@ -85,7 +85,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: bottomNavBar(),
+      bottomNavigationBar: bottomNavBar([
+        const BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Icon(Icons.home),
+          ),
+          label: 'Home',
+        ),
+        const BottomNavigationBarItem(
+            icon: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Icon(Icons.groups),
+            ),
+            label: 'Teams'),
+        const BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Icon(Icons.calendar_month),
+          ),
+          label: 'Schedule',
+        ),
+        const BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Icon(Icons.person_rounded),
+          ),
+          label: 'My Profile',
+        ),
+      ]),
     );
   }
 }
