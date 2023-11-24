@@ -1,9 +1,23 @@
 from typing import Union
+from sqlalchemy.orm import Session
+from models import league
+from typing import List
+from database import SessionLocal, Base, engine
+from fastapi import Depends, FastAPI, HTTPException
+import schema
+import crud
 
-from fastapi import FastAPI
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 ## To install requirements
 # python -m pip install -r requirements.txt
@@ -17,12 +31,14 @@ app = FastAPI()
 # /redoc for ReDoc Documentation
 
 
-
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Detail:", "results"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/leagues/")
+def read_leagues(db:Session = Depends(get_db)):
+     users = db.query(league).all()
+     return users
+
+
