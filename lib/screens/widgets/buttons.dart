@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 
-Widget smallButton(Icon icon, String text, VoidCallback onPressed) {
+Widget smallButton(IconData icon, String text, VoidCallback onPressed) {
   return Container(
     decoration: BoxDecoration(
       border: Border.all(color: AppColours.darkBlue, width: 3),
@@ -17,7 +17,11 @@ Widget smallButton(Icon icon, String text, VoidCallback onPressed) {
       pressedOpacity: 0.8, // Adjust the opacity when the button is pressed
       child: Row(
         children: [
-          icon,
+          Icon(
+            icon,
+            color: AppColours.darkBlue,
+            size: 16,
+          ),
           SizedBox(width: 10),
           Text(
             text,

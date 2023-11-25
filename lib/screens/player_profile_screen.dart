@@ -50,14 +50,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       )),
-                  smallButton(
-                      const Icon(
-                        Icons.edit,
-                        color: AppColours.darkBlue,
-                        size: 16,
-                      ),
-                      "Edit",
-                      () {})
+                  smallButton(Icons.edit, "Edit", () {})
                 ],
               )),
           iconTheme: const IconThemeData(
@@ -116,12 +109,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                     const SizedBox(height: 20),
                   ]),
                 ))),
-        bottomNavigationBar: bottomNavBar([
-          bottomNavBarItem("Home", Icons.home),
-          bottomNavBarItem("Teams", Icons.group),
-          bottomNavBarItem("Schedule", Icons.calendar_month),
-          bottomNavBarItem("My Profile", Icons.person_rounded)
-        ]));
+        bottomNavigationBar: managerBottomNavBar(context, 1));
   }
 }
 

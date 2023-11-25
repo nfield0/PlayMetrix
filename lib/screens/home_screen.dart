@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/players_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
@@ -12,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int selectedMenuIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,8 +61,17 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildMenuItem(
                 'Players & Coaches',
                 'lib/assets/icons/players_menu.png',
-                AppColours.mediumDarkBlue,
-                () {}),
+                AppColours.mediumDarkBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      const PlayersScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }),
             const SizedBox(height: 20),
             // Box 2
             _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
@@ -75,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: managerBottomNavBar(context),
+      bottomNavigationBar: managerBottomNavBar(context, selectedMenuIndex),
     );
   }
 }

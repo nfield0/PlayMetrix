@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/add_coach_screen.dart';
+import 'package:play_metrix/screens/add_physio_screen.dart';
 import 'package:play_metrix/screens/edit_team_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -29,13 +31,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     )),
-                smallButton(
-                    const Icon(
-                      Icons.edit,
-                      color: AppColours.darkBlue,
-                      size: 16,
-                    ),
-                    "Edit", () {
+                smallButton(Icons.edit, "Edit", () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -120,14 +116,14 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          smallButton(
-                              const Icon(
-                                Icons.person_add,
-                                color: AppColours.darkBlue,
-                                size: 16,
-                              ),
-                              "Add",
-                              () {}),
+                          smallButton(Icons.person_add, "Add", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AddPhysioScreen()),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -150,14 +146,13 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          smallButton(
-                              const Icon(
-                                Icons.person_add,
-                                color: AppColours.darkBlue,
-                                size: 16,
-                              ),
-                              "Add",
-                              () {}),
+                          smallButton(Icons.person_add, "Add", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AddCoachScreen()),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -167,7 +162,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                   ],
                 ),
               ))),
-      bottomNavigationBar: managerBottomNavBar(context),
+      bottomNavigationBar: managerBottomNavBar(context, 0),
     );
   }
 }
