@@ -330,26 +330,7 @@ Widget _injuryDetails(Injury injury) {
       detailWithDivider("Expected Recovery Time", injury.expectedRecoveryTime),
       const SizedBox(height: 10),
       detailWithDivider("Recovery Method", injury.recoveryMethod),
-      CupertinoButton(
-        onPressed: () {},
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          padding: EdgeInsets.all(10.0),
-          child: const Text(
-            'View player report',
-            style: TextStyle(
-              color: AppColours.darkBlue,
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
-              fontFamily: AppFonts.gabarito,
-              fontSize: 20,
-            ),
-          ),
-        ),
-      )
+      underlineButtonTransparent("View player report", () {})
     ],
   );
 }

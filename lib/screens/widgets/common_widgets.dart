@@ -19,7 +19,8 @@ Widget smallPill(String text) {
   );
 }
 
-Widget profilePill(String title, String description, String imagePath, VoidCallback onPressed) {
+Widget profilePill(String title, String description, String imagePath,
+    VoidCallback onPressed) {
   return InkWell(
     onTap: onPressed,
     child: Container(
@@ -102,6 +103,34 @@ Widget detailWithDivider(String title, String detail) {
       ),
       const SizedBox(height: 10),
       greyDivider(),
+    ],
+  );
+}
+
+Widget formFieldBottomBorder(String title) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(width: 30),
+      Container(
+        width: 220, // Set a fixed width for the TextField
+        child: TextField(
+          decoration: InputDecoration(
+            // labelText: 'Your Label',
+            labelStyle: TextStyle(color: Colors.grey),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
     ],
   );
 }
