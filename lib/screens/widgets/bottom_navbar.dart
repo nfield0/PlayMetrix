@@ -20,3 +20,12 @@ BottomNavigationBarItem bottomNavBarItem(String label, IconData icon) {
     label: label,
   );
 }
+
+managerBottomNavBar(BuildContext context) {
+  return bottomNavBar([
+    bottomNavBarItem("Home", Icons.home),
+    bottomNavBarItem("Team", Icons.group),
+    bottomNavBarItem("Schedule", Icons.calendar_month),
+    bottomNavBarItem("My Profile", Icons.person_rounded)
+  ]);
+}

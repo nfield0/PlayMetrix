@@ -56,64 +56,66 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 40),
             // Box 1
-            _buildMenuItem('Players & Coaches',
-                'lib/assets/icons/players_menu.png', AppColours.mediumDarkBlue),
+            _buildMenuItem(
+                'Players & Coaches',
+                'lib/assets/icons/players_menu.png',
+                AppColours.mediumDarkBlue,
+                () {}),
             const SizedBox(height: 20),
             // Box 2
             _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
-                AppColours.mediumBlue),
+                AppColours.mediumBlue, () {}),
             const SizedBox(height: 20),
             // Box 3
             _buildMenuItem(
                 'My Profile',
                 'lib/assets/icons/manager_coach_menu.png',
-                AppColours.lightBlue),
+                AppColours.lightBlue,
+                () {}),
           ],
         ),
       ),
-      bottomNavigationBar: bottomNavBar([
-        bottomNavBarItem("Home", Icons.home),
-        bottomNavBarItem("Teams", Icons.group),
-        bottomNavBarItem("Schedule", Icons.calendar_month),
-        bottomNavBarItem("My Profile", Icons.person_rounded)
-      ]),
+      bottomNavigationBar: managerBottomNavBar(context),
     );
   }
 }
 
-Widget _buildMenuItem(String text, String imagePath, Color colour) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-    decoration: BoxDecoration(
-      // color: AppColours.darkBlue,
-      border: Border.all(color: colour, width: 5),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Row(
-      children: [
-        Image.asset(
-          imagePath,
-          width: 100,
-          height: 100,
+Widget _buildMenuItem(
+    String text, String imagePath, Color colour, VoidCallback onPressed) {
+  return InkWell(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+        decoration: BoxDecoration(
+          // color: AppColours.darkBlue,
+          border: Border.all(color: colour, width: 5),
+          borderRadius: BorderRadius.circular(20),
         ),
-        SizedBox(width: 37),
-        Flexible(
-          child: Wrap(
-            children: [
-              Text(
-                text,
-                style: TextStyle(
-                  color: colour,
-                  fontFamily: AppFonts.gabarito,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 32,
-                ),
-                textAlign: TextAlign.right,
+        child: Row(
+          children: [
+            Image.asset(
+              imagePath,
+              width: 100,
+              height: 100,
+            ),
+            SizedBox(width: 37),
+            Flexible(
+              child: Wrap(
+                children: [
+                  Text(
+                    text,
+                    style: TextStyle(
+                      color: colour,
+                      fontFamily: AppFonts.gabarito,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 32,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      ));
 }

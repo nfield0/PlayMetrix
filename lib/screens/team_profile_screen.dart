@@ -160,12 +160,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                   ],
                 ),
               ))),
-      bottomNavigationBar: bottomNavBar([
-        bottomNavBarItem("Home", Icons.home),
-        bottomNavBarItem("Teams", Icons.group),
-        bottomNavBarItem("Schedule", Icons.calendar_month),
-        bottomNavBarItem("My Profile", Icons.person_rounded)
-      ]),
+      bottomNavigationBar: managerBottomNavBar(context),
     );
   }
 }

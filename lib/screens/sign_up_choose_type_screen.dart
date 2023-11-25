@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/widgets/buttons.dart';
 
 class SignUpChooseTypeScreen extends StatefulWidget {
   const SignUpChooseTypeScreen({Key? key}) : super(key: key);
@@ -60,137 +62,44 @@ class _SignUpChooseTypeScreenState extends State<SignUpChooseTypeScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  RadioListTile(
-                    title: Row(
-                      children: [
-                        const Text(
-                          'Manager',
-                          style: TextStyle(
-                              fontFamily: AppFonts.openSans,
-                              //fontWeight: FontWeight.w600,
-                              fontSize: 18),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Image.asset(
-                          'lib/assets/icons/manager.png',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      ],
-                    ),
-                    activeColor: AppColours.darkBlue,
-                    value: 'manager',
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value.toString();
-                      });
-                    },
-                  ),
-                  RadioListTile(
-                    title: Row(
-                      children: [
-                        const Text(
-                          'Player',
-                          style: TextStyle(
-                              fontFamily: AppFonts.openSans,
-                              //fontWeight: FontWeight.w600,
-                              fontSize: 18),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Image.asset(
-                          'lib/assets/icons/player.png',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      ],
-                    ),
-                    value: 'player',
-                    activeColor: AppColours.darkBlue,
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value.toString();
-                      });
-                    },
-                  ),
-                  RadioListTile(
-                    title: Row(
-                      children: [
-                        const Text(
-                          'Physio',
-                          style: TextStyle(
-                              fontFamily: AppFonts.openSans,
-                              //fontWeight: FontWeight.w600,
-                              fontSize: 18),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Image.asset(
-                          'lib/assets/icons/physio.png',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      ],
-                    ),
-                    value: 'physio',
-                    activeColor: AppColours.darkBlue,
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value.toString();
-                      });
-                    },
-                  ),
-                  RadioListTile(
-                    title: Row(
-                      children: [
-                        const Text(
-                          'Coach',
-                          style: TextStyle(
-                              fontFamily: AppFonts.openSans,
-                              //fontWeight: FontWeight.w600,
-                              fontSize: 18),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Image.asset(
-                          'lib/assets/icons/whistle.png',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      ],
-                    ),
-                    value: 'coach',
-                    activeColor: AppColours.darkBlue,
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value.toString();
-                      });
-                    },
-                  ),
+                  radioUserTypeOption(
+                      "Manager", "lib/assets/icons/manager.png", selectedOption,
+                      (value) {
+                    setState(() {
+                      selectedOption = value.toString();
+                    });
+                  }),
+                  radioUserTypeOption(
+                      "Player", "lib/assets/icons/player.png", selectedOption,
+                      (value) {
+                    setState(() {
+                      selectedOption = value.toString();
+                    });
+                  }),
+                  radioUserTypeOption(
+                      "Physio", "lib/assets/icons/physio.png", selectedOption,
+                      (value) {
+                    setState(() {
+                      selectedOption = value.toString();
+                    });
+                  }),
+                  radioUserTypeOption(
+                      "Coach", "lib/assets/icons/whistle.png", selectedOption,
+                      (value) {
+                    setState(() {
+                      selectedOption = value.toString();
+                    });
+                  }),
                   Padding(
-                    padding: const EdgeInsets.only(top: 45.0),
-                    child: CupertinoButton(
-                      onPressed: () {
+                      padding: const EdgeInsets.only(top: 45.0),
+                      child: bigButton("Sign up", () {
                         print(selectedOption);
-                      },
-                      borderRadius: BorderRadius.circular(30),
-                      color: AppColours.darkBlue,
-                      child: const SizedBox(
-                        width: double
-                            .infinity, // Set width to infinity to take up the full width
-                        child: Center(
-                          child: Text('Sign up',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: AppFonts.openSans,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w600,
-                              )),
-                        ),
-                      ),
-                    ),
-                  ),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
+                        );
+                      })),
                 ],
               ),
             ],
@@ -200,4 +109,31 @@ class _SignUpChooseTypeScreenState extends State<SignUpChooseTypeScreen> {
       ),
     );
   }
+}
+
+Widget radioUserTypeOption(String text, String imagePath, String selectedOption,
+    void Function(String?)? onChanged) {
+  return RadioListTile(
+    title: Row(
+      children: [
+        Text(
+          text,
+          style: const TextStyle(
+              fontFamily: AppFonts.openSans,
+              //fontWeight: FontWeight.w600,
+              fontSize: 18),
+        ),
+        const SizedBox(width: 8.0),
+        Image.asset(
+          imagePath,
+          width: 22.0,
+          height: 22.0,
+        ),
+      ],
+    ),
+    value: text.toLowerCase(),
+    activeColor: AppColours.darkBlue,
+    groupValue: selectedOption,
+    onChanged: onChanged,
+  );
 }
