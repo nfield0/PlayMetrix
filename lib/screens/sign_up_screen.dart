@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/widgets/buttons.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -273,41 +274,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 40.0),
-                child: CupertinoButton(
-                  onPressed: () {
-                    // sign up functionality
-                    if (_formKey.currentState!.validate()) {
-                      // Only execute if all fields are valid
-                      print("first name:" + _firstNameController.text);
-                      print("surname:" + _surnameController.text);
-                      print("email:" + _emailController.text);
-                      print("password: " + _passwordController.text);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const SignUpChooseTypeScreen()),
-                      );
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(30),
-                  color: AppColours.darkBlue,
-                  child: const SizedBox(
-                    width: double
-                        .infinity, // Set width to infinity to take up the full width
-                    child: Center(
-                      child: Text('Continue',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: AppFonts.openSans,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w600,
-                          )),
-                    ),
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.only(top: 40.0),
+                  child: bigButton(
+                    "Continue",
+                    () {
+                      // sign up functionality
+                      if (_formKey.currentState!.validate()) {
+                        // Only execute if all fields are valid
+                        print("first name:" + _firstNameController.text);
+                        print("surname:" + _surnameController.text);
+                        print("email:" + _emailController.text);
+                        print("password: " + _passwordController.text);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const SignUpChooseTypeScreen()),
+                        );
+                      }
+                    },
+                  )),
             ],
           ),
         ),

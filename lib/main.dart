@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/player_profile_screen.dart';
+import 'package:play_metrix/screens/team_profile_screen.dart';
 import 'screens/landing_screen.dart'; // Import your landing page
 
 void main() {
@@ -15,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           // Define your app's theme here
           ),
-      home: const LandingScreen(), // Set your landing page here
+      home: const PlayerProfileScreen(), // Set your landing page here
     );
   }
 }

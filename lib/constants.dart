@@ -8,6 +8,7 @@ class AppColours {
   static const Color green = Color(0xFF4BAE4F);
   static const Color red = Color(0xFFFF2147);
   static const Color yellow = Color(0xFFFFC700);
+  static const Color grey = Color.fromARGB(255, 213, 213, 213);
 }
 
 class AppFonts {

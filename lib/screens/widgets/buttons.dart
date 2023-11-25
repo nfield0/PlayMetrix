@@ -34,3 +34,23 @@ Widget smallButton(Icon icon, String text) {
     ),
   );
 }
+
+Widget bigButton(String text, VoidCallback onPressed) {
+  return CupertinoButton(
+    onPressed: onPressed,
+    borderRadius: BorderRadius.circular(30),
+    color: AppColours.darkBlue,
+    child: SizedBox(
+      width: double.infinity, // Set width to infinity to take up the full width
+      child: Center(
+        child: Text(text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontFamily: AppFonts.openSans,
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+            )),
+      ),
+    ),
+  );
+}

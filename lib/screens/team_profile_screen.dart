@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/profile_pill.dart';
+import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
 class TeamProfileScreen extends StatefulWidget {
   const TeamProfileScreen({Key? key}) : super(key: key);
@@ -78,7 +78,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                     const SizedBox(height: 20),
                     Text("Divison 1", style: TextStyle(fontSize: 18)),
                     const SizedBox(height: 20),
-                    _divider(),
+                    divider(),
                     const Row(
                       children: [
                         Padding(
@@ -95,19 +95,16 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    profilePill(
-                        "Brian Smith",
-                        "briansmith@louthgaa.com",
-                        Image.asset(
-                            "lib/assets/icons/profile_placeholder.png")),
+                    profilePill("Brian Smith", "briansmith@louthgaa.com",
+                        "lib/assets/icons/profile_placeholder.png", () {}),
                     const SizedBox(height: 20),
-                    _divider(),
+                    divider(),
                     Padding(
                       padding: EdgeInsets.only(left: 10, top: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "Physio",
                             style: TextStyle(
                               color: AppColours.darkBlue,
@@ -117,7 +114,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                             ),
                           ),
                           smallButton(
-                            Icon(
+                            const Icon(
                               Icons.person_add,
                               color: AppColours.darkBlue,
                               size: 16,
@@ -128,19 +125,16 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    profilePill(
-                        "Sophia Bloggs",
-                        "sophiabloggs@louthgaa.com",
-                        Image.asset(
-                            "lib/assets/icons/profile_placeholder.png")),
+                    profilePill("Sophia Bloggs", "sophiabloggs@louthgaa.com",
+                        "lib/assets/icons/profile_placeholder.png", () {}),
                     const SizedBox(height: 20),
-                    _divider(),
+                    divider(),
                     Padding(
                       padding: EdgeInsets.only(left: 10, top: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "Coaches",
                             style: TextStyle(
                               color: AppColours.darkBlue,
@@ -150,7 +144,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                             ),
                           ),
                           smallButton(
-                            Icon(
+                            const Icon(
                               Icons.person_add,
                               color: AppColours.darkBlue,
                               size: 16,
@@ -174,11 +168,4 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
       ]),
     );
   }
-}
-
-Widget _divider() {
-  return const Divider(
-    color: AppColours.darkBlue, // You can set the color of the divider
-    thickness: 1, // You can set the thickness of the divider
-  );
 }

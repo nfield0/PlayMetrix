@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/widgets/buttons.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -142,9 +143,8 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 40.0),
-                child: CupertinoButton(
-                  onPressed: () {
+                  padding: const EdgeInsets.only(top: 40.0),
+                  child: bigButton("Log in", () {
                     // sign up functionality
                     if (_formKey.currentState!.validate()) {
                       // Only execute if all fields are valid
@@ -156,24 +156,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       print("email:" + _emailController.text);
                       print("password: " + _passwordController.text);
                     }
-                  },
-                  borderRadius: BorderRadius.circular(30),
-                  color: AppColours.darkBlue,
-                  child: const SizedBox(
-                    width: double
-                        .infinity, // Set width to infinity to take up the full width
-                    child: Center(
-                      child: Text('Log in',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: AppFonts.openSans,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w600,
-                          )),
-                    ),
-                  ),
-                ),
-              ),
+                  })),
             ],
           ),
         ),
