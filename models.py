@@ -33,11 +33,11 @@ class player_login(Base):
 #     minutes_played = Column(Integer, index = True)
 #     player_id = Column(Integer, index = True)
 
-# class manager_login(Base):
-#     __tablename__ = "manager_login"
-#     manager_login_id = Column(Integer, primary_key = True, index = True)
-#     manager_email = Column(String(50), index= True)
-#     manager_password = Column(String(150), index= True)
+class manager_login(Base):
+    __tablename__ = "manager_login"
+    manager_login_id = Column(Integer, primary_key = True, index = True)
+    manager_email = Column(String(50), index= True)
+    manager_password = Column(String(150), index= True)
 
 # class manager_info(Base):
 #     __tablename__ = "manager_info"
