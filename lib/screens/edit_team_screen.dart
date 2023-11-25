@@ -5,24 +5,29 @@ import 'package:play_metrix/screens/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class TeamSetUpScreen extends StatefulWidget {
-  const TeamSetUpScreen({Key? key}) : super(key: key);
+class EditTeamScreen extends StatefulWidget {
+  const EditTeamScreen({Key? key}) : super(key: key);
 
   @override
-  _TeamSetUpScreenState createState() => _TeamSetUpScreenState();
+  _EditTeamScreenState createState() => _EditTeamScreenState();
 }
 
-class _TeamSetUpScreenState extends State<TeamSetUpScreen> {
+class _EditTeamScreenState extends State<EditTeamScreen> {
   String selectedDivisionValue = "Division 1";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          'lib/assets/logo.png',
-          width: 150,
-          fit: BoxFit.contain,
-        ),
+        title: const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Text(
+            "Team Profile",
+            style: TextStyle(
+              color: AppColours.darkBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ]),
         iconTheme: const IconThemeData(
           color: AppColours.darkBlue, //change your color here
         ),
@@ -35,7 +40,7 @@ class _TeamSetUpScreenState extends State<TeamSetUpScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Team Set Up',
+            const Text('Edit Team',
                 style: TextStyle(
                   color: AppColours.darkBlue,
                   fontFamily: AppFonts.gabarito,
@@ -57,11 +62,11 @@ class _TeamSetUpScreenState extends State<TeamSetUpScreen> {
               const SizedBox(height: 10),
               underlineButtonTransparent("Upload logo", () {}),
             ])),
-            formFieldBottomBorder("Club name", ""),
+            formFieldBottomBorder("Club name", "Louth GAA"),
             const SizedBox(height: 10),
-            formFieldBottomBorder("Team name", ""),
+            formFieldBottomBorder("Team name", "Senior Football"),
             const SizedBox(height: 10),
-            formFieldBottomBorder("Location", ""),
+            formFieldBottomBorder("Location", "Louth"),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

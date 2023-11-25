@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/edit_team_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -34,7 +35,13 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       color: AppColours.darkBlue,
                       size: 16,
                     ),
-                    "Edit")
+                    "Edit", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditTeamScreen()),
+                  );
+                })
               ],
             )),
         iconTheme: const IconThemeData(
@@ -114,13 +121,13 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                             ),
                           ),
                           smallButton(
-                            const Icon(
-                              Icons.person_add,
-                              color: AppColours.darkBlue,
-                              size: 16,
-                            ),
-                            "Add",
-                          ),
+                              const Icon(
+                                Icons.person_add,
+                                color: AppColours.darkBlue,
+                                size: 16,
+                              ),
+                              "Add",
+                              () {}),
                         ],
                       ),
                     ),
@@ -144,13 +151,13 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                             ),
                           ),
                           smallButton(
-                            const Icon(
-                              Icons.person_add,
-                              color: AppColours.darkBlue,
-                              size: 16,
-                            ),
-                            "Add",
-                          ),
+                              const Icon(
+                                Icons.person_add,
+                                color: AppColours.darkBlue,
+                                size: 16,
+                              ),
+                              "Add",
+                              () {}),
                         ],
                       ),
                     ),

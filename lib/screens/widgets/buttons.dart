@@ -2,16 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 
-Widget smallButton(Icon icon, String text) {
+Widget smallButton(Icon icon, String text, VoidCallback onPressed) {
   return Container(
     decoration: BoxDecoration(
       border: Border.all(color: AppColours.darkBlue, width: 3),
       borderRadius: BorderRadius.circular(50),
     ),
     child: CupertinoButton(
-      onPressed: () {
-        // Add your onPressed logic here
-      },
+      onPressed: onPressed,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
       borderRadius: BorderRadius.circular(50),
       color: CupertinoColors.white,

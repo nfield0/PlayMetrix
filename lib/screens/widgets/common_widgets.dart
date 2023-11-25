@@ -107,7 +107,7 @@ Widget detailWithDivider(String title, String detail) {
   );
 }
 
-Widget formFieldBottomBorder(String title) {
+Widget formFieldBottomBorder(String title, String initialValue) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -119,6 +119,7 @@ Widget formFieldBottomBorder(String title) {
       Container(
         width: 220, // Set a fixed width for the TextField
         child: TextField(
+          controller: TextEditingController(text: initialValue),
           decoration: InputDecoration(
             // labelText: 'Your Label',
             labelStyle: TextStyle(color: Colors.grey),

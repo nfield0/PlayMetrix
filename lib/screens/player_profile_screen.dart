@@ -56,7 +56,8 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                         color: AppColours.darkBlue,
                         size: 16,
                       ),
-                      "Edit")
+                      "Edit",
+                      () {})
                 ],
               )),
           iconTheme: const IconThemeData(
