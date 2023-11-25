@@ -65,7 +65,7 @@ Widget emptyProfile() {
       Text(
         "No profile(s) found",
         style: TextStyle(
-          color: AppColours.grey,
+          color: Colors.grey,
           fontWeight: FontWeight.bold,
           fontSize: 18,
         ),
