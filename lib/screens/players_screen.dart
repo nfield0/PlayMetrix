@@ -173,7 +173,7 @@ Widget _playerProfilePill(
         child: Container(
           padding: EdgeInsets.zero,
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: Color(0XFFfafafa),
             shape: BoxShape.circle,
           ),
           child: Icon(
