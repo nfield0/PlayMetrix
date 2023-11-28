@@ -23,6 +23,7 @@ def get_db():
 ## To install requirements
 # python -m pip install -r requirements.txt
 
+## Requires .env file in root directory!
 
 ## To Run Uvicorn
 # python -m uvicorn main:app --reload
@@ -33,6 +34,8 @@ def get_db():
 
 ## For testing
 # python -m pytest
+
+
 @app.get("/")
 def read_root():
     return {"message:", "Root Page"}
@@ -110,7 +113,7 @@ def read_leagues(db:Session = Depends(get_db)):
 
 
 
-
+#.remove
 
 # @app.route("/cleanup_players/", methods=["DELETE", "GET"])
 # def delete_players(db:Session = Depends(get_db)):

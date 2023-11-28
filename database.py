@@ -5,6 +5,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import psycopg2
 from sqlalchemy import text
+from dotenv import load_dotenv
+
+load_dotenv()
 
 USERNAME = os.getenv("DB_USERNAME")
 PASSWORD = os.getenv("PASSWORD")
@@ -14,15 +17,14 @@ PORT = os.getenv("PORT")
 DATABASE = os.getenv("DATABASE")
 
 
-DB_CONNECTION = f"postgresql://{'postgres'}:{'Password123!'}@{'localhost'}:{'5432'}/{'playmetrix'}"
-print(DB_CONNECTION)
+db_connection = os.environ["DB_CONNECTION"]
 
 
-engine = create_engine(DB_CONNECTION, connect_args={}, future=True)
-with engine.connect() as conn:
-    result = conn.execute(text("Select * From league;"))
-    for r in result:
-        print(r)
+engine = create_engine(db_connection, connect_args={}, future=True)
+# with engine.connect() as conn:
+#     result = conn.execute(text("Select * From league;"))
+#     for r in result:
+#         print(r)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
