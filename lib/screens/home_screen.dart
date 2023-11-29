@@ -103,13 +103,13 @@ Widget _buildMenuItem(
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Image.asset(
               imagePath,
               width: 100,
               height: 100,
             ),
-            const SizedBox(width: 35),
             Flexible(
               child: Wrap(
                 children: [

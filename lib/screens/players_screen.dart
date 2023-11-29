@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/add_player_screen.dart';
 import 'package:play_metrix/screens/player_profile_screen.dart';
+import 'package:play_metrix/screens/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
 class PlayersScreen extends StatefulWidget {
   const PlayersScreen({Key? key}) : super(key: key);
@@ -34,9 +36,20 @@ class _PlayersScreenState extends State<PlayersScreen> {
             padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
             child: Column(children: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Icon(Icons.sync_alt, color: AppColours.darkBlue, size: 24),
+                const Icon(Icons.sync_alt,
+                    color: AppColours.darkBlue, size: 24),
                 underlineButtonTransparent("Switch to Coaches", () {}),
               ]),
+              const SizedBox(height: 10),
+              profilePill("Louth GAA", "Senior Football",
+                  "lib/assets/icons/logo_placeholder.png", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TeamProfileScreen()),
+                );
+              }),
+              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

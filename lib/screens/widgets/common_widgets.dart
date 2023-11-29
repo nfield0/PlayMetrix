@@ -34,22 +34,32 @@ Widget profilePill(String title, String description, String imagePath,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(imagePath, width: 60),
-          const SizedBox(width: 30),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: AppColours.darkBlue,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppFonts.gabarito,
-                  fontSize: 20,
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFonts.gabarito,
+                          fontSize: 20,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 5),
-              Text(description)
-            ],
+                const SizedBox(height: 5),
+                Text(description),
+              ],
+            ),
           )
         ],
       ),
