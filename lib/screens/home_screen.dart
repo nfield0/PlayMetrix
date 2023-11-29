@@ -109,7 +109,7 @@ Widget _buildMenuItem(
               width: 100,
               height: 100,
             ),
-            SizedBox(width: 37),
+            const SizedBox(width: 35),
             Flexible(
               child: Wrap(
                 children: [
