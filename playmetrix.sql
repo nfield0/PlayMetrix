@@ -131,6 +131,28 @@ CREATE TABLE IF NOT EXISTS player_team
 
 
 /*Need to be added when the relations are in */
+
+
+CREATE TABLE coach_login
+(
+
+	coach_login_id serial PRIMARY KEY,
+	coach_email VARCHAR (50) NOT NULL,
+	coach_password VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE coach_info
+(
+	coach_id serial PRIMARY KEY,
+	coach_firstname VARCHAR(25) NOT NULL,
+	coach_surname VARCHAR(25) NOT NULL,
+	coach_contact VARCHAR(25) NOT NULL,
+	coach_login_id INT NOT NULL,
+	coach_image bytea,
+	FOREIGN KEY (coach_login_id)
+		REFERENCES coach_login(coach_login_id)
+);
+
 CREATE TABLE team_coach 
 (
 	coach_id INT NOT NULL,
@@ -138,13 +160,23 @@ CREATE TABLE team_coach
 	team_role VARCHAR(255),
 	PRIMARY KEY(coach_id, team_id),
 	FOREIGN KEY (coach_id)
-		REFERENCES coach (coach_id),
+		REFERENCES coach_info (coach_id),
 	FOREIGN KEY (team_id)
 		REFERENCES team(team_id)
 );
 
+CREATE TABLE IF NOT EXISTS  injuries
+(
+	injury_id serial PRIMARY KEY,
+	injury_type VARCHAR(50),
+	expected_recovery_time DATE,
+	recovery_method VARCHAR(255)
 
-CREATE TABLE player_injuries 
+
+
+);
+
+CREATE TABLE IF NOT EXISTS  player_injuries 
 (
 	injury_id INT NOT NULL,
 	date_of_injury DATE NOT NULL, 
@@ -156,3 +188,25 @@ CREATE TABLE player_injuries
 	FOREIGN KEY (player_id)
 		REFERENCES player_info(player_id)
 );
+
+CREATE TABLE IF NOT EXISTS schedule
+(
+	calendar_id serial PRIMARY KEY
+);
+
+INSERT INTO league(league_name)
+VALUES ('division one');
+
+select * from league;
+
+INSERT INTO sport(sport_name) VALUES
+('Gaelic Football'),
+('Hurling'),
+('Football'),
+('Rugby'),
+('Camogie'); 
+
+
+
+
+

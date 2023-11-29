@@ -1,0 +1,55 @@
+from database import Base
+from sqlalchemy import Column, Integer, String, Text
+
+
+class league_login(BaseModel):
+	__tablename__ = "league"
+	
+	league_id = Column(Integer, primary_key = True, index = True)
+	league_name = Column(String(50), index = True, unique = True)
+	
+	
+class team(BaseModel):
+	__tablename__ = "team"
+	
+	team_id = Column(Integer, primary_key = True, index = True)
+	team_name = Column(String(255), index = True, unique = True)
+	team_logo = Column()
+	manager_id = Column(Integer, index = True)
+	league_id = Column(Integer, index = True)
+	sport_id = Column(Integer, index = True)
+	
+	
+class team(BaseModel):
+	__tablename__ = "physio_login"
+	
+	physio_login_id = Column(Integer, primary_key = True, index = True)
+	physio_email = Column(String(50), index = True, unique = True)
+	physio_password = Column(String(50), index = True)
+	
+
+class team(BaseModel):
+	__tablename__ = "physio_info"
+	
+	physio_id = Column(Integer, primary_key = True, index = True)
+	physio_firstname = Column(String(30), index = True)
+	physio_surname = Column(String(30), index = True)
+	physio_contact_number = Column(VARCHAR(30), index = True)
+	physio_login_id = Column(Integer, index = True)
+	
+	
+class league_login(BaseModel):
+	__tablename__ = "team_physio"
+	
+	physio_id = Column(Integer, primary_key = True, index = True)
+	team_id = Column(Integer, primary_key = True, index = True)
+	
+
+class league_login(BaseModel):
+	__tablename__ = "team_player"
+	
+	player_id = Column(Integer, primary_key = True, index = True)
+	team_id = Column(Integer, primary_key = True, index = True)
+	position = Column(String(50), Index = True)
+	
+	
