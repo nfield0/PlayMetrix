@@ -19,10 +19,11 @@ class _PlayersScreenState extends State<PlayersScreen> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(Icons.sync_alt, color: AppColours.darkBlue, size: 24),
-            underlineButtonTransparent("Switch to Coaches", () {}),
-          ]),
+          title: Image.asset(
+            'lib/assets/logo.png',
+            width: 150,
+            fit: BoxFit.contain,
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -30,8 +31,12 @@ class _PlayersScreenState extends State<PlayersScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: Padding(
-            padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
+            padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
             child: Column(children: [
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const Icon(Icons.sync_alt, color: AppColours.darkBlue, size: 24),
+                underlineButtonTransparent("Switch to Coaches", () {}),
+              ]),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
