@@ -1,6 +1,6 @@
 from typing import Union
 from sqlalchemy import Column, Integer, String, Text, Date
-from database import Base
+from PlayMetrix.Database.database import Base
 
 # class Item(BaseModel):
 #     name: str

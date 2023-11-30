@@ -9,12 +9,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-USERNAME = os.getenv("DB_USERNAME")
-PASSWORD = os.getenv("PASSWORD")
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
+# USERNAME = os.getenv("DB_USERNAME")
+# PASSWORD = os.getenv("PASSWORD")
+# HOST = os.getenv("HOST")
+# PORT = os.getenv("PORT")
 
-DATABASE = os.getenv("DATABASE")
+# DATABASE = os.getenv("DATABASE")
 
 
 db_connection = os.environ["DB_CONNECTION"]

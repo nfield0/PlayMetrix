@@ -1,7 +1,7 @@
 
 from sqlalchemy.orm import Session
 from fastapi import Depends, FastAPI, HTTPException
-from models import *
+from PlayMetrix.Backend.models import *
 
 
 def get_leagues(db: Session):

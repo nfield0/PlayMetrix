@@ -1,12 +1,10 @@
-from typing import Union
 from sqlalchemy.orm import Session
-from models import league, player_login, manager_login, physio_login
-from typing import List
-from database import SessionLocal, Base, engine
+from PlayMetrix.Backend.models import *
+from PlayMetrix.Database.database import SessionLocal, Base, engine
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
-import schema
-import crud
+from PlayMetrix.Backend import schema
+import PlayMetrix.Backend.crud as crud
 
 Base.metadata.create_all(bind=engine)
 
@@ -27,6 +25,8 @@ def get_db():
 
 ## To Run Uvicorn
 # python -m uvicorn main:app --reload
+# In Root directory
+# python -m uvicorn PlayMetrix.Backend.main:app --reload
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs
