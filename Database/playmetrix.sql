@@ -55,7 +55,10 @@ CREATE TABLE IF NOT EXISTS manager_info
 	manager_firstname VARCHAR (25) NOT NULL, 
 	manager_surname VARCHAR(25) NOT NULL,
 	manager_contact_number VARCHAR(20) NOT NULL,
-	manager_image bytea
+	manager_image bytea,
+	manager_login_id INT NOT NULL,
+	FOREIGN KEY (manager_info_id)
+		REFERENCES manager_login(manager_log_id);
 );
 
 CREATE TABLE IF NOT EXISTS sport
@@ -231,7 +234,7 @@ ADD player_team_number INT
 ADD playing_status VARCHAR (25);
 
 
-/*PLAYER QUERIES*/
+/*BASIC PLAYER QUERIES*/
 SELECT player_surname, player_image FROM player_info;
 
 SELECT player_firstname, player_surname, injury_type
@@ -266,3 +269,42 @@ JOIN player_stats USING (player_id);
 SELECT player_surname, team_id, team_position, player_team_number, playing_status
 FROM player_team JOIN player_info 
 USING(player_id);
+
+
+/*BASIC MANAGER QUERIES*/
+SELECT * FROM manager_login;
+SELECT * FROM manager_info;
+SELECT * FROM manager_info INNER JOIN manager_login USING(manager_login_id);
+
+ALTER TABLE team
+ADD team_location VARCHAR(30);
+
+ALTER TABLE manager_info
+ADD manager_login_id;
+
+ALTER TABLE manager_info
+ADD FOREIGN KEY (manager_login_id)
+	REFERENCES manager_login(manager_login_id);
+
+SELECT manager_firstname, manager_surname, team_name,team_location FROM team 
+JOIN manager_info USING (manager_id);
+
+SELECT manager_email, manager_contact_number FROM manager_login JOIN manager_info 
+USING (manager_login_id);
+
+
+
+
+
+/*BASIC PHYSIO QUERIES*/
+
+SELECT * FROM physio_login;
+SELECT * FROM physio_info;
+SELECT * FROM physio_info INNER JOIN physio_login USING(physio_login_id);
+
+SELECT physioInfo.physio_firstname, physioInfo.physio_surname, teamInfo.team_name, teamInfo.team_location
+FROM physio_info physioInfo, team teamInfo, team_physio teamPhysio
+WHERE physioInfo.physio_id = teamPhysio.physio_id AND teamInfo.team_id = teamPhysio.team_id;
+
+SELECT physio_email, physio_contact_number FROM physio_login JOIN physio_info 
+USING (physio_login_id);
