@@ -208,5 +208,61 @@ INSERT INTO sport(sport_name) VALUES
 
 
 
+/*BASIC QUERIES TO TEST ALL DATA*/
+
+SELECT * FROM player_info;
+SELECT * FROM player_injuries;
+SELECT * FROM player_login; 
+SELECT * FROM player_team;
+SELECT * FROM player_stats;
 
 
+/*MINOR ADJUSTMENT TO THE DATABASE ---- NATHAN YOU WILL NEED THESE*/
+
+ALTER TABLE player_info 
+ADD player_height VARCHAR(10),
+ADD player_gender VARCHAR(20);
+
+ALTER TABLE player_team 
+RENAME position TO team_position;
+
+ALTER TABLE player_team 
+ADD player_team_number INT
+ADD playing_status VARCHAR (25);
+
+
+/*PLAYER QUERIES*/
+SELECT player_surname, player_image FROM player_info;
+
+SELECT player_firstname, player_surname, injury_type
+FROM player_info 
+JOIN player_injuries USING(player_id)
+JOIN injuries USING(injury_id);
+
+SELECT player_surname AS SURNAME, player_team_number AS KITNUM, team_position AS POSITION
+FROM player_info 
+JOIN player_team USING(player_id)
+ORDER BY player_team_number ASC;
+
+SELECT playerLogin.player_email, playerInfo.player_firstname, playerInfo.player_surname, playerStats.matches_played, playerTeam.position 
+FROM player_login playerLogin, player_info playerInfo, player_stats playerStats, player_team playerTeam
+WHERE playerLogin.player_login_id = playerInfo.player_login_id
+AND playerInfo.player_id = playerStats.player_id 
+AND playerInfo.player_id = playerTeam.player_id;
+
+SELECT playerInfo.player_firstname, playerInfo.player_surname, playerStats.matches_played, playerTeam.position 
+FROM player_info playerInfo, player_stats playerStats, player_team playerTeam
+WHERE playerInfo.player_id = playerStats.player_id 
+AND playerInfo.player_id = playerTeam.player_id;
+
+SELECT player_surname AS SURNAME, COUNT(injury_id) AS numOfInjuries
+FROM player_info 
+JOIN player_injuries USING(player_id)
+GROUP BY player_surname;
+
+SELECT player_surname, injury_prone FROM player_info 
+JOIN player_stats USING (player_id);
+
+SELECT player_surname, team_id, team_position, player_team_number, playing_status
+FROM player_team JOIN player_info 
+USING(player_id);
