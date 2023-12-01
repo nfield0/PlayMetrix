@@ -67,15 +67,15 @@ Widget profilePill(String title, String description, String imagePath,
   );
 }
 
-Widget emptyProfile() {
-  return const Center(
+Widget emptySection(IconData icon, String text) {
+  return Center(
       child: Column(
     children: [
-      Icon(Icons.person_off, size: 50, color: Colors.grey),
-      SizedBox(height: 10),
+      Icon(icon, size: 50, color: Colors.grey),
+      const SizedBox(height: 10),
       Text(
-        "No profile(s) found",
-        style: TextStyle(
+        text,
+        style: const TextStyle(
           color: Colors.grey,
           fontWeight: FontWeight.bold,
           fontSize: 18,

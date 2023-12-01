@@ -157,7 +157,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    emptyProfile(),
+                    emptySection(Icons.person_off, "No coaches added yet"),
                     const SizedBox(height: 50),
                   ],
                 ),
