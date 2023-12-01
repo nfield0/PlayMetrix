@@ -6,6 +6,7 @@ from fastapi.responses import RedirectResponse
 from PlayMetrix.Backend import schema
 import PlayMetrix.Backend.crud as crud
 
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -40,14 +41,14 @@ def get_db():
 def read_root():
     return {"message:", "Root Page"}
 
+
+#region authentication and registration
+
 @app.post("/register")
 def register_user(user: schema.UserCreate, db: Session = Depends(get_db)):
-    existing_player = db.query(player_login).filter_by(player_email=user.user_email).first()
-    existing_manager = db.query(manager_login).filter_by(manager_email=user.user_email).first()
-    existing_physio = db.query(physio_login).filter_by(physio_email=user.user_email).first()
+    existing_user = crud.get_user_by_email(db, user.user_email)
 
-
-    if existing_player or existing_manager or existing_physio:
+    if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     if not user.user_email or not user.user_password:
@@ -56,10 +57,9 @@ def register_user(user: schema.UserCreate, db: Session = Depends(get_db)):
     if user.user_type == "player":
         new_user = player_login(player_email=user.user_email, player_password=user.user_password)
     elif user.user_type == "manager":
-        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
+        new_user = manager_login(manager_em99653ail=user.user_email, manager_password=user.user_password)
     elif user.user_type == "physio":
         new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
-
 
     db.add(new_user)
     db.commit()
@@ -72,7 +72,7 @@ def login_user(user: schema.UserCreate, db: Session = Depends(get_db)):
 
 
     if user.user_type == "player":
-        existing_user = db.query(player_login).filter_by(player_email=user.user_email).first()
+        existing_user = crud.get_user_by_email(db, user.user_email)
         if existing_user:
             verified = db.query(player_login).filter_by(player_password=user.user_password)
             if verified:
@@ -81,13 +81,12 @@ def login_user(user: schema.UserCreate, db: Session = Depends(get_db)):
     elif user.user_type == "manager":
         existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
         if existing_user:
-            verified = db.query(manager_login).filter_by(manager_password=user.user_password)
+            verified = crud.get_user_by_email(db, user.user_email)
             if verified:
                return manager_login(manager_email=user.user_email, manager_password=user.user_password)
             
     elif user.user_type == "physio":
-        existing_user = db.query(physio_login).filter_by(physio_email=user.user_email).first()
-
+        existing_user = crud.get_user_by_email(db, user.user_email)
 
         if existing_user:
             verified = db.query(physio_login).filter_by(physio_password=user.user_password)
@@ -104,20 +103,45 @@ def logout():
   SessionLocal.close_all()
   return RedirectResponse(url="/login"), HTTPException(status_code=200)
 
+#endregion
 
+#region managers
+
+
+@app.get("/managers")
+def read_managers(db:Session = Depends(get_db)):
+    return crud.get_managers_login(db)
+
+@app.get("/managers/{id}")
+def read_managers(id, db:Session = Depends(get_db)):
+    return crud.get_manager_by_id(db, id)
+
+@app.put("/managers/{id}")
+def update_managers(id, manager, db:Session = Depends(get_db)):
+    return crud.update_manager_by_id(db, id, manager)
+
+@app.delete("/managers/{id}")
+def delete_manager(id, db:Session = Depends(get_db)):
+    return crud.delete_manager_by_id(db, id)
+
+
+
+#endregion
+
+#region leagues
 @app.get("/leagues/")
 def read_leagues(db:Session = Depends(get_db)):
     return crud.get_leagues(db)
 
-
+#endregion
 
 
 
 #.remove
 
-# @app.route("/cleanup_players/", methods=["DELETE", "GET"])
-# def delete_players(db:Session = Depends(get_db)):
-#     return crud.delete_player(db)
+@app.delete("/cleanup_players")
+def delete_players(db:Session = Depends(get_db)):
+    return crud.delete_player(db)
 
 
 # @app.post("/register_player")

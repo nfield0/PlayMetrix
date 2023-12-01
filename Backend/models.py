@@ -1,6 +1,7 @@
-from typing import Union
-from sqlalchemy import Column, Integer, String, Text, Date
+from typing import Union, Annotated
+from sqlalchemy import Column, Integer, String, Text, Date, LargeBinary
 from PlayMetrix.Database.database import Base
+
 
 # class Item(BaseModel):
 #     name: str
@@ -39,13 +40,13 @@ class manager_login(Base):
     manager_email = Column(String(50), index= True)
     manager_password = Column(String(150), index= True)
 
-# class manager_info(Base):
-#     __tablename__ = "manager_info"
-#     manager_id = Column(Integer, primary_key = True, index = True)
-#     manager_firstname = Column(String(25), index= True)
-#     manager_surname = Column(String(25), index= True)
-#     manager_contact_number = Column(String(20), index= True)
-#     manager_image = Column(bytes, index= True)
+class manager_info(Base):
+    __tablename__ = "manager_info"
+    manager_id = Column(Integer, primary_key = True, index = True)
+    manager_firstname = Column(String(25), index= True)
+    manager_surname = Column(String(25), index= True)
+    manager_contact_number = Column(String(20), index= True)
+    manager_image = Column(LargeBinary, index= True)
 
 # class sport(Base):
 #     __tablename__ = "sport"
