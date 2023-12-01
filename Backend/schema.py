@@ -10,3 +10,11 @@ class UserCreate(BaseModel):
     user_email: str
     user_password: str
 
+class Manager(BaseModel):
+    manager_login_id: int
+    manager_email: str
+    manager_password: str
+    manager_firstname: str
+    manager_surname: str
+    manager_contact_number: str
+    manager_image: bytes
