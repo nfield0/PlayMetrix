@@ -117,6 +117,30 @@ Widget detailWithDivider(String title, String detail) {
   );
 }
 
+Widget dropdownWithDivider(String title, String selectedValue,
+    List<String> dropdownItems, void Function(String?) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 14)),
+          DropdownButton<String>(
+            value: selectedValue,
+            items: dropdownItems.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(item, style: const TextStyle(fontSize: 14)),
+              );
+            }).toList(),
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget formFieldBottomBorder(String title, String initialValue) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
