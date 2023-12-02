@@ -5,16 +5,16 @@ import 'package:play_metrix/screens/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class WeeklyScheduleScreen extends StatefulWidget {
+class DailyScheduleScreen extends StatefulWidget {
   final DateTime? selectedDate;
 
-  const WeeklyScheduleScreen({Key? key, this.selectedDate}) : super(key: key);
+  const DailyScheduleScreen({Key? key, this.selectedDate}) : super(key: key);
 
   @override
-  _WeeklyScheduleScreenState createState() => _WeeklyScheduleScreenState();
+  _DailyScheduleScreenState createState() => _DailyScheduleScreenState();
 }
 
-class _WeeklyScheduleScreenState extends State<WeeklyScheduleScreen> {
+class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +69,7 @@ class _WeeklyScheduleScreenState extends State<WeeklyScheduleScreen> {
               initialSelectedDate: widget.selectedDate,
               initialDisplayDate: widget.selectedDate,
               timeSlotViewSettings: const TimeSlotViewSettings(
-                numberOfDaysInView: 5,
+                numberOfDaysInView: 1,
               ),
               dataSource: AppointmentDataSource(getCalendarDataSource()),
             )),

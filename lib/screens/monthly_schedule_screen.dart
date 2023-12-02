@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/add_schedule_screen.dart';
-import 'package:play_metrix/screens/weekly_schedule_screen.dart';
+import 'package:play_metrix/screens/daily_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -91,7 +91,7 @@ class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WeeklyScheduleScreen(
+                            builder: (context) => DailyScheduleScreen(
                                 selectedDate: selectedDate)),
                       );
                     })),
