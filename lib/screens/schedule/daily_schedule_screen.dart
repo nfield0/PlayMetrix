@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/monthly_schedule_screen.dart';
-import 'package:play_metrix/screens/schedule_details_screen.dart';
+import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 

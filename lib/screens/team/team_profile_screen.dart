@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/add_coach_screen.dart';
-import 'package:play_metrix/screens/add_physio_screen.dart';
-import 'package:play_metrix/screens/edit_team_screen.dart';
+import 'package:play_metrix/screens/coach/add_coach_screen.dart';
+import 'package:play_metrix/screens/physio/add_physio_screen.dart';
+import 'package:play_metrix/screens/team/edit_team_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
