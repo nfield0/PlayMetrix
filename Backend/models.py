@@ -64,10 +64,11 @@ class team(Base):
 	__tablename__ = "team"
 	team_id = Column(Integer, primary_key = True, index = True)
 	team_name = Column(String(100), index = True, unique = True)
-	team_logo = Column()
+	team_logo = Column(LargeBinary)
 	manager_id = Column(Integer, index = True)
 	league_id = Column(Integer, index = True)
 	sport_id = Column(Integer, index = True)
+	team_location = Column(String(30))
 
 class physio_login(Base):
 	__tablename__ = "physio_login"
