@@ -18,3 +18,11 @@ class Manager(BaseModel):
     manager_surname: str
     manager_contact_number: str
     manager_image: bytes
+
+class TeamBase(BaseModel):
+    team_name: str
+    team_logo: bytes
+    manager_id: int
+    league_id: int
+    sport_id: int
+    team_location: str
