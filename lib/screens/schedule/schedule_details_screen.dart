@@ -40,7 +40,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 35),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 35),
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                 // Location?
                 Text(
                   _dataSource?.appointments?[0].location ?? "",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
                   ),

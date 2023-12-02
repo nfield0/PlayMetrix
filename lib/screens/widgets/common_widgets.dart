@@ -10,7 +10,7 @@ Widget smallPill(String text) {
     ),
     child: Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
         fontSize: 16,
@@ -141,6 +141,58 @@ Widget dropdownWithDivider(String title, String selectedValue,
   );
 }
 
+Widget dateTimePickerWithDivider(BuildContext context, String title,
+    DateTime selectedDateTime, void Function(DateTime) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 14)),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDateTime,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Show time picker if date is selected
+                final TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.fromDateTime(selectedDateTime),
+                );
+
+                if (pickedTime != null) {
+                  // Combine date and time
+                  final DateTime pickedDateTime = DateTime(
+                    pickedDate.year,
+                    pickedDate.month,
+                    pickedDate.day,
+                    pickedTime.hour,
+                    pickedTime.minute,
+                  );
+
+                  // Call the onChanged callback with the selected date and time
+                  onChanged(pickedDateTime);
+                }
+              }
+            },
+            child: Text(
+              "${selectedDateTime.toLocal()}"
+                  .split('.')[0], // Display selected date and time
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget formFieldBottomBorder(String title, String initialValue) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +206,7 @@ Widget formFieldBottomBorder(String title, String initialValue) {
         width: 220, // Set a fixed width for the TextField
         child: TextField(
           controller: TextEditingController(text: initialValue),
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             // labelText: 'Your Label',
             labelStyle: TextStyle(color: Colors.grey),
             focusedBorder: UnderlineInputBorder(
@@ -163,6 +215,35 @@ Widget formFieldBottomBorder(String title, String initialValue) {
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
             ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget formFieldBottomBorderNoTitle(
+    String title, String initialValue, bool showBorder) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: TextField(
+          controller: TextEditingController(text: initialValue),
+          decoration: InputDecoration(
+            // labelText: 'Your Label',
+            hintText: title,
+            hintStyle: const TextStyle(color: Colors.black38),
+            focusedBorder: showBorder
+                ? const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColours.grey),
+                  )
+                : InputBorder.none,
+            enabledBorder: showBorder
+                ? const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColours.grey),
+                  )
+                : InputBorder.none,
           ),
         ),
       ),
