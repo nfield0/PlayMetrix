@@ -30,17 +30,9 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-                DateFormat('MMMM y').format(
-                  _dataSource?.appointments?[0].startTime ?? DateTime.now(),
-                ),
-                style: const TextStyle(
-                  color: AppColours.darkBlue,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ))
-          ]),
+          title: appBarTitlePreviousPage(DateFormat('MMMM y').format(
+            _dataSource?.appointments?[0].startTime ?? DateTime.now(),
+          )),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),

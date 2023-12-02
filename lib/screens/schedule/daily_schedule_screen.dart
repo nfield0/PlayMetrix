@@ -3,6 +3,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class DailyScheduleScreen extends StatefulWidget {
@@ -19,16 +20,7 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Schedule",
-                    style: TextStyle(
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ))
-              ]),
+          title: appBarTitlePreviousPage("Schedule"),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),

@@ -169,3 +169,14 @@ Widget formFieldBottomBorder(String title, String initialValue) {
     ],
   );
 }
+
+Widget appBarTitlePreviousPage(String text) {
+  return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(text,
+        style: const TextStyle(
+          color: AppColours.darkBlue,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ))
+  ]);
+}

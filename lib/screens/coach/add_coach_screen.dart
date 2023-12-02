@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
 class AddCoachScreen extends StatefulWidget {
   const AddCoachScreen({Key? key}) : super(key: key);
@@ -16,16 +17,7 @@ class _AddCoachScreenState extends State<AddCoachScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Text(
-              "Team Profile",
-              style: TextStyle(
-                color: AppColours.darkBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            )
-          ]),
+          title: appBarTitlePreviousPage("Team Profile"),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),

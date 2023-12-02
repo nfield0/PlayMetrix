@@ -25,12 +25,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Team Profile",
-                    style: TextStyle(
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    )),
+                appBarTitlePreviousPage("Team Profile"),
                 smallButton(Icons.edit, "Edit", () {
                   Navigator.push(
                     context,
