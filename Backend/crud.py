@@ -11,25 +11,15 @@ def get_leagues(db: Session):
         return leagues
     except Exception as e:
         return(f"Error retrieving leagues: {e}")
-        
+
+
     
-def get_managers_login(db: Session):
+def get_all_managers_login(db: Session):
     try:
         managers = db.query(manager_login).all()
         return managers
     except Exception as e:
         return(f"Error retrieving managers: {e}")
-        
-    
-# def get_managers_login_by_id(db: Session, id):
-#     try:
-#         managers = db.query(manager_login).filter_by(manager_login_id == id)
-#         return managers
-#     except Exception as e:
-#         print(f"Error retrieving managers: {e}")
-#         return []    
-
-
     
 def get_user_by_email(db:Session, user: UserCreate):
     try:
@@ -42,7 +32,84 @@ def get_user_by_email(db:Session, user: UserCreate):
         return login_info
     except Exception as e:
         return(f"Error retrieving from {user.user_type}s: {e}")
+
+
+#region team
+        
+def get_teams(db: Session):
+    try:
+        result = db.query(team).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving teams: {e}")
+    
+def get_team_by_id(db: Session, id: int):
+    try:
+        result = db.query(team).filter_by(team_id=id)
+        return result
+    except Exception as e:
+        return(f"Error retrieving teams: {e}")
        
+
+def insert_new_team(db:Session, new_team: TeamBase):
+    try:
+        if new_team is not None:
+            if get_manager_by_id(db, new_team.manager_id):
+                new_team = team(team_name=new_team.team_name,
+                    team_logo=new_team.team_logo,
+                    manager_id=new_team.manager_id,
+                    league_id=new_team.league_id,
+                    sport_id=new_team.sport_id,
+                    team_location=new_team.team_location)
+
+                db.add(new_team)
+                db.commit()
+                db.refresh(new_team)
+
+                return {"message": "Team inserted successfully", "team_id": new_team.team_id}
+            raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
+        return {"message": "Team is empty or invalid"}
+    except Exception as e:
+        return (f"Error inserting team: {e}")
+
+def update_team(db, team: TeamBase, id):
+    try:        
+        team_to_update = db.query(team).filter_by(team_id= id).first()
+        
+        if not team_to_update:
+            raise HTTPException(status_code=404, detail="Team not found")
+        
+        team_to_update.team_name = team.team_name
+        team_to_update.team_logo = team.team_logo
+        team_to_update.manager_id = team.manager_id 
+        team_to_update.league_id = team.league_id 
+        team_to_update.sport_id = team.sport_id 
+        team_to_update.team_location = team.team_location    
+
+        return {"message": f"Team with ID {id} has been updated"}
+    except Exception as e:
+        return (f"Error updating Team: {e}")
+    
+
+def delete_team_by_id(db:Session, id: int):
+    try:        
+        team_to_delete = db.query(team).filter_by(team_id= id).first()
+        
+        if not team_to_delete:
+            return {"message": f"Team didn't exist"}
+        db.delete(team_to_delete)
+        db.commit()
+        db.close()
+        return {"message": f"Team deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting team: {e}")
+
+
+#endregion 
+
+
+#region managers
 
 def get_manager_by_id(db:Session, id: int):
     try:        
@@ -71,9 +138,12 @@ def update_manager_by_id(db:Session, id: int, manager: Manager):
         manager_info_to_update.manager_contact_number = manager.manager_contact_number
         manager_info_to_update.manager_image = manager.manager_image
 
+
+        db.commit()
+
         return {"message": f"Manager and manager info with ID {id} has been updated"}
     except Exception as e:
-        return (f"Error retrieving from managers: {e}")
+        return (f"Error updating managers: {e}")
 
 
 def delete_manager_by_id(db:Session, id: int):
@@ -91,10 +161,11 @@ def delete_manager_by_id(db:Session, id: int):
     except Exception as e:
         return(f"Error deleting from managers: {e}")
         
-    
+
+#endregion
 
 
-    
+#region players
 def delete_player(db: Session):
     try:
         num_rows_deleted = db.session.query(player_login).delete()
@@ -114,3 +185,5 @@ def delete_player(db: Session):
         print(f"Error deleting players: {e}")
         return []
 
+
+#endregion
