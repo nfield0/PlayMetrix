@@ -3,7 +3,7 @@ from PlayMetrix.Backend.models import *
 from PlayMetrix.Database.database import SessionLocal, Base, engine
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
-from PlayMetrix.Backend import schema
+from PlayMetrix.Backend.schema import *
 import PlayMetrix.Backend.crud as crud
 
 
@@ -45,7 +45,7 @@ def read_root():
 #region authentication and registration
 
 @app.post("/register")
-def register_user(user: schema.UserCreate, db: Session = Depends(get_db)):
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = crud.get_user_by_email(db, user.user_email)
 
     if existing_user:
@@ -68,7 +68,7 @@ def register_user(user: schema.UserCreate, db: Session = Depends(get_db)):
 
 
 @app.post("/login")
-def login_user(user: schema.UserCreate, db: Session = Depends(get_db)):
+def login_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
     if user.user_type == "player":
@@ -110,7 +110,7 @@ def logout():
 
 @app.get("/managers")
 def read_managers(db:Session = Depends(get_db)):
-    return crud.get_managers_login(db)
+    return crud.get_all_managers_login(db)
 
 @app.get("/managers/{id}")
 def read_managers(id, db:Session = Depends(get_db)):
@@ -128,6 +128,33 @@ def delete_manager(id, db:Session = Depends(get_db)):
 
 #endregion
 
+#region teams
+
+
+@app.get("/teams")
+def read_teams(db:Session = Depends(get_db)):
+    return crud.get_teams(db)
+
+@app.get("/teams/{id}")
+def read_team(id, db:Session = Depends(get_db)):
+    return crud.get_team_by_id(db, id)
+
+@app.post("/teams/")
+def insert_team(team: TeamBase, db:Session = Depends(get_db)):
+    return crud.insert_new_team(db, team)
+
+@app.put("/teams/")
+def update_team(id: int, team: TeamBase, db:Session = Depends(get_db)):
+    return crud.update_team(db, team, id)
+
+@app.delete("/teams/{id}")
+def delete_team(id: int, db:Session = Depends(get_db)):
+    return crud.delete_team_by_id(db, id)
+
+
+
+#endregion
+
 #region leagues
 @app.get("/leagues/")
 def read_leagues(db:Session = Depends(get_db)):
@@ -137,23 +164,6 @@ def read_leagues(db:Session = Depends(get_db)):
 
 
 
-#.remove
-
 @app.delete("/cleanup_players")
 def delete_players(db:Session = Depends(get_db)):
     return crud.delete_player(db)
-
-
-# @app.post("/register_player")
-# def register_player(player: schema.PlayerCreate, db: Session = Depends(get_db)):
-#     existing_user = db.query(player_login).filter_by(player_email=player_login.player_email).first()
-#     if existing_user:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-
-#     new_user = player_login(player_email=player.player_email, player_password=player.player_password)
-    
-
-#     db.add(new_user)
-#     db.commit()
-#     db.refresh(new_user)
-#     return {"message": "Player Created Successfully", "id": new_user.player_login_id}
