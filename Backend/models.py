@@ -1,5 +1,5 @@
 from typing import Union, Annotated
-from sqlalchemy import Column, Integer, String, Text, Date, LargeBinary
+from sqlalchemy import Column, Integer, String, Text, Date, LargeBinary, Boolean
 from PlayMetrix.Database.database import Base
 
 
@@ -14,25 +14,32 @@ class player_login(Base):
 	player_email = Column(String(50), index = True, unique = True)
 	player_password = Column(String(150), index = True)
 
-# class player_info(Base): 
-# 	__tablename__ = "player_info"
-# 	player_id = Column(Integer, primary_key = True, index = True)
-# 	player_firstname = Column(String(25), index= True) 
-# 	player_surname = Column(String(25), index= True) 
-# 	player_DOB = Column(Date, index= True) 
-# 	player_contact_number = Column(String(20), index= True)
-# 	player_image = Column(bytes, index= True)
-# 	player_login_id = Column(Integer, index = True)
+class player_info(Base): 
+	__tablename__ = "player_info"
+	player_id = Column(Integer, primary_key = True, index = True)
+	player_firstname = Column(String(25), index= True) 
+	player_surname = Column(String(25), index= True) 
+	player_dob = Column(Date, index= True) 
+	player_contact_number = Column(String(20), index= True)
+	player_image = Column(LargeBinary, index= True)
+	player_login_id = Column(Integer, index = True)
 	
-# class player_stats(Base): 
-#     __tablename__ = "player_stats"
-#     player_stats_id = Column(Integer, primary_key = True, index = True)
-#     matches_played = Column(Integer, index = True)
-#     matches_started = Column(Integer, index = True)
-#     matches_off_the_bench = Column(Integer, index = True)
-#     injury_prone = Column(bool, index = True)
-#     minutes_played = Column(Integer, index = True)
-#     player_id = Column(Integer, index = True)
+class player_stats(Base): 
+    __tablename__ = "player_stats"
+    player_stats_id = Column(Integer, primary_key = True, index = True)
+    matches_played = Column(Integer, index = True)
+    matches_started = Column(Integer, index = True)
+    matches_off_the_bench = Column(Integer, index = True)
+    injury_prone = Column(Boolean, index = True)
+    minutes_played = Column(Integer, index = True)
+    player_id = Column(Integer, index = True)#
+
+class player_injuries(Base): 
+    __tablename__ = "player_injuries"
+    injury_id = Column(Integer, primary_key = True, index = True)
+    date_of_injury = Column(Date, index = True)
+    date_of_recovery = Column(Date, index = True)
+    player_id = Column(Integer, index = True)
 
 class manager_login(Base):
     __tablename__ = "manager_login"
