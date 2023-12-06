@@ -166,24 +166,107 @@ def delete_manager_by_id(db:Session, id: int):
 
 
 #region players
-def delete_player(db: Session):
+
+def get_players(db: Session):
     try:
-        num_rows_deleted = db.session.query(player_login).delete()
-        print(num_rows_deleted)
+        result = db.query(player_login).all()
+        players = []
+        if result:
+            for player in result:
+                player_info_result = db.query(player_info).filter_by(player_id=player.player_login_id).first()
+                player_stats_result = db.query(player_stats).filter_by(player_id=player.player_login_id).first()
+                # player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_login_id).first()
+                player_entity = PlayerBase(player.player_login_id, player.player_email, player.player_password,
+                                        player_info_result.player_firstname, player_info_result.player_surname, player_info_result.player_DOB,
+                                            player_info_result.player_contact_number, player_info_result.player_image,
+                                            player_stats_result.matches_played, player_stats_result.matches_started,
+                                            player_stats_result.matches_off_the_bench, player_stats_result.injury_prone,
+                                            player_stats_result.minute_played )
+                players.append(player_entity)
+            
+        return players
+    except Exception as e:
+        return(f"Error retrieving players: {e}")
+    
+    
+def get_player_by_id(db: Session, id: int):
+    try:
+        player = db.query(player_login).filter_by(player_login_id=id).first()
+        return player
+    except Exception as e:
+        return(f"Error retrieving player: {e}")
+    
+
+def get_player_info_by_id(db:Session, id: int):
+    try:
+        player = db.query(player_info).filter_by(player_id=id).first()
+        return player
+    except Exception as e:
+        return(f"Error retrieving player info: {e}")
+
+def get_player_stats_by_id(db:Session, id: int):
+    try:
+        player = db.query(player_stats).filter_by(player_id=id).first()
+        return player
+    except Exception as e:
+        return(f"Error retrieving player stats: {e}")
+    
+def update_player_info_by_id(db:Session, id: int, player: PlayerInfo):
+    try:
+        player_info_to_update = db.query(player_info).filter_by(player_id=id).first()
+        if not player_info_to_update:
+            raise HTTPException(status_code=404, detail="Player info not found")
+        player_info_to_update.player_firstname = player.player_firstname
+        player_info_to_update.player_surname = player.player_surname
+        player_info_to_update.player_dob = player.player_dob
+        player_info_to_update.player_contact_number = player.player_contact_number
+        player_info_to_update.player_image = player.player_image
+
         db.commit()
 
-        # db.query(player_login).delete()
-        # # if not users:
-        # #     raise HTTPException(status_code=404, detail="No Players found")
-        
-        # # for user in users:
-        # #     db.delete(user)
-        
-        # db.commit()
-        return {"message": "All Players deleted successfully"}
+        return {"message": f"Player info with ID {id} has been updated"}
     except Exception as e:
-        print(f"Error deleting players: {e}")
-        return []
+                return(f"Error retrieving player stats: {e}")
+
+
+
+
+def delete_player(db: Session, id: int):
+    try:        
+        player = db.query(player_login).filter_by(player_login_id=id).first()
+        # remove during production, non-existence can return success
+        if not player:
+            raise HTTPException(status_code=404, detail="Player not found")
+        player_info = db.query(player_info).filter_by(player_id=id).first()
+        player_stats = db.query(player_stats).filter_by(player_id=id).first()
+        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_login_id).first()
+        
+        db.delete(player)
+        if player_info:
+            db.delete(player_info)
+        if player_stats:
+            db.delete(player_stats)
+        if player_injuries:
+            db.delete(player_injuries)
+        db.commit()
+        db.close()
+        return {"message": f"Player with ID {id} has been deleted"}
+
+    except Exception as e:
+        return(f"Error deleting from players: {e}")
+
+#
+    # if player:
+        #     player_info_result = db.query(player_info).filter_by(player_id=player.player_login_id).first()
+        #     player_stats_result = db.query(player_stats).filter_by(player_id=player.player_login_id).first()
+        #     #player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_login_id).first()
+        #     player = PlayerBase(player.player_login_id, player.player_email, player.player_password,
+        #                                 player_info_result.player_firstname, player_info_result.player_surname, player_info_result.player_DOB,
+        #                                     player_info_result.player_contact_number, player_info_result.player_image,
+        #                                     player_stats_result.matches_played, player_stats_result.matches_started,
+        #                                     player_stats_result.matches_off_the_bench, player_stats_result.injury_prone,
+        #                                     player_stats_result.minute_played )
 
 
 #endregion
+
