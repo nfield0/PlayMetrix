@@ -22,6 +22,8 @@ class player_info(Base):
 	player_dob = Column(Date, index= True) 
 	player_contact_number = Column(String(20), index= True)
 	player_image = Column(LargeBinary, index= True)
+	player_height = Column(String(10))
+	player_gender = Column(String(20))
 	player_login_id = Column(Integer, index = True)
 	
 class player_stats(Base): 
@@ -96,9 +98,10 @@ class team_physio(Base):
 	physio_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
  
-# class team_player(Base):
-# 	__tablename__ = "team_player"
-# 	player_id = Column(Integer, primary_key = True, index = True)
-# 	team_id = Column(Integer, primary_key = True, index = True)
-# 	position = Column(String(30), Index = True)	
+class team_player(Base):
+	__tablename__ = "team_player"
+	player_id = Column(Integer, primary_key = True, index = True)
+	team_id = Column(Integer, primary_key = True, index = True)
+	team_position = Column(String(30), Index = True)	
+
 
