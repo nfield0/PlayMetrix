@@ -20,6 +20,7 @@ class Manager(BaseModel):
     manager_image: bytes
 
 class TeamBase(BaseModel):
+    team_id: int
     team_name: str
     team_logo: bytes
     manager_id: int
@@ -49,5 +50,15 @@ class PlayerInfo(BaseModel):
     player_dob: str 
     player_contact_number: str
     player_image: bytes
+    player_height: str
+    player_gender: str
 
+class PlayerStat(BaseModel): 
+    player_login_id: int
+    matches_played: int
+    matches_started: int
+    matches_off_the_bench: int
+    injury_prone: bool
+    minutes_played: int
+    
 
