@@ -124,13 +124,18 @@ Widget dropdownWithDivider(String title, String selectedValue,
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 14)),
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           DropdownButton<String>(
             value: selectedValue,
             items: dropdownItems.map((String item) {
               return DropdownMenuItem<String>(
                 value: item,
-                child: Text(item, style: const TextStyle(fontSize: 14)),
+                child: Text(item,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    )),
               );
             }).toList(),
             onChanged: onChanged,
