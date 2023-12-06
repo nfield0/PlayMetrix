@@ -30,7 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+          child: Padding(
         padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 () {}),
           ],
         ),
-      ),
+      )),
       bottomNavigationBar: managerBottomNavBar(context, selectedMenuIndex),
     );
   }

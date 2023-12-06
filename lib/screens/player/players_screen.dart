@@ -32,70 +32,102 @@ class _PlayersScreenState extends State<PlayersScreen> {
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
-        body: Padding(
-            padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
-            child: Column(children: [
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Icon(Icons.sync_alt,
-                    color: AppColours.darkBlue, size: 24),
-                underlineButtonTransparent("Switch to Coaches", () {}),
-              ]),
-              const SizedBox(height: 10),
-              profilePill("Louth GAA", "Senior Football",
-                  "lib/assets/icons/logo_placeholder.png", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TeamProfileScreen()),
-                );
-              }),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Players",
-                    style: TextStyle(
-                      fontFamily: AppFonts.gabarito,
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 36,
-                    ),
-                  ),
-                  smallButton(Icons.person_add, "Add", () {
+        body: SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
+                child: Column(children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    const Icon(Icons.sync_alt,
+                        color: AppColours.darkBlue, size: 24),
+                    underlineButtonTransparent("Switch to Coaches", () {}),
+                  ]),
+                  const SizedBox(height: 10),
+                  profilePill("Louth GAA", "Senior Football",
+                      "lib/assets/icons/logo_placeholder.png", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const AddPlayerScreen()),
+                          builder: (context) => const TeamProfileScreen()),
                     );
-                  })
-                ],
-              ),
-              const SizedBox(height: 35),
-              _playerProfilePill(
-                  context,
-                  "lib/assets/icons/profile_placeholder.png",
-                  "Luana",
-                  "Kimley",
-                  7,
-                  AvailabilityStatus.Available),
-              const SizedBox(height: 20),
-              _playerProfilePill(
-                  context,
-                  "lib/assets/icons/profile_placeholder.png",
-                  "Luana",
-                  "Kimley",
-                  7,
-                  AvailabilityStatus.Limited),
-              const SizedBox(height: 20),
-              _playerProfilePill(
-                  context,
-                  "lib/assets/icons/profile_placeholder.png",
-                  "Luana",
-                  "Kimley",
-                  7,
-                  AvailabilityStatus.Unavailable),
-            ])),
+                  }),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Players",
+                        style: TextStyle(
+                          fontFamily: AppFonts.gabarito,
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 36,
+                        ),
+                      ),
+                      smallButton(Icons.person_add, "Add", () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddPlayerScreen()),
+                        );
+                      })
+                    ],
+                  ),
+                  const SizedBox(height: 35),
+                  if (MediaQuery.of(context).size.longestSide >= 1000)
+                    Wrap(
+                        direction: Axis.horizontal,
+                        spacing: 20.0,
+                        runSpacing: 20.0,
+                        children: [
+                          _playerProfilePill(
+                              context,
+                              "lib/assets/icons/profile_placeholder.png",
+                              "Luana",
+                              "Kimley",
+                              7,
+                              AvailabilityStatus.Available),
+                          _playerProfilePill(
+                              context,
+                              "lib/assets/icons/profile_placeholder.png",
+                              "Luana",
+                              "Kimley",
+                              7,
+                              AvailabilityStatus.Limited),
+                          _playerProfilePill(
+                              context,
+                              "lib/assets/icons/profile_placeholder.png",
+                              "Luana",
+                              "Kimley",
+                              7,
+                              AvailabilityStatus.Unavailable),
+                        ])
+                  else
+                    Column(children: [
+                      _playerProfilePill(
+                          context,
+                          "lib/assets/icons/profile_placeholder.png",
+                          "Luana",
+                          "Kimley",
+                          7,
+                          AvailabilityStatus.Available),
+                      const SizedBox(height: 20),
+                      _playerProfilePill(
+                          context,
+                          "lib/assets/icons/profile_placeholder.png",
+                          "Luana",
+                          "Kimley",
+                          7,
+                          AvailabilityStatus.Limited),
+                      const SizedBox(height: 20),
+                      _playerProfilePill(
+                          context,
+                          "lib/assets/icons/profile_placeholder.png",
+                          "Luana",
+                          "Kimley",
+                          7,
+                          AvailabilityStatus.Unavailable),
+                    ])
+                ]))),
         bottomNavigationBar: managerBottomNavBar(context, 1));
   }
 }
@@ -136,6 +168,7 @@ Widget _playerProfilePill(
             );
           },
           child: Container(
+            // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
             decoration: BoxDecoration(
               border: Border.all(color: statusColour, width: 4),
               borderRadius: BorderRadius.circular(15),
