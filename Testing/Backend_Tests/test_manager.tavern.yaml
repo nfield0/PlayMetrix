@@ -1,0 +1,16 @@
+# test_name: delete Manager
+
+# stages:
+#   - name: delete manager
+#     request:
+#       url: http://127.0.0.1:8000/managers
+#       method: DELETE
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         email: "test@email.com"
+        
+#     response:
+#       status_code: 200
+#       json:
+#         player_email: "manager@email.com"

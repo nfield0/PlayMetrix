@@ -1,0 +1,14 @@
+# test_name: delete Player
+
+# stages:
+#   - name: delete Player
+#     request:
+#       url: http://127.0.0.1:8000/players/12
+#       method: DELETE
+#       headers:
+#         Content-Type: application/json
+
+#     response:
+#       status_code: 200
+#       json:
+#         message: "Player with ID 12 has been deleted"
