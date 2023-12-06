@@ -5,7 +5,8 @@ from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
 from PlayMetrix.Backend.schema import *
 import PlayMetrix.Backend.crud as crud
-
+import pytest
+from tavern.core import run
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,6 +19,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 ## To install requirements
 # python -m pip install -r requirements.txt
@@ -46,8 +48,9 @@ def read_root():
 
 @app.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    existing_user = crud.get_user_by_email(db, user.user_email)
-
+    
+    
+    existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -72,28 +75,28 @@ def login_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
     if user.user_type == "player":
-        existing_user = crud.get_user_by_email(db, user.user_email)
+        existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
         if existing_user:
             verified = db.query(player_login).filter_by(player_password=user.user_password)
             if verified:
                 return player_login(player_email=user.user_email, player_password=user.user_password)
-            
+            raise HTTPException(status_code=400, detail="Password is incorrect")
     elif user.user_type == "manager":
         existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
         if existing_user:
-            verified = crud.get_user_by_email(db, user.user_email)
+            verified = crud.get_user_by_email(db, user.user_type, user.user_email)
             if verified:
                return manager_login(manager_email=user.user_email, manager_password=user.user_password)
-            
+            raise HTTPException(status_code=400, detail="Password is incorrect")
     elif user.user_type == "physio":
-        existing_user = crud.get_user_by_email(db, user.user_email)
+        existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
 
         if existing_user:
             verified = db.query(physio_login).filter_by(physio_password=user.user_password)
             if verified:
                 return physio_login(physio_email=user.user_email, physio_password=user.user_password)
 
-        raise HTTPException(status_code=400, detail="Password is incorrect")
+            raise HTTPException(status_code=400, detail="Password is incorrect")
     raise HTTPException(status_code=404, detail="Account with that email does not exist")
 
 
@@ -123,6 +126,10 @@ def update_managers(id, manager, db:Session = Depends(get_db)):
 @app.delete("/managers/{id}")
 def delete_manager(id, db:Session = Depends(get_db)):
     return crud.delete_manager_by_id(db, id)
+
+@app.delete("/managers")
+def delete_manager_by_email(email: str, db:Session = Depends(get_db)):
+    return crud.delete_manager_by_email(db, email)
 
 
 
@@ -174,10 +181,14 @@ def read_player(id, db:Session = Depends(get_db)):
 def update_player_info(id: int, player: PlayerInfo, db:Session = Depends(get_db)):
     return crud.update_player_info_by_id(db, player, id)
 
+@app.put("/players/stats/{id}")
+def update_player_stats(id: int, player: PlayerStat, db:Session = Depends(get_db)):
+    return crud.update_player_stat_by_id(db, player, id)
+
 @app.delete("/players/{id}")
 def delete_player(id: int, db:Session = Depends(get_db)):
     return crud.delete_player(db, id)
-    
+
 
 
 #endregion
@@ -197,6 +208,14 @@ def read_leagues(db:Session = Depends(get_db)):
 
 
 
-# @app.delete("/cleanup_players")
-# def delete_players(db:Session = Depends(get_db)):
-#     return crud.delete_player(db)
+#region test_routes
+
+
+
+@app.delete("/cleanup_tests")
+def cleanup(db:Session = Depends(get_db)):
+    return crud.cleanup(db)
+
+
+
+#endregion
