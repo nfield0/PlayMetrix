@@ -21,17 +21,22 @@ def get_all_managers_login(db: Session):
     except Exception as e:
         return(f"Error retrieving managers: {e}")
     
-def get_user_by_email(db:Session, user: UserCreate):
+def get_user_by_email(db:Session, type: str, email: str):
+    # raise HTTPException(status_code=200, detail=email)
+
     try:
-        if user.user_type == "manager":
-            login_info = db.query(manager_login).filter_by(manager_email=user.user_email).first()
-        elif user.user_type == "player":
-            login_info = db.query(player_login).filter_by(player_email=user.user_email).first()
-        elif user.user_type == "physio":
-            login_info = db.query(physio_login).filter_by(physio_email=user.user_email).first()
+        if type == "manager":
+            login_info = db.query(manager_login).filter_by(manager_email=email).first()
+        elif type == "player":
+            
+            login_info = db.query(player_login).filter_by(player_email=email).first()
+        elif type == "physio":
+            login_info = db.query(physio_login).filter_by(physio_email=email).first()
+
+       
         return login_info
     except Exception as e:
-        return(f"Error retrieving from {user.user_type}s: {e}")
+        return(f"Error retrieving from {type}s: {e}")
 
 
 #region team
@@ -93,14 +98,12 @@ def update_team(db, team: TeamBase, id):
 
 def delete_team_by_id(db:Session, id: int):
     try:        
-        team_to_delete = db.query(team).filter_by(team_id= id).first()
-        
-        if not team_to_delete:
-            return {"message": f"Team didn't exist"}
-        db.delete(team_to_delete)
-        db.commit()
+        team_to_delete = db.query(team).filter_by(team_id=id)
+        if team_to_delete:
+            db.delete(team_to_delete)
+            db.commit()
         db.close()
-        return {"message": f"Team deleted successfully"}
+        return {"message": "Team deleted successfully"}
 
     except Exception as e:
         return(f"Error deleting team: {e}")
@@ -149,11 +152,11 @@ def update_manager_by_id(db:Session, id: int, manager: Manager):
 def delete_manager_by_id(db:Session, id: int):
     try:        
         manager = db.query(manager_login).filter_by(manager_login_id= id).first()
-        manager_info = db.query(manager_info).filter_by(manager_id= id).first()
+        manager_info_result = db.query(manager_info).filter_by(manager_id= id).first()
         if not manager:
             raise HTTPException(status_code=404, detail="Manager not found")
         db.delete(manager)
-        db.delete(manager_info)
+        db.delete(manager_info_result)
         db.commit()
         db.close()
         return {"message": f"Manager and manager info with ID {id} has been deleted"}
@@ -161,6 +164,20 @@ def delete_manager_by_id(db:Session, id: int):
     except Exception as e:
         return(f"Error deleting from managers: {e}")
         
+def delete_manager_by_email(db:Session, email: str):
+    try:        
+        manager = db.query(manager_login).filter_by(manager_email=email).first()
+        manager_info_result = db.query(manager_info).filter_by(manager_id= manager.manager_login_id).first()
+        if not manager:
+            raise HTTPException(status_code=404, detail="Manager not found")
+        db.delete(manager)
+        db.delete(manager_info_result)
+        db.commit()
+        db.close()
+        return {"message": f"Manager and manager info with ID {id} has been deleted"}
+
+    except Exception as e:
+        return(f"Error deleting from managers: {e}")
 
 #endregion
 
@@ -226,8 +243,25 @@ def update_player_info_by_id(db:Session, id: int, player: PlayerInfo):
 
         return {"message": f"Player info with ID {id} has been updated"}
     except Exception as e:
-                return(f"Error retrieving player stats: {e}")
+                return(f"Error retrieving player info: {e}")
 
+def update_player_stat_by_id(db:Session, id: int, player: PlayerStat):
+    try:
+        player_stat_to_update = db.query(player_stats).filter_by(player_id=id).first()
+        if not player_stat_to_update:
+            raise HTTPException(status_code=404, detail="Player info not found")
+        player_stat_to_update.player_login_id = player.player_login_id
+        player_stat_to_update.matches_played = player.matches_played
+        player_stat_to_update.matches_started = player.matches_started
+        player_stat_to_update.matches_off_the_bench = player.matches_off_the_bench
+        player_stat_to_update.injury_prone = player.injury_prone
+        player_stat_to_update.minutes_played = player.minutes_played
+
+        db.commit()
+
+        return {"message": f"Player stats with ID {id} has been updated"}
+    except Exception as e:
+                return(f"Error retrieving player stats: {e}")
 
 
 
@@ -268,5 +302,28 @@ def delete_player(db: Session, id: int):
         #                                     player_stats_result.minute_played )
 
 
+
+
 #endregion
 
+
+def cleanup(db: Session):
+    try:        
+        db.query(player_login).delete()
+        db.query(player_info).delete()
+        db.query(player_stats).delete()
+        db.query(player_injuries).delete()
+        db.query(physio_info).delete()
+        db.query(physio_login).delete()
+        db.query(team).delete()
+
+        db.query(manager_info).delete()
+        db.query(manager_login).delete()
+        
+        
+        db.commit()
+        db.close()
+        return {"message": "Finished Cleanup"}
+
+    except Exception as e:
+        return(f"Error cleaning up: {e}")
