@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -30,9 +31,20 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage(DateFormat('MMMM y').format(
-            _dataSource?.appointments?[0].startTime ?? DateTime.now(),
-          )),
+          title:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            appBarTitlePreviousPage(DateFormat('MMMM y').format(
+              _dataSource?.appointments?[0].startTime ?? DateTime.now(),
+            )),
+            smallButton(Icons.edit, "Edit", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditScheduleScreen(),
+                ),
+              );
+            })
+          ]),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
