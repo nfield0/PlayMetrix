@@ -26,3 +26,28 @@ class TeamBase(BaseModel):
     league_id: int
     sport_id: int
     team_location: str
+
+class PlayerBase(BaseModel):
+    player_login_id: int
+    player_email: str
+    player_password: str
+    player_firstname: str 
+    player_surname: str 
+    player_dob: str 
+    player_contact_number: str
+    player_image: bytes
+    matches_played: int
+    matches_started: int 
+    matches_off_the_bench: int
+    injury_prone: bool
+    minutes_played: int
+
+class PlayerInfo(BaseModel):
+    player_login_id: int
+    player_firstname: str 
+    player_surname: str 
+    player_dob: str 
+    player_contact_number: str
+    player_image: bytes
+
+
