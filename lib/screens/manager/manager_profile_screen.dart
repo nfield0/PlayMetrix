@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
-import 'package:play_metrix/screens/manager/edit_manager_profile_screen.dart';
+import 'package:play_metrix/screens/profile/edit_profile.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -52,8 +52,7 @@ class _ManagerProfileScreenState extends State<ManagerProfileScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const EditManagerProfileScreen()),
+                              builder: (context) => const EditProfileScreen()),
                         );
                       }),
                     ],
