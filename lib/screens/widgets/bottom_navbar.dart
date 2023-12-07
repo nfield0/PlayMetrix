@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/manager/manager_profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
@@ -72,7 +73,7 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                const PlayerProfileScreen(),
+                const ManagerProfileScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),

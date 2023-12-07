@@ -169,11 +169,6 @@ class _LogInScreenState extends State<LogInScreen> {
                         color: AppColours.darkBlue,
                         fontFamily: AppFonts.openSans),
                   ),
-                  validator: (String? value) {
-                    return (value != null && !_passwordRegex.hasMatch(value))
-                        ? 'Password must contain at least 8 characters,\na number, and a symbol.'
-                        : null;
-                  },
                 ),
               ),
               Padding(
