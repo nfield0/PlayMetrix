@@ -45,3 +45,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /lib/screens/te
+
+
+playmetrix.pdf
+playmetrix.sql
