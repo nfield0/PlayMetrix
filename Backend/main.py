@@ -49,7 +49,6 @@ def read_root():
 @app.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     
-    
     existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -67,7 +66,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {"detail": f"{user.user_type.capitalize()} Registered Successfully"}
+    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": crud.get_user_by_email(db,user.user_type,user.user_email)}
 
 
 @app.post("/login")
@@ -116,12 +115,12 @@ def read_managers(db:Session = Depends(get_db)):
     return crud.get_all_managers_login(db)
 
 @app.get("/managers/{id}")
-def read_managers(id, db:Session = Depends(get_db)):
+def read_managers(id: int, db:Session = Depends(get_db)):
     return crud.get_manager_by_id(db, id)
 
-@app.put("/managers/{id}")
-def update_managers(id, manager, db:Session = Depends(get_db)):
-    return crud.update_manager_by_id(db, id, manager)
+@app.put("/managers")
+def update_managers(manager, db:Session = Depends(get_db)):
+    return crud.update_manager_by_id(db, manager)
 
 @app.delete("/managers/{id}")
 def delete_manager(id, db:Session = Depends(get_db)):
@@ -173,6 +172,18 @@ def read_players(db:Session = Depends(get_db)):
 def read_player(id, db:Session = Depends(get_db)):
     return crud.get_player_by_id(db, id)
 
+@app.get("/players/stats/{id}")
+def read_player(id, db:Session = Depends(get_db)):
+    return crud.get_player_stats_by_id(db, id)
+
+@app.get("/players/info/{id}")
+def read_player(id, db:Session = Depends(get_db)):
+    return crud.get_player_info_by_id(db, id)
+
+@app.post("/players/info/{id}")
+def read_player(id, db:Session = Depends(get_db)):
+    return crud.create_player_info_by_id(db, id)
+
 # @app.post("/players/")
 # def insert_player(player: PlayerBase, db:Session = Depends(get_db)):
 #     return crud.insert_new_player(db, player)
@@ -188,6 +199,10 @@ def update_player_stats(id: int, player: PlayerStat, db:Session = Depends(get_db
 @app.delete("/players/{id}")
 def delete_player(id: int, db:Session = Depends(get_db)):
     return crud.delete_player(db, id)
+
+@app.delete("/players/")
+def delete_player_email(email: str, db:Session = Depends(get_db)):
+    return crud.delete_player_by_email(db, email)
 
 
 
@@ -215,7 +230,6 @@ def read_leagues(db:Session = Depends(get_db)):
 @app.delete("/cleanup_tests")
 def cleanup(db:Session = Depends(get_db)):
     return crud.cleanup(db)
-
 
 
 #endregion
