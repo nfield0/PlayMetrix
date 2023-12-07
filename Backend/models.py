@@ -10,7 +10,7 @@ from PlayMetrix.Database.database import Base
 
 class player_login(Base):
 	__tablename__ = "player_login"
-	player_login_id = Column(Integer, primary_key = True, index = True)
+	player_id = Column(Integer, primary_key = True, index = True)
 	player_email = Column(String(50), index = True, unique = True)
 	player_password = Column(String(150), index = True)
 
@@ -24,17 +24,15 @@ class player_info(Base):
 	player_image = Column(LargeBinary, index= True)
 	player_height = Column(String(10))
 	player_gender = Column(String(20))
-	player_login_id = Column(Integer, index = True)
 	
 class player_stats(Base): 
     __tablename__ = "player_stats"
-    player_stats_id = Column(Integer, primary_key = True, index = True)
     matches_played = Column(Integer, index = True)
     matches_started = Column(Integer, index = True)
     matches_off_the_bench = Column(Integer, index = True)
     injury_prone = Column(Boolean, index = True)
     minutes_played = Column(Integer, index = True)
-    player_id = Column(Integer, index = True)#
+    player_id = Column(Integer, index = True, primary_key=True)
 
 class player_injuries(Base): 
     __tablename__ = "player_injuries"
@@ -45,7 +43,7 @@ class player_injuries(Base):
 
 class manager_login(Base):
     __tablename__ = "manager_login"
-    manager_login_id = Column(Integer, primary_key = True, index = True)
+    manager_id = Column(Integer, primary_key = True, index = True)
     manager_email = Column(String(50), index= True)
     manager_password = Column(String(150), index= True)
 
@@ -81,7 +79,7 @@ class team(Base):
 
 class physio_login(Base):
 	__tablename__ = "physio_login"
-	physio_login_id = Column(Integer, primary_key = True, index = True)
+	physio_id = Column(Integer, primary_key = True, index = True)
 	physio_email = Column(String(50), index = True, unique = True)
 	physio_password = Column(String(150), index = True)
  
@@ -91,7 +89,6 @@ class physio_info(Base):
 	physio_firstname = Column(String(25), index = True)
 	physio_surname = Column(String(25), index = True)
 	physio_contact_number = Column(String(20), index = True)
-	physio_login_id = Column(Integer, index = True)
 
 class team_physio(Base):
 	__tablename__ = "team_physio"
@@ -99,9 +96,9 @@ class team_physio(Base):
 	team_id = Column(Integer, primary_key = True, index = True)
  
 class team_player(Base):
-	__tablename__ = "team_player"
+	__tablename__ = "player_team"
 	player_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
-	team_position = Column(String(30), Index = True)	
+	team_position = Column(String(30), index = True)	
 
 

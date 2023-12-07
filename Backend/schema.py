@@ -11,7 +11,7 @@ class UserCreate(BaseModel):
     user_password: str
 
 class Manager(BaseModel):
-    manager_login_id: int
+    manager_id: int
     manager_email: str
     manager_password: str
     manager_firstname: str
@@ -20,7 +20,6 @@ class Manager(BaseModel):
     manager_image: bytes
 
 class TeamBase(BaseModel):
-    team_id: int
     team_name: str
     team_logo: bytes
     manager_id: int
@@ -29,7 +28,7 @@ class TeamBase(BaseModel):
     team_location: str
 
 class PlayerBase(BaseModel):
-    player_login_id: int
+    player_id: int
     player_email: str
     player_password: str
     player_firstname: str 
@@ -44,7 +43,7 @@ class PlayerBase(BaseModel):
     minutes_played: int
 
 class PlayerInfo(BaseModel):
-    player_login_id: int
+    player_id: int
     player_firstname: str 
     player_surname: str 
     player_dob: str 
@@ -54,7 +53,7 @@ class PlayerInfo(BaseModel):
     player_gender: str
 
 class PlayerStat(BaseModel): 
-    player_login_id: int
+    player_id: int
     matches_played: int
     matches_started: int
     matches_off_the_bench: int
