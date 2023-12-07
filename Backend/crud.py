@@ -116,15 +116,15 @@ def delete_team_by_id(db:Session, id: int):
 
 def get_manager_by_id(db:Session, id: int):
     try:        
-        login_info = db.query(manager_login).filter_by(manager_login_id= id).first()
+        login_info = db.query(manager_login).filter_by(manager_id= id).first()
         return login_info
     except Exception as e:
         return(f"Error retrieving from managers: {e}")
 
     
-def update_manager_by_id(db:Session, id: int, manager: Manager):
+def update_manager_by_id(db:Session, manager: Manager):
     try:        
-        manager_to_update = db.query(manager_login).filter_by(manager_login_id= id).first()
+        manager_to_update = db.query(manager_login).filter_by(manager_id= manager.manager_id).first()
         
         if not manager_to_update:
             raise HTTPException(status_code=404, detail="Manager not found")
@@ -151,7 +151,7 @@ def update_manager_by_id(db:Session, id: int, manager: Manager):
 
 def delete_manager_by_id(db:Session, id: int):
     try:        
-        manager = db.query(manager_login).filter_by(manager_login_id= id).first()
+        manager = db.query(manager_login).filter_by(manager_id= id).first()
         manager_info_result = db.query(manager_info).filter_by(manager_id= id).first()
         if not manager:
             raise HTTPException(status_code=404, detail="Manager not found")
@@ -167,7 +167,7 @@ def delete_manager_by_id(db:Session, id: int):
 def delete_manager_by_email(db:Session, email: str):
     try:        
         manager = db.query(manager_login).filter_by(manager_email=email).first()
-        manager_info_result = db.query(manager_info).filter_by(manager_id= manager.manager_login_id).first()
+        manager_info_result = db.query(manager_info).filter_by(manager_id= manager.manager_id).first()
         if not manager:
             raise HTTPException(status_code=404, detail="Manager not found")
         db.delete(manager)
@@ -187,37 +187,42 @@ def delete_manager_by_email(db:Session, email: str):
 def get_players(db: Session):
     try:
         result = db.query(player_login).all()
-        players = []
-        if result:
-            for player in result:
-                player_info_result = db.query(player_info).filter_by(player_id=player.player_login_id).first()
-                player_stats_result = db.query(player_stats).filter_by(player_id=player.player_login_id).first()
-                # player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_login_id).first()
-                player_entity = PlayerBase(player.player_login_id, player.player_email, player.player_password,
-                                        player_info_result.player_firstname, player_info_result.player_surname, player_info_result.player_DOB,
-                                            player_info_result.player_contact_number, player_info_result.player_image,
-                                            player_stats_result.matches_played, player_stats_result.matches_started,
-                                            player_stats_result.matches_off_the_bench, player_stats_result.injury_prone,
-                                            player_stats_result.minute_played )
-                players.append(player_entity)
-            
-        return players
+        return result
     except Exception as e:
         return(f"Error retrieving players: {e}")
     
+    # player_info_result = db.query(player_info).filter_by(player_id=player.player_id).first()
+    #             player_stats_result = db.query(player_stats).filter_by(player_id=player.player_id).first()
+    #             # player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+    #             player_entity = PlayerBase(player.player_id, player.player_email, player.player_password,
+    #                                     player_info_result.player_firstname, player_info_result.player_surname, player_info_result.player_DOB,
+    #                                         player_info_result.player_contact_number, player_info_result.player_image,
+    #                                         player_stats_result.matches_played, player_stats_result.matches_started,
+    #                                         player_stats_result.matches_off_the_bench, player_stats_result.injury_prone,
+    #                                         player_stats_result.minute_played )
+    #             players.append(player_entity)
     
 def get_player_by_id(db: Session, id: int):
     try:
-        player = db.query(player_login).filter_by(player_login_id=id).first()
+        player = db.query(player_login).filter_by(player_id=id).first()
         return player
     except Exception as e:
         return(f"Error retrieving player: {e}")
     
 
+
 def get_player_info_by_id(db:Session, id: int):
     try:
         player = db.query(player_info).filter_by(player_id=id).first()
         return player
+    except Exception as e:
+        return(f"Error retrieving player info: {e}")
+    
+def create_player_info_by_id(db:Session, id: int):
+    try:
+        player_info = PlayerInfo(id, "","","","","","")
+        db.add(player_info)
+        return
     except Exception as e:
         return(f"Error retrieving player info: {e}")
 
@@ -250,7 +255,7 @@ def update_player_stat_by_id(db:Session, id: int, player: PlayerStat):
         player_stat_to_update = db.query(player_stats).filter_by(player_id=id).first()
         if not player_stat_to_update:
             raise HTTPException(status_code=404, detail="Player info not found")
-        player_stat_to_update.player_login_id = player.player_login_id
+        player_stat_to_update.player_id = player.player_id
         player_stat_to_update.matches_played = player.matches_played
         player_stat_to_update.matches_started = player.matches_started
         player_stat_to_update.matches_off_the_bench = player.matches_off_the_bench
@@ -267,13 +272,10 @@ def update_player_stat_by_id(db:Session, id: int, player: PlayerStat):
 
 def delete_player(db: Session, id: int):
     try:        
-        player = db.query(player_login).filter_by(player_login_id=id).first()
-        # remove during production, non-existence can return success
-        if not player:
-            raise HTTPException(status_code=404, detail="Player not found")
+        player = db.query(player_login).filter_by(player_id=id).first()
         player_info = db.query(player_info).filter_by(player_id=id).first()
         player_stats = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_login_id).first()
+        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_id).first()
         
         db.delete(player)
         if player_info:
@@ -288,19 +290,28 @@ def delete_player(db: Session, id: int):
 
     except Exception as e:
         return(f"Error deleting from players: {e}")
+    
 
-#
-    # if player:
-        #     player_info_result = db.query(player_info).filter_by(player_id=player.player_login_id).first()
-        #     player_stats_result = db.query(player_stats).filter_by(player_id=player.player_login_id).first()
-        #     #player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_login_id).first()
-        #     player = PlayerBase(player.player_login_id, player.player_email, player.player_password,
-        #                                 player_info_result.player_firstname, player_info_result.player_surname, player_info_result.player_DOB,
-        #                                     player_info_result.player_contact_number, player_info_result.player_image,
-        #                                     player_stats_result.matches_played, player_stats_result.matches_started,
-        #                                     player_stats_result.matches_off_the_bench, player_stats_result.injury_prone,
-        #                                     player_stats_result.minute_played )
+def delete_player_by_email(db:Session, email: str):
+    try:        
+        player = db.query(player_login).filter_by(player_email=email).first()
+        player_info = db.query(player_info).filter_by(player_id=id).first()
+        player_stats = db.query(player_stats).filter_by(player_id=id).first()
+        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        
+        db.delete(player)
+        if player_info:
+            db.delete(player_info)
+        if player_stats:
+            db.delete(player_stats)
+        if player_injuries:
+            db.delete(player_injuries)
+        db.commit()
+        db.close()
+        return {"message": f"Player with Email {email} has been deleted"}
 
+    except Exception as e:
+        return(f"Error deleting from players: {e}")
 
 
 
@@ -309,10 +320,12 @@ def delete_player(db: Session, id: int):
 
 def cleanup(db: Session):
     try:        
-        db.query(player_login).delete()
-        db.query(player_info).delete()
+        
+        
         db.query(player_stats).delete()
         db.query(player_injuries).delete()
+        db.query(player_info).delete()
+        db.query(player_login).delete()
         db.query(physio_info).delete()
         db.query(physio_login).delete()
         db.query(team).delete()
