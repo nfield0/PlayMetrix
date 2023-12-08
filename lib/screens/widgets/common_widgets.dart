@@ -266,3 +266,76 @@ Widget appBarTitlePreviousPage(String text) {
         ))
   ]);
 }
+
+Widget announcementBox({
+  required IconData icon,
+  required Color iconColor,
+  required String title,
+  required String description,
+  required String date,
+  required VoidCallback onDeletePressed,
+  required VoidCallback onBoxPressed,
+}) {
+  return InkWell(
+      onTap: onBoxPressed,
+      child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 30, color: iconColor),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColours.darkBlue,
+                      width: 2,
+                    ), // Border color
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  constraints: const BoxConstraints(
+                    minHeight: 70, // Set your desired minHeight
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: Stack(
+                    children: [
+                      // Icon on top left
+                      // Title and description
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(date,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black54)),
+                          const SizedBox(height: 5),
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(description),
+                        ],
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: onDeletePressed,
+                          child: const Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: AppColours.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )));
+}

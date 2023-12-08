@@ -160,82 +160,15 @@ Widget _announcementsSection() {
         ),
         smallButton(Icons.add_comment, "Add", () {})
       ]),
-      _announcementBox(
+      announcementBox(
           icon: Icons.announcement,
+          iconColor: AppColours.darkBlue,
           title: "Bring your gym gears",
           description:
               "A dedicated session to enhance our fitness levels. Bring your A-game; we're pushing our boundaries.",
           date: "18/11/2023",
-          onDeletePressed: () {})
+          onDeletePressed: () {},
+          onBoxPressed: () {})
     ],
   );
-}
-
-Widget _announcementBox({
-  required IconData icon,
-  required String title,
-  required String description,
-  required String date,
-  required VoidCallback onDeletePressed,
-}) {
-  return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 30, color: AppColours.darkBlue),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: AppColours.darkBlue,
-                  width: 2,
-                ), // Border color
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              constraints: const BoxConstraints(
-                minHeight: 70, // Set your desired minHeight
-              ),
-              padding: const EdgeInsets.all(10),
-              child: Stack(
-                children: [
-                  // Icon on top left
-                  // Title and description
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(date,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.black54)),
-                      const SizedBox(height: 5),
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(description),
-                    ],
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: InkWell(
-                      onTap: onDeletePressed,
-                      child: const Icon(
-                        Icons.delete,
-                        size: 20,
-                        color: AppColours.red,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ));
 }
