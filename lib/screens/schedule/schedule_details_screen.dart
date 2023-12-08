@@ -8,6 +8,7 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class ScheduleDetailsScreen extends StatefulWidget {
   int appointmentId = 1;
 
@@ -18,8 +19,11 @@ class ScheduleDetailsScreen extends StatefulWidget {
   _ScheduleDetailsScreenState createState() => _ScheduleDetailsScreenState();
 }
 
+enum ScheduleType { training, match }
+
 class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
   AppointmentDataSource? _dataSource;
+  ScheduleType _scheduleType = ScheduleType.training;
 
   @override
   void initState() {
@@ -46,7 +50,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
             })
           ]),
           iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
+            color: AppColours.darkBlue,
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -94,7 +98,13 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [underlineButtonTransparent("Match lineup", () {})],
+                  children: [
+                    underlineButtonTransparent(
+                        _scheduleType == ScheduleType.match
+                            ? "Match lineup"
+                            : "Players attending",
+                        () {})
+                  ],
                 ),
                 greyDivider(),
                 SizedBox(
@@ -160,6 +170,7 @@ Widget _announcementsSection() {
         ),
         smallButton(Icons.add_comment, "Add", () {})
       ]),
+      const SizedBox(height: 15),
       announcementBox(
           icon: Icons.announcement,
           iconColor: AppColours.darkBlue,
