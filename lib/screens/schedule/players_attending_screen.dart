@@ -25,7 +25,8 @@ class _PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
-        body: Container(
+        body: SingleChildScrollView(
+            child: Container(
           padding: const EdgeInsets.all(35),
           child: Center(
               child: Column(children: [
@@ -54,7 +55,7 @@ class _PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
                 7,
                 AvailabilityStatus.Available),
           ])),
-        ),
+        )),
         bottomNavigationBar: managerBottomNavBar(context, 2));
   }
 }
