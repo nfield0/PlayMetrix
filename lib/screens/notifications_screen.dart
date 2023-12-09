@@ -17,6 +17,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: AppColours.darkBlue, //change your color here
+          ),
           title: const Text("Notifications",
               style: TextStyle(
                   color: AppColours.darkBlue,
