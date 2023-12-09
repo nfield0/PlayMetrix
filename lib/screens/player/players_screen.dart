@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/coach/coaches_screen.dart';
 import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -39,7 +40,17 @@ class _PlayersScreenState extends State<PlayersScreen> {
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     const Icon(Icons.sync_alt,
                         color: AppColours.darkBlue, size: 24),
-                    underlineButtonTransparent("Switch to Coaches", () {}),
+                    underlineButtonTransparent("Switch to Coaches", () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              const CoachesScreen(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                    }),
                   ]),
                   const SizedBox(height: 10),
                   profilePill("Louth GAA", "Senior Football",
@@ -79,21 +90,21 @@ class _PlayersScreenState extends State<PlayersScreen> {
                         spacing: 20.0,
                         runSpacing: 20.0,
                         children: [
-                          _playerProfilePill(
+                          playerProfilePill(
                               context,
                               "lib/assets/icons/profile_placeholder.png",
                               "Luana",
                               "Kimley",
                               7,
                               AvailabilityStatus.Available),
-                          _playerProfilePill(
+                          playerProfilePill(
                               context,
                               "lib/assets/icons/profile_placeholder.png",
                               "Luana",
                               "Kimley",
                               7,
                               AvailabilityStatus.Limited),
-                          _playerProfilePill(
+                          playerProfilePill(
                               context,
                               "lib/assets/icons/profile_placeholder.png",
                               "Luana",
@@ -103,7 +114,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                         ])
                   else
                     Column(children: [
-                      _playerProfilePill(
+                      playerProfilePill(
                           context,
                           "lib/assets/icons/profile_placeholder.png",
                           "Luana",
@@ -111,7 +122,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                           7,
                           AvailabilityStatus.Available),
                       const SizedBox(height: 20),
-                      _playerProfilePill(
+                      playerProfilePill(
                           context,
                           "lib/assets/icons/profile_placeholder.png",
                           "Luana",
@@ -119,7 +130,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                           7,
                           AvailabilityStatus.Limited),
                       const SizedBox(height: 20),
-                      _playerProfilePill(
+                      playerProfilePill(
                           context,
                           "lib/assets/icons/profile_placeholder.png",
                           "Luana",
@@ -132,7 +143,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
   }
 }
 
-Widget _playerProfilePill(
+Widget playerProfilePill(
     BuildContext context,
     String imagePath,
     String firstName,

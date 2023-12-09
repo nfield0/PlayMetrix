@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/players_attending_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -102,8 +104,22 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                     underlineButtonTransparent(
                         _scheduleType == ScheduleType.match
                             ? "Match lineup"
-                            : "Players attending",
-                        () {})
+                            : "Players attending", () {
+                      if (_scheduleType == ScheduleType.match) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MatchLineUpScreen()),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const PlayersAttendingScreen()),
+                        );
+                      }
+                    })
                   ],
                 ),
                 greyDivider(),
