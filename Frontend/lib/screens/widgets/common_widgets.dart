@@ -10,7 +10,7 @@ Widget smallPill(String text) {
     ),
     child: Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
         fontSize: 16,
@@ -67,15 +67,15 @@ Widget profilePill(String title, String description, String imagePath,
   );
 }
 
-Widget emptyProfile() {
-  return const Center(
+Widget emptySection(IconData icon, String text) {
+  return Center(
       child: Column(
     children: [
-      Icon(Icons.person_off, size: 50, color: Colors.grey),
-      SizedBox(height: 10),
+      Icon(icon, size: 50, color: Colors.grey),
+      const SizedBox(height: 10),
       Text(
-        "No profile(s) found",
-        style: TextStyle(
+        text,
+        style: const TextStyle(
           color: Colors.grey,
           fontWeight: FontWeight.bold,
           fontSize: 18,
@@ -117,6 +117,87 @@ Widget detailWithDivider(String title, String detail) {
   );
 }
 
+Widget dropdownWithDivider(String title, String selectedValue,
+    List<String> dropdownItems, void Function(String?) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          DropdownButton<String>(
+            value: selectedValue,
+            items: dropdownItems.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(item,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    )),
+              );
+            }).toList(),
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget dateTimePickerWithDivider(BuildContext context, String title,
+    DateTime selectedDateTime, void Function(DateTime) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 14)),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDateTime,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Show time picker if date is selected
+                final TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.fromDateTime(selectedDateTime),
+                );
+
+                if (pickedTime != null) {
+                  // Combine date and time
+                  final DateTime pickedDateTime = DateTime(
+                    pickedDate.year,
+                    pickedDate.month,
+                    pickedDate.day,
+                    pickedTime.hour,
+                    pickedTime.minute,
+                  );
+
+                  // Call the onChanged callback with the selected date and time
+                  onChanged(pickedDateTime);
+                }
+              }
+            },
+            child: Text(
+              "${selectedDateTime.toLocal()}"
+                  .split('.')[0], // Display selected date and time
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget formFieldBottomBorder(String title, String initialValue) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,7 +211,7 @@ Widget formFieldBottomBorder(String title, String initialValue) {
         width: 220, // Set a fixed width for the TextField
         child: TextField(
           controller: TextEditingController(text: initialValue),
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             // labelText: 'Your Label',
             labelStyle: TextStyle(color: Colors.grey),
             focusedBorder: UnderlineInputBorder(
@@ -144,4 +225,117 @@ Widget formFieldBottomBorder(String title, String initialValue) {
       ),
     ],
   );
+}
+
+Widget formFieldBottomBorderNoTitle(
+    String title, String initialValue, bool showBorder) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: TextField(
+          controller: TextEditingController(text: initialValue),
+          decoration: InputDecoration(
+            // labelText: 'Your Label',
+            hintText: title,
+            hintStyle: const TextStyle(color: Colors.black38),
+            focusedBorder: showBorder
+                ? const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColours.grey),
+                  )
+                : InputBorder.none,
+            enabledBorder: showBorder
+                ? const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColours.grey),
+                  )
+                : InputBorder.none,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget appBarTitlePreviousPage(String text) {
+  return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(text,
+        style: const TextStyle(
+          color: AppColours.darkBlue,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ))
+  ]);
+}
+
+Widget announcementBox({
+  required IconData icon,
+  required Color iconColor,
+  required String title,
+  required String description,
+  required String date,
+  required VoidCallback onDeletePressed,
+  required VoidCallback onBoxPressed,
+}) {
+  return InkWell(
+      onTap: onBoxPressed,
+      child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 30, color: iconColor),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColours.darkBlue,
+                      width: 2,
+                    ), // Border color
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  constraints: const BoxConstraints(
+                    minHeight: 70, // Set your desired minHeight
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: Stack(
+                    children: [
+                      // Icon on top left
+                      // Title and description
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(date,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black54)),
+                          const SizedBox(height: 5),
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(description),
+                        ],
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: onDeletePressed,
+                          child: const Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: AppColours.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )));
 }
