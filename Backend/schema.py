@@ -42,6 +42,10 @@ class TeamBase(BaseModel):
     sport_id: int
     team_location: str
 
+class PlayerLogin(BaseModel):
+    player_email: str
+    player_password: str
+
 class PlayerBase(BaseModel):
     player_id: int
     player_email: str

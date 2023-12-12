@@ -292,34 +292,62 @@ def get_player_stats_by_id(db:Session, id: int):
     except Exception as e:
         return(f"Error retrieving player stats: {e}")
     
-def update_player_info_by_id(db:Session, id: int, player: PlayerInfo):
+def update_player_info_by_id(db:Session, player: PlayerInfo, id: int):
     try:
         player_info_to_update = db.query(player_info).filter_by(player_id=id).first()
+        new_player_info = player_info(player_id=player.player_id,
+                                      player_firstname=player.player_firstname,
+                                      player_surname=player.player_surname,
+                                      player_dob=player.player_dob,
+                                      player_contact_number=player.player_contact_number,
+                                      player_image=player.player_image,
+                                      player_height=player.player_height,
+                                      player_gender=player.player_gender
+                                      )
+	
         if not player_info_to_update:
-            raise HTTPException(status_code=404, detail="Player info not found")
-        player_info_to_update.player_firstname = player.player_firstname
-        player_info_to_update.player_surname = player.player_surname
-        player_info_to_update.player_dob = player.player_dob
-        player_info_to_update.player_contact_number = player.player_contact_number
-        player_info_to_update.player_image = player.player_image
+            db.add(new_player_info)
+        else:
+        
+            player_info_to_update.player_firstname = player.player_firstname
+            player_info_to_update.player_surname = player.player_surname
+            player_info_to_update.player_dob = player.player_dob
+            player_info_to_update.player_contact_number = player.player_contact_number
+            player_info_to_update.player_image = player.player_image
+            player_info_to_update.player_height = player.player_height
+            player_info_to_update.player_gender = player.player_gender
+
 
         db.commit()
 
         return {"message": f"Player info with ID {id} has been updated"}
-    except Exception as e:
-                return(f"Error retrieving player info: {e}")
 
-def update_player_stat_by_id(db:Session, id: int, player: PlayerStat):
+    except Exception as e:
+        return(f"Error retrieving player info: {e}")
+
+
+def update_player_stat_by_id(db:Session, player: PlayerStat,id: int ):
     try:
         player_stat_to_update = db.query(player_stats).filter_by(player_id=id).first()
+
+        
+        
         if not player_stat_to_update:
-            raise HTTPException(status_code=404, detail="Player info not found")
-        player_stat_to_update.player_id = player.player_id
-        player_stat_to_update.matches_played = player.matches_played
-        player_stat_to_update.matches_started = player.matches_started
-        player_stat_to_update.matches_off_the_bench = player.matches_off_the_bench
-        player_stat_to_update.injury_prone = player.injury_prone
-        player_stat_to_update.minutes_played = player.minutes_played
+            new_player_stat = player_stats(player_id = player.player_id,
+            matches_played = player.matches_played,
+            matches_started = player.matches_started,
+            matches_off_the_bench = player.matches_off_the_bench,
+            injury_prone = player.injury_prone,
+            minutes_played = player.minutes_played)
+            # raise HTTPException(status_code=404, detail="Player info not found")
+            db.add(new_player_stat)
+        else:
+            player_stat_to_update.player_id = player.player_id
+            player_stat_to_update.matches_played = player.matches_played
+            player_stat_to_update.matches_started = player.matches_started
+            player_stat_to_update.matches_off_the_bench = player.matches_off_the_bench
+            player_stat_to_update.injury_prone = player.injury_prone
+            player_stat_to_update.minutes_played = player.minutes_played
 
         db.commit()
 
@@ -327,22 +355,35 @@ def update_player_stat_by_id(db:Session, id: int, player: PlayerStat):
     except Exception as e:
                 return(f"Error retrieving player stats: {e}")
 
+def update_player_by_id(db:Session, id: int, player: PlayerInfo):
+    try:
+        player_to_update = db.query(player_login).filter_by(player_id=id).first()
+        if not player_to_update:
+            raise HTTPException(status_code=404, detail="Player Login not found")
+        player_to_update.player_email = player.player_email
+        player_to_update.player_password = player.player_password
 
+        db.commit()
+
+        return {"message": f"Player Login with ID {id} has been updated"}
+    except Exception as e:
+        return(f"Error retrieving player login: {e}")
 
 def delete_player(db: Session, id: int):
     try:        
         player = db.query(player_login).filter_by(player_id=id).first()
-        player_info = db.query(player_info).filter_by(player_id=id).first()
-        player_stats = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        player_info_result = db.query(player_info).filter_by(player_id=id).first()
+        player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
+        player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_id).first()
         
+        
+        if player_info_result:
+            db.delete(player_info_result)
+        if player_stats_result:
+            db.delete(player_stats_result)
+        if player_injuries_result:
+            db.delete(player_injuries_result)
         db.delete(player)
-        if player_info:
-            db.delete(player_info)
-        if player_stats:
-            db.delete(player_stats)
-        if player_injuries:
-            db.delete(player_injuries)
         db.commit()
         db.close()
         return {"message": f"Player with ID {id} has been deleted"}
@@ -391,10 +432,10 @@ def cleanup(db: Session):
         db.query(manager_login).delete()
         db.flush()
 
-        db.execute("ALTER SEQUENCE IF EXISTS manager_login_manager_id_seq RESTART WITH 1;")
+        db.execute("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;")
         # db.execute("ALTER SEQUENCE manager_info RESTART WITH 1;") 
 
-        # db.execute("ALTER SEQUENCE player_login RESTART WITH 1;")  
+        db.execute("ALTER SEQUENCE player_login_player_id_seq RESTART WITH 1;")  
         # db.execute("ALTER SEQUENCE player_info RESTART WITH 1;")  
 
         # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  

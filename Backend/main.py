@@ -76,11 +76,6 @@ def read_managers(db:Session = Depends(get_db)):
 def read_managers(id: int, db:Session = Depends(get_db)):
     return crud.get_manager_by_id(db, id)
 
-# update
-# @route.put("/games/{id}")
-# def update_game(game:GameCreate, game_id: int, db: Session = Depends(get_db)):
-#     return utilities.edit_game(db=db, game_id=game_id, game=game)
-
 @app.put("/managers/{id}")
 def update_managers(manager: ManagerNoID, id: int,  db:Session = Depends(get_db)):
     return crud.update_manager_by_id(db=db, id=id, manager=manager)
@@ -150,6 +145,10 @@ def read_player(id, db:Session = Depends(get_db)):
 # @app.post("/players/")
 # def insert_player(player: PlayerBase, db:Session = Depends(get_db)):
 #     return crud.insert_new_player(db, player)
+
+@app.put("/players/{id}")
+def update_player_login(id: int, player: PlayerBase, db:Session = Depends(get_db)):
+    return crud.update_player_by_id(db, player, id)
 
 @app.put("/players/info/{id}")
 def update_player_info(id: int, player: PlayerInfo, db:Session = Depends(get_db)):
