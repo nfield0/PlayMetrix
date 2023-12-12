@@ -48,7 +48,6 @@ def read_root():
 
 @app.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    
     existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -118,9 +117,14 @@ def read_managers(db:Session = Depends(get_db)):
 def read_managers(id: int, db:Session = Depends(get_db)):
     return crud.get_manager_by_id(db, id)
 
-@app.put("/managers")
-def update_managers(manager, db:Session = Depends(get_db)):
-    return crud.update_manager_by_id(db, manager)
+# update
+# @route.put("/games/{id}")
+# def update_game(game:GameCreate, game_id: int, db: Session = Depends(get_db)):
+#     return utilities.edit_game(db=db, game_id=game_id, game=game)
+
+@app.put("/managers/{id}")
+def update_managers(manager: ManagerNoID, id: int,  db:Session = Depends(get_db)):
+    return crud.update_manager_by_id(db=db, id=id, manager=manager)
 
 @app.delete("/managers/{id}")
 def delete_manager(id, db:Session = Depends(get_db)):

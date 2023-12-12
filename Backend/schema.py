@@ -19,6 +19,21 @@ class Manager(BaseModel):
     manager_contact_number: str
     manager_image: bytes
 
+class ManagerInfo(BaseModel):
+    manager_id: int
+    manager_firstname: str
+    manager_surname: str
+    manager_contact_number: str
+    manager_image: bytes
+
+class ManagerNoID(BaseModel):
+    manager_email: str
+    manager_password: str
+    manager_firstname: str
+    manager_surname: str
+    manager_contact_number: str
+    manager_image: bytes
+
 class TeamBase(BaseModel):
     team_name: str
     team_logo: bytes

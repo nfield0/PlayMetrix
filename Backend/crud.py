@@ -121,32 +121,39 @@ def get_manager_by_id(db:Session, id: int):
         return(f"Error retrieving from managers: {e}")
 
     
-def update_manager_by_id(db:Session, manager: Manager):
+def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
     try:        
-        manager_to_update = db.query(manager_login).filter_by(manager_id= manager.manager_id).first()
+        
+    
+        manager_to_update = db.query(manager_login).filter_by(manager_id= id).first()
         
         if not manager_to_update:
             raise HTTPException(status_code=404, detail="Manager not found")
-        
         manager_to_update.manager_email = manager.manager_email
         manager_to_update.manager_password = manager.manager_password
 
         manager_info_to_update = db.query(manager_info).filter_by(manager_id= id).first()
+
         if not manager_info_to_update:
-            raise HTTPException(status_code=404, detail="Manager Info not found")
+            new_manager_info = manager_info(manager_id=id,
+                                        manager_firstname=manager.manager_firstname,
+                                        manager_surname=manager.manager_surname,
+                                        manager_contact_number=manager.manager_contact_number,
+                                        manager_image = manager.manager_image)
+            db.add(new_manager_info)
+        else:
+            manager_info_to_update.manager_firstname = manager.manager_firstname
+            manager_info_to_update.manager_surname = manager.manager_surname
+            manager_info_to_update.manager_contact_number = manager.manager_contact_number
+            manager_info_to_update.manager_image = manager.manager_image
+            
+            # raise HTTPException(status_code=404, detail="Manager Info not found")
         
-        manager_info_to_update.manager_firstname = manager.manager_firstname
-        manager_info_to_update.manager_surname = manager.manager_surname
-        manager_info_to_update.manager_contact_number = manager.manager_contact_number
-        manager_info_to_update.manager_image = manager.manager_image
-
-
         db.commit()
 
         return {"message": f"Manager and manager info with ID {id} has been updated"}
     except Exception as e:
-        return (f"Error updating managers: {e}")
-
+        return {"message": f"Error updating managers: {e}"}
 
 def delete_manager_by_id(db:Session, id: int):
     try:        
