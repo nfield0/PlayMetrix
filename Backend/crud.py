@@ -28,7 +28,6 @@ def get_user_by_email(db:Session, type: str, email: str):
         if type == "manager":
             login_info = db.query(manager_login).filter_by(manager_email=email).first()
         elif type == "player":
-            
             login_info = db.query(player_login).filter_by(player_email=email).first()
         elif type == "physio":
             login_info = db.query(physio_login).filter_by(physio_email=email).first()
@@ -155,8 +154,9 @@ def delete_manager_by_id(db:Session, id: int):
         manager_info_result = db.query(manager_info).filter_by(manager_id= id).first()
         if not manager:
             raise HTTPException(status_code=404, detail="Manager not found")
+        if manager_info_result:
+            db.delete(manager_info_result)
         db.delete(manager)
-        db.delete(manager_info_result)
         db.commit()
         db.close()
         return {"message": f"Manager and manager info with ID {id} has been deleted"}
@@ -319,9 +319,7 @@ def delete_player_by_email(db:Session, email: str):
 
 
 def cleanup(db: Session):
-    try:        
-        
-        
+    try:             
         db.query(player_stats).delete()
         db.query(player_injuries).delete()
         db.query(player_info).delete()
@@ -332,8 +330,19 @@ def cleanup(db: Session):
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()
-        
-        
+        db.flush()
+
+        db.execute("ALTER SEQUENCE IF EXISTS manager_login_manager_id_seq RESTART WITH 1;")
+        # db.execute("ALTER SEQUENCE manager_info RESTART WITH 1;") 
+
+        # db.execute("ALTER SEQUENCE player_login RESTART WITH 1;")  
+        # db.execute("ALTER SEQUENCE player_info RESTART WITH 1;")  
+
+        # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  
+        # db.execute("ALTER SEQUENCE physio_info RESTART WITH 1;")  
+
+
+
         db.commit()
         db.close()
         return {"message": "Finished Cleanup"}

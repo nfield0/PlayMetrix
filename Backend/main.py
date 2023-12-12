@@ -6,6 +6,7 @@ from fastapi.responses import RedirectResponse
 from PlayMetrix.Backend.schema import *
 import PlayMetrix.Backend.crud as crud
 import pytest
+from sqlalchemy.orm import sessionmaker
 from tavern.core import run
 
 Base.metadata.create_all(bind=engine)
@@ -19,7 +20,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 ## To install requirements
 # python -m pip install -r requirements.txt
@@ -59,7 +59,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     if user.user_type == "player":
         new_user = player_login(player_email=user.user_email, player_password=user.user_password)
     elif user.user_type == "manager":
-        new_user = manager_login(manager_em99653ail=user.user_email, manager_password=user.user_password)
+        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
     elif user.user_type == "physio":
         new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
 
