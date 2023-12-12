@@ -48,55 +48,14 @@ def read_root():
 
 @app.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    if not user.user_email or not user.user_password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
-
-    if user.user_type == "player":
-        new_user = player_login(player_email=user.user_email, player_password=user.user_password)
-    elif user.user_type == "manager":
-        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
-    elif user.user_type == "physio":
-        new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
-
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": crud.get_user_by_email(db,user.user_type,user.user_email)}
-
+    return crud.register_user(db, user)
+    
 
 @app.post("/login")
 def login_user(user: UserCreate, db: Session = Depends(get_db)):
+    return crud.login(db, user)
 
-
-    if user.user_type == "player":
-        existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
-        if existing_user:
-            verified = db.query(player_login).filter_by(player_password=user.user_password)
-            if verified:
-                return player_login(player_email=user.user_email, player_password=user.user_password)
-            raise HTTPException(status_code=400, detail="Password is incorrect")
-    elif user.user_type == "manager":
-        existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
-        if existing_user:
-            verified = crud.get_user_by_email(db, user.user_type, user.user_email)
-            if verified:
-               return manager_login(manager_email=user.user_email, manager_password=user.user_password)
-            raise HTTPException(status_code=400, detail="Password is incorrect")
-    elif user.user_type == "physio":
-        existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
-
-        if existing_user:
-            verified = db.query(physio_login).filter_by(physio_password=user.user_password)
-            if verified:
-                return physio_login(physio_email=user.user_email, physio_password=user.user_password)
-
-            raise HTTPException(status_code=400, detail="Password is incorrect")
-    raise HTTPException(status_code=404, detail="Account with that email does not exist")
-
+    
 
 @app.get("/logout")
 def logout():

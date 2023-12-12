@@ -23,6 +23,25 @@ def test_add_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_add_manager_incorrect_email():
+    url = 'http://127.0.0.1:8000/register'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_type": "manager",
+        "user_email": "testmanager",
+        "user_password": "test_password"
+    }
+    response = requests.post(url, headers=headers, json=json)
+    assert response.status_code == 400
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get('detail') == "Email format invalid"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 def test_get_manager():
     url = 'http://127.0.0.1:8000/managers'
     headers = {'Content-Type': 'application/json'}
@@ -48,7 +67,6 @@ def test_update_manager():
     url = 'http://127.0.0.1:8000/managers/1'
     headers = {'Content-Type': 'application/json'}
     json = {
-            
             "manager_email": "testmanager@gmail.com",
             "manager_password": "test_password_updated",
             "manager_firstname": "test",
@@ -57,8 +75,7 @@ def test_update_manager():
             "manager_image": "something"
         
     }
-    
-    
+
     response = requests.put(url, headers=headers, json=json)
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
@@ -71,6 +88,28 @@ def test_update_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_update_manager_incorrect():
+    url = 'http://127.0.0.1:8000/managers/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "manager_email": "test.com",
+            "manager_password": "test_password_updated",
+            "manager_firstname": "test",
+            "manager_surname": "tester",
+            "manager_contact_number": "012345",
+            "manager_image": "something"   
+    }
+
+    response = requests.put(url, headers=headers, json=json)
+    assert response.status_code == 400
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Email format invalid"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 
 def test_delete_manager():

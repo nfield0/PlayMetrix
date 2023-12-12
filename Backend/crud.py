@@ -1,8 +1,10 @@
-
+import re
 from sqlalchemy.orm import Session
 from fastapi import Depends, FastAPI, HTTPException
 from PlayMetrix.Backend.models import *
 from PlayMetrix.Backend.schema import *
+
+email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 
 def get_leagues(db: Session):
@@ -12,8 +14,58 @@ def get_leagues(db: Session):
     except Exception as e:
         return(f"Error retrieving leagues: {e}")
 
+def check_email(email : str):
+    if not re.fullmatch(email_regex, email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+
+def register_user(db, user):
+    existing_user = get_user_by_email(db, user.user_type, user.user_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.user_email or not user.user_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    check_email(user.user_email)
+
+    if user.user_type == "player":
+        new_user = player_login(player_email=user.user_email, player_password=user.user_password)
+    elif user.user_type == "manager":
+        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
+    elif user.user_type == "physio":
+        new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
     
+def login(db, user):
+    if user.user_type == "player":
+        existing_user = get_user_by_email(db, user.user_type, user.user_email)
+        if existing_user:
+            verified = db.query(player_login).filter_by(player_password=user.user_password)
+            if verified:
+                return player_login(player_email=user.user_email, player_password=user.user_password)
+            raise HTTPException(status_code=400, detail="Password is incorrect")
+    elif user.user_type == "manager":
+        existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
+        if existing_user:
+            verified = get_user_by_email(db, user.user_type, user.user_email)
+            if verified:
+               return manager_login(manager_email=user.user_email, manager_password=user.user_password)
+            raise HTTPException(status_code=400, detail="Password is incorrect")
+    elif user.user_type == "physio":
+        existing_user = get_user_by_email(db, user.user_type, user.user_email)
+
+        if existing_user:
+            verified = db.query(physio_login).filter_by(physio_password=user.user_password)
+            if verified:
+                return physio_login(physio_email=user.user_email, physio_password=user.user_password)
+
+            raise HTTPException(status_code=400, detail="Password is incorrect")
+    raise HTTPException(status_code=404, detail="Account with that email does not exist")
+
+
 def get_all_managers_login(db: Session):
     try:
         managers = db.query(manager_login).all()
@@ -123,12 +175,12 @@ def get_manager_by_id(db:Session, id: int):
     
 def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
     try:        
-        
-    
         manager_to_update = db.query(manager_login).filter_by(manager_id= id).first()
         
         if not manager_to_update:
             raise HTTPException(status_code=404, detail="Manager not found")
+        
+        check_email(str(manager.manager_email))
         manager_to_update.manager_email = manager.manager_email
         manager_to_update.manager_password = manager.manager_password
 
@@ -146,7 +198,7 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
             manager_info_to_update.manager_surname = manager.manager_surname
             manager_info_to_update.manager_contact_number = manager.manager_contact_number
             manager_info_to_update.manager_image = manager.manager_image
-            
+
             # raise HTTPException(status_code=404, detail="Manager Info not found")
         
         db.commit()
