@@ -8,14 +8,14 @@ import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class ManagerProfileScreen extends StatefulWidget {
-  const ManagerProfileScreen({Key? key}) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _ManagerProfileScreenState createState() => _ManagerProfileScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ManagerProfileScreenState extends State<ManagerProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
