@@ -14,10 +14,6 @@ class Manager(BaseModel):
     manager_id: int
     manager_email: str
     manager_password: str
-    manager_firstname: str
-    manager_surname: str
-    manager_contact_number: str
-    manager_image: bytes
 
 class ManagerInfo(BaseModel):
     manager_id: int
