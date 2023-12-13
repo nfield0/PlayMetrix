@@ -20,7 +20,11 @@ class _PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Players"),
+          title: Image.asset(
+            'lib/assets/logo.png',
+            width: 150,
+            fit: BoxFit.contain,
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
