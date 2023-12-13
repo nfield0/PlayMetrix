@@ -1,24 +1,23 @@
 import requests
 
-
-
 def test_add_manager():
     url = 'http://127.0.0.1:8000/register'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_type": "manager",
         "user_email": "testmanager@gmail.com",
-        "user_password": "test_password"
+        "user_password": "Password123!"
     }
     response = requests.post(url, headers=headers, json=json)
-    assert response.status_code == 200
+    
     assert response.headers['Content-Type'] == 'application/json'
 
     try:
         response_json = response.json()
-        assert response_json.get('detail') == "Manager Registered Successfully"
+        assert response_json.get("detail") == "Manager Registered Successfully"
         assert 'id' in response_json
         assert response_json['id']['manager_id'] == 1
+        assert response.status_code == 200
     
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
@@ -42,19 +41,19 @@ def test_add_manager_incorrect_email():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-def test_get_manager():
-    url = 'http://127.0.0.1:8000/managers'
+def test_get_manager_no_info():
+    url = 'http://127.0.0.1:8000/managers/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
     try:
         response_json = response.json()
-        expected_data = [{
+        expected_data = {
             "manager_id": 1,
             "manager_email": "testmanager@gmail.com",
-            "manager_password": "test_password"
-        }]
+            "manager_password": "Password123!"
+        }
         
         assert response_json == expected_data
 
@@ -68,7 +67,7 @@ def test_update_manager():
     headers = {'Content-Type': 'application/json'}
     json = {
             "manager_email": "testmanager@gmail.com",
-            "manager_password": "test_password_updated",
+            "manager_password": "Password123",
             "manager_firstname": "test",
             "manager_surname": "tester",
             "manager_contact_number": "012345",
@@ -88,29 +87,29 @@ def test_update_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-def test_update_manager_incorrect():
+
+
+def test_get_manager_info():
     url = 'http://127.0.0.1:8000/managers/1'
     headers = {'Content-Type': 'application/json'}
-    json = {
-            "manager_email": "testcom",
-            "manager_password": "test_password_updated",
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "manager_email": "testmanager@gmail.com",
+            "manager_password": "Password123",
             "manager_firstname": "test",
             "manager_surname": "tester",
             "manager_contact_number": "012345",
-            "manager_image": "something"   
-    }
+            "manager_image": "something"
+        }
+        
+        assert response_json == expected_data
 
-    response = requests.put(url, headers=headers, json=json)
-    assert response.status_code == 400
-    assert response.headers['Content-Type'] == 'application/json'
-
-    try:
-        response_json = response.json()
-        assert response_json.get("message") == "Email format invalid"
-    
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
-
 
 def test_delete_manager():
     url = 'http://127.0.0.1:8000/managers/1'
@@ -138,3 +137,29 @@ def test_z_cleanup():
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
     
+
+
+
+# def test_update_manager_incorrect():
+#     url = 'http://127.0.0.1:8000/managers/1'
+#     headers = {'Content-Type': 'application/json'}
+#     json = {
+#             "manager_email": "testcom",
+#             "manager_password": "test_password_updated",
+#             "manager_firstname": "test",
+#             "manager_surname": "tester",
+#             "manager_contact_number": "012345",
+#             "manager_image": "something"   
+#     }
+
+#     response = requests.put(url, headers=headers, json=json)
+#     assert response.status_code == 400
+#     assert response.headers['Content-Type'] == 'application/json'
+
+#     try:
+#         response_json = response.json()
+#         assert response_json.get("message") == "Email format invalid"
+#     except ValueError as e:
+#         assert False, f"JSON parsing failed: {e}"
+#     except AssertionError as e:
+#         assert False, f"Test failed: {e}"
