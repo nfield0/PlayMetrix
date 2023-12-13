@@ -55,7 +55,7 @@ ALTER TABLE player_info
 ADD FOREIGN KEY(player_id)
 	REFERENCES player_login(player_id);
 	
-ALTER TABLE player_stats DROP player_id;
+-- ALTER TABLE player_stats DROP player_id;
 ALTER TABLE player_stats RENAME player_stats_id TO player_id;
 ALTER TABLE player_stats
 ADD FOREIGN KEY(player_id)
@@ -174,12 +174,13 @@ CREATE TABLE IF NOT EXISTS team
 	league_id INT NOT NULL,
 	sport_id INT NOT NULL,
 	FOREIGN KEY (manager_id)
-		REFERENCES manager_info(manager_id),
+		REFERENCES manager_login(manager_id),
 	FOREIGN KEY (league_id)
 		REFERENCES league (league_id),
 	FOREIGN KEY (sport_id)
 		REFERENCES sport(sport_id)
 );
+/*fk changed as manager may be without info at some point*/
 
 /*MODIFICATION FOR TEAM*/
 ALTER TABLE team
@@ -329,7 +330,6 @@ JOIN manager_info USING (manager_id);
 SELECT manager_firstname,manager_surname, manager_email, manager_contact_number FROM manager_login JOIN manager_info 
 USING (manager_id);
 
-SE
 
 
 /*BASIC PHYSIO QUERIES*/
