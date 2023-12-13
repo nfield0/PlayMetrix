@@ -1,31 +1,40 @@
 import re
 from sqlalchemy.orm import Session
 from fastapi import Depends, FastAPI, HTTPException
-from PlayMetrix.Backend.models import *
-from PlayMetrix.Backend.schema import *
+from Backend.models import *
+from Backend.schema import *
 
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
 
-
-def get_leagues(db: Session):
-    try:
-        leagues = db.query(league).all()
-        return leagues
-    except Exception as e:
-        return(f"Error retrieving leagues: {e}")
 
 def check_email(email : str):
-    if not re.fullmatch(email_regex, email):
-        raise HTTPException(status_code=400, detail="Email format invalid")
+    if re.fullmatch(email_regex, email):
+       return True
+    else:
+        return False 
+        
+    
+def check_password(password : str):
+    if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False
 
 def register_user(db, user):
+    # if user.user_type != "player" or "manager" or "coach" or "physio":
+    #     raise HTTPException(status_code=400, detail="Invalid user type")
     existing_user = get_user_by_email(db, user.user_type, user.user_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     if not user.user_email or not user.user_password:
         raise HTTPException(status_code=400, detail="Email and password are required")
-    check_email(user.user_email)
-
+        
+    if not check_email(user.user_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_email(user.user_email):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    
     if user.user_type == "player":
         new_user = player_login(player_email=user.user_email, player_password=user.user_password)
     elif user.user_type == "manager":
@@ -45,14 +54,14 @@ def login(db, user):
         if existing_user:
             verified = db.query(player_login).filter_by(player_password=user.user_password)
             if verified:
-                return player_login(player_email=user.user_email, player_password=user.user_password)
+                return {"user_email": True, "user_password": True}
             raise HTTPException(status_code=400, detail="Password is incorrect")
     elif user.user_type == "manager":
         existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
         if existing_user:
             verified = get_user_by_email(db, user.user_type, user.user_email)
             if verified:
-               return manager_login(manager_email=user.user_email, manager_password=user.user_password)
+               return {"user_email": True, "user_password": True}
             raise HTTPException(status_code=400, detail="Password is incorrect")
     elif user.user_type == "physio":
         existing_user = get_user_by_email(db, user.user_type, user.user_email)
@@ -60,18 +69,14 @@ def login(db, user):
         if existing_user:
             verified = db.query(physio_login).filter_by(physio_password=user.user_password)
             if verified:
-                return physio_login(physio_email=user.user_email, physio_password=user.user_password)
+                return {"user_email": True, "user_password": True}
 
             raise HTTPException(status_code=400, detail="Password is incorrect")
     raise HTTPException(status_code=404, detail="Account with that email does not exist")
 
 
-def get_all_managers_login(db: Session):
-    try:
-        managers = db.query(manager_login).all()
-        return managers
-    except Exception as e:
-        return(f"Error retrieving managers: {e}")
+
+   
     
 def get_user_by_email(db:Session, type: str, email: str):
     # raise HTTPException(status_code=200, detail=email)
@@ -110,7 +115,7 @@ def get_team_by_id(db: Session, id: int):
 def insert_new_team(db:Session, new_team: TeamBase):
     try:
         if new_team is not None:
-            if get_manager_by_id(db, new_team.manager_id):
+            if get_all_manager_info_by_id(db, new_team.manager_id):
                 new_team = team(team_name=new_team.team_name,
                     team_logo=new_team.team_logo,
                     manager_id=new_team.manager_id,
@@ -168,10 +173,34 @@ def delete_team_by_id(db:Session, id: int):
 def get_manager_by_id(db:Session, id: int):
     try:        
         login_info = db.query(manager_login).filter_by(manager_id= id).first()
+
+
         return login_info
     except Exception as e:
         return(f"Error retrieving from managers: {e}")
+    
+def get_all_manager_info_by_id(db:Session, id: int):
+    try:        
+        login_info = db.query(manager_login).filter_by(manager_id= id).first()
+        manager_info_result = db.query(manager_info).filter_by(manager_id= id).first()
 
+        if manager_info_result:
+            manager = ManagerNoID(manager_email=login_info.manager_email,manager_password=login_info.manager_password,
+                                  manager_firstname=manager_info_result.manager_firstname,manager_surname=manager_info_result.manager_surname,
+                                  manager_contact_number=manager_info_result.manager_contact_number,manager_image=manager_info_result.manager_image)
+            
+        else:
+            manager = Manager(manager_id=login_info.manager_id,manager_email=login_info.manager_email,manager_password=login_info.manager_password)
+        return manager
+    except Exception as e:
+        return(f"Error retrieving from managers: {e}")
+    
+def get_all_managers_login(db: Session):
+    try:
+        managers = db.query(manager_login).all()
+        return managers
+    except Exception as e:
+        return(f"Error retrieving managers: {e}")
     
 def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
     try:        
@@ -180,9 +209,18 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
         if not manager_to_update:
             raise HTTPException(status_code=404, detail="Manager not found")
         
-        check_email(str(manager.manager_email))
-        manager_to_update.manager_email = manager.manager_email
-        manager_to_update.manager_password = manager.manager_password
+        if check_email(str(manager.manager_email)):
+            manager_to_update.manager_email = manager.manager_email
+        else:
+            print("Invalid email format")
+            raise HTTPException(status_code=400, detail="Email format invalid")
+
+        if check_password(str(manager.manager_password)):
+            manager_to_update.manager_password = manager.manager_password
+        else:
+            print("Invalid password format")
+            raise HTTPException(status_code=400, detail="Password format invalid")
+
 
         manager_info_to_update = db.query(manager_info).filter_by(manager_id= id).first()
 
@@ -374,13 +412,14 @@ def delete_player(db: Session, id: int):
         player = db.query(player_login).filter_by(player_id=id).first()
         player_info_result = db.query(player_info).filter_by(player_id=id).first()
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        player_injuries_result = db.query(player_injuries).filter_by(player_id=id).first()
         
         
-        if player_info_result:
-            db.delete(player_info_result)
         if player_stats_result:
             db.delete(player_stats_result)
+        if player_info_result:
+            db.delete(player_info_result)
+        
         if player_injuries_result:
             db.delete(player_injuries_result)
         db.delete(player)
@@ -418,6 +457,33 @@ def delete_player_by_email(db:Session, email: str):
 #endregion
 
 
+#region leagues
+
+
+def get_leagues(db: Session):
+    try:
+        leagues = db.query(league).all()
+        return leagues
+    except Exception as e:
+        return(f"Error retrieving leagues: {e}")
+    
+def insert_league(db:Session, league_input: LeagueBase):
+    try:
+        new_league = league(league_name=league_input.league_name,
+                        league_logo=league_input.league_logo,
+                        league_country=league_input.league_country,
+                        league_sport=league_input.league_sport)
+        db.add(new_league)
+        db.commit()
+        db.refresh(new_league)
+        return {"message": f"League inserted successfully", "league_id": league.league_id}
+    except Exception as e:
+        return(f"Error creating league: {e}")
+    
+
+#endregion
+
+
 def cleanup(db: Session):
     try:             
         db.query(player_stats).delete()
@@ -426,7 +492,7 @@ def cleanup(db: Session):
         db.query(player_login).delete()
         db.query(physio_info).delete()
         db.query(physio_login).delete()
-        db.query(team).delete()
+        #db.query(team).delete()
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()

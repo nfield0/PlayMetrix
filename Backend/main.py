@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from PlayMetrix.Backend.models import *
-from PlayMetrix.Database.database import SessionLocal, Base, engine
+from Backend.models import *
+from Database.database import SessionLocal, Base, engine
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
-from PlayMetrix.Backend.schema import *
-import PlayMetrix.Backend.crud as crud
+from Backend.schema import *
+import Backend.crud as crud
 import pytest
 from sqlalchemy.orm import sessionmaker
 from tavern.core import run
@@ -29,7 +29,7 @@ def get_db():
 ## To Run Uvicorn
 # python -m uvicorn main:app --reload
 # In Root directory
-# python -m uvicorn PlayMetrix.Backend.main:app --reload
+# python -m uvicorn Backend.main:app --reload
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs
@@ -74,7 +74,7 @@ def read_managers(db:Session = Depends(get_db)):
 
 @app.get("/managers/{id}")
 def read_managers(id: int, db:Session = Depends(get_db)):
-    return crud.get_manager_by_id(db, id)
+    return crud.get_all_manager_info_by_id(db, id)
 
 @app.put("/managers/{id}")
 def update_managers(manager: ManagerNoID, id: int,  db:Session = Depends(get_db)):
@@ -180,6 +180,10 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
 @app.get("/leagues/")
 def read_leagues(db:Session = Depends(get_db)):
     return crud.get_leagues(db)
+
+@app.post("/leagues/")
+def create_leagues(league: LeagueBase, db:Session = Depends(get_db)):
+    return crud.insert_league(db, league)
 
 #endregion
 
