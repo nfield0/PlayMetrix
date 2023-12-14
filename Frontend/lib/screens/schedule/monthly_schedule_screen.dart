@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/add_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -14,6 +14,8 @@ class MonthlyScheduleScreen extends StatefulWidget {
 }
 
 class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
+  DateTime? selectedDate;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +59,12 @@ class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
               const SizedBox(height: 30),
               Expanded(
                 child: SfCalendar(
-                  dataSource: _getCalendarDataSource(),
+                  onTap: (CalendarTapDetails details) {
+                    setState(() {
+                      selectedDate = details.date;
+                    });
+                  },
+                  dataSource: AppointmentDataSource(getCalendarDataSource()),
                   view: CalendarView.month,
                   todayHighlightColor: AppColours.darkBlue,
                   selectionDecoration: BoxDecoration(
@@ -71,41 +78,69 @@ class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
                       fontFamily: AppFonts.gabarito,
                     ),
                   ),
-                  monthViewSettings: const MonthViewSettings(showAgenda: true),
+                  monthViewSettings: const MonthViewSettings(
+                    showAgenda: true,
+                    agendaViewHeight: 150,
+                  ),
                 ),
-              )
+              ),
+              if (selectedDate != null)
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: underlineButtonTransparent("More details", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DailyScheduleScreen(
+                                selectedDate: selectedDate)),
+                      );
+                    })),
             ])),
         bottomNavigationBar: managerBottomNavBar(context, 2));
   }
 }
 
-class _AppointmentDataSource extends CalendarDataSource {
-  _AppointmentDataSource(List<Appointment> source) {
+class AppointmentDataSource extends CalendarDataSource {
+  AppointmentDataSource(List<Appointment> source) {
     appointments = source;
   }
 }
 
-_AppointmentDataSource _getCalendarDataSource() {
+List<Appointment> getCalendarDataSource() {
   List<Appointment> appointments = [
     Appointment(
-      startTime: DateTime(2023, 11, 5, 10, 0),
+      id: 1,
+      startTime: DateTime(2023, 12, 5, 10, 0),
       endTime: DateTime(2023, 11, 5, 11, 0),
       subject: 'Meeting 1',
+      location: 'Location 1',
       color: Colors.blue,
     ),
     Appointment(
+      id: 2,
       startTime: DateTime(2023, 11, 12, 14, 0),
       endTime: DateTime(2023, 11, 12, 15, 0),
       subject: 'Meeting 2',
+      location: 'Location 2',
       color: Colors.green,
     ),
     Appointment(
+      id: 3,
+      startTime: DateTime(2023, 12, 20, 16, 0),
+      endTime: DateTime(2023, 11, 20, 17, 0),
+      subject: 'Meeting 3',
+      location: 'Location 3',
+      color: Colors.red,
+    ),
+    Appointment(
+      id: 4,
       startTime: DateTime(2023, 11, 20, 16, 0),
       endTime: DateTime(2023, 11, 20, 17, 0),
       subject: 'Meeting 3',
+      location: 'Location 3',
       color: Colors.red,
     ),
   ];
 
-  return _AppointmentDataSource(appointments);
+  return appointments;
 }

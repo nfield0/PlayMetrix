@@ -3,29 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class AddPlayerScreen extends StatefulWidget {
-  const AddPlayerScreen({Key? key}) : super(key: key);
+class AddCoachScreen extends StatefulWidget {
+  const AddCoachScreen({Key? key}) : super(key: key);
 
   @override
-  _AddPlayerScreenState createState() => _AddPlayerScreenState();
+  _AddCoachScreenState createState() => _AddCoachScreenState();
 }
 
-class _AddPlayerScreenState extends State<AddPlayerScreen> {
+class _AddCoachScreenState extends State<AddCoachScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Text(
-              "Players",
-              style: TextStyle(
-                color: AppColours.darkBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            )
-          ]),
+          title: appBarTitlePreviousPage("Team Profile"),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -36,7 +28,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
             padding: EdgeInsets.all(40),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Add Player',
+              Text('Add Coach',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,
@@ -56,7 +48,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Enter registered player email:",
+                        "Enter registered coach email:",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w500),
                       ),
@@ -94,7 +86,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                         },
                       ),
                       const SizedBox(height: 40),
-                      bigButton("Add Player", () {})
+                      bigButton("Add Coach", () {})
                     ]),
               )
             ])),

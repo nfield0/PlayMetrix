@@ -3,6 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> loginUser(String email, String password, String userType) async {
+  final apiUrl = 'http://127.0.0.1:8000/login';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'user_email': email,
+        'user_password': password,
+        'user_type': userType,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully logged in, handle the response accordingly
+      print('Login successful!');
+      print('Response: ${response.body}');
+      // You can parse the response JSON here and perform actions based on it
+    } else {
+      // Failed to log in, handle the error accordingly
+      print('Failed to log in. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -135,11 +169,6 @@ class _LogInScreenState extends State<LogInScreen> {
                         color: AppColours.darkBlue,
                         fontFamily: AppFonts.openSans),
                   ),
-                  validator: (String? value) {
-                    return (value != null && !_passwordRegex.hasMatch(value))
-                        ? 'Password must contain at least 8 characters,\na number, and a symbol.'
-                        : null;
-                  },
                 ),
               ),
               Padding(
@@ -148,6 +177,9 @@ class _LogInScreenState extends State<LogInScreen> {
                     // sign up functionality
                     if (_formKey.currentState!.validate()) {
                       // Only execute if all fields are valid
+                      // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE LOGIN FUNCTION AND HOW TO GET THE USER TYPE
+                      loginUser(_emailController.text,
+                          _passwordController.text, _formKey.toString());
                       Navigator.push(
                         context,
                         MaterialPageRoute(

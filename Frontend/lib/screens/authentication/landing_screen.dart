@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:play_metrix/screens/log_in_screen.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/sign_up_screen.dart';
+import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});

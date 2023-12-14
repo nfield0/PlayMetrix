@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/team_profile_screen.dart';
+import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -50,7 +51,14 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       )),
-                  smallButton(Icons.edit, "Edit", () {})
+                  smallButton(Icons.edit, "Edit", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const EditPlayerProfileScreen()),
+                    );
+                  })
                 ],
               )),
           iconTheme: const IconThemeData(

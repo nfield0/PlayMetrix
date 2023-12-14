@@ -5,7 +5,7 @@ import 'package:play_metrix/constants.dart';
 Widget smallButton(IconData icon, String text, VoidCallback onPressed) {
   return Container(
     decoration: BoxDecoration(
-      border: Border.all(color: AppColours.darkBlue, width: 3),
+      border: Border.all(color: AppColours.darkBlue, width: 2),
       borderRadius: BorderRadius.circular(50),
     ),
     child: CupertinoButton(
@@ -65,7 +65,6 @@ Widget underlineButtonTransparent(String text, VoidCallback onPressed) {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(8.0),
       ),
-      padding: EdgeInsets.all(10.0),
       child: Text(
         text,
         style: const TextStyle(
