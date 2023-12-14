@@ -202,13 +202,15 @@ Widget formFieldBottomBorder(String title, String initialValue) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(
-        title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
+      SizedBox(
+          width: 120,
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )),
       const SizedBox(width: 30),
       Container(
-        width: 220, // Set a fixed width for the TextField
+        width: 210, // Set a fixed width for the TextField
         child: TextField(
           controller: TextEditingController(text: initialValue),
           decoration: const InputDecoration(
