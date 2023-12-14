@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, FastAPI, HTTPException
 from Backend.models import *
 from Backend.schema import *
-
+import bcrypt
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
 
@@ -15,37 +15,47 @@ def check_email(email : str):
         return False 
         
     
-def check_password(password : str):
+def check_password_regex(password : str):
     if re.fullmatch(password_regex, password):
         return True
     else:
         return False
 
-def register_user(db, user):
-    # if user.user_type != "player" or "manager" or "coach" or "physio":
-    #     raise HTTPException(status_code=400, detail="Invalid user type")
-    existing_user = get_user_by_email(db, user.user_type, user.user_email)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    if not user.user_email or not user.user_password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
-        
-    if not check_email(user.user_email):
-        raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.user_email):
-        raise HTTPException(status_code=400, detail="Password format invalid")
-    
-    if user.user_type == "player":
-        new_user = player_login(player_email=user.user_email, player_password=user.user_password)
-    elif user.user_type == "manager":
-        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
-    elif user.user_type == "physio":
-        new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
+def encrypt_password(password : str):
+    password = password.encode()
+    password = bcrypt.hashpw(password, bcrypt.gensalt())
+    return password
 
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
+def check_password(plain_password, hashed_password):
+    return bcrypt.checkpw(plain_password.encode(), hashed_password)
+
+
+
+# def register_user(db, user):
+#     # if user.user_type != "player" or "manager" or "coach" or "physio":
+#     #     raise HTTPException(status_code=400, detail="Invalid user type")
+#     existing_user = get_user_by_email(db, user.user_type, user.user_email)
+#     if existing_user:
+#         raise HTTPException(status_code=400, detail="Email already registered")
+#     if not user.user_email or not user.user_password:
+#         raise HTTPException(status_code=400, detail="Email and password are required")
+        
+#     if not check_email(user.user_email):
+#         raise HTTPException(status_code=400, detail="Email format invalid")
+#     if not check_email(user.user_email):
+#         raise HTTPException(status_code=400, detail="Password format invalid")
+    
+#     if user.user_type == "player":
+#         new_user = player_login(player_email=user.user_email, player_password=encrypt_password(user.user_password))
+#     elif user.user_type == "manager":
+#         new_user = manager_login(manager_email=user.user_email, manager_password=encrypt_password(user.user_password))
+#     elif user.user_type == "physio":
+#         new_user = physio_login(physio_email=user.user_email, physio_password=encrypt_password(user.user_password))
+
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+#     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
 def register_player(db, user):
     existing_user = get_user_by_email(db, "player", user.player_email)
@@ -59,7 +69,7 @@ def register_player(db, user):
     if not check_email(user.player_email):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
-    new_user = player_login(player_email=user.player_email, player_password=user.player_password)
+    new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
     
     db.add(new_user)
     
@@ -87,7 +97,7 @@ def register_manager(db, user):
     if not check_email(user.manager_email):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
-    new_user = manager_login(manager_email=user.manager_email, manager_password=user.manager_password)
+    new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
     
     db.add(new_user)
     
@@ -103,58 +113,57 @@ def register_manager(db, user):
 
     return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
     
-def register_user_with_info(db, user):
-    # if user.user_type != "player" or "manager" or "coach" or "physio":
-    #     raise HTTPException(status_code=400, detail="Invalid user type")
-    existing_user = get_user_by_email(db, user.user_type, user.user_email)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    if not user.user_email or not user.user_password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
+# def register_user_with_info(db, user):
+#     # if user.user_type != "player" or "manager" or "coach" or "physio":
+#     #     raise HTTPException(status_code=400, detail="Invalid user type")
+#     existing_user = get_user_by_email(db, user.user_type, user.user_email)
+#     if existing_user:
+#         raise HTTPException(status_code=400, detail="Email already registered")
+#     if not user.user_email or not user.user_password:
+#         raise HTTPException(status_code=400, detail="Email and password are required")
         
-    if not check_email(user.user_email):
-        raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.user_email):
-        raise HTTPException(status_code=400, detail="Password format invalid")
+#     if not check_email(user.user_email):
+#         raise HTTPException(status_code=400, detail="Email format invalid")
+#     if not check_email(user.user_email):
+#         raise HTTPException(status_code=400, detail="Password format invalid")
     
-    if user.user_type == "player":
-        new_user = player_login(player_email=user.user_email, player_password=user.user_password)
-        new_user_info = player_info(player_firstname="",player_surname="",player_dob="",player_contact_number="",
-                                    player_image=b"",player_height="",player_gender="")
-    elif user.user_type == "manager":
-        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
-        new_user_info = manager_info(manager_firstname="",manager_surname="",manager_contact_number="",manager_image=b"")
-    elif user.user_type == "physio":
-        new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
-        new_user_info = physio_info(physio_firstname="",physio_surname="",physio_contact_number="",physio_image=b"")
+#     if user.user_type == "player":
+#         new_user = player_login(player_email=user.user_email, player_password=user.user_password)
+#         new_user_info = player_info(player_firstname="",player_surname="",player_dob="",player_contact_number="",
+#                                     player_image=b"",player_height="",player_gender="")
+#     elif user.user_type == "manager":
+#         new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
+#         new_user_info = manager_info(manager_firstname="",manager_surname="",manager_contact_number="",manager_image=b"")
+#     elif user.user_type == "physio":
+#         new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
+#         new_user_info = physio_info(physio_firstname="",physio_surname="",physio_contact_number="",physio_image=b"")
 
-    db.add(new_user)
-    db.add(new_user_info)
-    db.commit()
-    db.refresh(new_user)
-    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
+#     db.add(new_user)
+#     db.add(new_user_info)
+#     db.commit()
+#     db.refresh(new_user)
+#     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
     
 def login(db, user):
     if user.user_type == "player":
         existing_user = get_user_by_email(db, user.user_type, user.user_email)
         if existing_user:
-            verified = db.query(player_login).filter_by(player_password=user.user_password)
+            verified = db.query(player_login).filter_by(player_password=encrypt_password(user.user_password))
             if verified:
                 return {"user_email": True, "user_password": True}
             raise HTTPException(status_code=400, detail="Password is incorrect")
     elif user.user_type == "manager":
-        existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
+        existing_user = get_user_by_email(db, user.user_type, user.user_email)
         if existing_user:
-            verified = get_user_by_email(db, user.user_type, user.user_email)
+            verified = db.query(manager_login).filter_by(manager_password=encrypt_password(user.user_password))
             if verified:
                return {"user_email": True, "user_password": True}
             raise HTTPException(status_code=400, detail="Password is incorrect")
     elif user.user_type == "physio":
         existing_user = get_user_by_email(db, user.user_type, user.user_email)
-
         if existing_user:
-            verified = db.query(physio_login).filter_by(physio_password=user.user_password)
+            verified = db.query(physio_login).filter_by(physio_password=encrypt_password(user.user_password))
             if verified:
                 return {"user_email": True, "user_password": True}
 
@@ -302,8 +311,8 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
             print("Invalid email format")
             raise HTTPException(status_code=400, detail="Email format invalid")
 
-        if check_password(str(manager.manager_password)):
-            manager_to_update.manager_password = manager.manager_password
+        if check_password_regex(str(manager.manager_password)):
+            manager_to_update.manager_password = encrypt_password(manager.manager_password)
         else:
             print("Invalid password format")
             raise HTTPException(status_code=400, detail="Password format invalid")
@@ -486,7 +495,7 @@ def update_player_by_id(db:Session, id: int, player: PlayerInfo):
         if not player_to_update:
             raise HTTPException(status_code=404, detail="Player Login not found")
         player_to_update.player_email = player.player_email
-        player_to_update.player_password = player.player_password
+        player_to_update.player_password = encrypt_password(player.player_password)
 
         db.commit()
 
@@ -504,11 +513,11 @@ def delete_player(db: Session, id: int):
         
         if player_stats_result:
             db.delete(player_stats_result)
-        if player_info_result:
-            db.delete(player_info_result)
-        
-        if player_injuries_result:
-            db.delete(player_injuries_result)
+            if player_info_result:
+                db.delete(player_info_result)
+            
+            if player_injuries_result:
+                db.delete(player_injuries_result)
         db.delete(player)
         db.commit()
         db.close()
