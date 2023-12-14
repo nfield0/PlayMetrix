@@ -1,5 +1,4 @@
 CREATE DATABASE playmetrix;
-/*ALTER DATABASE playmetric RENAME TO playmetrix;*/
 
 /*DROP TABLE league, manager_login, manager_info, sport, player_login, player_info, player_stats, physio_login, physio_info, team, team_physio, player_team*/
 
@@ -7,8 +6,9 @@ CREATE DATABASE playmetrix;
 FROM INFORMATION_SCHEMA.COLUMNS 
 WHERE TABLE_NAME = 'player_info';*/
 
-/*CREATING THE BASICS PLAYER TABLES*/
+/*--------------------------------------TABLES---------------------------------------------*/
 
+/*CREATING THE BASICS PLAYER TABLES*/
 CREATE TABLE IF NOT EXISTS player_login
 (
 	player_id serial PRIMARY KEY,
@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS player_info
 	player_surname VARCHAR(25) NOT NULL,
 	player_DOB DATE NOT NULL,
 	player_contact_number VARCHAR(20),
+    player_height VARCHAR(10),
+    player_gender VARCHAR(20),
 	player_image bytea,
 	FOREIGN KEY(player_id)
 		REFERENCES player_login(player_id)
@@ -40,27 +42,6 @@ CREATE TABLE IF NOT EXISTS player_stats
 		REFERENCES player_info(player_id)
 );
 
-
-/*MODIFICATIONS FOR THE PLAYER TABLES ONES YOU NEED TO ADD*/
-
-ALTER TABLE player_info 
-ADD player_height VARCHAR(10),
-ADD player_gender VARCHAR(20);
-
-/*PLAYER MODIFICATIONS IF YOU HAD V1 OF THE DATATBASE*/
-ALTER TABLE player_info DROP player_login_id;
-ALTER TABLE player_login RENAME player_login_id TO player_id;
-
-ALTER TABLE player_info
-ADD FOREIGN KEY(player_id)
-	REFERENCES player_login(player_id);
-	
-ALTER TABLE player_stats DROP player_id;
-ALTER TABLE player_stats RENAME player_stats_id TO player_id;
-ALTER TABLE player_stats
-ADD FOREIGN KEY(player_id)
-	REFERENCES player_info(player_id);
-	
 /*BASE TABLES FOR MANAGER*/
 
 CREATE TABLE IF NOT EXISTS manager_login
@@ -78,55 +59,28 @@ CREATE TABLE IF NOT EXISTS manager_info
 	manager_contact_number VARCHAR(20) NOT NULL,
 	manager_image bytea,
 	FOREIGN KEY (manager_id)
-		REFERENCES manager_login(manager_id);
+		REFERENCES manager_login(manager_id)
 );
-
-/*MODIFICATIONS IF YOU ARE USING V1 OF DATABASE*/
-/*YOU WILL ONLY NEED THE DELETES IF YOU HAVE ALREADY POPULATED THE TABLES*/
-DELETE FROM team_physio;
-DELETE FROM team_coach;
-DELETE FROM player_team;
-DELETE FROM manager_info;	
-DELETE FROM manager_login;
-
-ALTER TABLE manager_info DROP manager_login_id;
-ALTER TABLE manager_login RENAME manager_login_id TO manager_id;
-ALTER TABLE manager_info 
-ADD FOREIGN KEY(manager_id)
-REFERENCES manager_info(manager_id);
-
 
 /*BASE TABLES FOR COACH*/
 CREATE TABLE coach_login
 (
 
-	coach_login_id serial PRIMARY KEY,
+	coach_id serial PRIMARY KEY,
 	coach_email VARCHAR (50) NOT NULL,
 	coach_password VARCHAR(150) NOT NULL
 );
 
 CREATE TABLE coach_info
 (
-	coach_id serial PRIMARY KEY,
+	coach_id INT NOT NULL PRIMARY KEY,
 	coach_firstname VARCHAR(25) NOT NULL,
 	coach_surname VARCHAR(25) NOT NULL,
 	coach_contact VARCHAR(25) NOT NULL,
-	coach_login_id INT NOT NULL,
 	coach_image bytea,
-	FOREIGN KEY (coach_login_id)
-		REFERENCES coach_login(coach_login_id)
+	FOREIGN KEY (coach_id)
+		REFERENCES coach_login(coach_id)
 );
-
-/*MODIFICATIONS FOR THE COACH TABLE*/
-/*YOU WILL ONLY NEED THE DELETES IF YOU HAVE ALREADY POPULATED THE TABLES*/
-
-DELETE FROM coach_info;
-DELETE FROM coach_login;
-
-ALTER TABLE coach_info DROP coach_login_id;
-ALTER TABLE coach_login RENAME coach_login_id TO coach_id;
-ALTER TABLE coach_info ADD FOREIGN KEY (coach_id) REFERENCES coach_login(coach_id);
-
 
 /*BASE TABLE FOR THE PHYSIO*/
 CREATE TABLE IF NOT EXISTS physio_login
@@ -146,11 +100,6 @@ CREATE TABLE IF NOT EXISTS physio_info
 		REFERENCES physio_login(physio_id)
 );
 
-/*MODIFICATIONS FOR THE PHYSIO TABLES*/
-ALTER TABLE physio_info DROP physio_login_id;
-ALTER TABLE physio_login rename physio_login_id to physio_id;
-ALTER TABLE physio_info ADD FOREIGN KEY (physio_id) REFERENCES physio_login(physio_id);
-
 /*TABLES NEEDED BEFORE TEAM CAN BE ADDED*/
 CREATE TABLE IF NOT EXISTS sport
 (
@@ -169,6 +118,7 @@ CREATE TABLE IF NOT EXISTS team
 (
 	team_id serial PRIMARY KEY, 
 	team_name VARCHAR(100) UNIQUE NOT NULL,
+    team_location VARCHAR(30),
 	team_logo bytea,
 	manager_id INT NOT NULL,
 	league_id INT NOT NULL,
@@ -181,11 +131,6 @@ CREATE TABLE IF NOT EXISTS team
 		REFERENCES sport(sport_id)
 );
 
-/*MODIFICATION FOR TEAM*/
-ALTER TABLE team
-ADD team_location VARCHAR(30);
-
-
 /*INJURIES TABLE*/
 CREATE TABLE IF NOT EXISTS  injuries
 (
@@ -194,11 +139,6 @@ CREATE TABLE IF NOT EXISTS  injuries
 	expected_recovery_time VARCHAR(50),
 	recovery_method VARCHAR(255)
 );
-
-/*MODIFICATIONS FOR INJURIES TABLE NOT NEEDED IF YOU ARE NOT USING V1*/
-ALTER TABLE injuries DROP expected_recovery_time
-ALTER TABLE injuries ADD COLUMN expected_recovey_time VARCHAR(50);
-
 
 /*RELATIONAL TABLES ORDER SHOULD NOT MATTER AS LONG AS ALL THE ABOVE ARE IN*/
 CREATE TABLE IF NOT EXISTS team_physio
@@ -216,24 +156,16 @@ CREATE TABLE IF NOT EXISTS player_team
 (
 	player_id INT NOT NULL,
 	team_id INT NOT NULL, 
-	position VARCHAR (30),
+	team_position VARCHAR (30),
+    player_team_number INT,
+    playing_status VARCHAR(25),
+    lineup_status VARCHAR(30),
 	PRIMARY KEY (player_id, team_id),
 	FOREIGN KEY (player_id)
 		REFERENCES player_info(player_id),
 	FOREIGN KEY (team_id)
 		REFERENCES team (team_id)
 );
-
-/*ADJUSTEMENTS TO PLAYER_TEAM*/
-ALTER TABLE player_team 
-RENAME position TO team_position;
-
-ALTER TABLE player_team 
-ADD player_team_number INT
-ADD playing_status VARCHAR (25);
-
-ALTER TABLE player_team
-ADD lineup_status VARCHAR(30);
 
 CREATE TABLE team_coach 
 (
@@ -265,8 +197,8 @@ CREATE TABLE IF NOT EXISTS schedule
 (
 	schedule_id serial PRIMARY KEY,
 	schedule_type VARCHAR (100),
-	schedule_start_time DATETIME,
-	schedule_end_time DATETIME,
+	schedule_start_time TIMESTAMP,
+	schedule_end_time TIMESTAMP
 	
 );
 
@@ -275,36 +207,20 @@ CREATE TABLE team_schedule
 	schedule_id INT NOT NULL,
 	player_id INT NOT NULL,
 	player_attending BOOLEAN NOT NULL,
-	PRIMARY KEY (schedule_id, player_id)
+	PRIMARY KEY (schedule_id, player_id),
 	FOREIGN KEY (schedule_id)
-		REFERENCES schedule(schedule_id)
+		REFERENCES schedule(schedule_id),
 	FOREIGN KEY (player_id)
 		REFERENCES player_info(player_id)
 
 );
-
-
-/*Schedules Queries*/
-SELECT * FROM schedule
-SELECT * FROM team_schedule
-SELECT * FROM announcements
-
-SELECT Player.player_firstname, Player.player_surname, teamS.player_attending, schedule.schedule_type 
-FROM player_info Player, team_schedule teamS, schedule schedule
-WHERE Player.player_id = teamS.player_id AND teamS.schedule_id = schedule.schedule_id;
-
-/*CREATE TABLE IF NOT EXISTS schedule
-(
-	calendar_id serial PRIMARY KEY
-);*/
-
 /*Anouncements Table*/
 CREATE TABLE IF NOT EXISTS announcements
 (
-	announcements_id serial PRIMARY KEY
+	announcements_id serial PRIMARY KEY,
 	announcements_title VARCHAR(100) NOT NULL,
 	announcements_desc VARCHAR(255), 
-	announcements_date DATETIME, 
+	announcements_date TIMESTAMP, 
 	manager_id INT NOT NULL,
 	schedule_id INT NOT NULL,
 	FOREIGN KEY(manager_id)
@@ -378,8 +294,6 @@ JOIN manager_info USING (manager_id);
 SELECT manager_firstname,manager_surname, manager_email, manager_contact_number FROM manager_login JOIN manager_info 
 USING (manager_id);
 
-SE
-
 
 /*BASIC PHYSIO QUERIES*/
 SELECT * FROM physio_login;
@@ -392,6 +306,15 @@ WHERE physioInfo.physio_id = teamPhysio.physio_id AND teamInfo.team_id = teamPhy
 
 SELECT physio_email, physio_contact_number FROM physio_login JOIN physio_info 
 USING (physio_id);
+
+/*Schedules Queries*/
+SELECT * FROM schedule
+SELECT * FROM team_schedule
+SELECT * FROM announcements
+
+SELECT Player.player_firstname, Player.player_surname, teamS.player_attending, schedule.schedule_type 
+FROM player_info Player, team_schedule teamS, schedule schedule
+WHERE Player.player_id = teamS.player_id AND teamS.schedule_id = schedule.schedule_id;
 
 
 /*--------------------------DUMMY DATA FOR TESTING QUERIES--------------------------------------------------*/
@@ -420,30 +343,30 @@ INSERT INTO player_login (player_email, player_password) VALUES
 ('player3@gmail.com','password3');
 
 INSERT INTO player_info(player_id, player_firstname, player_surname, player_DOB, player_contact_number,player_image) VALUES
-(1,'Mark','Sheppard', '1999-05-31', '30888802', ''),
-(2,'Peter','Langford', '1994-03-17', '40858802', ''),
-(3,'Christopher','Smith', '2002-01-05', '0860709331', '');
+(7,'Mark','Sheppard', '1999-05-31', '30888802', ''),
+(8,'Peter','Langford', '1994-03-17', '40858802', ''),
+(9,'Christopher','Smith', '2002-01-05', '0860709331', '');
 
 INSERT INTO player_stats(matches_played, matches_started, matches_off_the_bench, injury_prone, minutes_played, player_id) VALUES
-(30,20,10,TRUE,2000,1),
-(10,10,0,FALSE,700,3),
-(14,1,13,TRUE,480,2);
+(30,20,10,TRUE,2000,7),
+(10,10,0,FALSE,700,8),
+(14,1,13,TRUE,480,9);
 
 /*INSERTS FOR THE PHYSIO TABLES*/
 INSERT INTO physio_login(physio_email, physio_password)  VALUES
 ('physio@gmail.com', 'passwordphysio'),
 ('physio2@gmail.com', 'physiopassword3');
 
-INSERT INTO physio_info(physio_firstname, physio_surname, physio_contact_number, physio_login_id) VALUES
-('Jennie', 'Gray', '003537612678', 1 ),
-('Booker', 'DeWitt', '+4467009312',2);
+INSERT INTO physio_info(physio_firstname, physio_surname, physio_contact_number, physio_id) VALUES
+('Jennie', 'Gray', '003537612678', 3 ),
+('Booker', 'DeWitt', '+4467009312',4);
 
 /*INSERTS FOR MANAGER*/
 INSERT INTO manager_login(manager_email, manager_password) VALUES
 ('manager@gmail.com', 'passwordm');
 
 INSERT INTO manager_info(manager_id,manager_firstname, manager_surname, manager_contact_number, manager_image) VALUES
-(4,'Robert', 'Singer', '0871751842', '');
+(1,'Robert', 'Singer', '0871751842', '');
 
 
 /*INSERTS FOR COACH*/
@@ -452,30 +375,30 @@ INSERT INTO coach_login(coach_email, coach_password) VALUES
 ('coach2@gmai.com', 'cpassword');
 
 INSERT INTO coach_info(coach_id, coach_firstname, coach_surname, coach_contact, coach_image) VALUES
-(5,'Frank', 'Zappa', '0871751654', ''),
-(6,'Marie', 'Smyth', '0870961234','');
+(1,'Frank', 'Zappa', '0871751654', ''),
+(2,'Marie', 'Smyth', '0870961234','');
 
 
 /*INSERT INTO TEAM --- BECAREFUL WITH THIS AS MY ID AND YOURS COULD BE DIFFERENT*/
 INSERT INTO team (team_name, manager_id, league_id, sport_id, team_location) VALUES
-("Forkhill GFC", 4, 1,1, 'Forkhill South Armagh');
+('Forkhill GFC', 1, 9,11, 'Forkhill South Armagh');
 
 /*RELATIONAL INSERTS AGAIN MY ID AND YOURS COULD BE DIFFERENT SO THIS MAY NEED TO BE CHANGED ON YOUR END*/
 INSERT INTO player_team (player_id, team_id, team_position, player_team_number, playing_status) VALUES
-(1,3, 'Goalkeeper', 1, 'Match Fit'),
-(2,3, 'Full Foward', 15, 'Match Fit'),
-(3,3, 'Corner Back', 4, 'Injuried');
+(7,1, 'Goalkeeper', 1, 'Match Fit'),
+(8,1, 'Full Foward', 15, 'Match Fit'),
+(9,1, 'Corner Back', 4, 'Injuried');
 
 INSERT INTO team_coach (coach_id, team_id, team_role) VALUES
-(5,3,'Offence'),
-(6,3,'Defense');
+(1,1,'Offence'),
+(2,1,'Defense');
 
 INSERT INTO team_physio(team_id, physio_id) VALUES
-(3,1),
-(3,2);
+(1,3),
+(1,4);
 
 INSERT INTO player_injuries(injury_id,date_of_injury, date_of_recovery, player_id) VALUES
-('1', '2023-12-06', '2024-03-06', 1);
+(3, '2023-12-06', '2024-03-06', 7);
 
 
 
