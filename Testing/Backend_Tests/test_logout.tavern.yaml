@@ -1,0 +1,15 @@
+
+# test_name: Logout
+
+# stages:
+#   - name: Logout
+#     request:
+#       url: http://127.0.0.1:8000/logout
+#       method: GET
+#       headers:
+#         Content-Type: application/json
+
+#     response:
+#         status_code: 200 
+        
+          

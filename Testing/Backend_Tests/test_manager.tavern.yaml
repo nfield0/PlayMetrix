@@ -1,0 +1,147 @@
+# test_name: Get Managers
+
+# stages:
+
+#   - name: Get Managers
+#     request:
+#       url: http://127.0.0.1:8000/managers/
+#       method: GET
+#       headers:
+#         Content-Type: application/json
+
+#     response:
+#       status_code: 200
+#       json:
+#         detail: ""
+
+
+# test_name: Add Manager
+
+# stages:
+
+#   - name: Add New Manager
+#     request:
+#       url: http://127.0.0.1:8000/register
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "manager"
+#         user_email: "manager@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 200
+#       json:
+#         detail: "Manager Registered Successfully"
+#         id: ""
+
+# test_name: Check Manager Exists
+
+# stages:
+
+#   - name: Check Manager already exists
+#     request:
+#       url: http://127.0.0.1:8000/register
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "manager"
+#         user_email: "manager@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 400
+#       json:
+#         detail: "Email already registered"
+
+
+# test_name: Add Incorrect Manager
+
+# stages:
+
+#   - name: Add New Incorrect Manager
+#     request:
+#       url: http://127.0.0.1:8000/register
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "manager"
+#         user_email: "manager@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 400
+#       json:
+#         detail: "Invalid Input"
+
+
+# test_name: Login Manager
+
+# stages:
+#   - name: Check Manager Login
+#     request:
+#       url: http://127.0.0.1:8000/login
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "manager"
+#         user_email: "manager@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 200
+#       json:
+#         manager_email: "manager@email.com"
+#         manager_password: "test_password"
+
+
+#     # test_name: Update Manager
+
+#     # stages:
+
+#     #   - name: Update Manager
+#     #     request:
+#     #       url: http://127.0.0.1:8000/managers
+#     #       method: PUT
+#     #       headers:
+#     #         Content-Type: application/json
+#     #       json:
+#     #         manager: 
+#     #           manager_id: 5
+#     #           manager_email: "manager@email.com"
+#     #           manager_password: "password123!"
+#     #           manager_firstname: ""
+#     #           manager_surname: ""
+#     #           manager_contact_number: ""
+#     #           manager_image: ""
+
+#     #     response:
+#     #       status_code: 200
+#     #       json:
+#     #         detail: "Manager and manager info with ID 5 has been updated"
+
+
+
+
+#     # test_name: Delete Manager
+
+#     # stages:
+#     #   - name: Delete manager
+#     #     request:
+#     #       url: http://127.0.0.1:8000/managers/"
+#     #       method: DELETE
+#     #       headers:
+#     #         Content-Type: application/json
+#     #       json:
+#     #         email: "manager@gmail.com"
+            
+#     #     response:
+#     #       status_code: 200
+#     #       json:
+#     #       detail: "Manager and manager info with ID 5 has been deleted"
+          
+            

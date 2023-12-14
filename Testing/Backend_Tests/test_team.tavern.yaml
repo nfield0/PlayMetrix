@@ -1,0 +1,43 @@
+
+# test_name: Register Team
+
+# stages:
+
+#   - name: Register Team
+#     request:
+#       url: http://127.0.0.1:8000/teams/
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         team_name: "Louth GAA"
+#         team_logo: b"url"
+#         manager_id: 2
+#         league_id: 1
+#         sport_id: 1
+#         team_location: "Dundalk, Louth"
+
+#     response:
+#       status_code: 200
+#       json:
+#         message: "Team inserted successfully"
+#         team_id: 6
+
+
+
+
+#   # test_name: Delete Team
+
+#   # stages:
+
+#   #   - name: Delete Team
+#   #     request:
+#   #       url: http://127.0.0.1:8000/teams/7
+#   #       method: DELETE
+#   #       headers:
+#   #         Content-Type: application/json
+
+#   #     response:
+#   #       status_code: 200
+#   #       json:
+#   #         message: "Team deleted successfully"

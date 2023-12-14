@@ -1,0 +1,23 @@
+
+
+
+  # test_name: Add New Physio
+
+  # stages:
+
+
+  #   - name: Add new Physio
+  #     request:
+  #       url: http://127.0.0.1:8000/register
+  #       method: POST
+  #       headers:
+  #         Content-Type: application/json
+  #       json:
+  #         user_type: "physio"
+  #         user_email: "physio@email.com"
+  #         user_password: "test_password"
+
+  #     response:
+  #       status_code: 200
+  #       json:
+  #         detail: "Physio Registered Successfully"

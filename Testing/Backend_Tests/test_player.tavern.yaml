@@ -1,0 +1,61 @@
+
+# test_name: Add Player
+
+# stages:
+
+#   - name: Add New Player
+#     request:
+#       url: http://127.0.0.1:8000/register
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "player"
+#         user_email: "player@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 200
+#       json:
+#         detail: "Player Registered Successfully"
+
+# test_name: Check Player Exists
+
+# stages:
+
+#   - name: Check Player already exists
+#     request:
+#       url: http://127.0.0.1:8000/register
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "player"
+#         user_email: "player@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 400
+#       json:
+#         detail: "Email already registered"
+
+
+
+
+
+#   # test_name: Delete Player
+
+#   # stages:
+#   #   - name: Delete Player
+#   #     request:
+#   #       url: http://127.0.0.1:8000/players/
+#   #       method: DELETE
+#   #       headers:
+#   #         Content-Type: application/json
+#   #       json:
+#   #         email: "player@email.com"
+
+#   #     response:
+#   #       status_code: 200  
+#   #       json:
+#   #         detail: "Player with email player@email.com has been deleted"

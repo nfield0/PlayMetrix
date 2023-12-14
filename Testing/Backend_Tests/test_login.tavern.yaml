@@ -1,0 +1,46 @@
+
+
+# test_name: Login Player
+
+# stages:
+#   - name: Check Player Login
+#     request:
+#       url: http://127.0.0.1:8000/login
+#       method: POST
+#       headers:
+#         Content-Type: application/json
+#       json:
+#         user_type: "player"
+#         user_email: "test@email.com"
+#         user_password: "test_password"
+
+#     response:
+#       status_code: 200
+#       json:
+#         player_email: "test@email.com"
+#         player_password: "test_password"
+
+
+
+    
+#   # test_name: Login Physio
+
+#   # stages:
+#   #   - name: Check Physio Login
+#   #     request:
+#   #       url: http://127.0.0.1:8000/login
+#   #       method: POST
+#   #       headers:
+#   #         Content-Type: application/json
+#   #       json:
+#   #         user_type: "physio"
+#   #         user_email: "physio@email.com"
+#   #         user_password: "test_password"
+
+#   #     response:
+#   #       status_code: 200
+#   #       json:
+#   #         physio_email: "physio@email.com"
+#   #         physio_password: "test_password"
+
+    

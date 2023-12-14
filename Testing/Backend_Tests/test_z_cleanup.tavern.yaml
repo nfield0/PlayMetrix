@@ -1,0 +1,15 @@
+  # test_name: Delete Everything
+
+  # stages:
+  #   - name: CLEANUP
+  #     request:
+  #       url: http://127.0.0.1:8000/cleanup_tests
+  #       method: DELETE
+  #       headers:
+  #         Content-Type: application/json
+        
+          
+  #     response:
+  #       status_code: 200
+  #       json:
+  #         message: "Finished Cleanup"

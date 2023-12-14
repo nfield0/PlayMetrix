@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/add_coach_screen.dart';
-import 'package:play_metrix/screens/add_physio_screen.dart';
-import 'package:play_metrix/screens/edit_team_screen.dart';
+import 'package:play_metrix/screens/coach/add_coach_screen.dart';
+import 'package:play_metrix/screens/physio/add_physio_screen.dart';
+import 'package:play_metrix/screens/team/edit_team_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -25,12 +25,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Team Profile",
-                    style: TextStyle(
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    )),
+                appBarTitlePreviousPage("Team Profile"),
                 smallButton(Icons.edit, "Edit", () {
                   Navigator.push(
                     context,
@@ -157,7 +152,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    emptyProfile(),
+                    emptySection(Icons.person_off, "No coaches added yet"),
                     const SizedBox(height: 50),
                   ],
                 ),
