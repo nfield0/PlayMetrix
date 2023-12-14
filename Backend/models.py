@@ -55,10 +55,10 @@ class manager_info(Base):
     manager_contact_number = Column(String(20), index= True)
     manager_image = Column(LargeBinary, index= True)
 
-# class sport(Base):
-#     __tablename__ = "sport"
-#     sport_id = Column(Integer, primary_key = True, index = True)
-#     sport_name = Column(String(30), index= True)
+class sport(Base):
+    __tablename__ = "sport"
+    sport_id = Column(Integer, primary_key = True, index = True)
+    sport_name = Column(String(30), index= True)
     
 class league(Base):
 	__tablename__ = "league"

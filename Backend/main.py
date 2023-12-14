@@ -46,9 +46,17 @@ def read_root():
 
 #region authentication and registration
 
-@app.post("/register")
-def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    return crud.register_user(db, user)
+# @app.post("/register")
+# def register_user(user: UserCreate, db: Session = Depends(get_db)):
+#     return crud.register_user(db, user)
+
+@app.post("/register_player")
+def register_player(user: PlayerCreate, db: Session = Depends(get_db)):
+    return crud.register_player(db, user)
+
+@app.post("/register_manager")
+def register_manager(user: ManagerCreate, db: Session = Depends(get_db)):
+    return crud.register_manager(db, user)
     
 
 @app.post("/login")
@@ -187,6 +195,13 @@ def create_leagues(league: LeagueBase, db:Session = Depends(get_db)):
 
 #endregion
 
+#region sports
+
+@app.post("/sports")
+def create_sports(sport, db:Session = Depends(get_db)):
+    return crud.insert_sport(db, sport)
+
+#endregion
 
 
 #region test_routes

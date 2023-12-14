@@ -47,6 +47,93 @@ def register_user(db, user):
     db.refresh(new_user)
     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
+def register_player(db, user):
+    existing_user = get_user_by_email(db, "player", user.player_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.player_email or not user.player_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+        
+    if not check_email(user.player_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_email(user.player_email):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    new_user = player_login(player_email=user.player_email, player_password=user.player_password)
+    
+    db.add(new_user)
+    
+    db.commit()
+    db.refresh(new_user)
+    new_user_id = get_user_by_email(db,"player",user.player_email)
+    new_user_info = player_info(player_id=new_user_id.player_id, player_firstname=user.player_firstname,player_surname=user.player_surname,
+                                player_dob=user.player_dob,player_contact_number=user.player_contact_number,
+                                player_image=user.player_image,player_height=user.player_height,player_gender=user.player_gender)
+                                   
+    db.add(new_user_info)  
+    db.commit()
+
+    return {"detail": "Player Registered Successfully", "id": get_user_by_email(db,"player",user.player_email)}
+
+def register_manager(db, user):
+    existing_user = get_user_by_email(db, "manager", user.manager_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.manager_email or not user.manager_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+        
+    if not check_email(user.manager_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_email(user.manager_email):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    new_user = manager_login(manager_email=user.manager_email, manager_password=user.manager_password)
+    
+    db.add(new_user)
+    
+    db.commit()
+    db.refresh(new_user)
+    new_user_id = get_user_by_email(db,"manager",user.manager_email)
+    new_user_info = manager_info(manager_id=new_user_id.manager_id, manager_firstname=user.manager_firstname,manager_surname=user.manager_surname,
+                                manager_contact_number=user.manager_contact_number,
+                                manager_image=user.manager_image)
+                                   
+    db.add(new_user_info)  
+    db.commit()
+
+    return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
+    
+def register_user_with_info(db, user):
+    # if user.user_type != "player" or "manager" or "coach" or "physio":
+    #     raise HTTPException(status_code=400, detail="Invalid user type")
+    existing_user = get_user_by_email(db, user.user_type, user.user_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.user_email or not user.user_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+        
+    if not check_email(user.user_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_email(user.user_email):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    if user.user_type == "player":
+        new_user = player_login(player_email=user.user_email, player_password=user.user_password)
+        new_user_info = player_info(player_firstname="",player_surname="",player_dob="",player_contact_number="",
+                                    player_image=b"",player_height="",player_gender="")
+    elif user.user_type == "manager":
+        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
+        new_user_info = manager_info(manager_firstname="",manager_surname="",manager_contact_number="",manager_image=b"")
+    elif user.user_type == "physio":
+        new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
+        new_user_info = physio_info(physio_firstname="",physio_surname="",physio_contact_number="",physio_image=b"")
+
+    db.add(new_user)
+    db.add(new_user_info)
+    db.commit()
+    db.refresh(new_user)
+    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
+
     
 def login(db, user):
     if user.user_type == "player":
@@ -127,7 +214,7 @@ def insert_new_team(db:Session, new_team: TeamBase):
                 db.commit()
                 db.refresh(new_team)
 
-                return {"message": "Team inserted successfully", "team_id": new_team.team_id}
+                return {"message": "Team inserted successfully", "id": new_team.team_id}
             raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
         return {"message": "Team is empty or invalid"}
     except Exception as e:
@@ -469,21 +556,19 @@ def get_leagues(db: Session):
     
 def insert_league(db:Session, league_input: LeagueBase):
     try:
-        new_league = league(league_name=league_input.league_name,
-                        league_logo=league_input.league_logo,
-                        league_country=league_input.league_country,
-                        league_sport=league_input.league_sport)
+        new_league = league(league_name=league_input.league_name)
         db.add(new_league)
         db.commit()
         db.refresh(new_league)
-        return {"message": f"League inserted successfully", "league_id": league.league_id}
+        return {"message": f"League inserted successfully", "id": new_league.league_id}
     except Exception as e:
         return(f"Error creating league: {e}")
     
 
 #endregion
+    
 
-
+    
 def cleanup(db: Session):
     try:             
         db.query(player_stats).delete()
@@ -492,7 +577,8 @@ def cleanup(db: Session):
         db.query(player_login).delete()
         db.query(physio_info).delete()
         db.query(physio_login).delete()
-        #db.query(team).delete()
+        db.query(team).delete()
+        db.query(league).delete()
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()
@@ -500,13 +586,16 @@ def cleanup(db: Session):
 
         db.execute("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;")
         # db.execute("ALTER SEQUENCE manager_info RESTART WITH 1;") 
+        db.execute("ALTER SEQUENCE league_league_id_seq RESTART WITH 1;") 
 
         db.execute("ALTER SEQUENCE player_login_player_id_seq RESTART WITH 1;")  
         # db.execute("ALTER SEQUENCE player_info RESTART WITH 1;")  
 
-        # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  
-        # db.execute("ALTER SEQUENCE physio_info RESTART WITH 1;")  
+        db.execute("ALTER SEQUENCE team_team_id_seq RESTART WITH 1;")  
 
+
+        # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  
+        # db.execute("ALTER SEQUENCE physio_info RESTART WITH 1;") 
 
 
         db.commit()
@@ -515,3 +604,16 @@ def cleanup(db: Session):
 
     except Exception as e:
         return(f"Error cleaning up: {e}")
+
+
+def insert_sport(db:Session, new_sport: SportBase):
+    try:
+        new = sport(sport_name=new_sport.sport_name)
+        db.add(new)
+        db.commit()
+        db.refresh(new)
+        return {"message": f"Sport inserted successfully", "id": new.sport_id}
+    except Exception as e:
+        return(f"Error creating Sport: {e}")
+
+
