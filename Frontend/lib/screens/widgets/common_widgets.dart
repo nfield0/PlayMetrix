@@ -134,7 +134,7 @@ Widget dropdownWithDivider(String title, String selectedValue,
                 value: item,
                 child: Text(item,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                     )),
               );
             }).toList(),
@@ -153,7 +153,7 @@ Widget dateTimePickerWithDivider(BuildContext context, String title,
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 14)),
+          Text(title, style: const TextStyle(fontSize: 16)),
           TextButton(
             onPressed: () async {
               // Show date picker
@@ -189,11 +189,82 @@ Widget dateTimePickerWithDivider(BuildContext context, String title,
             child: Text(
               "${selectedDateTime.toLocal()}"
                   .split('.')[0], // Display selected date and time
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ],
       ),
+    ],
+  );
+}
+
+Widget datePickerWithDivider(BuildContext context, String title,
+    DateTime selectedDate, void Function(DateTime) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 16)),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Call the onChanged callback with the selected date
+                onChanged(pickedDate);
+              }
+            },
+            child: Text(
+              "${selectedDate.toLocal().toLocal()}"
+                  .split(' ')[0], // Display selected date
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+      greyDivider()
+    ],
+  );
+}
+
+Widget timePickerWithDivider(BuildContext context, String title,
+    TimeOfDay selectedTime, void Function(TimeOfDay) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          TextButton(
+            onPressed: () async {
+              // Show time picker
+              final TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: selectedTime,
+              );
+
+              if (pickedTime != null) {
+                // Call the onChanged callback with the selected time
+                onChanged(pickedTime);
+              }
+            },
+            child: Text(
+              "${selectedTime.format(context)}", // Display selected time
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+      greyDivider()
     ],
   );
 }
