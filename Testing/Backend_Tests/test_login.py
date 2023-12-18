@@ -13,7 +13,7 @@ def test_add_player():
     json = {
         "player_type": "player",
         "player_email": "testplayer@gmail.com",
-        "player_password": "test_password",
+        "player_password": "Password123!",
         "player_firstname": "Nigel",
         "player_surname": "Farage",
         "player_height": "1.80m",
@@ -54,6 +54,30 @@ def test_login_player():
         expected_data = {
             "user_email": True,
             "user_password": True
+            }
+        response_json = response.json()
+        assert response_json == expected_data
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_login_player_incorrect():
+    url = 'http://127.0.0.1:8000/login'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_type": "player",
+        "user_email": "testplayer@gmail.com",
+        "user_password": "Pass"
+    }
+    response = requests.post(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_data = {
+            "user_email": True,
+            "user_password": False
             }
         response_json = response.json()
         assert response_json == expected_data
@@ -113,7 +137,29 @@ def test_login_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_login_manager_incorrect():
+    url = 'http://127.0.0.1:8000/login'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_type": "manager",
+        "user_email": "testmanager@gmail.com",
+        "user_password": "Pas!"
+    }
+    response = requests.post(url, headers=headers, json=json)
 
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_data = {
+            "user_email": True,
+            "user_password": False
+            }
+        response_json = response.json()
+        assert response_json == expected_data
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 
 def test_z_cleanup():
