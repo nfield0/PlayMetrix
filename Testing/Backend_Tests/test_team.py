@@ -81,7 +81,7 @@ def test_add_team():
     url = 'http://127.0.0.1:8000/teams/'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "team_name": "Louth GAA",
+        "team_name": "Louth Under 21s GAA",
         "team_logo": "b'url",
         "manager_id": 1,
         "league_id": 1,
@@ -103,10 +103,90 @@ def test_add_team():
         assert False, f"Test failed: {e}"
 
 
+def test_get_team():
+    url = 'http://127.0.0.1:8000/teams/1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+    assert response.headers['Content-Type'] == 'application/json'
+    expected_json = {
+        "team_id": 1,
+        "team_name": "Louth Under 21s GAA",
+        "team_logo": "b'url",
+        "manager_id": 1,
+        "league_id": 1,
+        "sport_id": 1,
+        "team_location": "Dundalk, Louth"
+    }
+    try:
+        response_json = response.json()
+        assert response_json == expected_json
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
+def test_update_team():
+    url = 'http://127.0.0.1:8000/teams/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "team_name": "Monaghan Under 21s GAA",
+        "team_logo": "b'url",
+        "manager_id": 1,
+        "league_id": 1,
+        "sport_id": 1,
+        "team_location": "Monaghan, Co. Monaghan"
+    }
+    response = requests.put(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
 
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Team with ID 1 has been updated"
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
+def test_update_team_incorrect():
+    url = 'http://127.0.0.1:8000/teams/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "team_name": "Monaghan Under 21s GAA!!!!@?/",
+        "team_logo": "b'url",
+        "manager_id": 1,
+        "league_id": 1,
+        "sport_id": 1,
+        "team_location": "Monaghan, Co. Monaghan"
+    }
+    response = requests.put(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
 
+    try:
+        response_json = response.json()
+        assert response_json.get("detail") == "Team name is incorrect"
+        assert response.status_code == 400
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_delete_team():
+    url = 'http://127.0.0.1:8000/teams/1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "message":"Team deleted successfully"
+        }
+        
+        assert response_json == expected_data
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 def test_z_cleanup():
     url = 'http://127.0.0.1:8000/cleanup_tests'
