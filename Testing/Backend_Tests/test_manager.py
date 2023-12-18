@@ -96,27 +96,27 @@ def test_update_manager():
 
 
 # test is passable on static databases with hashed password returning
-# def test_get_manager_info():
-#     url = 'http://127.0.0.1:8000/managers/1'
-#     headers = {'Content-Type': 'application/json'}
-#     response = requests.get(url, headers=headers)
-#     assert response.status_code == 200
-#     assert response.headers['Content-Type'] == 'application/json'
-#     try:
-#         response_json = response.json()
-#         expected_data = {
-#             "manager_email": "testmanager@gmail.com",
-#             "manager_password": "Password123",
-#             "manager_firstname": "test",
-#             "manager_surname": "tester",
-#             "manager_contact_number": "012345",
-#             "manager_image": "something"
-#         }
+def test_get_manager_info():
+    url = 'http://127.0.0.1:8000/managers/1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "manager_email": "testmanager@gmail.com",
+            "manager_password": "Hidden",
+            "manager_firstname": "test",
+            "manager_surname": "tester",
+            "manager_contact_number": "012345",
+            "manager_image": "something"
+        }
         
-#         assert response_json == expected_data
+        assert response_json == expected_data
 
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 def test_delete_manager():
     url = 'http://127.0.0.1:8000/managers/1'
