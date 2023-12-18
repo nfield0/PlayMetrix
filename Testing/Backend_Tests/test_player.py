@@ -1,6 +1,5 @@
 import requests
 
-from Backend.crud import check_password
 
 def test_add_player():
     url = 'http://127.0.0.1:8000/register_player'
@@ -59,7 +58,7 @@ def test_add_player_incorrect_email():
 
 
 #password is now hashed everytime tests are run so is passable on static databases
-# def test_get_player():
+# def test_get__all_player():
 #     url = 'http://127.0.0.1:8000/players'
 #     headers = {'Content-Type': 'application/json'}
 #     response = requests.get(url, headers=headers)
