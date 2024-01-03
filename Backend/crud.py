@@ -639,6 +639,70 @@ def delete_league_by_id(db:Session, id: int):
 #endregion
     
 
+#region sport
+
+def get_sports(db: Session):
+    try:
+        result = db.query(sport).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving sports: {e}")
+    
+def get_sport(db: Session, id : int):
+    try:
+        result = db.query(sport).filter_by(sport_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving sport: {e}")
+
+
+def insert_sport(db:Session, new_sport: SportBase):
+    try:
+        if check_is_valid_name(new_sport.sport_name):
+            new = sport(sport_name=new_sport.sport_name)
+            db.add(new)
+            db.commit()
+            db.refresh(new)
+            return {"message": f"Sport inserted successfully", "id": new.sport_id}
+        else:
+            raise HTTPException(status_code=400, detail="Sport name is incorrect")
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating Sport: {e}")
+    
+def update_sport(db:Session, new_sport: SportBase, id: int):
+    try:
+        if check_is_valid_name(new_sport.sport_name):
+            sport_result = db.query(sport).filter_by(sport_id=id).first()
+            sport_result.sport_name = new_sport.sport_name
+
+            db.commit()
+            db.refresh(sport_result)
+            return {"message": f"Sport with ID {id} has been updated"}
+        else:
+            raise HTTPException(status_code=400, detail="Sport name is incorrect")
+    except HTTPException as http_err:
+            raise http_err
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating Sport: {e}")
+    
+def delete_sport(db:Session, id: int):
+    try:       
+        sport_to_delete = db.query(sport).filter_by(sport_id=id).first()
+        if sport_to_delete:
+            db.delete(sport_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Sport deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting Sport: {e}")
+
+#endregion
+
+    
+
     
 def cleanup(db: Session):
     try:             
@@ -653,6 +717,7 @@ def cleanup(db: Session):
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()
+        db.query(sport).delete()
         db.flush()
 
         db.execute("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;")
@@ -663,6 +728,8 @@ def cleanup(db: Session):
         # db.execute("ALTER SEQUENCE player_info RESTART WITH 1;")  
 
         db.execute("ALTER SEQUENCE team_team_id_seq RESTART WITH 1;")  
+
+        db.execute("ALTER SEQUENCE sport_sport_id_seq RESTART WITH 1;")  
 
 
         # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  
@@ -675,16 +742,4 @@ def cleanup(db: Session):
 
     except Exception as e:
         return(f"Error cleaning up: {e}")
-
-
-def insert_sport(db:Session, new_sport: SportBase):
-    try:
-        new = sport(sport_name=new_sport.sport_name)
-        db.add(new)
-        db.commit()
-        db.refresh(new)
-        return {"message": f"Sport inserted successfully", "id": new.sport_id}
-    except Exception as e:
-        return(f"Error creating Sport: {e}")
-
 
