@@ -115,7 +115,7 @@ def read_team(id, db:Session = Depends(get_db)):
 def insert_team(team: TeamBase, db:Session = Depends(get_db)):
     return crud.insert_new_team(db, team)
 
-@app.put("/teams/")
+@app.put("/teams/{id}")
 def update_team(id: int, team: TeamBase, db:Session = Depends(get_db)):
     return crud.update_team(db, team, id)
 
@@ -189,9 +189,24 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
 def read_leagues(db:Session = Depends(get_db)):
     return crud.get_leagues(db)
 
+@app.get("/leagues/{id}")
+def read_leagues(id: int, db:Session = Depends(get_db)):
+    return crud.get_league_by_id(db, id)
+
 @app.post("/leagues/")
 def create_leagues(league: LeagueBase, db:Session = Depends(get_db)):
     return crud.insert_league(db, league)
+
+@app.put("/leagues/{id}")
+def update_leagues(id: int, league: LeagueBase, db:Session = Depends(get_db)):
+    return crud.update_league(db, league, id)
+
+@app.delete("/leagues/{id}")
+def delete_league(id: int, db:Session = Depends(get_db)):
+    return crud.delete_league_by_id(db, id)
+
+
+
 
 #endregion
 

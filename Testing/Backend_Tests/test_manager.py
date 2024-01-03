@@ -95,7 +95,7 @@ def test_update_manager():
         assert False, f"Test failed: {e}"
 
 
-
+# test is passable on static databases with hashed password returning
 def test_get_manager_info():
     url = 'http://127.0.0.1:8000/managers/1'
     headers = {'Content-Type': 'application/json'}
@@ -106,7 +106,7 @@ def test_get_manager_info():
         response_json = response.json()
         expected_data = {
             "manager_email": "testmanager@gmail.com",
-            "manager_password": "Password123",
+            "manager_password": "Hidden",
             "manager_firstname": "test",
             "manager_surname": "tester",
             "manager_contact_number": "012345",
