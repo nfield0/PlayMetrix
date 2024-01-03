@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/profile/profile_screen.dart';
+import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
@@ -87,14 +89,34 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             // Box 2
             _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
-                AppColours.mediumBlue, () {}),
+                AppColours.mediumBlue, () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                          const MonthlyScheduleScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                }),
             const SizedBox(height: 20),
             // Box 3
             _buildMenuItem(
                 'My Profile',
                 'lib/assets/icons/manager_coach_menu.png',
                 AppColours.lightBlue,
-                () {}),
+                () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                          const ProfileScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                }),
           ],
         ),
       )),

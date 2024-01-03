@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/schedule/duration_played_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -40,7 +41,14 @@ class _MatchLineUpScreenState extends State<MatchLineUpScreen> {
                 const SizedBox(height: 5),
                 const Text("Training | Tuesday, 2 October 2023"),
                 const SizedBox(height: 20),
-                underlineButtonTransparent("Record duration played", () {}),
+                underlineButtonTransparent("Record duration played", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DurationPlayedScreen(),
+                    ),
+                  );
+                }),
                 const SizedBox(height: 20),
                 const Text("Starting Players",
                     textAlign: TextAlign.center,

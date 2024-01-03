@@ -25,7 +25,7 @@ enum ScheduleType { training, match }
 
 class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
   AppointmentDataSource? _dataSource;
-  ScheduleType _scheduleType = ScheduleType.training;
+  ScheduleType _scheduleType = ScheduleType.match;
 
   @override
   void initState() {
