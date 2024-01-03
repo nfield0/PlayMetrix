@@ -57,25 +57,25 @@ def test_add_league():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-# def test_add_sport():
-#     url = 'http://127.0.0.1:8000/sports'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#         "sport": {"sport_name": "Gaelic Football"}
-#     }
-#     response = requests.post(url, headers=headers, json=json)
+def test_add_sport():
+    url = 'http://127.0.0.1:8000/sports/'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "sport_name": "Gaelic Rugby"
+    }
+    response = requests.post(url, headers=headers, json=json)
 
-#     assert response.headers['Content-Type'] == 'application/json'
+    assert response.headers['Content-Type'] == 'application/json'
 
-#     try:
-#         response_json = response.json()
-#         assert response_json.get("message") == "Sport inserted successfully"
-#         assert 'id' in response_json
-#         assert response_json['id'] == 1
-#         assert response.status_code == 200  
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Sport inserted successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 1
+        assert response.status_code == 200  
 
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 def test_add_team():
     url = 'http://127.0.0.1:8000/teams/'
@@ -122,6 +122,17 @@ def test_get_team():
         assert response_json == expected_json
         assert response.status_code == 200
     
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_get_team_by_false_id():
+    url = 'http://127.0.0.1:8000/teams/.1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+    # assert response.headers['Content-Type'] == 'application/json'
+    try:
+        assert response.status_code == 422          
+
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
