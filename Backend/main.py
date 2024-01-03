@@ -108,7 +108,7 @@ def read_teams(db:Session = Depends(get_db)):
     return crud.get_teams(db)
 
 @app.get("/teams/{id}")
-def read_team(id, db:Session = Depends(get_db)):
+def read_team(id: int, db:Session = Depends(get_db)):
     return crud.get_team_by_id(db, id)
 
 @app.post("/teams/")
@@ -135,19 +135,19 @@ def read_players(db:Session = Depends(get_db)):
     return crud.get_players(db)
 
 @app.get("/players/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.get_player_by_id(db, id)
 
 @app.get("/players/stats/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.get_player_stats_by_id(db, id)
 
 @app.get("/players/info/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.get_player_info_by_id(db, id)
 
 @app.post("/players/info/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.create_player_info_by_id(db, id)
 
 # @app.post("/players/")
@@ -212,9 +212,27 @@ def delete_league(id: int, db:Session = Depends(get_db)):
 
 #region sports
 
-@app.post("/sports")
-def create_sports(sport, db:Session = Depends(get_db)):
+@app.get("/sports")
+def get_sports(db:Session = Depends(get_db)):
+    return crud.get_sports(db)
+
+@app.get("/sports/{id}")
+def get_sport(id: int, db:Session = Depends(get_db)):
+    return crud.get_sport(db, id)
+
+@app.post("/sports/")
+def create_sports(sport: SportBase, db:Session = Depends(get_db)):
     return crud.insert_sport(db, sport)
+
+@app.put("/sports/{id}")
+def update_sports(id: int, sport: SportBase, db:Session = Depends(get_db)):
+    return crud.update_sport(db, sport, id)
+
+@app.delete("/sports/{id}")
+def delete_sports(id: int, db:Session = Depends(get_db)):
+    return crud.delete_sport(db, id)
+
+
 
 #endregion
 
