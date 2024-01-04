@@ -22,9 +22,9 @@ def get_db():
         db.close()
 
 
+#ctrl+shift+p in vscode to create venv
 
-
-# myenv/scripts/activate
+# .venv/scripts/activate
         
         
 ## To install requirements
