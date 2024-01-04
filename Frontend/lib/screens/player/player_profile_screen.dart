@@ -6,6 +6,223 @@ import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class PlayerData {
+  final int player_id;
+  final String player_firstname;
+  final String player_surname;
+  final String player_dob;
+  final String player_contact_number;
+  final Image player_image;
+  final String player_height;
+  final String player_gender;
+
+  PlayerData({
+    required this.player_id,
+    required this.player_firstname,
+    required this.player_surname,
+    required this.player_dob,
+    required this.player_contact_number,
+    required this.player_image,
+    required this.player_height,
+    required this.player_gender,
+  });
+
+  factory PlayerData.fromJson(Map<String, dynamic> json) {
+    return PlayerData(
+      player_id: json['player_id'],
+      player_firstname: json['player_firstname'],
+      player_surname: json['player_surname'],
+      player_dob: json['player_dob'],
+      player_contact_number: json['player_contact_number'],
+      player_image: json['player_image'],
+      player_height: json['player_height'],
+      player_gender: json['player_gender'],
+    );
+  }
+}
+
+Future<void> getPlapyerById(String id) async {
+  final apiUrl = 'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final playerData = PlayerData.fromJson(responseData);
+
+      // Access individual variables
+      print('${playerData.player_id}');
+      print('${playerData.player_firstname}');
+      print('${playerData.player_surname}');
+      print('${playerData.player_dob}');
+      print('${playerData.player_contact_number}');
+      print('${playerData.player_image}');
+      print('${playerData.player_height}');
+      print('${playerData.player_gender}');
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
+
+class TeamData {
+  final int team_id;
+  final String team_name;
+  final Image team_logo;
+  final String manager_id;
+  final int league_id;
+  final int sport_id;
+  final String team_location;
+
+  TeamData({
+    required this.team_id,
+    required this.team_name,
+    required this.team_logo,
+    required this.manager_id,
+    required this.sport_id,
+    required this.league_id,
+    required this.team_location,
+  });
+
+  factory TeamData.fromJson(Map<String, dynamic> json) {
+    return TeamData(
+      team_id: json['team_id'],
+      team_name: json['team_name'],
+      team_logo: json['team_logo'],
+      manager_id: json['manager_id'],
+      sport_id: json['sport_id'],
+      league_id: json['league_id'],
+      team_location: json['team_location'],
+    );
+  }
+}
+
+Future<TeamData> getTeamById(String id) async {
+  final apiUrl = 'http://127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final teamData = TeamData.fromJson(responseData);
+
+      // Access individual variables
+      print('${teamData.team_id}');
+      print('${teamData.team_name}');
+      print('${teamData.team_logo}');
+      print('${teamData.manager_id}');
+      print('${teamData.sport_id}');
+      print('${teamData.league_id}');
+      print('${teamData.team_location}');
+      return teamData;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to retrieve team data');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to retrieve team data');
+  }
+}
+
+
+class LeagueData {
+  final int league_id;
+  final String league_name;
+
+  LeagueData({
+    required this.league_id,
+    required this.league_name,
+  });
+
+  factory LeagueData.fromJson(Map<String, dynamic> json) {
+    return LeagueData(
+      league_id: json['league_id'],
+      league_name: json['league_name'],
+    );
+  }
+}
+
+Future<List<LeagueData>> getLeagues() async {
+  final apiUrl = 'http://127.0.0.1:8000/leagues/';
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      final List<LeagueData> leagues = responseData
+          .map((json) => LeagueData.fromJson(json))
+          .toList();
+
+      // Access individual variables
+      for (var league in leagues) {
+        print('League ID: ${league.league_id}');
+        print('League Name: ${league.league_name}');
+      }
+
+      return leagues;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to load leagues');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to load leagues');
+  }
+}
+
+Future<String?> getTeamLeagueName(String teamId) async {
+  try {
+    final TeamData? teamData = await getTeamById(teamId);
+    final List<LeagueData> leagues = await getLeagues();
+
+    for (var league in leagues) {
+      if (teamData?.league_id == league.league_id) {
+        return league.league_name;
+      }
+    }
+
+    return null; // If league not found
+  } catch (error) {
+    print('Error: $error');
+    return null;
+  }
+}
+
 
 enum AvailabilityStatus { Available, Limited, Unavailable }
 
@@ -26,6 +243,10 @@ class PlayerProfileScreen extends StatefulWidget {
 }
 
 class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
+  late PlayerData playerData;
+  late TeamData teamData;
+  late Future<String?> leagueName = getTeamLeagueName(teamData.league_id.toString());
+
   AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
       "Available", Icons.check_circle, AppColours.green);
   AvailabilityData limited = AvailabilityData(
@@ -34,7 +255,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
       AvailabilityStatus.Unavailable,
       "Unavailable",
       Icons.cancel,
-      AppColours.red);
+      AppColours.red);      
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +293,8 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                 padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
                 child: Center(
                   child: Column(children: [
-                    _playerProfile("Luana", "Kimley", 7, "27/08/2002", 163,
-                        "Female", limited),
+                    _playerProfile(playerData.player_firstname, playerData.player_surname, 7, playerData.player_dob, playerData.player_height,
+                        playerData.player_gender, limited),
                     const SizedBox(height: 20),
                     divider(),
                     const SizedBox(height: 20),
@@ -83,8 +304,8 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                             fontWeight: FontWeight.bold,
                             color: AppColours.darkBlue,
                             fontSize: 30)),
-                    const SizedBox(height: 20),
-                    profilePill("Louth GAA", "Senior Football",
+                    const SizedBox(height: 20),                 
+                    profilePill(teamData.team_name,  leagueName.toString(),
                         "lib/assets/icons/logo_placeholder.png", () {
                       Navigator.push(
                         context,
@@ -122,7 +343,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
 }
 
 Widget _playerProfile(String firstName, String surname, int playerNumber,
-    String dob, int height, String gender, AvailabilityData availability) {
+    String dob, String height, String gender, AvailabilityData availability) {
   return Container(
     alignment: Alignment.center,
     padding: const EdgeInsets.all(20),
