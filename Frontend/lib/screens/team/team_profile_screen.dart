@@ -7,6 +7,140 @@ import 'package:play_metrix/screens/team/edit_team_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class TeamData {
+  final int team_id;
+  final String team_name;
+  final Image team_logo;
+  final String manager_id;
+  final int league_id;
+  final int sport_id;
+  final String team_location;
+
+  TeamData({
+    required this.team_id,
+    required this.team_name,
+    required this.team_logo,
+    required this.manager_id,
+    required this.sport_id,
+    required this.league_id,
+    required this.team_location,
+  });
+
+  factory TeamData.fromJson(Map<String, dynamic> json) {
+    return TeamData(
+      team_id: json['team_id'],
+      team_name: json['team_name'],
+      team_logo: json['team_logo'],
+      manager_id: json['manager_id'],
+      sport_id: json['sport_id'],
+      league_id: json['league_id'],
+      team_location: json['team_location'],
+    );
+  }
+}
+
+Future<TeamData> getTeamById(String id) async {
+  final apiUrl = 'http://127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final teamData = TeamData.fromJson(responseData);
+
+      // Access individual variables
+      print('${teamData.team_id}');
+      print('${teamData.team_name}');
+      print('${teamData.team_logo}');
+      print('${teamData.manager_id}');
+      print('${teamData.sport_id}');
+      print('${teamData.league_id}');
+      print('${teamData.team_location}');
+      return teamData;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to retrieve team data');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to retrieve team data');
+  }
+}
+
+class ManagerData {
+  final int manager_id;
+  final String manager_firstname;
+  final Image manager_surname;
+  final String manager_contact_number;
+  final int manager_image;
+
+  ManagerData({
+    required this.manager_id,
+    required this.manager_firstname,
+    required this.manager_surname,
+    required this.manager_contact_number,
+    required this.manager_image,
+  });
+
+  factory ManagerData.fromJson(Map<String, dynamic> json) {
+    return ManagerData(
+      manager_id: json['manager_id'],
+      manager_firstname: json['manager_firstname'],
+      manager_surname: json['manager_surname'],
+      manager_contact_number: json['manager_contact_number'],
+      manager_image: json['manager_image'],
+    );
+  }
+}
+
+Future<ManagerData> getManagerById(String managerID) async {
+  final apiUrl = 'http://127.0.0.1:8000/teams/info/$managerID'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final managerData = ManagerData.fromJson(responseData);
+
+      // Access individual variables
+      print('${managerData.manager_id}');
+      print('${managerData.manager_firstname}');
+      print('${managerData.manager_surname}');
+      print('${managerData.manager_contact_number}');
+      print('${managerData.manager_image}');
+      return managerData;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to retrieve team data');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to retrieve team data');
+  }
+}
 
 class TeamProfileScreen extends StatefulWidget {
   const TeamProfileScreen({Key? key}) : super(key: key);
@@ -16,6 +150,10 @@ class TeamProfileScreen extends StatefulWidget {
 }
 
 class _TeamProfileScreenState extends State<TeamProfileScreen> {
+  late TeamData teamData;
+  late String managerID = teamData.manager_id.toString();
+  late ManagerData managerData;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +186,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                 child: Column(
                   children: [
                     Text(
-                      "Louth GAA",
+                      teamData.team_name,
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -93,7 +231,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    profilePill("Brian Smith", "briansmith@louthgaa.com",
+                    profilePill(managerData.manager_firstname, managerData.manager_contact_number,
                         "lib/assets/icons/profile_placeholder.png", () {}),
                     const SizedBox(height: 20),
                     divider(),

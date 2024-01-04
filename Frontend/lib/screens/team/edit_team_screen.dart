@@ -4,6 +4,47 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+// DIVISION AND CLUB NAME IS NOT IN BACKEND ENDPOINT, ALSO UNSURE OF HOW TO GET TEAM LOGO AND MANAGER ID, SPORT ID IS ALSO NOT IN BACKEND ENDPOINT, PHYSIO ID
+Future<void> editTeam({
+  required String teamName,
+  required String teamLogo,
+  required int managerId,
+  required int leagueId,
+  required int sportId,
+  required String teamLocation,
+}) async {
+  final apiUrl = 'http://127.0.0.1:8000/login/teams/'; // Replace with your actual API URL
+
+  try {
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'team_name': teamName,
+        'team_logo': teamLogo,
+        'manager_id': managerId,
+        'league_id': leagueId,
+        'sport_id': sportId,
+        'team_location': teamLocation,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Team updated successfully
+      print('Team updated successfully');
+    } else {
+      // Handle errors
+      print('Failed to update team. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error updating team: $e');
+  }
+}
 
 class EditTeamScreen extends StatefulWidget {
   const EditTeamScreen({Key? key}) : super(key: key);
@@ -14,6 +55,13 @@ class EditTeamScreen extends StatefulWidget {
 
 class _EditTeamScreenState extends State<EditTeamScreen> {
   String selectedDivisionValue = "Division 1";
+
+  final TextEditingController _teamNameController = TextEditingController();
+  final TextEditingController _teamLogoController = TextEditingController();
+  final TextEditingController _managerIdController = TextEditingController();
+  final TextEditingController _leagueIdController = TextEditingController();
+  final TextEditingController _sportIdController = TextEditingController();
+  final TextEditingController _teamLocationController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,11 +110,11 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
               const SizedBox(height: 10),
               underlineButtonTransparent("Upload logo", () {}),
             ])),
-            formFieldBottomBorder("Club name", "Louth GAA"),
+             formFieldBottomBorder("Club name", "Louth GAA"),  // NOT IN BACKEND ENDPOINT
             const SizedBox(height: 10),
-            formFieldBottomBorder("Team name", "Senior Football"),
+            formFieldBottomBorder("Team name", _teamNameController.text),
             const SizedBox(height: 10),
-            formFieldBottomBorder("Location", "Louth"),
+            formFieldBottomBorder("Location", _teamLocationController.text),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,6 +148,14 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
             ),
             const SizedBox(height: 50),
             bigButton("Save Changes", () {
+              // editTeam(
+              //   teamName: _teamNameController.text,
+              //   teamLogo: _teamLogoController.text,
+              //   managerId: _managerIdController, // replace with actual manager ID
+              //   leagueId: _leagueIdController, // replace with actual league ID
+              //   sportId: _sportIdController, // replace with actual sport ID
+              //   teamLocation: _teamLocationController.text,                
+              // );
               Navigator.push(
                 context,
                 MaterialPageRoute(
