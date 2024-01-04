@@ -21,15 +21,22 @@ def get_db():
     finally:
         db.close()
 
+
+
+
+# myenv/scripts/activate
+        
+        
 ## To install requirements
 # python -m pip install -r requirements.txt
 
 ## Requires .env file in root directory!
 
 ## To Run Uvicorn
-# python -m uvicorn main:app --reload
 # In Root directory
 # python -m uvicorn Backend.main:app --reload
+
+
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs

@@ -1,5 +1,6 @@
 /.pytest_cache
 /.env
+/myenv
 # Miscellaneous
 *.class
 *.log
