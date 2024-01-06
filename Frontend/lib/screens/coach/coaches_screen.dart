@@ -44,7 +44,7 @@ class _CoachesScreenState extends State<CoachesScreen> {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) =>
-                              const PlayersScreen(),
+                              PlayersScreen(),
                           transitionDuration: Duration.zero,
                           reverseTransitionDuration: Duration.zero,
                         ),

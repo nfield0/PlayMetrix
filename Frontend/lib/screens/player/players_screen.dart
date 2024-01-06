@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/coach/coaches_screen.dart';
 import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
@@ -47,7 +49,7 @@ class PlayerData {
 }
 
 Future<List<PlayerData>> getAllPlayers() async {
-  final apiUrl = 'http:/127.0.0.1:8000/players/'; // URL for getting all players
+  final apiUrl = 'http://127.0.0.1:8000/players'; // URL for getting all players
 
   try {
     final response = await http.get(
@@ -59,9 +61,8 @@ Future<List<PlayerData>> getAllPlayers() async {
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
-      final List<PlayerData> players = responseData
-          .map((json) => PlayerData.fromJson(json))
-          .toList();
+      final List<PlayerData> players =
+          responseData.map((json) => PlayerData.fromJson(json)).toList();
 
       // Access individual players
       for (var player in players) {
@@ -89,18 +90,12 @@ Future<List<PlayerData>> getAllPlayers() async {
   }
 }
 
-
-class PlayersScreen extends StatefulWidget {
-  const PlayersScreen({Key? key}) : super(key: key);
-
+class PlayersScreen extends ConsumerWidget {
+  late List<PlayerData> players = [];
   @override
-  _PlayersScreenState createState() => _PlayersScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    UserRole userRole = ref.watch(userRoleProvider);
 
-class _PlayersScreenState extends State<PlayersScreen> {
-  late List<PlayerData> players;
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -117,23 +112,24 @@ class _PlayersScreenState extends State<PlayersScreen> {
         ),
         body: SingleChildScrollView(
             child: Padding(
-                padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
+                padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
                 child: Column(children: [
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.sync_alt,
-                        color: AppColours.darkBlue, size: 24),
-                    underlineButtonTransparent("Switch to Coaches", () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                              const CoachesScreen(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-                    }),
-                  ]),
+                  if (userRole == UserRole.manager)
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      const Icon(Icons.sync_alt,
+                          color: AppColours.darkBlue, size: 24),
+                      underlineButtonTransparent("Switch to Coaches", () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) =>
+                                const CoachesScreen(),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ),
+                        );
+                      }),
+                    ]),
                   const SizedBox(height: 10),
                   profilePill("Louth GAA", "Senior Football",
                       "lib/assets/icons/logo_placeholder.png", () {
@@ -156,45 +152,50 @@ class _PlayersScreenState extends State<PlayersScreen> {
                           fontSize: 36,
                         ),
                       ),
-                      smallButton(Icons.person_add, "Add", () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AddPlayerScreen()),
-                        );
-                      })
+                      if (userRole == UserRole.manager)
+                        smallButton(Icons.person_add, "Add", () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AddPlayerScreen()),
+                          );
+                        })
                     ],
                   ),
                   const SizedBox(height: 35),
                   if (MediaQuery.of(context).size.longestSide >= 1000)
                     Wrap(
-                        direction: Axis.horizontal,
-                        spacing: 20.0,
-                        runSpacing: 20.0,
-                        children: players.map((PlayerData player) {
-                          return playerProfilePill(
+                      direction: Axis.horizontal,
+                      spacing: 20.0,
+                      runSpacing: 20.0,
+                      children: players.map((PlayerData player) {
+                        return playerProfilePill(
                             context, // Assuming 'player_image' is an Image object
                             player.player_image,
                             player.player_firstname,
                             player.player_surname,
                             7,
-                            AvailabilityStatus.Available // Call a function to determine availability status
-                          );
-                        }).toList(),
+                            AvailabilityStatus
+                                .Available // Call a function to determine availability status
+                            );
+                      }).toList(),
                     )
                   else
-                    Column(children: players.map((PlayerData player) {
-                          return playerProfilePill(
+                    Column(
+                      children: players.map((PlayerData player) {
+                        return playerProfilePill(
                             context, // Assuming 'player_image' is an Image object
                             player.player_image,
                             player.player_firstname,
                             player.player_surname,
                             7,
-                            AvailabilityStatus.Available // Call a function to determine availability status
-                          );
-                        }).toList(),)
+                            AvailabilityStatus
+                                .Available // Call a function to determine availability status
+                            );
+                      }).toList(),
+                    )
                 ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 1));
   }
 }
 
