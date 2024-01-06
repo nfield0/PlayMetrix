@@ -1,6 +1,6 @@
 from typing import Union, Annotated
 from sqlalchemy import Column, Integer, String, Text, Date, LargeBinary, Boolean
-from PlayMetrix.Database.database import Base
+from Database.database import Base
 
 
 # class Item(BaseModel):
@@ -23,16 +23,7 @@ class player_info(Base):
 	player_contact_number = Column(String(20), index= True)
 	player_image = Column(LargeBinary, index= True)
 	player_height = Column(String(10))
-	player_gender = Column(String(20))
-	
-class player_stats(Base): 
-    __tablename__ = "player_stats"
-    matches_played = Column(Integer, index = True)
-    matches_started = Column(Integer, index = True)
-    matches_off_the_bench = Column(Integer, index = True)
-    injury_prone = Column(Boolean, index = True)
-    minutes_played = Column(Integer, index = True)
-    player_id = Column(Integer, index = True, primary_key=True)
+	player_gender = Column(String(20))   
 
 class player_injuries(Base): 
     __tablename__ = "player_injuries"
@@ -40,6 +31,15 @@ class player_injuries(Base):
     date_of_injury = Column(Date, index = True)
     date_of_recovery = Column(Date, index = True)
     player_id = Column(Integer, index = True)
+
+class player_stats(Base):
+	__tablename__ = "player_stats"
+	player_id = Column(Integer, primary_key = True, index = True)
+	matches_played = Column(Integer, index = True)
+	matches_started = Column(Integer, index = True)
+	matches_off_the_bench = Column(Integer, index = True)
+	injury_prone = Column(Boolean, index = True)
+	minutes_played = Column(Integer, index = True)
 
 class manager_login(Base):
     __tablename__ = "manager_login"
@@ -55,10 +55,10 @@ class manager_info(Base):
     manager_contact_number = Column(String(20), index= True)
     manager_image = Column(LargeBinary, index= True)
 
-# class sport(Base):
-#     __tablename__ = "sport"
-#     sport_id = Column(Integer, primary_key = True, index = True)
-#     sport_name = Column(String(30), index= True)
+class sport(Base):
+    __tablename__ = "sport"
+    sport_id = Column(Integer, primary_key = True, index = True)
+    sport_name = Column(String(30), index= True)
     
 class league(Base):
 	__tablename__ = "league"

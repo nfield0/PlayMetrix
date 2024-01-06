@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from PlayMetrix.Backend.models import *
-from PlayMetrix.Database.database import SessionLocal, Base, engine
+from Backend.models import *
+from Database.database import SessionLocal, Base, engine
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
-from PlayMetrix.Backend.schema import *
-import PlayMetrix.Backend.crud as crud
+from Backend.schema import *
+import Backend.crud as crud
 import pytest
 from sqlalchemy.orm import sessionmaker
 from tavern.core import run
@@ -21,15 +21,22 @@ def get_db():
     finally:
         db.close()
 
+
+
+
+# myenv/scripts/activate
+        
+        
 ## To install requirements
 # python -m pip install -r requirements.txt
 
 ## Requires .env file in root directory!
 
 ## To Run Uvicorn
-# python -m uvicorn main:app --reload
 # In Root directory
-# python -m uvicorn PlayMetrix.Backend.main:app --reload
+# python -m uvicorn Backend.main:app --reload
+
+
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs
@@ -46,58 +53,24 @@ def read_root():
 
 #region authentication and registration
 
-@app.post("/register")
-def register_user(user: UserCreate, db: Session = Depends(get_db)):
+# @app.post("/register")
+# def register_user(user: UserCreate, db: Session = Depends(get_db)):
+#     return crud.register_user(db, user)
+
+@app.post("/register_player")
+def register_player(user: PlayerCreate, db: Session = Depends(get_db)):
+    return crud.register_player(db, user)
+
+@app.post("/register_manager")
+def register_manager(user: ManagerCreate, db: Session = Depends(get_db)):
+    return crud.register_manager(db, user)
     
-    existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    if not user.user_email or not user.user_password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
-
-    if user.user_type == "player":
-        new_user = player_login(player_email=user.user_email, player_password=user.user_password)
-    elif user.user_type == "manager":
-        new_user = manager_login(manager_email=user.user_email, manager_password=user.user_password)
-    elif user.user_type == "physio":
-        new_user = physio_login(physio_email=user.user_email, physio_password=user.user_password)
-
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": crud.get_user_by_email(db,user.user_type,user.user_email)}
-
 
 @app.post("/login")
 def login_user(user: UserCreate, db: Session = Depends(get_db)):
+    return crud.login(db, user)
 
-
-    if user.user_type == "player":
-        existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
-        if existing_user:
-            verified = db.query(player_login).filter_by(player_password=user.user_password)
-            if verified:
-                return player_login(player_email=user.user_email, player_password=user.user_password)
-            raise HTTPException(status_code=400, detail="Password is incorrect")
-    elif user.user_type == "manager":
-        existing_user = db.query(manager_login).filter_by(manager_email=user.user_email).first()
-        if existing_user:
-            verified = crud.get_user_by_email(db, user.user_type, user.user_email)
-            if verified:
-               return manager_login(manager_email=user.user_email, manager_password=user.user_password)
-            raise HTTPException(status_code=400, detail="Password is incorrect")
-    elif user.user_type == "physio":
-        existing_user = crud.get_user_by_email(db, user.user_type, user.user_email)
-
-        if existing_user:
-            verified = db.query(physio_login).filter_by(physio_password=user.user_password)
-            if verified:
-                return physio_login(physio_email=user.user_email, physio_password=user.user_password)
-
-            raise HTTPException(status_code=400, detail="Password is incorrect")
-    raise HTTPException(status_code=404, detail="Account with that email does not exist")
-
+    
 
 @app.get("/logout")
 def logout():
@@ -116,11 +89,11 @@ def read_managers(db:Session = Depends(get_db)):
 
 @app.get("/managers/{id}")
 def read_managers(id: int, db:Session = Depends(get_db)):
-    return crud.get_manager_by_id(db, id)
+    return crud.get_all_manager_info_by_id(db, id)
 
-@app.put("/managers")
-def update_managers(manager, db:Session = Depends(get_db)):
-    return crud.update_manager_by_id(db, manager)
+@app.put("/managers/{id}")
+def update_managers(manager: ManagerNoID, id: int,  db:Session = Depends(get_db)):
+    return crud.update_manager_by_id(db=db, id=id, manager=manager)
 
 @app.delete("/managers/{id}")
 def delete_manager(id, db:Session = Depends(get_db)):
@@ -149,7 +122,7 @@ def read_team(id, db:Session = Depends(get_db)):
 def insert_team(team: TeamBase, db:Session = Depends(get_db)):
     return crud.insert_new_team(db, team)
 
-@app.put("/teams/")
+@app.put("/teams/{id}")
 def update_team(id: int, team: TeamBase, db:Session = Depends(get_db)):
     return crud.update_team(db, team, id)
 
@@ -188,6 +161,10 @@ def read_player(id, db:Session = Depends(get_db)):
 # def insert_player(player: PlayerBase, db:Session = Depends(get_db)):
 #     return crud.insert_new_player(db, player)
 
+@app.put("/players/{id}")
+def update_player_login(id: int, player: PlayerBase, db:Session = Depends(get_db)):
+    return crud.update_player_by_id(db, player, id)
+
 @app.put("/players/info/{id}")
 def update_player_info(id: int, player: PlayerInfo, db:Session = Depends(get_db)):
     return crud.update_player_info_by_id(db, player, id)
@@ -219,8 +196,34 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
 def read_leagues(db:Session = Depends(get_db)):
     return crud.get_leagues(db)
 
+@app.get("/leagues/{id}")
+def read_leagues(id: int, db:Session = Depends(get_db)):
+    return crud.get_league_by_id(db, id)
+
+@app.post("/leagues/")
+def create_leagues(league: LeagueBase, db:Session = Depends(get_db)):
+    return crud.insert_league(db, league)
+
+@app.put("/leagues/{id}")
+def update_leagues(id: int, league: LeagueBase, db:Session = Depends(get_db)):
+    return crud.update_league(db, league, id)
+
+@app.delete("/leagues/{id}")
+def delete_league(id: int, db:Session = Depends(get_db)):
+    return crud.delete_league_by_id(db, id)
+
+
+
+
 #endregion
 
+#region sports
+
+@app.post("/sports")
+def create_sports(sport, db:Session = Depends(get_db)):
+    return crud.insert_sport(db, sport)
+
+#endregion
 
 
 #region test_routes
