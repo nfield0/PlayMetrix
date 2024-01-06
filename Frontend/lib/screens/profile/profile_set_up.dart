@@ -64,7 +64,7 @@ class _ProfileSetUpScreenState extends State<ProfileSetUpScreen> {
             bigButton("Save Changes", () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) => HomeScreen()),
               );
             })
           ],

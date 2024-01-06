@@ -183,7 +183,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
+                            builder: (context) => HomeScreen()),
                       );
                       print("email:" + _emailController.text);
                       print("password: " + _passwordController.text);

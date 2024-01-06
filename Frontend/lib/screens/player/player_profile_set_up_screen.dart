@@ -82,8 +82,7 @@ class _PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomeScreen()));
+                                        builder: (context) => HomeScreen()));
                               })
                             ]),
                       )

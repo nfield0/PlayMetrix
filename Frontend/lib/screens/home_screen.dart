@@ -1,24 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends ConsumerWidget {
   int selectedMenuIndex = 0;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -40,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              smallPill("Manager"),
+              smallPill(userRoleText(userRole)),
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -71,56 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            // Box 1
-            _buildMenuItem(
-                'Players & Coaches',
-                'lib/assets/icons/players_menu.png',
-                AppColours.mediumDarkBlue, () {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) =>
-                      const PlayersScreen(),
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero,
-                ),
-              );
-            }),
-            const SizedBox(height: 20),
-            // Box 2
-            _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
-                AppColours.mediumBlue, () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                          const MonthlyScheduleScreen(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                }),
-            const SizedBox(height: 20),
-            // Box 3
-            _buildMenuItem(
-                'My Profile',
-                'lib/assets/icons/manager_coach_menu.png',
-                AppColours.lightBlue,
-                () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                          const ProfileScreen(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                }),
+            _menu(userRole, context)
           ],
         ),
       )),
-      bottomNavigationBar: managerBottomNavBar(context, selectedMenuIndex),
+      bottomNavigationBar:
+          roleBasedBottomNavBar(userRole, context, selectedMenuIndex),
     );
   }
 }
@@ -163,4 +117,73 @@ Widget _buildMenuItem(
           ],
         ),
       ));
+}
+
+Widget _menu(UserRole userRole, BuildContext context) {
+  switch (userRole) {
+    case UserRole.manager:
+      return _managerMenu(context);
+    case UserRole.coach:
+      return _coachMenu(context);
+    case UserRole.player:
+      return _playerMenu(context);
+    case UserRole.physio:
+      return _physioMenu(context);
+  }
+}
+
+Widget _coachMenu(BuildContext context) {
+  return Column(children: []);
+}
+
+Widget _playerMenu(BuildContext context) {
+  return Column(children: []);
+}
+
+Widget _physioMenu(BuildContext context) {
+  return Column(children: []);
+}
+
+Widget _managerMenu(BuildContext context) {
+  return Column(children: [
+    _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
+        AppColours.mediumDarkBlue, () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) =>
+              const PlayersScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+    const SizedBox(height: 20),
+    _buildMenuItem(
+        'Schedule', 'lib/assets/icons/schedule_menu.png', AppColours.mediumBlue,
+        () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) =>
+              const MonthlyScheduleScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+    const SizedBox(height: 20),
+    _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
+        AppColours.lightBlue, () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) =>
+              const ProfileScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+  ]);
 }

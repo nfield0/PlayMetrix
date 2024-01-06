@@ -14,6 +14,19 @@ enum UserRole {
 
 final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.manager);
 
+String userRoleText(UserRole userRole) {
+  switch (userRole) {
+    case UserRole.manager:
+      return "Manager";
+    case UserRole.player:
+      return "Player";
+    case UserRole.coach:
+      return "Coach";
+    case UserRole.physio:
+      return "Physio";
+  }
+}
+
 class SignUpChooseTypeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -105,7 +118,7 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
+                            builder: (context) => HomeScreen(),
                           ),
                         );
                       }),

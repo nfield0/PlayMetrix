@@ -78,8 +78,7 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomeScreen()));
+                                        builder: (context) => HomeScreen()));
                               })
                             ]),
                       )
@@ -87,4 +86,3 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
         bottomNavigationBar: managerBottomNavBar(context, 1));
   }
 }
-

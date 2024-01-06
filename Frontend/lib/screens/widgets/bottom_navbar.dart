@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
@@ -27,6 +28,29 @@ BottomNavigationBarItem bottomNavBarItem(String label, IconData icon) {
   );
 }
 
+Widget roleBasedBottomNavBar(
+    UserRole userRole, BuildContext context, int selectedIndex) {
+  switch (userRole) {
+    case UserRole.manager:
+      return managerBottomNavBar(context, selectedIndex);
+    case UserRole.coach:
+      return playerBottomNavBar(context, selectedIndex);
+    case UserRole.player:
+      return playerBottomNavBar(context, selectedIndex);
+    case UserRole.physio:
+      return playerBottomNavBar(context, selectedIndex);
+  }
+}
+
+playerBottomNavBar(BuildContext context, int selectedIndex) {
+  return BottomNavigationBar(
+    items: [
+      bottomNavBarItem("Home", Icons.home),
+      bottomNavBarItem("Team", Icons.group),
+    ],
+  );
+}
+
 managerBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
     bottomNavBarItem("Home", Icons.home),
@@ -39,8 +63,7 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) =>
-                const HomeScreen(),
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
