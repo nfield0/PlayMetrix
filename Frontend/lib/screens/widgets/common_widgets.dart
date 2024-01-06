@@ -308,6 +308,7 @@ Widget formFieldBottomBorderNoTitle(
       Expanded(
         child: TextField(
           controller: TextEditingController(text: initialValue),
+          maxLines: null,
           decoration: InputDecoration(
             // labelText: 'Your Label',
             hintText: title,
