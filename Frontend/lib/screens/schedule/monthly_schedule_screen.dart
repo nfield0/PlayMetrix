@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class MonthlyScheduleScreen extends StatefulWidget {
-  const MonthlyScheduleScreen({Key? key}) : super(key: key);
+final selectedDateProvider = StateProvider<DateTime?>((ref) => DateTime.now());
 
+class MonthlyScheduleScreen extends ConsumerWidget {
   @override
-  _MonthlyScheduleScreenState createState() => _MonthlyScheduleScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
 
-class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
-  DateTime? selectedDate;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -47,22 +44,22 @@ class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
                       fontSize: 36,
                     ),
                   ),
-                  smallButton(Icons.add_task, "Add", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddScheduleScreen()),
-                    );
-                  })
+                  if (userRole == UserRole.manager)
+                    smallButton(Icons.add_task, "Add", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddScheduleScreen()),
+                      );
+                    })
                 ],
               ),
               const SizedBox(height: 30),
               Expanded(
                 child: SfCalendar(
                   onTap: (CalendarTapDetails details) {
-                    setState(() {
-                      selectedDate = details.date;
-                    });
+                    ref.watch(selectedDateProvider.notifier).state =
+                        details.date;
                   },
                   dataSource: AppointmentDataSource(getCalendarDataSource()),
                   view: CalendarView.month,
@@ -84,19 +81,17 @@ class _MonthlyScheduleScreenState extends State<MonthlyScheduleScreen> {
                   ),
                 ),
               ),
-              if (selectedDate != null)
-                Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: underlineButtonTransparent("More details", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DailyScheduleScreen(
-                                selectedDate: selectedDate)),
-                      );
-                    })),
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: underlineButtonTransparent("More details", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DailyScheduleScreen()),
+                    );
+                  })),
             ])),
-        bottomNavigationBar: managerBottomNavBar(context, 2));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
   }
 }
 

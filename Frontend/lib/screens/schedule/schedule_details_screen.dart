@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
+import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
@@ -11,46 +14,33 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 
-// ignore: must_be_immutable
-class ScheduleDetailsScreen extends StatefulWidget {
-  int appointmentId = 1;
-
-  ScheduleDetailsScreen({Key? key, required this.appointmentId})
-      : super(key: key);
-
-  @override
-  _ScheduleDetailsScreenState createState() => _ScheduleDetailsScreenState();
-}
-
 enum ScheduleType { training, match }
 
-class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
-  AppointmentDataSource? _dataSource;
+class ScheduleDetailsScreen extends ConsumerWidget {
   ScheduleType _scheduleType = ScheduleType.match;
 
   @override
-  void initState() {
-    super.initState();
-    _dataSource = getFilteredDataSource(widget.appointmentId);
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    AppointmentDataSource _dataSource =
+        getFilteredDataSource(ref.watch(appointmentIdProvider.notifier).state);
+    UserRole userRole = ref.watch(userRoleProvider);
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             appBarTitlePreviousPage(DateFormat('MMMM y').format(
-              _dataSource?.appointments?[0].startTime ?? DateTime.now(),
+              _dataSource.appointments?[0].startTime ?? DateTime.now(),
             )),
-            smallButton(Icons.edit, "Edit", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditScheduleScreen(),
-                ),
-              );
-            })
+            if (userRole == UserRole.manager)
+              smallButton(Icons.edit, "Edit", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditScheduleScreen(),
+                  ),
+                );
+              })
           ]),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue,
@@ -65,7 +55,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _dataSource?.appointments?[0].subject ?? "",
+                  _dataSource.appointments?[0].subject ?? "",
                   style: const TextStyle(
                     fontFamily: AppFonts.gabarito,
                     color: Colors.black,
@@ -76,15 +66,14 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                 const SizedBox(height: 10),
                 Text(
                   DateFormat('EEEE, d MMMM y').format(
-                      _dataSource?.appointments?[0].startTime ??
-                          DateTime.now()),
+                      _dataSource.appointments?[0].startTime ?? DateTime.now()),
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
                   ),
                 ),
                 Text(
-                  '${DateFormat('jm').format(_dataSource?.appointments?[0].startTime)} to ${DateFormat('jm').format(_dataSource?.appointments?[0].endTime)}',
+                  '${DateFormat('jm').format(_dataSource.appointments?[0].startTime)} to ${DateFormat('jm').format(_dataSource?.appointments?[0].endTime)}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -92,7 +81,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                 ),
                 // Location?
                 Text(
-                  _dataSource?.appointments?[0].location ?? "",
+                  _dataSource.appointments?[0].location ?? "",
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -102,25 +91,28 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    underlineButtonTransparent(
-                        _scheduleType == ScheduleType.match
-                            ? "Match lineup"
-                            : "Players attending", () {
-                      if (_scheduleType == ScheduleType.match) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MatchLineUpScreen()),
-                        );
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const PlayersAttendingScreen()),
-                        );
-                      }
-                    })
+                    if (userRole == UserRole.manager ||
+                        userRole == UserRole.coach)
+                      underlineButtonTransparent(
+                          _scheduleType == ScheduleType.match
+                              ? "Match lineup"
+                              : "Players attending", () {
+                        if (_scheduleType == ScheduleType.match) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const MatchLineUpScreen()),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const PlayersAttendingScreen()),
+                          );
+                        }
+                      })
                   ],
                 ),
                 greyDivider(),
@@ -129,8 +121,8 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                   child: SfCalendar(
                     view: CalendarView.schedule,
                     dataSource: _dataSource,
-                    minDate: _dataSource?.appointments?[0].startTime!,
-                    maxDate: _dataSource?.appointments?[0].startTime!
+                    minDate: _dataSource.appointments?[0].startTime!,
+                    maxDate: _dataSource.appointments?[0].startTime!
                         .add(const Duration(days: 1)),
                     scheduleViewSettings: const ScheduleViewSettings(
                       appointmentItemHeight: 70,
@@ -155,7 +147,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                     (p0) {}),
                 divider(),
                 const SizedBox(height: 15),
-                _announcementsSection(context)
+                _announcementsSection(context, userRole)
               ],
             ),
           ),
@@ -172,7 +164,7 @@ AppointmentDataSource getFilteredDataSource(int id) {
   return AppointmentDataSource(filteredAppointments);
 }
 
-Widget _announcementsSection(BuildContext context) {
+Widget _announcementsSection(BuildContext context, UserRole userRole) {
   return Column(
     children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -194,7 +186,8 @@ Widget _announcementsSection(BuildContext context) {
         })
       ]),
       const SizedBox(height: 15),
-      announcementBox(
+      if (userRole == UserRole.manager || userRole == UserRole.coach)
+        announcementBox(
           icon: Icons.announcement,
           iconColor: AppColours.darkBlue,
           title: "Bring your gym gears",
@@ -202,7 +195,7 @@ Widget _announcementsSection(BuildContext context) {
               "A dedicated session to enhance our fitness levels. Bring your A-game; we're pushing our boundaries.",
           date: "18/11/2023",
           onDeletePressed: () {},
-          onBoxPressed: () {})
+        )
     ],
   );
 }

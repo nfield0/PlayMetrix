@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
-
+class EditProfileScreen extends ConsumerWidget {
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("My Profile"),
@@ -67,6 +64,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 3));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }

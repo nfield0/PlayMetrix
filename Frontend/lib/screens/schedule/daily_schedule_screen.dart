@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class DailyScheduleScreen extends StatefulWidget {
-  final DateTime? selectedDate;
+final appointmentIdProvider = StateProvider<int>((ref) => 0);
 
-  const DailyScheduleScreen({Key? key, this.selectedDate}) : super(key: key);
-
+class DailyScheduleScreen extends ConsumerWidget {
   @override
-  _DailyScheduleScreenState createState() => _DailyScheduleScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedDate = ref.watch(selectedDateProvider);
 
-class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Schedule"),
@@ -32,15 +29,12 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
             child: SfCalendar(
               onTap: (CalendarTapDetails details) {
                 if (details.targetElement == CalendarElement.appointment) {
-                  // Handle the event tap here
-                  // You can navigate to another screen or perform any action
-                  // based on the tapped event
-                  // Example: Navigate to a new screen
+                  ref.watch(appointmentIdProvider.notifier).state =
+                      details.appointments![0].id;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ScheduleDetailsScreen(
-                          appointmentId: details.appointments![0].id),
+                      builder: (context) => ScheduleDetailsScreen(),
                     ),
                   );
                 }
@@ -58,8 +52,8 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
               selectionDecoration: BoxDecoration(
                 border: Border.all(color: AppColours.darkBlue, width: 2.0),
               ),
-              initialSelectedDate: widget.selectedDate,
-              initialDisplayDate: widget.selectedDate,
+              initialSelectedDate: selectedDate,
+              initialDisplayDate: selectedDate,
               timeSlotViewSettings: const TimeSlotViewSettings(
                 numberOfDaysInView: 1,
               ),

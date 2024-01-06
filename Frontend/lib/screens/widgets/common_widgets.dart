@@ -348,10 +348,8 @@ Widget announcementBox({
   required String description,
   required String date,
   required VoidCallback onDeletePressed,
-  required VoidCallback onBoxPressed,
 }) {
   return InkWell(
-      onTap: onBoxPressed,
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 12),
           child: Row(

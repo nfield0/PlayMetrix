@@ -85,7 +85,7 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                const MonthlyScheduleScreen(),
+                MonthlyScheduleScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -95,8 +95,7 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) =>
-                const ProfileScreen(),
+            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
