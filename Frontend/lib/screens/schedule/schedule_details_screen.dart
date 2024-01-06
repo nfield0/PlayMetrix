@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
@@ -154,7 +155,7 @@ class _ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                     (p0) {}),
                 divider(),
                 const SizedBox(height: 15),
-                _announcementsSection()
+                _announcementsSection(context)
               ],
             ),
           ),
@@ -171,7 +172,7 @@ AppointmentDataSource getFilteredDataSource(int id) {
   return AppointmentDataSource(filteredAppointments);
 }
 
-Widget _announcementsSection() {
+Widget _announcementsSection(BuildContext context) {
   return Column(
     children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -184,7 +185,13 @@ Widget _announcementsSection() {
             fontSize: 26,
           ),
         ),
-        smallButton(Icons.add_comment, "Add", () {})
+        smallButton(Icons.add_comment, "Add", () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const AddAnnouncementScreen()),
+          );
+        })
       ]),
       const SizedBox(height: 15),
       announcementBox(
