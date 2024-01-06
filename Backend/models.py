@@ -32,6 +32,13 @@ class player_injuries(Base):
     date_of_recovery = Column(Date, index = True)
     player_id = Column(Integer, index = True)
 
+class injuries(Base): 
+    __tablename__ = "injuries"
+    injury_id = Column(Integer, primary_key = True, index = True)
+    injury_type = Column(String(50), index = True)
+    expected_recovery_time = Column(String(50), index = True)
+    recovery_method = Column(String(255), index = True)
+
 class player_stats(Base):
 	__tablename__ = "player_stats"
 	player_id = Column(Integer, primary_key = True, index = True)
