@@ -17,7 +17,7 @@ class PlayerData {
   final String player_surname;
   final String player_dob;
   final String player_contact_number;
-  final Image player_image;
+  final String player_image;
   final String player_height;
   final String player_gender;
 
@@ -47,7 +47,7 @@ class PlayerData {
 }
 
 Future<List<PlayerData>> getAllPlayers() async {
-  final apiUrl = 'http://127.0.0.1:8000/players/'; // URL for getting all players
+  final apiUrl = 'http:/127.0.0.1:8000/players/'; // URL for getting all players
 
   try {
     final response = await http.get(
@@ -174,7 +174,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                         children: players.map((PlayerData player) {
                           return playerProfilePill(
                             context, // Assuming 'player_image' is an Image object
-                            player.player_image.toString(),
+                            player.player_image,
                             player.player_firstname,
                             player.player_surname,
                             7,
@@ -186,7 +186,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                     Column(children: players.map((PlayerData player) {
                           return playerProfilePill(
                             context, // Assuming 'player_image' is an Image object
-                            player.player_image.toString(),
+                            player.player_image,
                             player.player_firstname,
                             player.player_surname,
                             7,
