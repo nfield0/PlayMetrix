@@ -124,8 +124,7 @@ class TeamData {
 }
 
 Future<TeamData> getTeamById(String id) async {
-  final apiUrl =
-      'http:/127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl = 'http:/127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
