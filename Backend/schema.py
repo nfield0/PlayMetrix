@@ -98,4 +98,14 @@ class PlayerStat(BaseModel):
     injury_prone: bool
     minutes_played: int
     
+class InjuryBase(BaseModel):
+    injury_id: int
+    injury_type: str
+    expected_recovery_time: str
+    recovery_method: str
 
+class PlayerInjuryBase(BaseModel):
+    injury_id: int
+    date_of_injury: str
+    date_of_recovery: str
+    player_id: int

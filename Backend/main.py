@@ -13,7 +13,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Dependency
+# Database Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -21,8 +21,9 @@ def get_db():
     finally:
         db.close()
 
+### SETUP WITH CODE BELOW ###
 
-#ctrl+shift+p in vscode to create venv
+# ctrl+shift+p in vscode to create venv
 
 # .venv/scripts/activate
         
@@ -30,13 +31,13 @@ def get_db():
 ## To install requirements
 # python -m pip install -r requirements.txt
 
-## Requires .env file in root directory!
+## Requires .env file in root directory that uses DB_CONNECTION that matches postgresql database details!
 
-## To Run Uvicorn
-# In Root directory
+## To Run Uvicorn in Root directory
 # python -m uvicorn Backend.main:app --reload
 
 
+### Testing Code ###
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs
@@ -48,7 +49,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"message:", "Root Page"}
+    return {"message:", "Landing Page"}
 
 
 #region authentication and registration
@@ -186,10 +187,54 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
 #endregion
 
 
+#region injuries
+
+@app.get("/injuries")
+def read_injuries(db:Session = Depends(get_db)):
+    return crud.get_injuries(db)
+
+@app.get("/injuries/{id}")
+def read_injury(id: int, db:Session = Depends(get_db)):
+    return crud.get_injury_by_id(db, id)
+
+@app.post("/injuries/")
+def insert_injury(injury: InjuryBase, db:Session = Depends(get_db)):
+    return crud.insert_new_injury(db, injury)
+
+@app.put("/injuries/{id}")
+def update_injury(id: int, injury: InjuryBase, db:Session = Depends(get_db)):
+    return crud.update_injury(db, injury, id)
+
+@app.delete("/injuries/{id}")
+def delete_injury(id: int, db:Session = Depends(get_db)):
+    return crud.delete_injury(db, id)
 
 
+#endregion
 
+#region player_injuries
 
+@app.get("/player_injuries")
+def read_player_injuries(db:Session = Depends(get_db)):
+    return crud.get_player_injuries(db)
+
+@app.get("/player_injuries/{id}")
+def read_player_injury(id: int, db:Session = Depends(get_db)):
+    return crud.get_player_injury_by_id(db, id)
+
+@app.post("/player_injuries/")
+def insert_player_injury(player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
+    return crud.insert_new_player_injury(db, player_injury)
+
+@app.put("/player_injuries/{id}")
+def update_player_injury(id: int, player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
+    return crud.update_player_injury(db, player_injury, id)
+
+@app.delete("/player_injuries/{id}")
+def delete_player_injury(id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_injury(db, id)
+
+#endregion
 
 #region leagues
 @app.get("/leagues/")
