@@ -3,130 +3,144 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignUpChooseTypeScreen extends StatefulWidget {
-  const SignUpChooseTypeScreen({Key? key}) : super(key: key);
-
-  @override
-  _SignUpChooseTypeScreenState createState() => _SignUpChooseTypeScreenState();
+enum UserRole {
+  manager,
+  coach,
+  player,
+  physio,
 }
 
-class _SignUpChooseTypeScreenState extends State<SignUpChooseTypeScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String selectedOption = 'manager';
+final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.manager);
 
+class SignUpChooseTypeScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _formKey = GlobalKey<FormState>();
+
     return Scaffold(
-        appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
-          ),
-          iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Image.asset(
+          'lib/assets/logo.png',
+          width: 150,
+          fit: BoxFit.contain,
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.always, // Enable auto validation
-            child: Container(
-              padding: const EdgeInsets.all(40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Sign Up',
-                      style: TextStyle(
-                        color: AppColours.darkBlue,
-                        fontFamily: AppFonts.gabarito,
-                        fontSize: 36.0,
-                        fontWeight: FontWeight.w700,
-                      )),
-                  const Divider(
+        iconTheme: const IconThemeData(
+          color: AppColours.darkBlue,
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.always,
+          child: Container(
+            padding: const EdgeInsets.all(40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Sign Up',
+                  style: TextStyle(
                     color: AppColours.darkBlue,
-                    thickness: 1.0, // Set the thickness of the line
-                    height: 40.0, // Set the height of the line
+                    fontFamily: AppFonts.gabarito,
+                    fontSize: 36.0,
+                    fontWeight: FontWeight.w700,
                   ),
-                  const Padding(
-                      padding: EdgeInsets.only(top: 40.0, bottom: 15),
-                      child: Text('Are you using this app as a...',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: AppFonts.openSans,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w600,
-                          ))),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      radioUserTypeOption(
-                          "Manager",
-                          "lib/assets/icons/manager.png",
-                          selectedOption, (value) {
-                        setState(() {
-                          selectedOption = value.toString();
-                        });
-                      }),
-                      radioUserTypeOption(
-                          "Player",
-                          "lib/assets/icons/player.png",
-                          selectedOption, (value) {
-                        setState(() {
-                          selectedOption = value.toString();
-                        });
-                      }),
-                      radioUserTypeOption(
-                          "Physio",
-                          "lib/assets/icons/physio.png",
-                          selectedOption, (value) {
-                        setState(() {
-                          selectedOption = value.toString();
-                        });
-                      }),
-                      radioUserTypeOption(
-                          "Coach",
-                          "lib/assets/icons/whistle.png",
-                          selectedOption, (value) {
-                        setState(() {
-                          selectedOption = value.toString();
-                        });
-                      }),
-                      Padding(
-                          padding: const EdgeInsets.only(top: 45.0),
-                          child: bigButton("Sign up", () {
-                            print(selectedOption);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()),
-                            );
-                          })),
-                    ],
+                ),
+                const Divider(
+                  color: AppColours.darkBlue,
+                  thickness: 1.0,
+                  height: 40.0,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 40.0, bottom: 15),
+                  child: Text(
+                    'Are you using this app as a...',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: AppFonts.openSans,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ],
-              ),
-              // ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    radioUserTypeOption<UserRole>(
+                      "Manager",
+                      "lib/assets/icons/manager.png",
+                      UserRole.manager,
+                      ref.watch(userRoleProvider),
+                      ref,
+                    ),
+                    radioUserTypeOption<UserRole>(
+                      "Player",
+                      "lib/assets/icons/player.png",
+                      UserRole.player,
+                      ref.watch(userRoleProvider),
+                      ref,
+                    ),
+                    radioUserTypeOption<UserRole>(
+                      "Physio",
+                      "lib/assets/icons/physio.png",
+                      UserRole.physio,
+                      ref.watch(userRoleProvider),
+                      ref,
+                    ),
+                    radioUserTypeOption<UserRole>(
+                      "Coach",
+                      "lib/assets/icons/whistle.png",
+                      UserRole.coach,
+                      ref.watch(userRoleProvider),
+                      ref,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 45.0),
+                      child: bigButton("Sign up", () {
+                        print(ref.read(userRoleProvider.notifier).state);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
-Widget radioUserTypeOption(String text, String imagePath, String selectedOption,
-    void Function(String?)? onChanged) {
-  return RadioListTile(
+Widget radioUserTypeOption<T>(
+  String text,
+  String imagePath,
+  T value,
+  T groupValue,
+  WidgetRef ref,
+) {
+  void onChanged(T? newValue) {
+    ref.read(userRoleProvider.notifier).state = newValue! as UserRole;
+  }
+
+  return RadioListTile<T>(
     title: Row(
       children: [
         Text(
           text,
           style: const TextStyle(
-              fontFamily: AppFonts.openSans,
-              //fontWeight: FontWeight.w600,
-              fontSize: 18),
+            fontFamily: AppFonts.openSans,
+            fontSize: 18,
+          ),
         ),
         const SizedBox(width: 8.0),
         Image.asset(
@@ -136,9 +150,9 @@ Widget radioUserTypeOption(String text, String imagePath, String selectedOption,
         ),
       ],
     ),
-    value: text.toLowerCase(),
+    value: value,
     activeColor: AppColours.darkBlue,
-    groupValue: selectedOption,
+    groupValue: groupValue,
     onChanged: onChanged,
   );
 }

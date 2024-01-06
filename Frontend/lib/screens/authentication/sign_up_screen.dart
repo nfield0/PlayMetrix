@@ -13,7 +13,8 @@ Future<void> registerUser({
   required String email,
   required String password,
 }) async {
-  final apiUrl = 'http://127.0.0.1:8000/register'; // Replace with your actual backend URL
+  final apiUrl =
+      'http://127.0.0.1:8000/register'; // Replace with your actual backend URL
 
   try {
     final response = await http.post(
@@ -45,8 +46,6 @@ Future<void> registerUser({
     print('Error: $error');
   }
 }
-
-
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -344,7 +343,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const SignUpChooseTypeScreen()),
+                                      SignUpChooseTypeScreen()),
                             );
                           }
                         },

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
-import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
-import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
-import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
-import 'screens/authentication/landing_screen.dart'; // Import your landing page
+import 'screens/authentication/landing_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
