@@ -13,7 +13,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Dependency
+# Database Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -21,8 +21,9 @@ def get_db():
     finally:
         db.close()
 
+### SETUP WITH CODE BELOW ###
 
-#ctrl+shift+p in vscode to create venv
+# ctrl+shift+p in vscode to create venv
 
 # .venv/scripts/activate
         
@@ -30,13 +31,13 @@ def get_db():
 ## To install requirements
 # python -m pip install -r requirements.txt
 
-## Requires .env file in root directory!
+## Requires .env file in root directory that uses DB_CONNECTION that matches postgresql database details!
 
-## To Run Uvicorn
-# In Root directory
+## To Run Uvicorn in Root directory
 # python -m uvicorn Backend.main:app --reload
 
 
+### Testing Code ###
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs
@@ -48,7 +49,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"message:", "Root Page"}
+    return {"message:", "Landing Page"}
 
 
 #region authentication and registration
