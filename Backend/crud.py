@@ -6,6 +6,8 @@ from Backend.schema import *
 import bcrypt
 from passlib.context import CryptContext
 
+#region regex_and_encryption
+
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
 name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
@@ -53,8 +55,9 @@ def encrypt_password(password):
 # def check_password(plain_password, hashed_password):
 #     return bcrypt.checkpw(plain_password.encode(), hashed_password)
 
+#endregion
 
-
+#region user
 # def register_user(db, user):
 #     # if user.user_type != "player" or "manager" or "coach" or "physio":
 #     #     raise HTTPException(status_code=400, detail="Invalid user type")
@@ -205,6 +208,7 @@ def get_user_by_email(db:Session, type: str, email: str):
     except Exception as e:
         return(f"Error retrieving from {type}s: {e}")
 
+#endregion
 
 #region team
         
