@@ -199,7 +199,7 @@ def read_injury(id: int, db:Session = Depends(get_db)):
 
 @app.post("/injuries/")
 def insert_injury(injury: InjuryBase, db:Session = Depends(get_db)):
-    return crud.insert_new_injury(db, injury)
+    return crud.insert_injury(db, injury)
 
 @app.put("/injuries/{id}")
 def update_injury(id: int, injury: InjuryBase, db:Session = Depends(get_db)):
