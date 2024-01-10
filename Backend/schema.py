@@ -99,7 +99,6 @@ class PlayerStat(BaseModel):
     minutes_played: int
     
 class InjuryBase(BaseModel):
-    injury_id: int
     injury_type: str
     expected_recovery_time: str
     recovery_method: str
