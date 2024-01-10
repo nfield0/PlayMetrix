@@ -600,15 +600,20 @@ def get_injury_by_id(db: Session, id: int):
     
 def insert_injury(db:Session, new_injury: InjuryBase):
     try:
-        if new_injury is not None:
+        if new_injury is None:
+            raise HTTPException(status_code=404, detail="Injury is empty or invalid")
+        if not check_is_valid_name(new_injury.injury_type):
+            raise HTTPException(status_code=400, detail="Injury type is incorrect")
+        else:
             new_injury = injuries(injury_type=new_injury.injury_type,
-                                  expected_recovery_time=new_injury.expected_recovery_time,
-                                  recovery_method=new_injury.recovery_method)
+                               expected_recovery_time=new_injury.expected_recovery_time,
+                               recovery_method=new_injury.recovery_method)
             db.add(new_injury)
             db.commit()
             db.refresh(new_injury)
-            return {"message": "Injury inserted successfully", "id": new_injury.injury_id}
-        return {"message": "Injury is empty or invalid"}
+        return {"message": "Injury inserted successfully", "id": new_injury.injury_id}
+    except HTTPException as http_err:
+        raise http_err
     except Exception as e:
         return (f"Error inserting injury: {e}")
 
@@ -664,6 +669,8 @@ def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
     try:
         if new_player_injury is not None:
             new_player_injury = player_injuries(player_id=new_player_injury.player_id,
+                                                date_of_injury=new_player_injury.date_of_injury,
+                                                date_of_recovery=new_player_injury.date_of_recovery,
                                                 injury_id=new_player_injury.injury_id)
             db.add(new_player_injury)
             db.commit()
