@@ -1,5 +1,8 @@
 import re
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import text
+
 from fastapi import Depends, FastAPI, HTTPException
 from Backend.models import *
 from Backend.schema import *
@@ -831,41 +834,50 @@ def delete_sport(db:Session, id: int):
 
     
 def cleanup(db: Session):
-    try:             
-        db.query(player_stats).delete()
+    try:       
+
         db.query(player_injuries).delete()
-        db.query(player_info).delete()
-        db.query(player_login).delete()
-        db.query(physio_info).delete()
-        db.query(physio_login).delete()
+        db.query(injuries).delete()
         db.query(team).delete()
         db.query(league).delete()
+        db.query(sport).delete()
+
+        db.query(physio_info).delete()
+        db.query(physio_login).delete()
+        
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()
-        db.query(sport).delete()
+
+
+        db.query(player_stats).delete()
+
+        db.query(player_info).delete()
+        db.query(player_login).delete()
+
+
         db.flush()
 
-        db.execute("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;")
-        # db.execute("ALTER SEQUENCE manager_info RESTART WITH 1;") 
-        db.execute("ALTER SEQUENCE league_league_id_seq RESTART WITH 1;") 
-
-        db.execute("ALTER SEQUENCE player_login_player_id_seq RESTART WITH 1;")  
-        # db.execute("ALTER SEQUENCE player_info RESTART WITH 1;")  
-
-        db.execute("ALTER SEQUENCE team_team_id_seq RESTART WITH 1;")  
-
-        db.execute("ALTER SEQUENCE sport_sport_id_seq RESTART WITH 1;")  
-
-
-        # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  
-        # db.execute("ALTER SEQUENCE physio_info RESTART WITH 1;") 
+        db.execute(text("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE physio_info_physio_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE league_league_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE player_login_player_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE team_team_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE sport_sport_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE coach_login_coach_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE injuries_injury_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE physio_login_physio_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE announcements_announcements_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE schedule_schedule_id_seq RESTART WITH 1;"))
 
 
         db.commit()
         db.close()
         return {"message": "Finished Cleanup"}
 
-    except Exception as e:
-        return(f"Error cleaning up: {e}")
-
+    except SQLAlchemyError as e:
+        # Log the exception for debugging
+        print(f"Cleanup failed: {e}")
+        db.rollback()  # Rollback changes in case of an error
+        db.close()  # Close the connection
+        return {"error": "Cleanup failed, check logs for details"}
