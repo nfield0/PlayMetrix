@@ -155,6 +155,7 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
     bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Players", Icons.group),
+    bottomNavBarItem("Schedule", Icons.calendar_month),
     bottomNavBarItem("My Profile", Icons.person_rounded)
   ], selectedIndex, (index) {
     switch (index) {

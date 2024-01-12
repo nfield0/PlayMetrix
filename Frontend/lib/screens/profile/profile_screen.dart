@@ -69,7 +69,7 @@ class ProfileScreen extends ConsumerWidget {
                       Image.asset("lib/assets/icons/profile_placeholder.png",
                           width: 150),
                       const SizedBox(height: 20),
-                      smallPill("Manager"),
+                      smallPill(userRoleText(userRole)),
                       const SizedBox(height: 40),
                       profilePill("Louth GAA", "Senior Football",
                           "lib/assets/icons/logo_placeholder.png", () {
