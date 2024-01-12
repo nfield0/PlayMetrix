@@ -300,6 +300,38 @@ Widget formFieldBottomBorder(String title, String initialValue) {
   );
 }
 
+Widget formFieldBottomBorderController(
+    String title, TextEditingController controller) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      SizedBox(
+          width: 120,
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )),
+      const SizedBox(width: 30),
+      Container(
+        width: 210, // Set a fixed width for the TextField
+        child: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            // labelText: 'Your Label',
+            labelStyle: TextStyle(color: Colors.grey),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 Widget formFieldBottomBorderNoTitle(
     String title, String initialValue, bool showBorder) {
   return Row(
