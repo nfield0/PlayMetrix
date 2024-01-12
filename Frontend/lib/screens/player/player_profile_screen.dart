@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -358,6 +359,15 @@ class PlayerProfileScreen extends ConsumerWidget {
                         padding: EdgeInsets.all(20),
                         child: statistics(Statistics(10, 4, 6, 230, 3))),
                     const SizedBox(height: 20),
+                    if (userRole == UserRole.player)
+                      bigButton("Log Out", () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LandingScreen()),
+                        );
+                      }),
+                    const SizedBox(height: 25),
                   ]),
                 ))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
