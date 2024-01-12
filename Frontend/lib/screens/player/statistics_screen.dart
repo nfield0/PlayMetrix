@@ -87,7 +87,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       _statisticsDetailWithDivider(
                           "Number of injuries", "1", available)
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: playerBottomNavBar(context, 1));
   }
 }
 

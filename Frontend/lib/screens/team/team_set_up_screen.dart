@@ -16,7 +16,8 @@ Future<void> addTeam({
   required int sportId,
   required String teamLocation,
 }) async {
-  final apiUrl = 'http://127.0.0.1:8000/login/teams/'; // Replace with your actual backend URL
+  final apiUrl =
+      'http://127.0.0.1:8000/login/teams/'; // Replace with your actual backend URL
 
   try {
     final response = await http.post(
@@ -109,7 +110,7 @@ class _TeamSetUpScreenState extends State<TeamSetUpScreen> {
               const SizedBox(height: 10),
               underlineButtonTransparent("Upload logo", () {}),
             ])),
-            formFieldBottomBorder("Club name", ""),   // NOT IN BACKEND ENDPOINT
+            formFieldBottomBorder("Club name", ""), // NOT IN BACKEND ENDPOINT
             const SizedBox(height: 10),
             formFieldBottomBorder("Team name", _teamNameController.text),
             const SizedBox(height: 10),
@@ -147,18 +148,17 @@ class _TeamSetUpScreenState extends State<TeamSetUpScreen> {
             ),
             const SizedBox(height: 50),
             bigButton("Save Changes", () {
-  //             addTeam(
-  //               teamName: _teamNameController.text // get team name from your form,
-  //               teamLogo: _teamLogoController.text // get team logo from your form,
-  //               managerId: _managerIdController.text // get manager ID from your form,
-  //               leagueId: _leagueIdController.text // get league ID from your form,
-  //               sportId: _sportIdController.text // get sport ID from your form,
-  //               teamLocation: _teamLocationController.text // get team location from your form,
-  // );
+              //             addTeam(
+              //               teamName: _teamNameController.text // get team name from your form,
+              //               teamLogo: _teamLogoController.text // get team logo from your form,
+              //               managerId: _managerIdController.text // get manager ID from your form,
+              //               leagueId: _leagueIdController.text // get league ID from your form,
+              //               sportId: _sportIdController.text // get sport ID from your form,
+              //               teamLocation: _teamLocationController.text // get team location from your form,
+              // );
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const TeamProfileScreen()),
+                MaterialPageRoute(builder: (context) => TeamProfileScreen()),
               );
             })
           ],

@@ -76,7 +76,7 @@ class ProfileScreen extends ConsumerWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const TeamProfileScreen()),
+                              builder: (context) => TeamProfileScreen()),
                         );
                       }),
                       const SizedBox(height: 20),

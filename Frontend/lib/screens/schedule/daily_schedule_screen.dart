@@ -14,6 +14,7 @@ class DailyScheduleScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = ref.watch(selectedDateProvider);
+    final userRole = ref.watch(userRoleProvider.notifier).state;
 
     return Scaffold(
         appBar: AppBar(
@@ -59,6 +60,6 @@ class DailyScheduleScreen extends ConsumerWidget {
               ),
               dataSource: AppointmentDataSource(getCalendarDataSource()),
             )),
-        bottomNavigationBar: managerBottomNavBar(context, 2));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
   }
 }

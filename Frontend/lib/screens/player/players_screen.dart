@@ -136,7 +136,7 @@ class PlayersScreen extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const TeamProfileScreen()),
+                          builder: (context) => TeamProfileScreen()),
                     );
                   }),
                   const SizedBox(height: 30),
@@ -230,8 +230,7 @@ Widget playerProfilePill(
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const PlayerProfileScreen()),
+              MaterialPageRoute(builder: (context) => PlayerProfileScreen()),
             );
           },
           child: Container(

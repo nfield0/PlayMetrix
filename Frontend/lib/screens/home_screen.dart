@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/notifications_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
@@ -137,7 +138,47 @@ Widget _coachMenu(BuildContext context) {
 }
 
 Widget _playerMenu(BuildContext context) {
-  return Column(children: []);
+  return Column(children: [
+    _buildMenuItem('Statistics', 'lib/assets/icons/statistics_menu.png',
+        AppColours.mediumDarkBlue, () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+    const SizedBox(height: 20),
+    _buildMenuItem(
+        'Schedule', 'lib/assets/icons/schedule_menu.png', AppColours.mediumBlue,
+        () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) =>
+              MonthlyScheduleScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+    const SizedBox(height: 20),
+    _buildMenuItem(
+        'My Profile', 'lib/assets/icons/players_menu.png', AppColours.lightBlue,
+        () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) =>
+              PlayerProfileScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+  ]);
 }
 
 Widget _physioMenu(BuildContext context) {

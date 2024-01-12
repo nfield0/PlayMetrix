@@ -1,22 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class EditPlayerProfileScreen extends StatefulWidget {
-  const EditPlayerProfileScreen({Key? key}) : super(key: key);
-
+class EditPlayerProfileScreen extends ConsumerWidget {
   @override
-  _EditPlayerProfileScreenState createState() =>
-      _EditPlayerProfileScreenState();
-}
-
-class _EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Players"),
@@ -48,9 +43,10 @@ class _EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                child: _availabilityDropdown(),
-                              ),
+                              if (userRole == UserRole.manager)
+                                Center(
+                                  child: _availabilityDropdown(),
+                                ),
                               const SizedBox(height: 20),
                               Center(
                                   child: Column(children: [
@@ -68,22 +64,23 @@ class _EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                               formFieldBottomBorder(
                                   "Date of birth", "22/01/2002"),
                               formFieldBottomBorder("Height", "183cm"),
-                              dropdownWithDivider(
-                                  "Position",
-                                  "Defender",
-                                  [
-                                    "Forward",
-                                    "Midfielder",
+                              if (userRole == UserRole.manager)
+                                dropdownWithDivider(
+                                    "Position",
                                     "Defender",
-                                    "Goalkeeper"
-                                  ],
-                                  (p0) {}),
+                                    [
+                                      "Forward",
+                                      "Midfielder",
+                                      "Defender",
+                                      "Goalkeeper"
+                                    ],
+                                    (p0) {}),
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () {})
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 1));
   }
 }
 

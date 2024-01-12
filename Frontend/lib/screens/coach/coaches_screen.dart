@@ -57,7 +57,7 @@ class _CoachesScreenState extends State<CoachesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const TeamProfileScreen()),
+                          builder: (context) => TeamProfileScreen()),
                     );
                   }),
                   const SizedBox(height: 30),

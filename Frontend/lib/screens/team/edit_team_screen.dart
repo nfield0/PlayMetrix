@@ -16,7 +16,8 @@ Future<void> editTeam({
   required int sportId,
   required String teamLocation,
 }) async {
-  final apiUrl = 'http://127.0.0.1:8000/login/teams/'; // Replace with your actual API URL
+  final apiUrl =
+      'http://127.0.0.1:8000/login/teams/'; // Replace with your actual API URL
 
   try {
     final response = await http.put(
@@ -84,7 +85,7 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
       ),
       body: Form(
           child: Container(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.all(35),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -110,7 +111,8 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
               const SizedBox(height: 10),
               underlineButtonTransparent("Upload logo", () {}),
             ])),
-             formFieldBottomBorder("Club name", "Louth GAA"),  // NOT IN BACKEND ENDPOINT
+            formFieldBottomBorder(
+                "Club name", "Louth GAA"), // NOT IN BACKEND ENDPOINT
             const SizedBox(height: 10),
             formFieldBottomBorder("Team name", _teamNameController.text),
             const SizedBox(height: 10),
@@ -154,12 +156,11 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
               //   managerId: _managerIdController, // replace with actual manager ID
               //   leagueId: _leagueIdController, // replace with actual league ID
               //   sportId: _sportIdController, // replace with actual sport ID
-              //   teamLocation: _teamLocationController.text,                
+              //   teamLocation: _teamLocationController.text,
               // );
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const TeamProfileScreen()),
+                MaterialPageRoute(builder: (context) => TeamProfileScreen()),
               );
             })
           ],

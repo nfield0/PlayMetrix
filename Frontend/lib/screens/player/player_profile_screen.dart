@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -45,7 +47,8 @@ class PlayerData {
 }
 
 Future<void> getPlapyerById(String id) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl =
+      'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
@@ -113,7 +116,8 @@ class TeamData {
 }
 
 Future<TeamData> getTeamById(String id) async {
-  final apiUrl = 'http:/127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl =
+      'http:/127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
@@ -150,7 +154,6 @@ Future<TeamData> getTeamById(String id) async {
   }
 }
 
-
 class LeagueData {
   final int league_id;
   final String league_name;
@@ -181,9 +184,8 @@ Future<List<LeagueData>> getLeagues() async {
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
-      final List<LeagueData> leagues = responseData
-          .map((json) => LeagueData.fromJson(json))
-          .toList();
+      final List<LeagueData> leagues =
+          responseData.map((json) => LeagueData.fromJson(json)).toList();
 
       // Access individual variables
       for (var league in leagues) {
@@ -223,7 +225,6 @@ Future<String?> getTeamLeagueName(String teamId) async {
   }
 }
 
-
 enum AvailabilityStatus { Available, Limited, Unavailable }
 
 class AvailabilityData {
@@ -235,17 +236,10 @@ class AvailabilityData {
   AvailabilityData(this.status, this.message, this.icon, this.color);
 }
 
-class PlayerProfileScreen extends StatefulWidget {
-  const PlayerProfileScreen({Key? key}) : super(key: key);
-
-  @override
-  _PlayerProfileScreenState createState() => _PlayerProfileScreenState();
-}
-
-class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
+class PlayerProfileScreen extends ConsumerWidget {
   late PlayerData playerData;
   late TeamData teamData;
-  late Future<String?> leagueName = getTeamLeagueName(teamData.league_id.toString());
+  late Future<String?> leagueName;
 
   AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
       "Available", Icons.check_circle, AppColours.green);
@@ -255,12 +249,35 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
       AvailabilityStatus.Unavailable,
       "Unavailable",
       Icons.cancel,
-      AppColours.red);      
+      AppColours.red);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
+    playerData = PlayerData(
+        player_id: 0,
+        player_firstname: "",
+        player_surname: "",
+        player_dob: "",
+        player_contact_number: "",
+        player_image: "",
+        player_height: "",
+        player_gender: "");
+
+    teamData = TeamData(
+        team_id: 0,
+        team_name: "",
+        team_logo: Image.asset("lib/assets/icons/logo_placeholder.png"),
+        manager_id: "",
+        sport_id: 0,
+        league_id: 0,
+        team_location: "");
+
+    leagueName = getTeamLeagueName(teamData.league_id.toString());
+
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: userRole == UserRole.player ? false : true,
           title: Padding(
               padding: const EdgeInsets.only(right: 25, left: 25),
               child: Row(
@@ -276,8 +293,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              const EditPlayerProfileScreen()),
+                          builder: (context) => EditPlayerProfileScreen()),
                     );
                   })
                 ],
@@ -293,8 +309,14 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                 padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
                 child: Center(
                   child: Column(children: [
-                    _playerProfile(playerData.player_firstname, playerData.player_surname, 7, playerData.player_dob, playerData.player_height,
-                        playerData.player_gender, limited),
+                    _playerProfile(
+                        playerData.player_firstname,
+                        playerData.player_surname,
+                        7,
+                        playerData.player_dob,
+                        playerData.player_height,
+                        playerData.player_gender,
+                        limited),
                     const SizedBox(height: 20),
                     divider(),
                     const SizedBox(height: 20),
@@ -304,13 +326,13 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                             fontWeight: FontWeight.bold,
                             color: AppColours.darkBlue,
                             fontSize: 30)),
-                    const SizedBox(height: 20),                 
-                    profilePill(teamData.team_name,  leagueName.toString(),
+                    const SizedBox(height: 20),
+                    profilePill(teamData.team_name, leagueName.toString(),
                         "lib/assets/icons/logo_placeholder.png", () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const TeamProfileScreen()),
+                            builder: (context) => TeamProfileScreen()),
                       );
                     }),
                     const SizedBox(height: 20),
@@ -325,7 +347,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                     _injuriesSection(3),
                     divider(),
                     const SizedBox(height: 20),
-                    const Text("Stats",
+                    const Text("Statistics",
                         style: TextStyle(
                             fontFamily: AppFonts.gabarito,
                             fontWeight: FontWeight.bold,
@@ -338,7 +360,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                     const SizedBox(height: 20),
                   ]),
                 ))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }
 

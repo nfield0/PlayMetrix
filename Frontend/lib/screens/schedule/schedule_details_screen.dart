@@ -152,7 +152,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
             ),
           ),
         ),
-        bottomNavigationBar: managerBottomNavBar(context, 2));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
   }
 }
 
@@ -177,25 +177,25 @@ Widget _announcementsSection(BuildContext context, UserRole userRole) {
             fontSize: 26,
           ),
         ),
-        smallButton(Icons.add_comment, "Add", () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const AddAnnouncementScreen()),
-          );
-        })
+        if (userRole == UserRole.manager || userRole == UserRole.coach)
+          smallButton(Icons.add_comment, "Add", () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddAnnouncementScreen()),
+            );
+          })
       ]),
       const SizedBox(height: 15),
-      if (userRole == UserRole.manager || userRole == UserRole.coach)
-        announcementBox(
-          icon: Icons.announcement,
-          iconColor: AppColours.darkBlue,
-          title: "Bring your gym gears",
-          description:
-              "A dedicated session to enhance our fitness levels. Bring your A-game; we're pushing our boundaries.",
-          date: "18/11/2023",
-          onDeletePressed: () {},
-        )
+      announcementBox(
+        icon: Icons.announcement,
+        iconColor: AppColours.darkBlue,
+        title: "Bring your gym gears",
+        description:
+            "A dedicated session to enhance our fitness levels. Bring your A-game; we're pushing our boundaries.",
+        date: "18/11/2023",
+        onDeletePressed: () {},
+      )
     ],
   );
 }
