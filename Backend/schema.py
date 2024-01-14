@@ -53,6 +53,14 @@ class ManagerNoID(BaseModel):
     manager_contact_number: str
     manager_image: bytes
 
+class PhysioNoID(BaseModel):
+    physio_email: str
+    physio_password: str
+    physio_firstname: str
+    physio_surname: str
+    physio_contact_number: str
+    # physio_image: bytes
+
 class TeamBase(BaseModel):
     team_name: str
     team_logo: bytes
