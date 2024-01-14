@@ -142,6 +142,35 @@ def register_manager(db, user):
     db.commit()
 
     return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
+
+def register_physio(db, user):
+    existing_user = get_user_by_email(db, "physio", user.physio_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.physio_email or not user.physio_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+        
+    if not check_email(user.physio_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_email(user.physio_email):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
+    
+    db.add(new_user)
+    
+    db.commit()
+    db.refresh(new_user)
+    new_user_id = get_user_by_email(db,"physio",user.physio_email)
+    new_user_info = physio_info(physio_id=new_user_id.physio_id, physio_firstname=user.physio_firstname,physio_surname=user.physio_surname,
+                                physio_contact_number=user.physio_contact_number)
+                                   
+    db.add(new_user_info)  
+    db.commit()
+
+    return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
+
+
     
 # def register_user_with_info(db, user):
 #     # if user.user_type != "player" or "manager" or "coach" or "physio":
