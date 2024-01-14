@@ -736,6 +736,37 @@ def delete_physio_team_id(db:Session, id: int):
     
 #endregion
 
+#region team_player
+    
+def get_players_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(team_player).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team players: {e}")
+    
+def add_player_to_team(db:Session, team_id: int, player_id: int):
+    try:
+        new_team_player = team_player(team_id=team_id, player_id=player_id)
+        db.add(new_team_player)
+        db.commit()
+        return {"message": f"Player with ID {player_id} has been added to team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error adding player to team: {e}")
+    
+def delete_player_from_team(db:Session, team_id: int, player_id: int):
+    try:        
+        player_to_delete = db.query(team_player).filter_by(team_id=team_id, player_id=player_id).first()
+        if player_to_delete:
+            db.delete(player_to_delete)
+            db.commit()
+        return {"message": f"Player with ID {player_id} has been deleted from team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error deleting player from team: {e}")
+    
+
+#endregion
+
 #region injuries
     
 def get_injuries(db: Session):
