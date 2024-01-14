@@ -64,6 +64,10 @@ def register_player(user: PlayerCreate, db: Session = Depends(get_db)):
 @app.post("/register_manager")
 def register_manager(user: ManagerCreate, db: Session = Depends(get_db)):
     return crud.register_manager(db, user)
+
+@app.post("/register_physio")
+def register_physio(user: PhysioCreate, db: Session = Depends(get_db)):
+    return crud.register_physio(db, user)
     
 
 @app.post("/login")
