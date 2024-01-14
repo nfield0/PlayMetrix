@@ -582,6 +582,131 @@ def delete_player_by_email(db:Session, email: str):
 
 #endregion
 
+#region physio
+    
+def get_all_physios(db: Session):
+    try:
+        result = db.query(physio_login).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving physios: {e}")
+    
+def get_physio_login_by_id(db: Session, id: int):
+    try:
+        result = db.query(physio_login).filter_by(physio_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving physio: {e}")
+    
+def get_physio_with_info_by_id(db: Session, id: int):
+    try:
+        result = db.query(physio_login).filter_by(physio_id=id).first()
+        info_result = db.query(physio_info).filter_by(physio_id=id).first()
+
+        if info_result:
+            physio = PhysioNoID(physio_email=result.physio_email,physio_password="Hidden",
+                                  physio_firstname=info_result.physio_firstname,physio_surname=info_result.physio_surname,
+                                  physio_contact_number=info_result.physio_contact_number,physio_image=info_result.physio_image)
+            return physio
+        else:
+            raise HTTPException(status_code=404, detail="Physio Info not found")
+            
+    except Exception as e:
+        return(f"Error retrieving physio: {e}")
+    
+
+    
+
+def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
+    try:        
+        if not check_email(str(physio.physio_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")    
+        if not check_password_regex(str(physio.physio_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        #physio login section
+        physio_to_update = db.query(physio_login).filter_by(physio_id= id).first()
+        if not physio_to_update:
+            raise HTTPException(status_code=404, detail="Physio not found")
+        physio_to_update.physio_email = physio.physio_email
+        physio_to_update.physio_password = encrypt_password(physio.physio_password)
+        #physio info section
+        physio_info_to_update = db.query(physio_info).filter_by(physio_id= id).first()
+
+        if not physio_info_to_update:
+            new_physio_info = physio_info(physio_id=id,
+                                        physio_firstname=physio.physio_firstname,
+                                        physio_surname=physio.physio_surname,
+                                        physio_contact_number=physio.physio_contact_number)
+            db.add(new_physio_info)
+        else:
+            physio_info_to_update.physio_firstname = physio.physio_firstname
+            physio_info_to_update.physio_surname = physio.physio_surname
+            physio_info_to_update.physio_contact_number = physio.physio_contact_number
+
+            # raise HTTPException(status_code=404, detail="Physio Info not found")
+        
+        db.commit()
+
+        return {"message": f"Physio and physio info with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating physio: {e}"}
+    
+def delete_physio_by_id(db:Session, id: int):
+    try:        
+        physio = db.query(physio_login).filter_by(physio_id= id).first()
+        if not physio:
+            raise HTTPException(status_code=404, detail="Physio not found")
+        physio_info_result = db.query(physio_info).filter_by(physio_id= id).first()
+        
+        db.delete(physio)
+        db.delete(physio_info_result)
+        db.commit()
+        db.close()
+        return {"message": f"Physio and physio info with ID {id} has been deleted"}
+
+    except Exception as e:
+        return(f"Error deleting from physios: {e}")
+
+
+
+
+
+
+
+#endregion
+    
+#region team_physio
+
+def get_physio_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(team_physio).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team physio: {e}")
+    
+def update_team_physio_by_team_id(db:Session, team_id: int, physio_id: int):
+    try:
+        team_to_update = db.query(team_physio).filter_by(team_id=team_id).first()
+        if not team_to_update:
+            raise HTTPException(status_code=404, detail="Team not found")
+        team_to_update.physio_id = physio_id
+        db.commit()
+        return {"message": f"Team with ID {team_id} has been updated"}
+    except Exception as e:
+        return(f"Error updating team: {e}")
+
+def delete_physio_team_id(db:Session, id: int):
+    try:        
+        team_to_delete = db.query(team_physio).filter_by(team_id=id).first()
+        if team_to_delete:
+            db.delete(team_to_delete)
+            db.commit()
+        return {"message": f"Team with ID {id} has been deleted"}
+    except Exception as e:
+        return(f"Error deleting team physio: {e}")
+    
+#endregion
+
 #region injuries
     
 def get_injuries(db: Session):
