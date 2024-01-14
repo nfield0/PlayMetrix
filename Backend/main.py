@@ -185,6 +185,51 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
 
 #endregion
 
+#region physio
+@app.get("/physio")
+def read_physios(db:Session = Depends(get_db)):
+    return crud.get_all_physios(db)
+
+@app.get("/physio/{id}")
+def read_physio(id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_login_by_id(db, id)
+
+@app.get("/physio/info/{id}")
+def read_physio_with_info(id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_with_info_by_id(db, id)
+
+@app.put("/physio/{id}")
+def update_physio(id: int, physio: PhysioNoID, db:Session = Depends(get_db)):
+    return crud.update_physio_by_id(db, physio, id)
+
+@app.delete("/physio/{id}")
+def delete_physio(id: int, db:Session = Depends(get_db)):
+    return crud.delete_physio_by_id(db, id)
+
+
+
+
+
+#endregion
+
+#region team_physio
+
+@app.get("/team_physio/{id}")
+def read_team_physio(id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_by_team_id(db, id)
+
+@app.put("/team_physio/{id}")
+def update_team_physio(physio_id: int, team_id: int, db:Session = Depends(get_db)):
+    return crud.update_team_physio_by_team_id(db, team_id, physio_id)
+
+
+#may prove redundant
+@app.delete("/team_physio/{id}")
+def delete_physio_team_id(id: int, db:Session = Depends(get_db)):
+    return crud.delete_physio_team_id(db, id)
+
+#endregion
+
 
 
 
