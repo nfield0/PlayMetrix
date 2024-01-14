@@ -220,7 +220,31 @@ Widget _playerMenu(BuildContext context) {
 }
 
 Widget _physioMenu(BuildContext context) {
-  return Column(children: []);
+  return Column(children: [
+    _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
+        AppColours.mediumDarkBlue, () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+    const SizedBox(height: 20),
+    _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
+        AppColours.lightBlue, () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }),
+  ]);
 }
 
 Widget _managerMenu(BuildContext context) {

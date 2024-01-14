@@ -105,6 +105,8 @@ class ProfileScreen extends ConsumerWidget {
                     ]),
                   )
                 ]))),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
+        bottomNavigationBar: userRole != UserRole.physio
+            ? roleBasedBottomNavBar(userRole, context, 3)
+            : roleBasedBottomNavBar(userRole, context, 2));
   }
 }

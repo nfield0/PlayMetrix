@@ -39,7 +39,7 @@ Widget roleBasedBottomNavBar(
     case UserRole.player:
       return playerBottomNavBar(context, selectedIndex);
     case UserRole.physio:
-      return playerBottomNavBar(context, selectedIndex);
+      return physioBottomNavBar(context, selectedIndex);
   }
 }
 
@@ -191,6 +191,47 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
         );
         break;
       case 3:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+    }
+  });
+}
+
+physioBottomNavBar(BuildContext context, int selectedIndex) {
+  return bottomNavBar([
+    bottomNavBarItem("Home", Icons.home),
+    bottomNavBarItem("Players", Icons.group),
+    bottomNavBarItem("My Profile", Icons.person_rounded)
+  ], selectedIndex, (index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 2:
         Navigator.push(
           context,
           PageRouteBuilder(
