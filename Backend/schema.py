@@ -33,6 +33,14 @@ class ManagerCreate(BaseModel):
     manager_contact_number: str
     manager_image: bytes
 
+class PhysioCreate(BaseModel):
+    physio_email: str
+    physio_password: str
+    physio_firstname: str 
+    physio_surname: str 
+    physio_contact_number: str
+
+
 class Manager(BaseModel):
     manager_id: int
     manager_email: str
