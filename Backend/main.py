@@ -222,6 +222,10 @@ def delete_physio(id: int, db:Session = Depends(get_db)):
 def read_team_physio(id: int, db:Session = Depends(get_db)):
     return crud.get_physio_by_team_id(db, id)
 
+@app.post("/team_physio")
+def insert_team_physio(team_id: int, physio_id: int, db:Session = Depends(get_db)):
+    return crud.insert_team_physio_by_team_id(db, physio_id, team_id)
+
 @app.put("/team_physio/{id}")
 def update_team_physio(physio_id: int, team_id: int, db:Session = Depends(get_db)):
     return crud.update_team_physio_by_team_id(db, team_id, physio_id)
