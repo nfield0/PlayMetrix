@@ -36,7 +36,7 @@ def test_add_injury_incorrect():
 
     try:
         response_json = response.json()
-        assert response_json.get("detail") == "Injury type is incorrect"
+        assert response_json.get("detail") == "Name format is invalid"
         assert response.status_code == 400  
 
     except (ValueError, AssertionError) as e:

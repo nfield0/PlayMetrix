@@ -33,7 +33,7 @@ def test_add_sport_incorrect():
 
     try:
         response_json = response.json()
-        assert response_json.get("detail") == "Sport name is incorrect"
+        assert response_json.get("detail") == "Name format is invalid"
         assert response.status_code == 400  
 
     except (ValueError, AssertionError) as e:
@@ -101,7 +101,7 @@ def test_update_sport_by_id_incorrect_name():
    
     try:
         response_json = response.json()
-        assert response_json.get('detail')== "Sport name is incorrect"
+        assert response_json.get('detail')== "Name format is invalid"
     
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
