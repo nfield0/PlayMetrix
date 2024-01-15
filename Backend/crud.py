@@ -30,10 +30,12 @@ def check_password_regex(password : str):
         return False
 
 def check_is_valid_name(name: str):
-    if re.fullmatch(name_regex, name):
-        return True
+    name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
+    if not re.match(name_regex, name):
+        raise HTTPException(status_code=400, detail="Name format is invalid")
+        return false
     else:
-        return False
+        return True
     
 def check_is_valid_team_name(name: str):
     if re.fullmatch(team_name_regex, name):
@@ -127,6 +129,7 @@ def register_manager(db, user):
     if not check_email(user.manager_email):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
+
     new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
     
     db.add(new_user)
@@ -140,7 +143,7 @@ def register_manager(db, user):
                                    
     db.add(new_user_info)  
     db.commit()
-
+    
     return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
 
 def register_physio(db, user):
@@ -635,7 +638,7 @@ def get_physio_with_info_by_id(db: Session, id: int):
         if info_result:
             physio = PhysioNoID(physio_email=result.physio_email,physio_password="Hidden",
                                   physio_firstname=info_result.physio_firstname,physio_surname=info_result.physio_surname,
-                                  physio_contact_number=info_result.physio_contact_number,physio_image=info_result.physio_image)
+                                  physio_contact_number=info_result.physio_contact_number)
             return physio
         else:
             raise HTTPException(status_code=404, detail="Physio Info not found")
@@ -652,6 +655,11 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
             raise HTTPException(status_code=400, detail="Email format invalid")    
         if not check_password_regex(str(physio.physio_password)):
             raise HTTPException(status_code=400, detail="Password format invalid")
+        if not check_is_valid_name(physio.physio_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(str(physio.physio_surname)):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
+
         #physio login section
         physio_to_update = db.query(physio_login).filter_by(physio_id= id).first()
         if not physio_to_update:
@@ -712,6 +720,15 @@ def get_physio_by_team_id(db: Session, id: int):
         return result
     except Exception as e:
         return(f"Error retrieving team physio: {e}")
+    
+def insert_team_physio_by_team_id(db:Session, physio_id: int, team_id: int):
+    try:
+        new_team_physio = team_physio(team_id=team_id, physio_id=physio_id)
+        db.add(new_team_physio)
+        db.commit()
+        return {"message": f"Physio with ID {physio_id} has been added to team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error adding physio to team: {e}")
     
 def update_team_physio_by_team_id(db:Session, team_id: int, physio_id: int):
     try:
