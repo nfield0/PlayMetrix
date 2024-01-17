@@ -133,8 +133,8 @@ def register_manager(db, user):
     new_user_id = get_user_by_email(db,"manager",user.manager_email)
     new_user_info = manager_info(manager_id=new_user_id.manager_id, manager_firstname=user.manager_firstname,manager_surname=user.manager_surname,
                                 manager_contact_number=user.manager_contact_number,
-                                manager_image=user.manager_image)
-                                   
+                                manager_image=user.manager_image)              
+                      
     db.add(new_user_info)  
     db.commit()
     

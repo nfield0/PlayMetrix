@@ -8,12 +8,21 @@ import Backend.crud as crud
 import pytest
 from sqlalchemy.orm import sessionmaker
 from tavern.core import run
+from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Dependency
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Database Dependency
 def get_db():
     db = SessionLocal()
     try:
