@@ -238,8 +238,25 @@ class AvailabilityData {
 }
 
 class PlayerProfileScreen extends ConsumerWidget {
-  late PlayerData playerData;
-  late TeamData teamData;
+  final PlayerData playerData = PlayerData(
+    player_id: 0,
+    player_firstname: "",
+    player_surname: "",
+    player_dob: "",
+    player_contact_number: "",
+    player_image: "",
+    player_height: "",
+    player_gender: ""
+  );
+  final TeamData teamData = TeamData(
+    team_id: 0,
+    team_name: "",
+    team_logo: Image.asset("lib/assets/icons/logo_placeholder.png"),
+    manager_id: "",
+    sport_id: 0,
+    league_id: 0,
+    team_location: ""
+  );
   late Future<String?> leagueName;
 
   AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
@@ -255,24 +272,6 @@ class PlayerProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
-    playerData = PlayerData(
-        player_id: 0,
-        player_firstname: "",
-        player_surname: "",
-        player_dob: "",
-        player_contact_number: "",
-        player_image: "",
-        player_height: "",
-        player_gender: "");
-
-    teamData = TeamData(
-        team_id: 0,
-        team_name: "",
-        team_logo: Image.asset("lib/assets/icons/logo_placeholder.png"),
-        manager_id: "",
-        sport_id: 0,
-        league_id: 0,
-        team_location: "");
 
     leagueName = getTeamLeagueName(teamData.league_id.toString());
 

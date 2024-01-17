@@ -4,6 +4,199 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'sign_up_screen.dart';
+
+String firstName2 = firstName;
+String surname2 = surname;
+String email2 = email;
+String password2 = password;
+
+
+// create a fucntion to check the user type and then send the data to the backend
+String checkUserType(String userType) {
+  String type = "";
+  if (userType == "UserRole.manager") {
+    type = "manager";
+    return type;
+  } else if (userType == "UserRole.player") {
+    type = "player";
+    return type;
+  } else if (userType == "UserRole.coach") {
+    type = "coach";
+    return type;
+  } else if (userType == "UserRole.physio") {
+    type = "physio";
+    return type;
+  } else {
+    return "error";
+  }
+}
+
+Future<void> registerUser({
+  required String UserType,
+  required String firstName,
+  required String surname,
+  required String email,
+  required String password,
+})
+async {
+if (UserType == "manager")
+{
+  final apiUrl =
+      'http://127.0.0.1:8000/register_manager'; // Replace with your actual backend URL
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'manager_firstname': firstName,
+        'manager_surname': surname,
+        'manager_email': email,
+        'manager_password': password,
+        'manager_contact_number': "",
+        'manager_image': "",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully registered, handle the response accordingly
+      print('Registration successful!');
+      print('Response: ${response.body}');
+      // You can parse the response JSON here and perform actions based on it
+    } else {
+      // Failed to register, handle the error accordingly
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+
+}
+if(UserType == "player")
+{
+  final apiUrl =
+      'http://127.0.0.1:8000/register_player'; // Replace with your actual backend URL
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'player_email': email,
+        'player_password': password,
+        'player_firstname': firstName,
+        'player_surname': surname,
+        'player_dob': "",
+        'player_height': "",
+        'player_gender': "",
+        'player_contact_number': "",
+        'player_image': "",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully registered, handle the response accordingly
+      print('Registration successful!');
+      print('Response: ${response.body}');
+      // You can parse the response JSON here and perform actions based on it
+    } else {
+      // Failed to register, handle the error accordingly
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
+
+if(UserType == "coach")
+{
+  final apiUrl =
+      'http://127.0.0.1:8000/register_coach'; // Replace with your actual backend URL
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'physio_email': email,
+        'physio_password': password,
+        'physio_firstname': firstName,
+        'physio_surname': surname,
+        'physio_contact_number': "",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully registered, handle the response accordingly
+      print('Registration successful!');
+      print('Response: ${response.body}');
+      // You can parse the response JSON here and perform actions based on it
+    } else {
+      // Failed to register, handle the error accordingly
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
+
+if (UserType == "physio")
+{
+  final apiUrl =
+      'http://127.0.0.1:8000/register_coach'; // Replace with your actual backend URL
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'physio_email': firstName,
+        'surname': surname,
+        'user_email': email,
+        'user_password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully registered, handle the response accordingly
+      print('Registration successful!');
+      print('Response: ${response.body}');
+      // You can parse the response JSON here and perform actions based on it
+    } else {
+      // Failed to register, handle the error accordingly
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
+
+else{
+  print("error: user type not found");
+}
+
+}
+
+
 
 enum UserRole {
   manager,
@@ -115,6 +308,9 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 45.0),
                       child: bigButton("Sign up", () {
                         print(ref.read(userRoleProvider.notifier).state);
+                        String user_type = checkUserType(ref.read(userRoleProvider.notifier).state.toString());
+                        print(user_type);
+                        registerUser(UserType: user_type, firstName: firstName2, surname: surname2, email: email2, password: password2);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
@@ -45,8 +43,7 @@ class TeamData {
 }
 
 Future<TeamData> getTeamById(String id) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl = 'http://127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
@@ -110,8 +107,7 @@ class ManagerData {
 }
 
 Future<ManagerData> getManagerById(String managerID) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/teams/info/$managerID'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl = 'http://127.0.0.1:8000/teams/info/$managerID'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
@@ -146,29 +142,20 @@ Future<ManagerData> getManagerById(String managerID) async {
   }
 }
 
-class TeamProfileScreen extends ConsumerWidget {
+class TeamProfileScreen extends StatefulWidget {
+  const TeamProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _TeamProfileScreenState createState() => _TeamProfileScreenState();
+}
+
+class _TeamProfileScreenState extends State<TeamProfileScreen> {
   late TeamData teamData;
-  late String managerID;
+  late String managerID = teamData.manager_id.toString();
   late ManagerData managerData;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userRole = ref.watch(userRoleProvider.notifier).state;
-    teamData = TeamData(
-        team_id: 0,
-        team_name: "",
-        team_logo: Image.asset(""),
-        manager_id: "",
-        sport_id: 0,
-        league_id: 0,
-        team_location: "");
-    managerID = teamData.manager_id.toString();
-    managerData = ManagerData(
-        manager_id: 0,
-        manager_firstname: "",
-        manager_surname: Image.asset(""),
-        manager_contact_number: "",
-        manager_image: 1);
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -177,14 +164,13 @@ class TeamProfileScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 appBarTitlePreviousPage("Team Profile"),
-                if (userRole == UserRole.manager)
-                  smallButton(Icons.edit, "Edit", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditTeamScreen()),
-                    );
-                  })
+                smallButton(Icons.edit, "Edit", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditTeamScreen()),
+                  );
+                })
               ],
             )),
         iconTheme: const IconThemeData(
@@ -245,11 +231,8 @@ class TeamProfileScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    profilePill(
-                        managerData.manager_firstname,
-                        managerData.manager_contact_number,
-                        "lib/assets/icons/profile_placeholder.png",
-                        () {}),
+                    profilePill(managerData.manager_firstname, managerData.manager_contact_number,
+                        "lib/assets/icons/profile_placeholder.png", () {}),
                     const SizedBox(height: 20),
                     divider(),
                     Padding(
@@ -266,15 +249,14 @@ class TeamProfileScreen extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          if (userRole == UserRole.manager)
-                            smallButton(Icons.person_add, "Add", () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AddPhysioScreen()),
-                              );
-                            }),
+                          smallButton(Icons.person_add, "Add", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AddPhysioScreen()),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -297,15 +279,13 @@ class TeamProfileScreen extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          if (userRole == UserRole.manager)
-                            smallButton(Icons.person_add, "Add", () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AddCoachScreen()),
-                              );
-                            }),
+                          smallButton(Icons.person_add, "Add", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AddCoachScreen()),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -315,7 +295,7 @@ class TeamProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ))),
-      bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 0),
+      bottomNavigationBar: managerBottomNavBar(context, 0),
     );
   }
 }

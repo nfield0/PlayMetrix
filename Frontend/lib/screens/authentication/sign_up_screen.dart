@@ -6,46 +6,10 @@ import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<void> registerUser({
-  required String userType,
-  required String firstName,
-  required String surname,
-  required String email,
-  required String password,
-}) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/register'; // Replace with your actual backend URL
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'user_type': userType,
-        'first_name': firstName,
-        'surname': surname,
-        'user_email': email,
-        'user_password': password,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
+String firstName = "";
+String surname = "";
+String email = "";
+String password = "";
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -325,13 +289,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         "Continue",
                         () {
                           // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE REGISTER FUNCTION AND HOW TO GET THE USER TYPE
-                          registerUser(
-                            userType: _formKey.toString(),
-                            firstName: _firstNameController.text,
-                            surname: _surnameController.text,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
+                            firstName = _firstNameController.text;
+                            surname = _surnameController.text;
+                            email = _emailController.text;
+                            password = _passwordController.text;
                           // sign up functionality
                           if (_formKey.currentState!.validate()) {
                             // Only execute if all fields are valid
