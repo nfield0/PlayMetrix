@@ -14,11 +14,61 @@ This application has several Key Features:
 
 
 
-# How to install
+# How to install & run
 
 ### Prerequisites
 
-### Installation
+Database - 
+PostgreSQL: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+
+Backend - 
+Python (3.11.5): https://www.python.org/downloads/
+
+Frontend -
+Flutter: https://docs.flutter.dev/get-started/install
+
+### Installation & Running
+
+Database: 
+
+
+Backend:
+
+> Create a Virtual Environment (Ctrl + Shift + P in VSCode)
+```
+python -m venv .venv
+```
+> Run Virtual Environment
+```
+.venv/scripts/activate
+```
+> Install Requirement libraries
+```
+python -m pip install -r requirements.txt
+```
+> Create a new file in your project directory and name it .env. Insert this text inside:
+```
+DB_CONNECTION = "postgresql://postgres:yourpassword@localhost:5432/yourdatabasename"
+```
+> Run Backend (Uvicorn)
+```
+python -m uvicorn Backend.main:app --reload
+```
+Backend Testing: 
+> Run in new terminal
+```
+python -m pytest
+```
+> Interactive Documentation
+```
+http://127.0.0.1:8000/docs
+```
+
+
+
+Frontend:
+
+
 
 
 
