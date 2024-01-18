@@ -4,8 +4,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 
 from fastapi import Depends, FastAPI, HTTPException
-from Backend.models import *
-from Backend.schema import *
+from models import *
+from schema import *
 import bcrypt
 from passlib.context import CryptContext
 
