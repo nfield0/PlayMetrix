@@ -589,14 +589,17 @@ def delete_player(db: Session, id: int):
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
         player_injuries_result = db.query(player_injuries).filter_by(player_id=id).first()
         
-        
+        print(player_stats_result)
+
+        if player_injuries_result:
+            db.delete(player_injuries_result) 
+            db.commit()
         if player_stats_result:
             db.delete(player_stats_result)
-            if player_info_result:
-                db.delete(player_info_result)
-            
-            if player_injuries_result:
-                db.delete(player_injuries_result)
+            db.commit()
+        if player_info_result:
+            db.delete(player_info_result)
+            db.commit()
         db.delete(player)
         db.commit()
         db.close()
@@ -609,17 +612,18 @@ def delete_player(db: Session, id: int):
 def delete_player_by_email(db:Session, email: str):
     try:        
         player = db.query(player_login).filter_by(player_email=email).first()
-        player_info = db.query(player_info).filter_by(player_id=id).first()
-        player_stats = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        player_info_result = db.query(player_info).filter_by(player_id=id).first()
+        player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
+        player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        
+        if player_injuries_result:
+            db.delete(player_injuries_result) 
+        if player_stats_result:
+            db.delete(player_stats_result)
+        if player_info_result:
+            db.delete(player_info_result)
         
         db.delete(player)
-        if player_info:
-            db.delete(player_info)
-        if player_stats:
-            db.delete(player_stats)
-        if player_injuries:
-            db.delete(player_injuries)
         db.commit()
         db.close()
         return {"message": f"Player with Email {email} has been deleted"}
