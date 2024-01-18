@@ -77,6 +77,10 @@ def register_manager(user: ManagerCreate, db: Session = Depends(get_db)):
 @app.post("/register_physio")
 def register_physio(user: PhysioCreate, db: Session = Depends(get_db)):
     return crud.register_physio(db, user)
+
+@app.post("/register_coach")
+def register_physio(user: CoachCreate, db: Session = Depends(get_db)):
+    return crud.register_coach(db, user)
     
 
 @app.post("/login")
@@ -224,6 +228,52 @@ def delete_physio(id: int, db:Session = Depends(get_db)):
 
 
 #endregion
+
+#region coaches
+
+@app.get("/coaches")
+def read_coaches(db:Session = Depends(get_db)):
+    return crud.get_all_coaches(db)
+
+@app.get("/coaches/{id}")
+def read_coach(id: int, db:Session = Depends(get_db)):
+    return crud.get_coach_login_by_id(db, id)
+
+@app.get("/coaches/info/{id}")
+def read_coach_with_info(id: int, db:Session = Depends(get_db)):
+    return crud.get_coach_with_info_by_id(db, id)
+
+@app.put("/coaches/{id}")
+def update_coach(id: int, coach: CoachCreate, db:Session = Depends(get_db)):
+    return crud.update_coach_by_id(db, coach, id)
+
+@app.delete("/coaches/{id}")
+def delete_coach(id: int, db:Session = Depends(get_db)):
+    return crud.delete_coach_by_id(db, id)
+
+
+#endregion
+
+#region team_coaches
+
+@app.get("/team_coach/{id}")
+def read_team_coach(id: int, db:Session = Depends(get_db)):
+    return crud.get_coach_by_team_id(db, id)
+
+@app.post("/team_coach")
+def insert_team_coach(team_id: int, coach_id: int, db:Session = Depends(get_db)):
+    return crud.insert_team_coach_by_team_id(db, coach_id, team_id)
+
+@app.put("/team_coach/{id}")
+def update_team_coach(coach_id: int, team_id: int, db:Session = Depends(get_db)):
+    return crud.update_team_coach_by_team_id(db, team_id, coach_id)
+
+@app.delete("/team_coach/{id}")
+def delete_coach_team_id(id: int, db:Session = Depends(get_db)):
+    return crud.delete_team_coach_by_team_id(db, id)
+
+#endregion
+
 
 #region team_physio
 
