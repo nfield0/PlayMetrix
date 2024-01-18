@@ -74,12 +74,59 @@ http://127.0.0.1:8000/docs
 
 
 ## Frontend:
+#### Using VS Code to install Flutter
+##### Start Flutter Install
+1. Open VS Code
+2. Download the **"Flutter" extension** on VS Code
+3. Open the Command Palette (```Control```+```Shift```+```P```)
+4. Type ```flutter``` in the Command Palette
+5. Select **Flutter: New Project**
+6. VS Code prompts you to locate the Flutter SDK on your computer.<br/>
+<nbsp/><nbsp/><nbsp/><nbsp/>a. If you have the Flutter SDK installed, click **Locate SDK**.<br/>
+<nbsp/><nbsp/><nbsp/><nbsp/>b. If you do not have the Flutter SDK installed, click **Download SDK**.
+7. When prompted <strong>Which Flutter template?</strong>, ignore it. Press Esc. You can create a test project after checking your development setup.
 
+##### Download the Flutter SDK
+1. When the Select Folder for Flutter SDK dialog displays, choose where you want to install Flutter.
+> VS Code places you in your user profile to start. Choose a different location.
+3. Click **Clone Flutter**. While downloading Flutter, VS Code displays this pop-up notification:
+```
+Downloading the Flutter SDK. This may take a few minutes.
+```
+3. Once it finishes downloading Flutter, the Output panel displays:
+```
+Checking Dart SDK version...
+Downloading Dart SDK from the Flutter engine ...
+Expanding downloaded archive...
+```
+> When successful, VS Code displays this pop-up notification:
+```
+Initializing the Flutter SDK. This may take a few minutes.
+```
+> When the Flutter install succeeds, VS Code displays this pop-up notification:
+```
+Do you want to add the Flutter SDK to PATH so it's accessible
+in external terminals?
+```
+4. Click **Add SDK** to PATH.
+> When successful, a notification displays:
+```
+The Flutter SDK was added to your PATH
+```
+5. To enable ```flutter``` in all PowerShell windows:
+<nbsp/><nbsp/><nbsp/><nbsp/>a. Close, then reopen all PowerShell windows.
+<nbsp/><nbsp/><nbsp/><nbsp/>b. Restart VS Code.
 
-
-
-
-
+#### Running the Flutter application
+- Open any simulator you want the app to be running on
+> Locate to the Frontend folder
+```
+cd Frontend
+```
+> Run the application
+```
+flutter run
+```
 
 ## Technologies Used
 
