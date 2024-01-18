@@ -25,10 +25,8 @@ def check_password_regex(password : str):
         return False
 
 def check_is_valid_name(name: str):
-    name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
     if not re.match(name_regex, name):
         raise HTTPException(status_code=400, detail="Name format is invalid")
-        return false
     else:
         return True
     
@@ -167,6 +165,32 @@ def register_physio(db, user):
 
     return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
 
+def register_coach(db, user):
+    existing_user = get_user_by_email(db, "coach", user.coach_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.coach_email or not user.coach_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+        
+    if not check_email(user.coach_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_email(user.coach_email):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
+    
+    db.add(new_user)
+    
+    db.commit()
+    db.refresh(new_user)
+    new_user_id = get_user_by_email(db,"coach",user.coach_email)
+    new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=user.coach_surname,
+                                coach_contact_number=user.coach_contact_number)
+                                   
+    db.add(new_user_info)  
+    db.commit()
+
+    return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
 
     
 # def register_user_with_info(db, user):
@@ -705,6 +729,140 @@ def delete_physio_by_id(db:Session, id: int):
 
 #endregion
     
+
+#region coaches
+    
+def get_all_coaches(db: Session):
+    try:
+        result = db.query(coach_login).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving coaches: {e}")
+    
+def get_coach_login_by_id(db: Session, id: int):
+    try:
+        result = db.query(coach_login).filter_by(coach_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving coach: {e}")
+    
+def get_coach_with_info_by_id(db: Session, id: int):
+    try:
+        result = db.query(coach_login).filter_by(coach_id=id).first()
+        info_result = db.query(coach_info).filter_by(coach_id=id).first()
+
+        if info_result:
+            coach = CoachCreate(coach_email=result.coach_email,coach_password="Hidden",
+                                  coach_firstname=info_result.coach_firstname,coach_surname=info_result.coach_surname,
+                                  coach_contact_number=info_result.coach_contact_number)
+            return coach
+        else:
+            raise HTTPException(status_code=404, detail="Coach Info not found")
+            
+    except Exception as e:
+        return(f"Error retrieving coach: {e}")
+
+def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
+    try:        
+        if not check_email(str(coach.coach_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")    
+        if not check_password_regex(str(coach.coach_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        if not check_is_valid_name(coach.coach_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(str(coach.coach_surname)):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
+
+        #coach login section
+        coach_to_update = db.query(coach_login).filter_by(coach_id= id).first()
+        if not coach_to_update:
+            raise HTTPException(status_code=404, detail="Coach not found")
+        coach_to_update.coach_email = coach.coach_email
+        coach_to_update.coach_password = encrypt_password(coach.coach_password)
+        #coach info section
+        coach_info_to_update = db.query(coach_info).filter_by(coach_id= id).first()
+
+        if not coach_info_to_update:
+            new_coach_info = coach_info(coach_id=id,
+                                        coach_firstname=coach.coach_firstname,
+                                        coach_surname=coach.coach_surname,
+                                        coach_contact_number=coach.coach_contact_number)
+            db.add(new_coach_info)
+        else:
+            coach_info_to_update.coach_firstname = coach.coach_firstname
+            coach_info_to_update.coach_surname = coach.coach_surname
+            coach_info_to_update.coach_contact_number = coach.coach_contact_number
+
+            # raise HTTPException(status_code=404, detail="Coach Info not found")
+        
+        db.commit()
+
+        return {"message": f"Coach and coach info with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating coach: {e}"}
+
+def delete_coach_by_id(db:Session, id: int):
+    try:        
+        coach = db.query(coach_login).filter_by(coach_id= id).first()
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach not found")
+        coach_info_result = db.query(coach_info).filter_by(coach_id= id).first()
+        
+        db.delete(coach)
+        db.delete(coach_info_result)
+        db.commit()
+        db.close()
+        return {"message": f"Coach and coach info with ID {id} has been deleted"}
+
+    except Exception as e:
+        return(f"Error deleting from coaches: {e}")
+
+#endregion
+    
+#region team_coach
+    
+def get_coach_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(team_coach).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team coaches: {e}")
+    
+def insert_team_coach_by_team_id(db:Session, coach_id: int, team_id: int):
+    try:
+        new_team_coach = team_coach(team_id=team_id, coach_id=coach_id)
+        db.add(new_team_coach)
+        db.commit()
+        return {"message": f"Coach with ID {coach_id} has been added to team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error adding coach to team: {e}")
+    
+def update_team_coach_by_team_id(db:Session, team_id: int, coach_id: int):
+    try:
+        team_to_update = db.query(team_coach).filter_by(team_id=team_id).first()
+        if not team_to_update:
+            raise HTTPException(status_code=404, detail="Team not found")
+        team_to_update.coach_id = coach_id
+        db.commit()
+        return {"message": f"Team with ID {team_id} has been updated"}
+    except Exception as e:
+        return(f"Error updating team: {e}")
+    
+def delete_team_coach_by_team_id(db:Session, id: int):
+    try:        
+        team_to_delete = db.query(team_coach).filter_by(team_id=id).first()
+        if team_to_delete:
+            db.delete(team_to_delete)
+            db.commit()
+        return {"message": f"Team with ID {id} has been deleted"}
+    except Exception as e:
+        return(f"Error deleting team coach: {e}")
+
+
+
+#endregion
+
+
 #region team_physio
 
 def get_physio_by_team_id(db: Session, id: int):
