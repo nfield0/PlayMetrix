@@ -13,7 +13,7 @@ def test_add_player():
     json = {
         "player_type": "player",
         "player_email": "testplayer@gmail.com",
-        "player_password": "Password123!",
+        "player_password": "Testpassword123",
         "player_firstname": "Nigel",
         "player_surname": "Farage",
         "player_height": "1.80m",
@@ -44,7 +44,7 @@ def test_login_player():
     json = {
         "user_type": "player",
         "user_email": "testplayer@gmail.com",
-        "user_password": "Password123!"
+        "user_password": "Testpassword123"
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -92,7 +92,7 @@ def test_add_manager():
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
-        "manager_password": "Password123!",
+        "manager_password": "Testpassword123",
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
@@ -119,7 +119,7 @@ def test_login_manager():
     json = {
         "user_type": "manager",
         "user_email": "testmanager@gmail.com",
-        "user_password": "Password123!"
+        "user_password": "Testpassword123"
     }
     response = requests.post(url, headers=headers, json=json)
 

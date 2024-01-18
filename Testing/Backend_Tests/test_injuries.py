@@ -105,7 +105,7 @@ def test_add_player():
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayer@gmail.com",
-        "player_password": "test_password",
+        "player_password": "Testpassword123",
         "player_firstname": "Nigel",
         "player_surname": "Farage",
         "player_height": "1.80m",
