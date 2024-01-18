@@ -29,18 +29,22 @@ Flutter: https://docs.flutter.dev/get-started/install
 
 ### Installation & Running
 
-Database: 
-> Go to PostgreSQL website and download the latest
-> Select your OS and version of PostgreSQL
-> Once installed, open PgAdmin4
-> Add a master password, and remember this as it will be used to run backend later.
+# Database: 
+#### Go to PostgreSQL website and download the latest
+#### Select your OS and version of PostgreSQL
+#### Once installed, open PgAdmin4
+#### Add a master password, and remember this as it will be used to run backend later.
 
 
-Backend:
+# Backend:
 
-> Create a Virtual Environment (Ctrl + Shift + P in VSCode)
+> Create a Virtual Environment on Windows (Ctrl + Shift + P in VSCode)
 ```
 python -m venv .venv
+```
+> Create a Virtual Environment on MacOS
+```
+source venv/bin/activate
 ```
 > Run Virtual Environment
 ```
@@ -58,7 +62,7 @@ DB_CONNECTION = "postgresql://postgres:yourpassword@localhost:5432/yourdatabasen
 ```
 python -m uvicorn Backend.main:app --reload
 ```
-Backend Testing: 
+# Backend Testing: 
 > Run in new terminal
 ```
 python -m pytest
@@ -70,7 +74,7 @@ http://127.0.0.1:8000/docs
 
 
 
-Frontend:
+# Frontend:
 
 
 
