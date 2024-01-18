@@ -179,22 +179,22 @@ def test_get_player_stats():
         assert False, f"Test failed: {e}"
         
 
-# def test_delete_player():
-#     url = 'http://127.0.0.1:8000/players/1'
-#     headers = {'Content-Type': 'application/json'}
-#     response = requests.delete(url, headers=headers)
-#     assert response.status_code == 200
-#     assert response.headers['Content-Type'] == 'application/json'
-#     try:
-#         response_json = response.json()
-#         expected_data = {
-#             "message":"Player with ID 1 has been deleted"
-#         }
+def test_delete_player():
+    url = 'http://127.0.0.1:8000/players/1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "message":"Player with ID 1 has been deleted"
+        }
         
-#         assert response_json == expected_data
+        assert response_json == expected_data
 
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
         
 def test_z_cleanup():
     url = 'http://127.0.0.1:8000/cleanup_tests'
