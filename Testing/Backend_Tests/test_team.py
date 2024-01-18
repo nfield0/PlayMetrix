@@ -15,7 +15,7 @@ def test_adc_manager():
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
-        "manager_password": "Password123!",
+        "manager_password": "Testpassword123",
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",

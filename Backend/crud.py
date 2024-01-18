@@ -7,7 +7,7 @@ import bcrypt
 from passlib.context import CryptContext
 
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
+password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}'
 name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
 team_name_regex = r'^[A-Za-z0-9\s]*$'
 
@@ -90,7 +90,7 @@ def register_player(db, user):
         
     if not check_email(user.player_email):
         raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.player_email):
+    if not check_password_regex(user.player_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
     new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
@@ -118,7 +118,7 @@ def register_manager(db, user):
         
     if not check_email(user.manager_email):
         raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.manager_email):
+    if not check_password_regex(user.manager_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
 
@@ -147,8 +147,12 @@ def register_physio(db, user):
         
     if not check_email(user.physio_email):
         raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.physio_email):
+    if not check_password_regex(user.physio_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
+    if not check_is_valid_name(user.physio_firstname):
+        raise HTTPException(status_code=400, detail="First name format invalid")
+    if not check_is_valid_name(str(user.physio_surname)):
+        raise HTTPException(status_code=400, detail="Surname format invalid")
     
     new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
     
@@ -687,6 +691,7 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
             raise HTTPException(status_code=404, detail="Physio not found")
         physio_to_update.physio_email = physio.physio_email
         physio_to_update.physio_password = encrypt_password(physio.physio_password)
+        db.commit()
         #physio info section
         physio_info_to_update = db.query(physio_info).filter_by(physio_id= id).first()
 
@@ -700,12 +705,12 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
             physio_info_to_update.physio_firstname = physio.physio_firstname
             physio_info_to_update.physio_surname = physio.physio_surname
             physio_info_to_update.physio_contact_number = physio.physio_contact_number
-
-            # raise HTTPException(status_code=404, detail="Physio Info not found")
         
         db.commit()
 
         return {"message": f"Physio and physio info with ID {id} has been updated"}
+    except HTTPException as http_err:
+        raise http_err
     except Exception as e:
         return {"message": f"Error updating physio: {e}"}
     
@@ -878,10 +883,17 @@ def get_physio_by_team_id(db: Session, id: int):
     
 def insert_team_physio_by_team_id(db:Session, physio_id: int, team_id: int):
     try:
+        if not get_physio_login_by_id(db, physio_id):
+            raise HTTPException(status_code=400, detail="Physio ID Does not Exist")
+        if not get_team_by_id(db, team_id):
+            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+        
         new_team_physio = team_physio(team_id=team_id, physio_id=physio_id)
         db.add(new_team_physio)
         db.commit()
         return {"message": f"Physio with ID {physio_id} has been added to team with ID {team_id}"}
+    except HTTPException as http_err:
+        raise http_err
     except Exception as e:
         return(f"Error adding physio to team: {e}")
     
