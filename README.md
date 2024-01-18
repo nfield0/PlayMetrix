@@ -32,6 +32,8 @@ Flutter: https://docs.flutter.dev/get-started/install
 #### Once installed, open PgAdmin4
 #### Add a master password, and remember this as it will be used to run backend later.
 
+### Run the code contained in playmetrixV2.sql to create the database and tables
+
 
 ## Backend:
 
