@@ -106,6 +106,24 @@ class team_player(Base):
 	__tablename__ = "player_team"
 	player_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
-	team_position = Column(String(30), index = True)	
+	team_position = Column(String(30), index = True)
 
+class team_coach(Base):
+	__tablename__ = "team_coach"
+	coach_id = Column(Integer, primary_key = True, index = True)
+	team_id = Column(Integer, primary_key = True, index = True)
+	team_role = Column(String(255), index = True)
 
+class coach_login(Base):
+	__tablename__ = "coach_login"
+	coach_id = Column(Integer, primary_key = True, index = True)
+	coach_email = Column(String(50), index = True, unique = True)
+	coach_password = Column(String(150), index = True)
+
+class coach_info(Base):
+	__tablename__ = "coach_info"
+	coach_id = Column(Integer, primary_key = True, index = True)
+	coach_firstname = Column(String(25), index = True)
+	coach_surname = Column(String(25), index = True)
+	coach_contact_number = Column(String(25), index = True)
+	coach_image = Column(LargeBinary, index = True)
