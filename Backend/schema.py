@@ -40,6 +40,14 @@ class PhysioCreate(BaseModel):
     physio_surname: str 
     physio_contact_number: str
 
+class CoachCreate(BaseModel):
+    coach_email: str
+    coach_password: str
+    coach_firstname: str
+    coach_surname: str
+    coach_contact_number: str
+    coach_image: bytes
+
 
 class Manager(BaseModel):
     manager_id: int
