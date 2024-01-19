@@ -86,7 +86,7 @@ def register_physio(user: CoachCreate, db: Session = Depends(get_db)):
     
 
 @app.post("/login")
-def login_user(user: UserCreate, db: Session = Depends(get_db)):
+def login_user(user: User, db: Session = Depends(get_db)):
     return crud.login(db, user)
 
     
