@@ -196,7 +196,7 @@ def register_coach(db, user):
         db.add(new_user_info)  
         db.commit()
 
-        return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
+        return {"detail": "Coach Registered Successfully", "id": get_user_by_email(db,"coach",user.coach_email)}
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
@@ -828,18 +828,20 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
             new_coach_info = coach_info(coach_id=id,
                                         coach_firstname=coach.coach_firstname,
                                         coach_surname=coach.coach_surname,
-                                        coach_contact_number=coach.coach_contact_number)
+                                        coach_contact=coach.coach_contact)
             db.add(new_coach_info)
         else:
             coach_info_to_update.coach_firstname = coach.coach_firstname
             coach_info_to_update.coach_surname = coach.coach_surname
-            coach_info_to_update.coach_contact_number = coach.coach_contact_number
+            coach_info_to_update.coach_contact = coach.coach_contact
 
             # raise HTTPException(status_code=404, detail="Coach Info not found")
         
         db.commit()
 
         return {"message": f"Coach and coach info with ID {id} has been updated"}
+    except HTTPException as http_err:
+        raise http_err
     except Exception as e:
         return {"message": f"Error updating coach: {e}"}
 

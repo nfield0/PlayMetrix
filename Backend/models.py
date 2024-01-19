@@ -118,5 +118,5 @@ class coach_info(Base):
 	coach_id = Column(Integer, primary_key = True, index = True)
 	coach_firstname = Column(String(25), index = True)
 	coach_surname = Column(String(25), index = True)
-	coach_contact_number = Column(String(25), index = True)
+	coach_contact = Column(String(25), index = True)
 	coach_image = Column(LargeBinary, index = True)
