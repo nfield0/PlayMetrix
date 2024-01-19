@@ -53,7 +53,7 @@ class CoachCreate(BaseModel):
     coach_password: str
     coach_firstname: str
     coach_surname: str
-    coach_contact_number: str
+    coach_contact: str
     coach_image: bytes
 
 
