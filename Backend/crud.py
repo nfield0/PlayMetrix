@@ -170,31 +170,37 @@ def register_physio(db, user):
     return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
 
 def register_coach(db, user):
-    existing_user = get_user_by_email(db, "coach", user.coach_email)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    if not user.coach_email or not user.coach_password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
+    try:
+        existing_user = get_user_by_email(db, "coach", user.coach_email)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        if not user.coach_email or not user.coach_password:
+            raise HTTPException(status_code=400, detail="Email and password are required")
+            
+        if not check_email(user.coach_email):
+            raise HTTPException(status_code=400, detail="Email format invalid")
+        if not check_email(user.coach_email):
+            raise HTTPException(status_code=400, detail="Password format invalid")
         
-    if not check_email(user.coach_email):
-        raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.coach_email):
-        raise HTTPException(status_code=400, detail="Password format invalid")
-    
-    new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
-    
-    db.add(new_user)
-    
-    db.commit()
-    db.refresh(new_user)
-    new_user_id = get_user_by_email(db,"coach",user.coach_email)
-    new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=user.coach_surname,
-                                coach_contact_number=user.coach_contact_number)
-                                   
-    db.add(new_user_info)  
-    db.commit()
+        new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
+        
+        db.add(new_user)
+        
+        db.commit()
+        db.refresh(new_user)
+        
+        new_user_id = get_user_by_email(db,"coach",user.coach_email)
+        new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=user.coach_surname,
+                                    coach_contact=user.coach_contact, coach_image=user.coach_image)
+                                    
+        db.add(new_user_info)  
+        db.commit()
 
-    return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
+        return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return(f"Error registering coaches: {e}")
 
     
 # def register_user_with_info(db, user):
@@ -230,22 +236,45 @@ def register_coach(db, user):
 
     
 def login(db, user):
-    existing_user = get_user_by_email(db, user.user_type, user.user_email)
+    return get_user_details_by_email_password(db, user.user_email, user.user_password)
     
-    if existing_user:
-        if user.user_type == "manager" and verify_password(user.user_password, existing_user.manager_password):
-            return {"user_email": True, "user_password": True}
-        elif user.user_type == "player" and verify_password(user.user_password, existing_user.player_password):
-            return {"user_email": True, "user_password": True}
-        elif user.user_type == "physio" and verify_password(user.user_password, existing_user.physio_password):
-            return {"user_email": True, "user_password": True}
+    # if existing_user:
+    #     if user.user_type == "manager" and verify_password(user.user_password, existing_user.manager_password):
+    #         return {"user_email": True, "user_password": True}
+    #     elif user.user_type == "player" and verify_password(user.user_password, existing_user.player_password):
+    #         return {"user_email": True, "user_password": True}
+    #     elif user.user_type == "physio" and verify_password(user.user_password, existing_user.physio_password):
+    #         return {"user_email": True, "user_password": True}
+    #     else:
+    #         return {"user_email": True, "user_password": False}
+    # else:
+    #     return {"user_email": False, "user_password": False}
+
+
+
+def get_user_details_by_email_password(db:Session, email: str, password: str):
+    # raise HTTPException(status_code=200, detail=email)
+
+    try:
+        manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
+        player_login_result = db.query(player_login).filter_by(player_email=email).first()
+        physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
+        coach_login_result = db.query(coach_login).filter_by(coach_email=email).first()
+
+
+        if manager_login_result:
+            return UserLoginBase(user_id=manager_login_result.manager_id, user_type="manager", user_email=True, user_password=verify_password(password, manager_login_result.manager_password))
+        elif player_login_result:
+            return UserLoginBase(user_id=player_login_result.player_id, user_type="player", user_email=True, user_password=verify_password(password, player_login_result.player_password))
+        elif physio_login_result:
+            return UserLoginBase(user_id=physio_login_result.physio_id, user_type="physio", user_email=True, user_password=verify_password(password, physio_login_result.physio_password))
+        elif coach_login_result:
+            return UserLoginBase(user_id=coach_login_result.coach_id, user_type="coach", user_email=True, user_password=verify_password(password, coach_login_result.coach_password))
         else:
-            return {"user_email": True, "user_password": False}
-    else:
-        return {"user_email": False, "user_password": False}
-
-
-
+            raise HTTPException(status_code=400, detail="No user found")
+        
+    except Exception as e:
+        return(f"Error retrieving user: {e}")
 
    
     
@@ -259,11 +288,15 @@ def get_user_by_email(db:Session, type: str, email: str):
             login_info = db.query(player_login).filter_by(player_email=email).first()
         elif type == "physio":
             login_info = db.query(physio_login).filter_by(physio_email=email).first()
-
-       
+        elif type == "coach":
+            login_info = db.query(coach_login).filter_by(coach_email=email).first()
+        else:
+            raise HTTPException(status_code=400, detail="Invalid user type")
+        
         return login_info
     except Exception as e:
         return(f"Error retrieving from {type}s: {e}")
+    
 
 
 #region team
@@ -1158,6 +1191,17 @@ def cleanup(db: Session):
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()
+
+
+        db.query(player_stats).delete()
+
+        db.query(player_info).delete()
+        db.query(player_login).delete()
+
+        db.query(coach_info).delete()
+        db.query(coach_login).delete()
+
+
         db.flush()
 
         db.execute("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;")
