@@ -4,10 +4,18 @@ from pydantic import BaseModel
 class LeagueBase(BaseModel):
     league_name : str
 
-
+class UserLoginBase(BaseModel):
+    user_id: int
+    user_type: str
+    user_email: bool
+    user_password: bool
 
 class UserCreate(BaseModel):
     user_type: str
+    user_email: str
+    user_password: str
+
+class User(BaseModel):
     user_email: str
     user_password: str
 
