@@ -90,7 +90,6 @@ def test_login_physio():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "user_type": "physio",
         "user_email": "testphysio@gmail.com",
         "user_password": "Testpassword123"
     }
@@ -100,6 +99,8 @@ def test_login_physio():
 
     try:
         expected_data = {
+            "user_id": 1,            
+            "user_type": "physio",
             "user_email": True,
             "user_password": True
             }
@@ -114,7 +115,6 @@ def test_login_physio_fail():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "user_type": "physio",
         "user_email": "testphysio@gmail.com",
         "user_password": "Password123"
     }
@@ -124,6 +124,8 @@ def test_login_physio_fail():
 
     try:
         expected_data = {
+            "user_id": 1,
+            "user_type": "physio",
             "user_email": True,
             "user_password": False
             }

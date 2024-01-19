@@ -42,7 +42,6 @@ def test_login_player():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "user_type": "player",
         "user_email": "testplayer@gmail.com",
         "user_password": "Testpassword123"
     }
@@ -52,6 +51,8 @@ def test_login_player():
 
     try:
         expected_data = {
+            "user_id": 1,
+            "user_type": "player",
             "user_email": True,
             "user_password": True
             }
@@ -66,9 +67,8 @@ def test_login_player_incorrect():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "user_type": "player",
-        "user_email": "testplayer@gmail.com",
-        "user_password": "Pass"
+       "user_email": "testplayer@gmail.com",
+        "user_password": "Testpassword"
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -76,6 +76,8 @@ def test_login_player_incorrect():
 
     try:
         expected_data = {
+            "user_id": 1,
+            "user_type": "player",
             "user_email": True,
             "user_password": False
             }
@@ -117,7 +119,6 @@ def test_login_manager():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "user_type": "manager",
         "user_email": "testmanager@gmail.com",
         "user_password": "Testpassword123"
     }
@@ -127,6 +128,8 @@ def test_login_manager():
 
     try:
         expected_data = {
+            "user_id": 1,
+            "user_type": "manager",
             "user_email": True,
             "user_password": True
             }
@@ -141,7 +144,6 @@ def test_login_manager_incorrect():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "user_type": "manager",
         "user_email": "testmanager@gmail.com",
         "user_password": "Pas!"
     }
@@ -151,6 +153,8 @@ def test_login_manager_incorrect():
 
     try:
         expected_data = {
+            "user_id": 1,
+            "user_type": "manager",
             "user_email": True,
             "user_password": False
             }
