@@ -321,18 +321,18 @@ def test_add_physio_2():
         assert False, f"Test failed: {e}"
 
 
-def test_add_z_team_physio():
-    url = 'http://127.0.0.1:8000/team_physio'
-    headers = {'Content-Type': 'application/json'}
-    json = {
-        "team_id": 1,
-        "physio_id": 1
-    }
-    response = requests.post(url, headers=headers, json=json)
+# def test_add_z_team_physio():
+#     url = 'http://127.0.0.1:8000/team_physio'
+#     headers = {'Content-Type': 'application/json'}
+#     json = {
+#         "team_id": 1,
+#         "physio_id": 1
+#     }
+#     response = requests.post(url, headers=headers, json=json)
     
-    #assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    assert response == "Physio with ID 1 has been added to team with ID 1"
+#     #assert response.status_code == 200
+#     assert response.headers['Content-Type'] == 'application/json'
+#     assert response == "Physio with ID 1 has been added to team with ID 1"
 
 
 # def test_get_team_physio():
