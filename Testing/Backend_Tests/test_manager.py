@@ -26,6 +26,57 @@ def test_add_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+
+def test_login_manager():
+    url = 'http://127.0.0.1:8000/login'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_email": "testmanager@gmail.com",
+        "user_password": "Testpassword123"
+    }
+    response = requests.post(url, headers=headers, json=json)
+
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_data = {
+            "user_id": 1,
+            "user_type": "manager",
+            "user_email": True,
+            "user_password": True
+            }
+        response_json = response.json()
+        assert response_json == expected_data
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_login_manager_incorrect():
+    url = 'http://127.0.0.1:8000/login'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_email": "testmanager@gmail.com",
+        "user_password": "Pas!"
+    }
+    response = requests.post(url, headers=headers, json=json)
+
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_data = {
+            "user_id": 1,
+            "user_type": "manager",
+            "user_email": True,
+            "user_password": False
+            }
+        response_json = response.json()
+        assert response_json == expected_data
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 def test_add_manager_incorrect_email():
     url = 'http://127.0.0.1:8000/register_manager'
     headers = {'Content-Type': 'application/json'}
