@@ -9,6 +9,7 @@ class AppColours {
   static const Color red = Color(0xFFFF2147);
   static const Color yellow = Color(0xFFFFC700);
   static const Color grey = Color.fromARGB(255, 213, 213, 213);
+  static const Color lightGrey = Color.fromARGB(255, 242, 242, 242);
 }
 
 class AppFonts {
