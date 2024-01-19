@@ -12,7 +12,7 @@ def test_add_coach():
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_email": "testcoach@gmail.com",
-        "coach_password": "Testpassword123",
+        "coach_password": "Testpassword123!",
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
@@ -38,7 +38,7 @@ def test_login_coach():
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testcoach@gmail.com",
-        "user_password": "Testpassword123"
+        "user_password": "Testpassword123!"
     }
     response = requests.post(url, headers=headers, json=json)
 
@@ -88,7 +88,7 @@ def test_update_coach():
     headers = {'Content-Type': 'application/json'}
     json = {
             "coach_email": "updatetestcoach@gmail.com",
-        "coach_password": "Testpassword1",
+        "coach_password": "Testpassword1!",
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",

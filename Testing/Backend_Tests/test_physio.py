@@ -5,7 +5,7 @@ def test_add_physio():
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio@gmail.com",
-        "physio_password": "Testpassword123",
+        "physio_password": "Testpassword123!",
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345"
@@ -49,7 +49,7 @@ def test_add_physio_incorrect_name():
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio12@gmail.com",
-        "physio_password": "Password123",
+        "physio_password": "Password123!",
         "physio_firstname": "123",
         "physio_surname": "tester",
         "physio_contact_number": "012345"
@@ -91,7 +91,7 @@ def test_login_physio():
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testphysio@gmail.com",
-        "user_password": "Testpassword123"
+        "user_password": "Testpassword123!"
     }
     response = requests.post(url, headers=headers, json=json)
 
@@ -141,7 +141,7 @@ def test_update_physio():
     headers = {'Content-Type': 'application/json'}
     json = {
             "physio_email": "testphysioupdate@gmail.com",
-            "physio_password": "Password123",
+            "physio_password": "Password123!",
             "physio_firstname": "test",
             "physio_surname": "tester",
             "physio_contact_number": "012345"
@@ -166,7 +166,7 @@ def test_update_physio_fail():
     headers = {'Content-Type': 'application/json'}
     json = {
             "physio_email": "testphysioupdate@gmail.com",
-            "physio_password": "Password123",
+            "physio_password": "Password123!",
             "physio_firstname": "123",
             "physio_surname": "456",
             "physio_contact_number": "012345"
@@ -210,7 +210,7 @@ def test_add_team_manager():
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
-        "manager_password": "Testpassword123",
+        "manager_password": "Testpassword123!",
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
@@ -302,7 +302,7 @@ def test_add_physio_2():
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio@gmail.com",
-        "physio_password": "Testpassword123",
+        "physio_password": "Testpassword123!",
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345"

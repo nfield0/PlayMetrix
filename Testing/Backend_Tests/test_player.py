@@ -6,7 +6,7 @@ def test_add_player():
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayer@gmail.com",
-        "player_password": "Testpassword123",
+        "player_password": "Testpassword123!",
         "player_firstname": "Nigel",
         "player_surname": "Farage",
         "player_height": "1.80m",
@@ -36,7 +36,7 @@ def test_login_player():
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testplayer@gmail.com",
-        "user_password": "Testpassword123"
+        "user_password": "Testpassword123!"
     }
     response = requests.post(url, headers=headers, json=json)
     
