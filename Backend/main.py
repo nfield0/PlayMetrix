@@ -1,19 +1,29 @@
 from sqlalchemy.orm import Session
-from Backend.models import *
-from Database.database import SessionLocal, Base, engine
+from models import *
+from database import SessionLocal, Base, engine
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
-from Backend.schema import *
-import Backend.crud as crud
+from schema import *
+import crud as crud
 import pytest
 from sqlalchemy.orm import sessionmaker
 from tavern.core import run
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Dependency
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Database Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -21,22 +31,23 @@ def get_db():
     finally:
         db.close()
 
+### SETUP WITH CODE BELOW ###
 
+# ctrl+shift+p in vscode to create venv
 
-
-# myenv/scripts/activate
+# .venv/scripts/activate
         
         
 ## To install requirements
 # python -m pip install -r requirements.txt
 
-## Requires .env file in root directory!
+## Requires .env file in root directory that uses DB_CONNECTION that matches postgresql database details!
 
-## To Run Uvicorn
-# In Root directory
+## To Run Uvicorn in Root directory
 # python -m uvicorn Backend.main:app --reload
 
 
+### Testing Code ###
 
 ## For Interactive Documentation (Swagger UI)
 # http://127.0.0.1:8000/docs
@@ -48,7 +59,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"message:", "Root Page"}
+    return {"message:", "Landing Page"}
 
 
 #region authentication and registration
@@ -64,10 +75,18 @@ def register_player(user: PlayerCreate, db: Session = Depends(get_db)):
 @app.post("/register_manager")
 def register_manager(user: ManagerCreate, db: Session = Depends(get_db)):
     return crud.register_manager(db, user)
+
+@app.post("/register_physio")
+def register_physio(user: PhysioCreate, db: Session = Depends(get_db)):
+    return crud.register_physio(db, user)
+
+@app.post("/register_coach")
+def register_physio(user: CoachCreate, db: Session = Depends(get_db)):
+    return crud.register_coach(db, user)
     
 
 @app.post("/login")
-def login_user(user: UserCreate, db: Session = Depends(get_db)):
+def login_user(user: User, db: Session = Depends(get_db)):
     return crud.login(db, user)
 
     
@@ -115,7 +134,7 @@ def read_teams(db:Session = Depends(get_db)):
     return crud.get_teams(db)
 
 @app.get("/teams/{id}")
-def read_team(id, db:Session = Depends(get_db)):
+def read_team(id: int, db:Session = Depends(get_db)):
     return crud.get_team_by_id(db, id)
 
 @app.post("/teams/")
@@ -142,19 +161,19 @@ def read_players(db:Session = Depends(get_db)):
     return crud.get_players(db)
 
 @app.get("/players/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.get_player_by_id(db, id)
 
 @app.get("/players/stats/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.get_player_stats_by_id(db, id)
 
 @app.get("/players/info/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.get_player_info_by_id(db, id)
 
 @app.post("/players/info/{id}")
-def read_player(id, db:Session = Depends(get_db)):
+def read_player(id: int, db:Session = Depends(get_db)):
     return crud.create_player_info_by_id(db, id)
 
 # @app.post("/players/")
@@ -185,11 +204,167 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
 
 #endregion
 
+#region physio
+@app.get("/physio")
+def read_physios(db:Session = Depends(get_db)):
+    return crud.get_all_physios(db)
+
+@app.get("/physio/{id}")
+def read_physio(id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_login_by_id(db, id)
+
+@app.get("/physio/info/{id}")
+def read_physio_with_info(id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_with_info_by_id(db, id)
+
+@app.put("/physio/{id}")
+def update_physio(id: int, physio: PhysioNoID, db:Session = Depends(get_db)):
+    return crud.update_physio_by_id(db, physio, id)
+
+@app.delete("/physio/{id}")
+def delete_physio(id: int, db:Session = Depends(get_db)):
+    return crud.delete_physio_by_id(db, id)
 
 
 
 
 
+#endregion
+
+#region coaches
+
+@app.get("/coaches")
+def read_coaches(db:Session = Depends(get_db)):
+    return crud.get_all_coaches(db)
+
+@app.get("/coaches/{id}")
+def read_coach(id: int, db:Session = Depends(get_db)):
+    return crud.get_coach_login_by_id(db, id)
+
+@app.get("/coaches/info/{id}")
+def read_coach_with_info(id: int, db:Session = Depends(get_db)):
+    return crud.get_coach_with_info_by_id(db, id)
+
+@app.put("/coaches/{id}")
+def update_coach(id: int, coach: CoachCreate, db:Session = Depends(get_db)):
+    return crud.update_coach_by_id(db, coach, id)
+
+@app.delete("/coaches/{id}")
+def delete_coach(id: int, db:Session = Depends(get_db)):
+    return crud.delete_coach_by_id(db, id)
+
+
+#endregion
+
+#region team_coaches
+
+@app.get("/team_coach/{id}")
+def read_team_coach(id: int, db:Session = Depends(get_db)):
+    return crud.get_coach_by_team_id(db, id)
+
+@app.post("/team_coach")
+def insert_team_coach(team_id: int, coach_id: int, db:Session = Depends(get_db)):
+    return crud.insert_team_coach_by_team_id(db, coach_id, team_id)
+
+@app.put("/team_coach/{id}")
+def update_team_coach(coach_id: int, team_id: int, db:Session = Depends(get_db)):
+    return crud.update_team_coach_by_team_id(db, team_id, coach_id)
+
+@app.delete("/team_coach/{id}")
+def delete_coach_team_id(id: int, db:Session = Depends(get_db)):
+    return crud.delete_team_coach_by_team_id(db, id)
+
+#endregion
+
+
+#region team_physio
+
+@app.get("/team_physio/{id}")
+def read_team_physio(id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_by_team_id(db, id)
+
+@app.post("/team_physio")
+def insert_team_physio(team_id: int, physio_id: int, db:Session = Depends(get_db)):
+    return crud.insert_team_physio_by_team_id(db, physio_id, team_id)
+
+@app.put("/team_physio/{id}")
+def update_team_physio(physio_id: int, team_id: int, db:Session = Depends(get_db)):
+    return crud.update_team_physio_by_team_id(db, team_id, physio_id)
+
+
+#may prove redundant
+@app.delete("/team_physio/{id}")
+def delete_physio_team_id(id: int, db:Session = Depends(get_db)):
+    return crud.delete_physio_team_id(db, id)
+
+#endregion
+
+#region team_player
+
+@app.get("/team_player/{id}")
+def read_team_player(id: int, db:Session = Depends(get_db)):
+    return crud.get_players_by_team_id(db, id)
+
+@app.post("/team_player/{id}")
+def add_team_player(id: int, player_id: int, db:Session = Depends(get_db)):
+    return crud.add_player_to_team(db, id, player_id)
+
+@app.delete("/team_player/{id}")
+def delete_team_player(id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_from_team(db, id)
+
+
+#endregion
+
+
+#region injuries
+
+@app.get("/injuries")
+def read_injuries(db:Session = Depends(get_db)):
+    return crud.get_injuries(db)
+
+@app.get("/injuries/{id}")
+def read_injury(id: int, db:Session = Depends(get_db)):
+    return crud.get_injury_by_id(db, id)
+
+@app.post("/injuries/")
+def insert_injury(injury: InjuryBase, db:Session = Depends(get_db)):
+    return crud.insert_injury(db, injury)
+
+@app.put("/injuries/{id}")
+def update_injury(id: int, injury: InjuryBase, db:Session = Depends(get_db)):
+    return crud.update_injury(db, injury, id)
+
+@app.delete("/injuries/{id}")
+def delete_injury(id: int, db:Session = Depends(get_db)):
+    return crud.delete_injury(db, id)
+
+
+#endregion
+
+#region player_injuries
+
+@app.get("/player_injuries")
+def read_player_injuries(db:Session = Depends(get_db)):
+    return crud.get_player_injuries(db)
+
+@app.get("/player_injuries/{id}")
+def read_player_injury(id: int, db:Session = Depends(get_db)):
+    return crud.get_player_injury_by_id(db, id)
+
+@app.post("/player_injuries/")
+def insert_player_injury(player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
+    return crud.insert_new_player_injury(db, player_injury)
+
+@app.put("/player_injuries/{id}")
+def update_player_injury(id: int, player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
+    return crud.update_player_injury(db, player_injury, id)
+
+@app.delete("/player_injuries/{id}")
+def delete_player_injury(id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_injury(db, id)
+
+#endregion
 
 #region leagues
 @app.get("/leagues/")
@@ -219,9 +394,27 @@ def delete_league(id: int, db:Session = Depends(get_db)):
 
 #region sports
 
-@app.post("/sports")
-def create_sports(sport, db:Session = Depends(get_db)):
+@app.get("/sports")
+def get_sports(db:Session = Depends(get_db)):
+    return crud.get_sports(db)
+
+@app.get("/sports/{id}")
+def get_sport(id: int, db:Session = Depends(get_db)):
+    return crud.get_sport(db, id)
+
+@app.post("/sports/")
+def create_sports(sport: SportBase, db:Session = Depends(get_db)):
     return crud.insert_sport(db, sport)
+
+@app.put("/sports/{id}")
+def update_sports(id: int, sport: SportBase, db:Session = Depends(get_db)):
+    return crud.update_sport(db, sport, id)
+
+@app.delete("/sports/{id}")
+def delete_sports(id: int, db:Session = Depends(get_db)):
+    return crud.delete_sport(db, id)
+
+
 
 #endregion
 
@@ -236,3 +429,6 @@ def cleanup(db:Session = Depends(get_db)):
 
 
 #endregion
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level="debug")

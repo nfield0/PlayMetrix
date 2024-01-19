@@ -1,13 +1,18 @@
 import re
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import text
+
 from fastapi import Depends, FastAPI, HTTPException
-from Backend.models import *
-from Backend.schema import *
+from models import *
+from schema import *
 import bcrypt
 from passlib.context import CryptContext
 
+#region regex_and_encryption
+
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
+password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}'
 name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
 team_name_regex = r'^[A-Za-z0-9\s]*$'
 
@@ -25,10 +30,10 @@ def check_password_regex(password : str):
         return False
 
 def check_is_valid_name(name: str):
-    if re.fullmatch(name_regex, name):
-        return True
+    if not re.match(name_regex, name):
+        raise HTTPException(status_code=400, detail="Name format is invalid")
     else:
-        return False
+        return True
     
 def check_is_valid_team_name(name: str):
     if re.fullmatch(team_name_regex, name):
@@ -53,8 +58,9 @@ def encrypt_password(password):
 # def check_password(plain_password, hashed_password):
 #     return bcrypt.checkpw(plain_password.encode(), hashed_password)
 
+#endregion
 
-
+#region user
 # def register_user(db, user):
 #     # if user.user_type != "player" or "manager" or "coach" or "physio":
 #     #     raise HTTPException(status_code=400, detail="Invalid user type")
@@ -90,7 +96,7 @@ def register_player(db, user):
         
     if not check_email(user.player_email):
         raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.player_email):
+    if not check_password_regex(user.player_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
     new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
@@ -118,9 +124,10 @@ def register_manager(db, user):
         
     if not check_email(user.manager_email):
         raise HTTPException(status_code=400, detail="Email format invalid")
-    if not check_email(user.manager_email):
+    if not check_password_regex(user.manager_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
     
+
     new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
     
     db.add(new_user)
@@ -130,12 +137,77 @@ def register_manager(db, user):
     new_user_id = get_user_by_email(db,"manager",user.manager_email)
     new_user_info = manager_info(manager_id=new_user_id.manager_id, manager_firstname=user.manager_firstname,manager_surname=user.manager_surname,
                                 manager_contact_number=user.manager_contact_number,
-                                manager_image=user.manager_image)
+                                manager_image=user.manager_image)              
+                      
+    db.add(new_user_info)  
+    db.commit()
+    
+    return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
+
+def register_physio(db, user):
+    existing_user = get_user_by_email(db, "physio", user.physio_email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if not user.physio_email or not user.physio_password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+        
+    if not check_email(user.physio_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_password_regex(user.physio_password):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    if not check_is_valid_name(user.physio_firstname):
+        raise HTTPException(status_code=400, detail="First name format invalid")
+    if not check_is_valid_name(str(user.physio_surname)):
+        raise HTTPException(status_code=400, detail="Surname format invalid")
+    
+    new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
+    
+    db.add(new_user)
+    
+    db.commit()
+    db.refresh(new_user)
+    new_user_id = get_user_by_email(db,"physio",user.physio_email)
+    new_user_info = physio_info(physio_id=new_user_id.physio_id, physio_firstname=user.physio_firstname,physio_surname=user.physio_surname,
+                                physio_contact_number=user.physio_contact_number)
                                    
     db.add(new_user_info)  
     db.commit()
 
-    return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
+    return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
+
+def register_coach(db, user):
+    try:
+        existing_user = get_user_by_email(db, "coach", user.coach_email)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        if not user.coach_email or not user.coach_password:
+            raise HTTPException(status_code=400, detail="Email and password are required")
+            
+        if not check_email(user.coach_email):
+            raise HTTPException(status_code=400, detail="Email format invalid")
+        if not check_email(user.coach_email):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        
+        new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
+        
+        db.add(new_user)
+        
+        db.commit()
+        db.refresh(new_user)
+        
+        new_user_id = get_user_by_email(db,"coach",user.coach_email)
+        new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=user.coach_surname,
+                                    coach_contact=user.coach_contact, coach_image=user.coach_image)
+                                    
+        db.add(new_user_info)  
+        db.commit()
+
+        return {"detail": "Coach Registered Successfully", "id": get_user_by_email(db,"coach",user.coach_email)}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return(f"Error registering coaches: {e}")
+
     
 # def register_user_with_info(db, user):
 #     # if user.user_type != "player" or "manager" or "coach" or "physio":
@@ -170,22 +242,45 @@ def register_manager(db, user):
 
     
 def login(db, user):
-    existing_user = get_user_by_email(db, user.user_type, user.user_email)
+    return get_user_details_by_email_password(db, user.user_email, user.user_password)
     
-    if existing_user:
-        if user.user_type == "manager" and verify_password(user.user_password, existing_user.manager_password):
-            return {"user_email": True, "user_password": True}
-        elif user.user_type == "player" and verify_password(user.user_password, existing_user.player_password):
-            return {"user_email": True, "user_password": True}
-        elif user.user_type == "physio" and verify_password(user.user_password, existing_user.physio_password):
-            return {"user_email": True, "user_password": True}
+    # if existing_user:
+    #     if user.user_type == "manager" and verify_password(user.user_password, existing_user.manager_password):
+    #         return {"user_email": True, "user_password": True}
+    #     elif user.user_type == "player" and verify_password(user.user_password, existing_user.player_password):
+    #         return {"user_email": True, "user_password": True}
+    #     elif user.user_type == "physio" and verify_password(user.user_password, existing_user.physio_password):
+    #         return {"user_email": True, "user_password": True}
+    #     else:
+    #         return {"user_email": True, "user_password": False}
+    # else:
+    #     return {"user_email": False, "user_password": False}
+
+
+
+def get_user_details_by_email_password(db:Session, email: str, password: str):
+    # raise HTTPException(status_code=200, detail=email)
+
+    try:
+        manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
+        player_login_result = db.query(player_login).filter_by(player_email=email).first()
+        physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
+        coach_login_result = db.query(coach_login).filter_by(coach_email=email).first()
+
+
+        if manager_login_result:
+            return UserLoginBase(user_id=manager_login_result.manager_id, user_type="manager", user_email=True, user_password=verify_password(password, manager_login_result.manager_password))
+        elif player_login_result:
+            return UserLoginBase(user_id=player_login_result.player_id, user_type="player", user_email=True, user_password=verify_password(password, player_login_result.player_password))
+        elif physio_login_result:
+            return UserLoginBase(user_id=physio_login_result.physio_id, user_type="physio", user_email=True, user_password=verify_password(password, physio_login_result.physio_password))
+        elif coach_login_result:
+            return UserLoginBase(user_id=coach_login_result.coach_id, user_type="coach", user_email=True, user_password=verify_password(password, coach_login_result.coach_password))
         else:
-            return {"user_email": True, "user_password": False}
-    else:
-        return {"user_email": False, "user_password": False}
-
-
-
+            raise HTTPException(status_code=400, detail="No user found")
+        
+    except Exception as e:
+        return(f"Error retrieving user: {e}")
 
    
     
@@ -199,12 +294,17 @@ def get_user_by_email(db:Session, type: str, email: str):
             login_info = db.query(player_login).filter_by(player_email=email).first()
         elif type == "physio":
             login_info = db.query(physio_login).filter_by(physio_email=email).first()
-
-       
+        elif type == "coach":
+            login_info = db.query(coach_login).filter_by(coach_email=email).first()
+        else:
+            raise HTTPException(status_code=400, detail="Invalid user type")
+        
         return login_info
     except Exception as e:
         return(f"Error retrieving from {type}s: {e}")
+    
 
+#endregion
 
 #region team
         
@@ -533,14 +633,17 @@ def delete_player(db: Session, id: int):
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
         player_injuries_result = db.query(player_injuries).filter_by(player_id=id).first()
         
-        
+        print(player_stats_result)
+
+        if player_injuries_result:
+            db.delete(player_injuries_result) 
+            db.commit()
         if player_stats_result:
             db.delete(player_stats_result)
-            if player_info_result:
-                db.delete(player_info_result)
-            
-            if player_injuries_result:
-                db.delete(player_injuries_result)
+            db.commit()
+        if player_info_result:
+            db.delete(player_info_result)
+            db.commit()
         db.delete(player)
         db.commit()
         db.close()
@@ -553,17 +656,18 @@ def delete_player(db: Session, id: int):
 def delete_player_by_email(db:Session, email: str):
     try:        
         player = db.query(player_login).filter_by(player_email=email).first()
-        player_info = db.query(player_info).filter_by(player_id=id).first()
-        player_stats = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        player_info_result = db.query(player_info).filter_by(player_id=id).first()
+        player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
+        player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        
+        if player_injuries_result:
+            db.delete(player_injuries_result) 
+        if player_stats_result:
+            db.delete(player_stats_result)
+        if player_info_result:
+            db.delete(player_info_result)
         
         db.delete(player)
-        if player_info:
-            db.delete(player_info)
-        if player_stats:
-            db.delete(player_stats)
-        if player_injuries:
-            db.delete(player_injuries)
         db.commit()
         db.close()
         return {"message": f"Player with Email {email} has been deleted"}
@@ -574,6 +678,449 @@ def delete_player_by_email(db:Session, email: str):
 
 
 #endregion
+
+#region physio
+    
+def get_all_physios(db: Session):
+    try:
+        result = db.query(physio_login).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving physios: {e}")
+    
+def get_physio_login_by_id(db: Session, id: int):
+    try:
+        result = db.query(physio_login).filter_by(physio_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving physio: {e}")
+    
+def get_physio_with_info_by_id(db: Session, id: int):
+    try:
+        result = db.query(physio_login).filter_by(physio_id=id).first()
+        info_result = db.query(physio_info).filter_by(physio_id=id).first()
+
+        if info_result:
+            physio = PhysioNoID(physio_email=result.physio_email,physio_password="Hidden",
+                                  physio_firstname=info_result.physio_firstname,physio_surname=info_result.physio_surname,
+                                  physio_contact_number=info_result.physio_contact_number)
+            return physio
+        else:
+            raise HTTPException(status_code=404, detail="Physio Info not found")
+            
+    except Exception as e:
+        return(f"Error retrieving physio: {e}")
+    
+
+    
+
+def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
+    try:        
+        if not check_email(str(physio.physio_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")    
+        if not check_password_regex(str(physio.physio_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        if not check_is_valid_name(physio.physio_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(str(physio.physio_surname)):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
+
+        #physio login section
+        physio_to_update = db.query(physio_login).filter_by(physio_id= id).first()
+        if not physio_to_update:
+            raise HTTPException(status_code=404, detail="Physio not found")
+        physio_to_update.physio_email = physio.physio_email
+        physio_to_update.physio_password = encrypt_password(physio.physio_password)
+        db.commit()
+        #physio info section
+        physio_info_to_update = db.query(physio_info).filter_by(physio_id= id).first()
+
+        if not physio_info_to_update:
+            new_physio_info = physio_info(physio_id=id,
+                                        physio_firstname=physio.physio_firstname,
+                                        physio_surname=physio.physio_surname,
+                                        physio_contact_number=physio.physio_contact_number)
+            db.add(new_physio_info)
+        else:
+            physio_info_to_update.physio_firstname = physio.physio_firstname
+            physio_info_to_update.physio_surname = physio.physio_surname
+            physio_info_to_update.physio_contact_number = physio.physio_contact_number
+        
+        db.commit()
+
+        return {"message": f"Physio and physio info with ID {id} has been updated"}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return {"message": f"Error updating physio: {e}"}
+    
+def delete_physio_by_id(db:Session, id: int):
+    try:        
+        physio = db.query(physio_login).filter_by(physio_id= id).first()
+        if not physio:
+            raise HTTPException(status_code=404, detail="Physio not found")
+        physio_info_result = db.query(physio_info).filter_by(physio_id= id).first()
+        
+        db.delete(physio)
+        db.delete(physio_info_result)
+        db.commit()
+        db.close()
+        return {"message": f"Physio and physio info with ID {id} has been deleted"}
+
+    except Exception as e:
+        return(f"Error deleting from physios: {e}")
+
+
+
+
+
+
+
+#endregion
+    
+
+#region coaches
+    
+def get_all_coaches(db: Session):
+    try:
+        result = db.query(coach_login).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving coaches: {e}")
+    
+def get_coach_login_by_id(db: Session, id: int):
+    try:
+        result = db.query(coach_login).filter_by(coach_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving coach: {e}")
+    
+def get_coach_with_info_by_id(db: Session, id: int):
+    try:
+        result = db.query(coach_login).filter_by(coach_id=id).first()
+        info_result = db.query(coach_info).filter_by(coach_id=id).first()
+
+        if info_result:
+            coach = CoachCreate(coach_email=result.coach_email,coach_password="Hidden",
+                                  coach_firstname=info_result.coach_firstname,coach_surname=info_result.coach_surname,
+                                  coach_contact_number=info_result.coach_contact_number)
+            return coach
+        else:
+            raise HTTPException(status_code=404, detail="Coach Info not found")
+            
+    except Exception as e:
+        return(f"Error retrieving coach: {e}")
+
+def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
+    try:        
+        if not check_email(str(coach.coach_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")    
+        if not check_password_regex(str(coach.coach_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        if not check_is_valid_name(coach.coach_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(str(coach.coach_surname)):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
+
+        #coach login section
+        coach_to_update = db.query(coach_login).filter_by(coach_id= id).first()
+        if not coach_to_update:
+            raise HTTPException(status_code=404, detail="Coach not found")
+        coach_to_update.coach_email = coach.coach_email
+        coach_to_update.coach_password = encrypt_password(coach.coach_password)
+        #coach info section
+        coach_info_to_update = db.query(coach_info).filter_by(coach_id= id).first()
+
+        if not coach_info_to_update:
+            new_coach_info = coach_info(coach_id=id,
+                                        coach_firstname=coach.coach_firstname,
+                                        coach_surname=coach.coach_surname,
+                                        coach_contact=coach.coach_contact)
+            db.add(new_coach_info)
+        else:
+            coach_info_to_update.coach_firstname = coach.coach_firstname
+            coach_info_to_update.coach_surname = coach.coach_surname
+            coach_info_to_update.coach_contact = coach.coach_contact
+
+            # raise HTTPException(status_code=404, detail="Coach Info not found")
+        
+        db.commit()
+
+        return {"message": f"Coach and coach info with ID {id} has been updated"}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return {"message": f"Error updating coach: {e}"}
+
+def delete_coach_by_id(db:Session, id: int):
+    try:        
+        coach = db.query(coach_login).filter_by(coach_id= id).first()
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach not found")
+        coach_info_result = db.query(coach_info).filter_by(coach_id= id).first()
+        
+        db.delete(coach)
+        db.delete(coach_info_result)
+        db.commit()
+        db.close()
+        return {"message": f"Coach and coach info with ID {id} has been deleted"}
+
+    except Exception as e:
+        return(f"Error deleting from coaches: {e}")
+
+#endregion
+    
+#region team_coach
+    
+def get_coach_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(team_coach).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team coaches: {e}")
+    
+def insert_team_coach_by_team_id(db:Session, coach_id: int, team_id: int):
+    try:
+        new_team_coach = team_coach(team_id=team_id, coach_id=coach_id)
+        db.add(new_team_coach)
+        db.commit()
+        return {"message": f"Coach with ID {coach_id} has been added to team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error adding coach to team: {e}")
+    
+def update_team_coach_by_team_id(db:Session, team_id: int, coach_id: int):
+    try:
+        team_to_update = db.query(team_coach).filter_by(team_id=team_id).first()
+        if not team_to_update:
+            raise HTTPException(status_code=404, detail="Team not found")
+        team_to_update.coach_id = coach_id
+        db.commit()
+        return {"message": f"Team with ID {team_id} has been updated"}
+    except Exception as e:
+        return(f"Error updating team: {e}")
+    
+def delete_team_coach_by_team_id(db:Session, id: int):
+    try:        
+        team_to_delete = db.query(team_coach).filter_by(team_id=id).first()
+        if team_to_delete:
+            db.delete(team_to_delete)
+            db.commit()
+        return {"message": f"Team with ID {id} has been deleted"}
+    except Exception as e:
+        return(f"Error deleting team coach: {e}")
+
+
+
+#endregion
+
+
+#region team_physio
+
+def get_physio_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(team_physio).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team physio: {e}")
+    
+def insert_team_physio_by_team_id(db:Session, physio_id: int, team_id: int):
+    try:
+        if not get_physio_login_by_id(db, physio_id):
+            raise HTTPException(status_code=400, detail="Physio ID Does not Exist")
+        if not get_team_by_id(db, team_id):
+            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+        
+        new_team_physio = team_physio(team_id=team_id, physio_id=physio_id)
+        db.add(new_team_physio)
+        db.commit()
+        return {"message": f"Physio with ID {physio_id} has been added to team with ID {team_id}"}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return(f"Error adding physio to team: {e}")
+    
+def update_team_physio_by_team_id(db:Session, team_id: int, physio_id: int):
+    try:
+        team_to_update = db.query(team_physio).filter_by(team_id=team_id).first()
+        if not team_to_update:
+            raise HTTPException(status_code=404, detail="Team not found")
+        team_to_update.physio_id = physio_id
+        db.commit()
+        return {"message": f"Team with ID {team_id} has been updated"}
+    except Exception as e:
+        return(f"Error updating team: {e}")
+
+def delete_physio_team_id(db:Session, id: int):
+    try:        
+        team_to_delete = db.query(team_physio).filter_by(team_id=id).first()
+        if team_to_delete:
+            db.delete(team_to_delete)
+            db.commit()
+        return {"message": f"Team with ID {id} has been deleted"}
+    except Exception as e:
+        return(f"Error deleting team physio: {e}")
+    
+#endregion
+
+#region team_player
+    
+def get_players_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(team_player).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team players: {e}")
+    
+def add_player_to_team(db:Session, team_id: int, player_id: int):
+    try:
+        new_team_player = team_player(team_id=team_id, player_id=player_id)
+        db.add(new_team_player)
+        db.commit()
+        return {"message": f"Player with ID {player_id} has been added to team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error adding player to team: {e}")
+    
+def delete_player_from_team(db:Session, team_id: int, player_id: int):
+    try:        
+        player_to_delete = db.query(team_player).filter_by(team_id=team_id, player_id=player_id).first()
+        if player_to_delete:
+            db.delete(player_to_delete)
+            db.commit()
+        return {"message": f"Player with ID {player_id} has been deleted from team with ID {team_id}"}
+    except Exception as e:
+        return(f"Error deleting player from team: {e}")
+    
+
+#endregion
+
+#region injuries
+    
+def get_injuries(db: Session):
+    try:
+        result = db.query(injuries).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving injuries: {e}")
+    
+def get_injury_by_id(db: Session, id: int):
+    try:
+        result = db.query(injuries).filter_by(injury_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving injuries: {e}")
+    
+def insert_injury(db:Session, new_injury: InjuryBase):
+    try:
+        if new_injury is None:
+            raise HTTPException(status_code=404, detail="Injury is empty or invalid")
+        if not check_is_valid_name(new_injury.injury_type):
+            raise HTTPException(status_code=400, detail="Injury type is incorrect")
+        else:
+            new_injury = injuries(injury_type=new_injury.injury_type,
+                               expected_recovery_time=new_injury.expected_recovery_time,
+                               recovery_method=new_injury.recovery_method)
+            db.add(new_injury)
+            db.commit()
+            db.refresh(new_injury)
+        return {"message": "Injury inserted successfully", "id": new_injury.injury_id}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return (f"Error inserting injury: {e}")
+
+def update_injury(db, updated_injury: InjuryBase, id):
+    try:
+        injury_to_update = db.query(injuries).filter_by(injury_id= id).first()
+        if injury_to_update:
+            injury_to_update.injury_type = updated_injury.injury_type
+            injury_to_update.expected_recovery_time = updated_injury.expected_recovery_time
+            injury_to_update.recovery_method = updated_injury.recovery_method
+            db.commit()
+            return {"message": f"Injury with ID {id} has been updated"}
+        else:
+            raise HTTPException(status_code=404, detail="Injury not found")
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail=f"Error updating injury: {e}")
+    
+def delete_injury(db:Session, id: int):
+    try:        
+        injury_to_delete = db.query(injuries).filter_by(injury_id=id).first()
+        if injury_to_delete:
+            db.delete(injury_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Injury deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting injury: {e}")
+    
+
+#endregion
+    
+
+#region player_injuries
+    
+def get_player_injuries(db: Session):
+    try:
+        result = db.query(player_injuries).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving player injuries: {e}")
+    
+def get_player_injury_by_id(db: Session, id: int):
+    try:
+        result = db.query(player_injuries).filter_by(injury_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving player injuries: {e}")
+    
+def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
+    try:
+        if new_player_injury is not None:
+            new_player_injury = player_injuries(player_id=new_player_injury.player_id,
+                                                date_of_injury=new_player_injury.date_of_injury,
+                                                date_of_recovery=new_player_injury.date_of_recovery,
+                                                injury_id=new_player_injury.injury_id)
+            db.add(new_player_injury)
+            db.commit()
+            db.refresh(new_player_injury)
+            return {"message": "Player Injury inserted successfully", "id": new_player_injury.injury_id}
+        return {"message": "Player Injury is empty or invalid"}
+    except Exception as e:
+        return (f"Error inserting player injury: {e}")
+
+def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
+    try:
+        player_injury_to_update = db.query(player_injuries).filter_by(injury_id= id).first()
+        if player_injury_to_update:
+            player_injury_to_update.player_id = updated_player_injury.player_id
+            player_injury_to_update.injury_id = updated_player_injury.injury_id
+            db.commit()
+            return {"message": f"Player Injury with ID {id} has been updated"}
+        else:
+            raise HTTPException(status_code=404, detail="Player Injury not found")
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail=f"Error updating player injury: {e}")
+    
+def delete_player_injury(db:Session, id: int): 
+    try:        
+        player_injury_to_delete = db.query(player_injuries).filter_by(injury_id=id).first()
+        if player_injury_to_delete:
+            db.delete(player_injury_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Player Injury deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting player injury: {e}")
+    
+
+#endregion
+
 
 
 #region leagues
@@ -639,52 +1186,119 @@ def delete_league_by_id(db:Session, id: int):
 #endregion
     
 
+#region sport
+
+def get_sports(db: Session):
+    try:
+        result = db.query(sport).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving sports: {e}")
+    
+def get_sport(db: Session, id : int):
+    try:
+        result = db.query(sport).filter_by(sport_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving sport: {e}")
+
+
+def insert_sport(db:Session, new_sport: SportBase):
+    try:
+        if check_is_valid_name(new_sport.sport_name):
+            new = sport(sport_name=new_sport.sport_name)
+            db.add(new)
+            db.commit()
+            db.refresh(new)
+            return {"message": f"Sport inserted successfully", "id": new.sport_id}
+        else:
+            raise HTTPException(status_code=400, detail="Sport name is incorrect")
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating Sport: {e}")
+    
+def update_sport(db:Session, new_sport: SportBase, id: int):
+    try:
+        if check_is_valid_name(new_sport.sport_name):
+            sport_result = db.query(sport).filter_by(sport_id=id).first()
+            sport_result.sport_name = new_sport.sport_name
+
+            db.commit()
+            db.refresh(sport_result)
+            return {"message": f"Sport with ID {id} has been updated"}
+        else:
+            raise HTTPException(status_code=400, detail="Sport name is incorrect")
+    except HTTPException as http_err:
+            raise http_err
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating Sport: {e}")
+    
+def delete_sport(db:Session, id: int):
+    try:       
+        sport_to_delete = db.query(sport).filter_by(sport_id=id).first()
+        if sport_to_delete:
+            db.delete(sport_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Sport deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting Sport: {e}")
+
+#endregion
+
+    
+
     
 def cleanup(db: Session):
-    try:             
-        db.query(player_stats).delete()
+    try:       
+
         db.query(player_injuries).delete()
-        db.query(player_info).delete()
-        db.query(player_login).delete()
-        db.query(physio_info).delete()
-        db.query(physio_login).delete()
+        db.query(injuries).delete()
         db.query(team).delete()
         db.query(league).delete()
+        db.query(sport).delete()
+
+        db.query(physio_info).delete()
+        db.query(physio_login).delete()
+        
 
         db.query(manager_info).delete()
         db.query(manager_login).delete()
+
+
+        db.query(player_stats).delete()
+
+        db.query(player_info).delete()
+        db.query(player_login).delete()
+
+        db.query(coach_info).delete()
+        db.query(coach_login).delete()
+
+
         db.flush()
 
-        db.execute("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;")
-        # db.execute("ALTER SEQUENCE manager_info RESTART WITH 1;") 
-        db.execute("ALTER SEQUENCE league_league_id_seq RESTART WITH 1;") 
-
-        db.execute("ALTER SEQUENCE player_login_player_id_seq RESTART WITH 1;")  
-        # db.execute("ALTER SEQUENCE player_info RESTART WITH 1;")  
-
-        db.execute("ALTER SEQUENCE team_team_id_seq RESTART WITH 1;")  
-
-
-        # db.execute("ALTER SEQUENCE physio_login RESTART WITH 1;")  
-        # db.execute("ALTER SEQUENCE physio_info RESTART WITH 1;") 
+        db.execute(text("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE physio_info_physio_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE league_league_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE player_login_player_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE team_team_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE sport_sport_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE coach_login_coach_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE injuries_injury_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE physio_login_physio_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE announcements_announcements_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE schedule_schedule_id_seq RESTART WITH 1;"))
 
 
         db.commit()
         db.close()
         return {"message": "Finished Cleanup"}
 
-    except Exception as e:
-        return(f"Error cleaning up: {e}")
-
-
-def insert_sport(db:Session, new_sport: SportBase):
-    try:
-        new = sport(sport_name=new_sport.sport_name)
-        db.add(new)
-        db.commit()
-        db.refresh(new)
-        return {"message": f"Sport inserted successfully", "id": new.sport_id}
-    except Exception as e:
-        return(f"Error creating Sport: {e}")
-
-
+    except SQLAlchemyError as e:
+        # Log the exception for debugging
+        print(f"Cleanup failed: {e}")
+        db.rollback()  # Rollback changes in case of an error
+        db.close()  # Close the connection
+        return {"error": "Cleanup failed, check logs for details"}

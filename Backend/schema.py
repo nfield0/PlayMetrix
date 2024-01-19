@@ -4,10 +4,18 @@ from pydantic import BaseModel
 class LeagueBase(BaseModel):
     league_name : str
 
-
+class UserLoginBase(BaseModel):
+    user_id: int
+    user_type: str
+    user_email: bool
+    user_password: bool
 
 class UserCreate(BaseModel):
     user_type: str
+    user_email: str
+    user_password: str
+
+class User(BaseModel):
     user_email: str
     user_password: str
 
@@ -33,6 +41,22 @@ class ManagerCreate(BaseModel):
     manager_contact_number: str
     manager_image: bytes
 
+class PhysioCreate(BaseModel):
+    physio_email: str
+    physio_password: str
+    physio_firstname: str 
+    physio_surname: str 
+    physio_contact_number: str
+
+class CoachCreate(BaseModel):
+    coach_email: str
+    coach_password: str
+    coach_firstname: str
+    coach_surname: str
+    coach_contact: str
+    coach_image: bytes
+
+
 class Manager(BaseModel):
     manager_id: int
     manager_email: str
@@ -52,6 +76,14 @@ class ManagerNoID(BaseModel):
     manager_surname: str
     manager_contact_number: str
     manager_image: bytes
+
+class PhysioNoID(BaseModel):
+    physio_email: str
+    physio_password: str
+    physio_firstname: str
+    physio_surname: str
+    physio_contact_number: str
+    # physio_image: bytes
 
 class TeamBase(BaseModel):
     team_name: str
@@ -98,4 +130,13 @@ class PlayerStat(BaseModel):
     injury_prone: bool
     minutes_played: int
     
+class InjuryBase(BaseModel):
+    injury_type: str
+    expected_recovery_time: str
+    recovery_method: str
 
+class PlayerInjuryBase(BaseModel):
+    injury_id: int
+    date_of_injury: str
+    date_of_recovery: str
+    player_id: int

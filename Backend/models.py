@@ -1,6 +1,6 @@
 from typing import Union, Annotated
 from sqlalchemy import Column, Integer, String, Text, Date, LargeBinary, Boolean
-from Database.database import Base
+from database import Base
 
 
 # class Item(BaseModel):
@@ -31,6 +31,13 @@ class player_injuries(Base):
     date_of_injury = Column(Date, index = True)
     date_of_recovery = Column(Date, index = True)
     player_id = Column(Integer, index = True)
+
+class injuries(Base): 
+    __tablename__ = "injuries"
+    injury_id = Column(Integer, primary_key = True, index = True)
+    injury_type = Column(String(50), index = True)
+    expected_recovery_time = Column(String(50), index = True)
+    recovery_method = Column(String(255), index = True)
 
 class player_stats(Base):
 	__tablename__ = "player_stats"
@@ -99,6 +106,24 @@ class team_player(Base):
 	__tablename__ = "player_team"
 	player_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
-	team_position = Column(String(30), index = True)	
+	team_position = Column(String(30), index = True)
 
+class team_coach(Base):
+	__tablename__ = "team_coach"
+	coach_id = Column(Integer, primary_key = True, index = True)
+	team_id = Column(Integer, primary_key = True, index = True)
+	team_role = Column(String(255), index = True)
 
+class coach_login(Base):
+	__tablename__ = "coach_login"
+	coach_id = Column(Integer, primary_key = True, index = True)
+	coach_email = Column(String(50), index = True, unique = True)
+	coach_password = Column(String(150), index = True)
+
+class coach_info(Base):
+	__tablename__ = "coach_info"
+	coach_id = Column(Integer, primary_key = True, index = True)
+	coach_firstname = Column(String(25), index = True)
+	coach_surname = Column(String(25), index = True)
+	coach_contact = Column(String(25), index = True)
+	coach_image = Column(LargeBinary, index = True)
