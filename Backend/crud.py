@@ -7,7 +7,7 @@ import bcrypt
 from passlib.context import CryptContext
 
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}'
+password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
 name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
 team_name_regex = r'^[A-Za-z0-9\s]*$'
 
