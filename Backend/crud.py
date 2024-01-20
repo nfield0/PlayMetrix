@@ -1019,7 +1019,7 @@ def get_coach_with_info_by_id(db: Session, id: int):
         if info_result:
             coach = CoachCreate(coach_email=result.coach_email,coach_password="Hidden",
                                   coach_firstname=info_result.coach_firstname,coach_surname=info_result.coach_surname,
-                                  coach_contact_number=info_result.coach_contact_number)
+                                  coach_contact=info_result.coach_contact)
             return coach
         else:
             raise HTTPException(status_code=404, detail="Coach Info not found")
