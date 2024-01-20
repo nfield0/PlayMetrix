@@ -78,7 +78,7 @@ Future<void> updateManagerProfile(int id, ProfileName name,
         'manager_firstname': name.firstName,
         'manager_surname': name.surname,
         'manager_contact_number': contactNumber,
-        'manager_image': base64Encode(imageBytes!),
+        'manager_image': imageBytes != null ? base64Encode(imageBytes) : "",
       }),
     );
 
@@ -150,7 +150,6 @@ Future<void> updatePhysioProfile(
   }
 }
 
-// TODO: doesn't work
 Future<Profile> getCoachProfile(int id) async {
   final apiUrl = 'http://127.0.0.1:8000/coaches/info/$id';
   try {
@@ -168,7 +167,7 @@ Future<Profile> getCoachProfile(int id) async {
           parsed['coach_surname'],
           parsed['coach_contact'],
           parsed['coach_email'],
-          parsed['coach_image']);
+          base64Decode((parsed['coach_image'])));
     } else {
       print('Error message: ${response.body}');
     }
@@ -194,7 +193,7 @@ Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
         'coach_firstname': name.firstName,
         'coach_surname': name.surname,
         'coach_contact': contactNumber,
-        'coach_image': base64Encode(imageBytes!),
+        'coach_image': imageBytes != null ? base64Encode(imageBytes) : "",
       }),
     );
 
@@ -233,6 +232,7 @@ class ProfileSetUpScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Image.asset(
           'lib/assets/logo.png',
           width: 150,
