@@ -127,3 +127,18 @@ class coach_info(Base):
 	coach_surname = Column(String(25), index = True)
 	coach_contact = Column(String(25), index = True)
 	coach_image = Column(LargeBinary, index = True)
+
+
+
+class schedule(Base):
+	__tablename__ = "schedule"
+	schedule_id = Column(Integer, primary_key = True, index = True)
+	schedule_type = Column(String(100), index = True)
+	schedule_start_time = Column(String(10), index = True)
+	schedule_end_time = Column(String(10), index = True)
+
+class team_schedule(Base):
+	__tablename__ = "team_schedule"
+	schedule_id = Column(Integer, primary_key = True, index = True)
+	team_id = Column(Integer, primary_key = True, index = True)
+	schedule_date = Column(Date, index = True)

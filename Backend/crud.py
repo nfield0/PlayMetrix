@@ -386,6 +386,149 @@ def delete_team_by_id(db:Session, id: int):
 
 #endregion 
 
+#region schedules
+    
+
+def get_schedules(db: Session):
+    try:
+        result = db.query(schedule).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+
+def get_schedule_by_id(db: Session, id: int):
+    try:
+        result = db.query(schedule).filter_by(schedule_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+    
+def get_schedule_by_team_id(db: Session, id: int):
+    try:
+        result = db.query(schedule).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+
+def get_schedule_by_team_id_and_date(db: Session, id: int, date: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=id, schedule_date=date).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+    
+def get_schedule_by_team_id_and_type(db: Session, id: int, type: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=id, schedule_type=type).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+
+
+def insert_new_schedule(db:Session, new_schedule: ScheduleBase):
+    try:
+        if new_schedule is not None:
+            if get_team_by_id(db, new_schedule.team_id):
+                new_schedule = schedule(schedule_type=new_schedule.schedule_type,
+                                        schedule_start_time=new_schedule.schedule_start_time,
+                                        schedule_end_time=new_schedule.schedule_end_time)
+                db.add(new_schedule)
+                db.commit()
+                db.refresh(new_schedule)
+                return {"message": "Schedule inserted successfully", "id": new_schedule.schedule_id}
+            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+        return {"message": "Schedule is empty or invalid"}
+    except Exception as e:
+        return (f"Error inserting schedule: {e}")
+    
+def update_schedule(db, updated_schedule: ScheduleBase, id):
+    try:        
+        schedule_to_update = db.query(schedule).filter_by(schedule_id= id).first()
+        
+        if not schedule_to_update:
+            raise HTTPException(status_code=404, detail="Schedule not found")
+        
+        schedule_to_update.schedule_type = updated_schedule.schedule_type
+        schedule_to_update.schedule_start_time = updated_schedule.schedule_start_time
+        schedule_to_update.schedule_end_time = updated_schedule.schedule_end_time
+        
+        db.commit()
+        return {"message": f"Schedule with ID {id} has been updated"}
+    except Exception as e:
+        return(f"Error updating schedule: {e}")
+    
+def delete_schedule_by_id(db:Session, id: int):
+    try:        
+        schedule_to_delete = db.query(schedule).filter_by(schedule_id=id).first()
+        if schedule_to_delete:
+            db.delete(schedule_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Schedule deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting schedule: {e}")
+    
+# team schedules
+    
+def get_team_schedules(db: Session, id:int):
+    try:
+        result = db.query(team_schedule).filter_by(team_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team schedules: {e}")
+    
+def get_team_schedule_by_id(db: Session, id: int):
+    try:
+        result = db.query(team_schedule).filter_by(schedule_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team schedules: {e}")
+
+def insert_new_team_schedule(db:Session, new_team_schedule: TeamScheduleBase, id: int):
+    try:
+        if new_team_schedule is not None:
+            if get_team_by_id(db, id):
+                new_team_schedule = team_schedule(schedule_id=new_team_schedule.schedule_id,
+                                        team_id=id)
+                db.add(new_team_schedule)
+                db.commit()
+                db.refresh(new_team_schedule)
+                return {"message": "Team Schedule inserted successfully", "id": new_team_schedule.schedule_id}
+            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+        return {"message": "Team Schedule is empty or invalid"}
+    except Exception as e:
+        return (f"Error inserting team schedule: {e}")
+
+def update_team_schedule(db, updated_team_schedule: TeamScheduleBase, id):
+    try:        
+        team_schedule_to_update = db.query(team_schedule).filter_by(schedule_id= id).first()
+        
+        if not team_schedule_to_update:
+            raise HTTPException(status_code=404, detail="Team Schedule not found")
+        
+        team_schedule_to_update.schedule_id = updated_team_schedule.schedule_id
+        team_schedule_to_update.team_id = updated_team_schedule.team_id
+        
+        db.commit()
+        return {"message": f"Team Schedule with ID {id} has been updated"}
+    except Exception as e:
+        return(f"Error updating team schedule: {e}")
+    
+def delete_team_schedule_by_id(db:Session, id: int):
+    try:        
+        team_schedule_to_delete = db.query(team_schedule).filter_by(schedule_id=id).first()
+        if team_schedule_to_delete:
+            db.delete(team_schedule_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Team Schedule deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting team schedule: {e}")
+    
+    
+#endregion
 
 #region managers
 

@@ -163,3 +163,16 @@ class PlayerInjuryBase(BaseModel):
     date_of_injury: str
     date_of_recovery: str
     player_id: int
+
+
+
+class ScheduleBase(BaseModel):
+    schedule_id: int
+    schedule_type: str
+    schedule_start_time: str
+    schedule_end_time: str
+
+class TeamScheduleBase(BaseModel):
+    schedule_id: int
+    team_id: int
+    schedule_date: str
