@@ -114,6 +114,14 @@ def read_managers(id: int, db:Session = Depends(get_db)):
 def update_managers(manager: ManagerNoID, id: int,  db:Session = Depends(get_db)):
     return crud.update_manager_by_id(db=db, id=id, manager=manager)
 
+@app.put("/managers/login/{id}")
+def update_managers(manager: Manager, id: int,  db:Session = Depends(get_db)):
+    return crud.update_manager_login_by_id(db=db, id=id, manager=manager)
+
+@app.put("/managers/info/{id}")
+def update_managers_info(manager: ManagerInfo, id: int,  db:Session = Depends(get_db)):
+    return crud.update_manager_info_by_id(db=db, id=id, manager=manager)
+
 @app.delete("/managers/{id}")
 def delete_manager(id, db:Session = Depends(get_db)):
     return crud.delete_manager_by_id(db, id)
@@ -221,6 +229,14 @@ def read_physio_with_info(id: int, db:Session = Depends(get_db)):
 def update_physio(id: int, physio: PhysioNoID, db:Session = Depends(get_db)):
     return crud.update_physio_by_id(db, physio, id)
 
+@app.put("/physio/login/{id}")
+def update_physio_login(id: int, physio: Physio, db:Session = Depends(get_db)):
+    return crud.update_physio_login_by_id(db, physio, id)
+
+@app.put("/physio/info/{id}")
+def update_physio_info(id: int, physio: PhysioInfo, db:Session = Depends(get_db)):
+    return crud.update_physio_info_by_id(db, physio, id)
+
 @app.delete("/physio/{id}")
 def delete_physio(id: int, db:Session = Depends(get_db)):
     return crud.delete_physio_by_id(db, id)
@@ -248,6 +264,15 @@ def read_coach_with_info(id: int, db:Session = Depends(get_db)):
 @app.put("/coaches/{id}")
 def update_coach(id: int, coach: CoachCreate, db:Session = Depends(get_db)):
     return crud.update_coach_by_id(db, coach, id)
+
+@app.put("/coaches/login/{id}")
+def update_coach_login(id: int, coach: Coach, db:Session = Depends(get_db)):
+    return crud.update_coach_login_by_id(db, coach, id)
+
+@app.put("/coaches/info/{id}")
+def update_coach_info(id: int, coach: CoachInfo, db:Session = Depends(get_db)):
+    return crud.update_coach_info_by_id(db, coach, id)
+
 
 @app.delete("/coaches/{id}")
 def delete_coach(id: int, db:Session = Depends(get_db)):

@@ -464,6 +464,46 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
     except Exception as e:
         return {"message": f"Error updating managers: {e}"}
 
+def update_manager_login_by_id(db:Session, manager: Manager, id: int):
+    try:        
+        manager_to_update = db.query(manager_login).filter_by(manager_id= id).first()
+        
+        if not manager_to_update:
+            raise HTTPException(status_code=404, detail="Manager not found")
+        
+        if not check_email(str(manager.manager_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")
+        manager_to_update.manager_email = manager.manager_email
+
+        if not check_password_regex(str(manager.manager_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        manager_to_update.manager_password = encrypt_password(manager.manager_password)
+        
+        db.commit()
+
+        return {"message": f"Manager Login with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating managers: {e}"}
+    
+def update_manager_info_by_id(db:Session, manager: ManagerInfo, id: int):
+    try:        
+        manager_info_to_update = db.query(manager_info).filter_by(manager_id= id).first()
+        
+        if not manager_info_to_update:
+            raise HTTPException(status_code=404, detail="Manager Info not found")
+        
+        manager_info_to_update.manager_firstname = manager.manager_firstname
+        manager_info_to_update.manager_surname = manager.manager_surname
+        manager_info_to_update.manager_contact_number = manager.manager_contact_number
+        manager_info_to_update.manager_image = manager.manager_image
+        
+        db.commit()
+
+        return {"message": f"Manager Info with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating managers: {e}"}
+
+
 def delete_manager_by_id(db:Session, id: int):
     try:        
         manager = db.query(manager_login).filter_by(manager_id= id).first()
@@ -754,6 +794,39 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
     except Exception as e:
         return {"message": f"Error updating physio: {e}"}
     
+def update_physio_login_by_id(db:Session, physio: Physio, id: int):
+    try:        
+        physio_to_update = db.query(physio_login).filter_by(physio_id= id).first()
+        if not physio_to_update:
+            raise HTTPException(status_code=404, detail="Physio not found")
+        if not check_email(str(physio.physio_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")
+        physio_to_update.physio_email = physio.physio_email
+        if not check_password_regex(str(physio.physio_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        physio_to_update.physio_password = encrypt_password(physio.physio_password)
+        
+        db.commit()
+
+        return {"message": f"Physio Login with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating physio: {e}"}
+    
+def update_physio_info_by_id(db:Session, physio: PhysioInfo, id: int):
+    try:        
+        physio_info_to_update = db.query(physio_info).filter_by(physio_id= id).first()
+        if not physio_info_to_update:
+            raise HTTPException(status_code=404, detail="Physio Info not found")
+        physio_info_to_update.physio_firstname = physio.physio_firstname
+        physio_info_to_update.physio_surname = physio.physio_surname
+        physio_info_to_update.physio_contact_number = physio.physio_contact_number
+        
+        db.commit()
+
+        return {"message": f"Physio Info with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating physio: {e}"}
+    
 def delete_physio_by_id(db:Session, id: int):
     try:        
         physio = db.query(physio_login).filter_by(physio_id= id).first()
@@ -851,6 +924,40 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
         raise http_err
     except Exception as e:
         return {"message": f"Error updating coach: {e}"}
+    
+def update_coach_login_by_id(db:Session, coach: Coach, id: int):
+    try:        
+        coach_to_update = db.query(coach_login).filter_by(coach_id= id).first()
+        if not coach_to_update:
+            raise HTTPException(status_code=404, detail="Coach not found")
+        if not check_email(str(coach.coach_email)):
+            raise HTTPException(status_code=400, detail="Email format invalid")
+        coach_to_update.coach_email = coach.coach_email
+        if not check_password_regex(str(coach.coach_password)):
+            raise HTTPException(status_code=400, detail="Password format invalid")
+        coach_to_update.coach_password = encrypt_password(coach.coach_password)
+        
+        db.commit()
+
+        return {"message": f"Coach Login with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating coach: {e}"}
+    
+def update_coach_info_by_id(db:Session, coach: CoachInfo, id: int):
+    try:        
+        coach_info_to_update = db.query(coach_info).filter_by(coach_id= id).first()
+        if not coach_info_to_update:
+            raise HTTPException(status_code=404, detail="Coach Info not found")
+        coach_info_to_update.coach_firstname = coach.coach_firstname
+        coach_info_to_update.coach_surname = coach.coach_surname
+        coach_info_to_update.coach_contact = coach.coach_contact
+        
+        db.commit()
+
+        return {"message": f"Coach Info with ID {id} has been updated"}
+    except Exception as e:
+        return {"message": f"Error updating coach: {e}"}
+    
 
 def delete_coach_by_id(db:Session, id: int):
     try:        

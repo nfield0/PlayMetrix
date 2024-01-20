@@ -56,6 +56,20 @@ class CoachCreate(BaseModel):
     coach_contact: str
     coach_image: bytes
 
+class Coach(BaseModel):
+    coach_id: int
+    coach_email: str
+    coach_password: str
+
+class CoachInfo(BaseModel):
+    coach_id: int
+    coach_email: str
+    coach_password: str
+    coach_firstname: str
+    coach_surname: str
+    coach_contact: str
+    coach_image: bytes
+
 
 class Manager(BaseModel):
     manager_id: int
@@ -76,6 +90,19 @@ class ManagerNoID(BaseModel):
     manager_surname: str
     manager_contact_number: str
     manager_image: bytes
+
+class Physio(BaseModel):
+    physio_id: int
+    physio_email: str
+    physio_password: str
+    
+class PhysioInfo(BaseModel):
+    physio_id: int
+    physio_email: str
+    physio_password: str
+    physio_firstname: str
+    physio_surname: str
+    physio_contact_number: str
 
 class PhysioNoID(BaseModel):
     physio_email: str
