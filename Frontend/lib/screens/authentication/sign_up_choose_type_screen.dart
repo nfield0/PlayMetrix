@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
@@ -12,7 +15,6 @@ String firstName2 = firstName;
 String surname2 = surname;
 String email2 = email;
 String password2 = password;
-
 
 // create a fucntion to check the user type and then send the data to the backend
 String checkUserType(String userType) {
@@ -34,169 +36,166 @@ String checkUserType(String userType) {
   }
 }
 
-Future<void> registerUser({
-  required String UserType,
+Future<String> registerUser({
+  required String userType,
   required String firstName,
   required String surname,
   required String email,
   required String password,
-})
-async {
-if (UserType == "manager")
-{
-  final apiUrl =
-      'http://127.0.0.1:8000/register_manager'; // Replace with your actual backend URL
+}) async {
+  if (userType == "manager") {
+    final apiUrl =
+        'http://127.0.0.1:8000/register_manager'; // Replace with your actual backend URL
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'manager_firstname': firstName,
-        'manager_surname': surname,
-        'manager_email': email,
-        'manager_password': password,
-        'manager_contact_number': "",
-        'manager_image': "",
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'manager_firstname': firstName,
+          'manager_surname': surname,
+          'manager_email': email,
+          'manager_password': password,
+          'manager_contact_number': "",
+          'manager_image': "",
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
+      if (response.statusCode == 200) {
+        // Successfully registered, handle the response accordingly
+        print('Registration successful!');
+        print('Response: ${response.body}');
+
+        return response.body;
+      } else {
+        // Failed to register, handle the error accordingly
+        print('Failed to register. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      print('Error: $error');
     }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
+  }
+  if (userType == "player") {
+    final apiUrl =
+        'http://127.0.0.1:8000/register_player'; // Replace with your actual backend URL
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'player_email': email,
+          'player_password': password,
+          'player_firstname': firstName,
+          'player_surname': surname,
+          'player_dob': DateTime.now().toString(),
+          'player_height': "",
+          'player_gender': "",
+          'player_contact_number': "",
+          'player_image': "",
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully registered, handle the response accordingly
+        print('Registration successful!');
+        print('Response: ${response.body}');
+        return response.body;
+        // You can parse the response JSON here and perform actions based on it
+      } else {
+        // Failed to register, handle the error accordingly
+        print('Failed to register. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      print('Error: $error');
+    }
   }
 
-}
-if(UserType == "player")
-{
-  final apiUrl =
-      'http://127.0.0.1:8000/register_player'; // Replace with your actual backend URL
+  if (userType == "coach") {
+    final apiUrl =
+        'http://127.0.0.1:8000/register_coach'; // Replace with your actual backend URL
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'player_email': email,
-        'player_password': password,
-        'player_firstname': firstName,
-        'player_surname': surname,
-        'player_dob': "",
-        'player_height': "",
-        'player_gender': "",
-        'player_contact_number': "",
-        'player_image': "",
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'coach_email': email,
+          'coach_password': password,
+          'coach_firstname': firstName,
+          'coach_surname': surname,
+          'coach_contact': "",
+          'coach_image': ""
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
+      if (response.statusCode == 200) {
+        // Successfully registered, handle the response accordingly
+        print('Registration successful!');
+        print('Response: ${response.body}');
+        return response.body;
+        // You can parse the response JSON here and perform actions based on it
+      } else {
+        // Failed to register, handle the error accordingly
+        print('Failed to register. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      print('Error: $error');
     }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
   }
-}
 
-if(UserType == "coach")
-{
-  final apiUrl =
-      'http://127.0.0.1:8000/register_coach'; // Replace with your actual backend URL
+  if (userType == "physio") {
+    final apiUrl =
+        'http://127.0.0.1:8000/register_physio'; // Replace with your actual backend URL
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'physio_email': email,
-        'physio_password': password,
-        'physio_firstname': firstName,
-        'physio_surname': surname,
-        'physio_contact_number': "",
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'physio_email': email,
+          'physio_password': password,
+          'physio_firstname': firstName,
+          'physio_surname': surname,
+          'physio_contact_number': ''
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
+      if (response.statusCode == 200) {
+        // Successfully registered, handle the response accordingly
+        print('Registration successful!');
+        print('Response: ${response.body}');
+        return response.body;
+        // You can parse the response JSON here and perform actions based on it
+      } else {
+        // Failed to register, handle the error accordingly
+        print('Failed to register. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      print('Error: $error');
     }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
+  } else {
+    print("error: user type not found");
   }
+
+  return "";
 }
-
-if (UserType == "physio")
-{
-  final apiUrl =
-      'http://127.0.0.1:8000/register_coach'; // Replace with your actual backend URL
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'physio_email': firstName,
-        'surname': surname,
-        'user_email': email,
-        'user_password': password,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
-else{
-  print("error: user type not found");
-}
-
-}
-
-
 
 enum UserRole {
   manager,
@@ -217,6 +216,21 @@ String userRoleText(UserRole userRole) {
       return "Coach";
     case UserRole.physio:
       return "Physio";
+  }
+}
+
+UserRole stringToUserRole(String userRole) {
+  switch (userRole) {
+    case "manager":
+      return UserRole.manager;
+    case "player":
+      return UserRole.player;
+    case "coach":
+      return UserRole.coach;
+    case "physio":
+      return UserRole.physio;
+    default:
+      return UserRole.manager;
   }
 }
 
@@ -306,17 +320,52 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 45.0),
-                      child: bigButton("Sign up", () {
-                        print(ref.read(userRoleProvider.notifier).state);
-                        String user_type = checkUserType(ref.read(userRoleProvider.notifier).state.toString());
-                        print(user_type);
-                        registerUser(UserType: user_type, firstName: firstName2, surname: surname2, email: email2, password: password2);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
-                          ),
-                        );
+                      child: bigButton("Sign up", () async {
+                        UserRole userRole =
+                            ref.read(userRoleProvider.notifier).state;
+                        String response = await registerUser(
+                            userType: userRoleText(userRole).toLowerCase(),
+                            firstName: firstName2,
+                            surname: surname2,
+                            email: email2,
+                            password: password2);
+
+                        String idType = "";
+                        if (userRole == UserRole.manager) {
+                          idType = "manager_id";
+                        } else if (userRole == UserRole.player) {
+                          idType = "player_id";
+                        } else if (userRole == UserRole.coach) {
+                          idType = "coach_id";
+                        } else if (userRole == UserRole.physio) {
+                          idType = "physio_id";
+                        } else {
+                          print("error: user type not found");
+                        }
+
+                        int userId =
+                            const JsonDecoder().convert(response)["id"][idType];
+                        print("user id: " + userId.toString());
+                        ref.read(userIdProvider.notifier).state = userId;
+                        ref.read(userRoleProvider.notifier).state = userRole;
+
+                        if (userId != 0) {
+                          if (userRole == UserRole.player) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PlayerProfileSetUpScreen()),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileSetUpScreen(),
+                              ),
+                            );
+                          }
+                        }
                       }),
                     ),
                   ],

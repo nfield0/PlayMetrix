@@ -65,8 +65,7 @@ class LandingScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const LogInScreen()),
+                    MaterialPageRoute(builder: (context) => LogInScreen()),
                   );
                 },
                 borderRadius: BorderRadius.circular(25),
