@@ -161,6 +161,55 @@ def delete_team(id: int, db:Session = Depends(get_db)):
 
 #endregion
 
+
+#region schedules
+
+@app.get("/schedules")
+def read_schedules(db:Session = Depends(get_db)):
+    return crud.get_schedules(db)
+
+@app.get("/schedules/{id}")
+def read_schedule(id: int, db:Session = Depends(get_db)):
+    return crud.get_schedule_by_id(db, id)
+
+@app.post("/schedules")
+def insert_schedule(schedule: ScheduleBase, db:Session = Depends(get_db)):
+    return crud.insert_new_schedule(db, schedule)
+
+@app.put("/schedules/{id}")
+def update_schedule(id: int, schedule: ScheduleBase, db:Session = Depends(get_db)):
+    return crud.update_schedule(db, schedule, id)
+
+@app.delete("/schedules/{id}")
+def delete_schedule(id: int, db:Session = Depends(get_db)):
+    return crud.delete_schedule_by_id(db, id)
+
+
+#team schedules
+
+@app.get("/team_schedules/{id}")
+def read_team_schedules(id: int, db:Session = Depends(get_db)):
+    return crud.get_team_schedules(db, id)
+
+@app.get("/team_schedules/{id}/{date}")
+def read_team_schedule(id: int, db:Session = Depends(get_db)):
+    return crud.get_team_schedule_by_id(db, id)
+
+@app.post("/team_schedules/{id}")
+def insert_team_schedule(id: int, schedule: TeamScheduleBase, db:Session = Depends(get_db)):
+    return crud.insert_new_team_schedule(db, schedule, id)
+
+@app.put("/team_schedules/{id}")
+def update_team_schedule(id: int, schedule: TeamScheduleBase, db:Session = Depends(get_db)):
+    return crud.update_team_schedule(db, schedule, id)
+
+@app.delete("/team_schedules/{id}")
+def delete_team_schedule(id: int, db:Session = Depends(get_db)):
+    return crud.delete_team_schedule_by_id(db, id)
+
+#endregion
+
+
 #region players
 
 
