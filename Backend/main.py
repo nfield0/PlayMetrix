@@ -379,13 +379,17 @@ def delete_physio_team_id(id: int, db:Session = Depends(get_db)):
 def read_team_player(id: int, db:Session = Depends(get_db)):
     return crud.get_players_by_team_id(db, id)
 
-@app.post("/team_player/{id}")
-def add_team_player(id: int, player_id: int, db:Session = Depends(get_db)):
-    return crud.add_player_to_team(db, id, player_id)
+@app.post("/team_player")
+def add_team_player(team_player: TeamPlayerBase, db:Session = Depends(get_db)):
+    return crud.add_player_to_team(db, team_player)
 
-@app.delete("/team_player/{id}")
-def delete_team_player(id: int, db:Session = Depends(get_db)):
-    return crud.delete_player_from_team(db, id)
+@app.put("/team_player")
+def update_team_player(team_player: TeamPlayerBase, db:Session = Depends(get_db)):
+    return crud.update_player_on_team(db, team_player)
+
+@app.delete("/team_player")
+def delete_team_player(team_player: TeamPlayerDelete, db:Session = Depends(get_db)):
+    return crud.delete_player_from_team(db, team_player)
 
 
 #endregion

@@ -164,7 +164,14 @@ class PlayerInjuryBase(BaseModel):
     date_of_recovery: str
     player_id: int
 
+class TeamPlayerBase(BaseModel):
+    team_id: int
+    player_id: int
+    team_position: str
 
+class TeamPlayerDelete(BaseModel):
+    team_id: int
+    player_id: int
 
 class ScheduleBase(BaseModel):
     schedule_id: int

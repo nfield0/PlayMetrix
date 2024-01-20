@@ -1221,22 +1221,34 @@ def get_players_by_team_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving team players: {e}")
     
-def add_player_to_team(db:Session, team_id: int, player_id: int):
+def add_player_to_team(db:Session, team_player_obj: TeamPlayerBase):
     try:
-        new_team_player = team_player(team_id=team_id, player_id=player_id)
+        new_team_player = team_player(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id, team_position=team_player_obj.team_position)
         db.add(new_team_player)
         db.commit()
-        return {"message": f"Player with ID {player_id} has been added to team with ID {team_id}"}
+        return {"message": f"Player with ID {str(team_player_obj.player_id)} has been added to team with ID {str(team_player_obj.team_id)}"}
     except Exception as e:
         return(f"Error adding player to team: {e}")
     
-def delete_player_from_team(db:Session, team_id: int, player_id: int):
+def update_player_on_team(db:Session, team_player_obj: TeamPlayerBase):
+    try:
+        player_to_update = db.query(team_player).filter_by(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id).first()
+        if not player_to_update:
+            raise HTTPException(status_code=404, detail="Player not found")
+        player_to_update.team_position = team_player_obj.team_position
+        db.commit()
+        return {"message": f"Player with ID {str(team_player_obj.player_id)} has been updated"}
+    except Exception as e:
+        return(f"Error updating player position: {e}")
+
+
+def delete_player_from_team(db:Session, team_player_obj: TeamPlayerDelete ):
     try:        
-        player_to_delete = db.query(team_player).filter_by(team_id=team_id, player_id=player_id).first()
+        player_to_delete = db.query(team_player).filter_by(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id).first()
         if player_to_delete:
             db.delete(player_to_delete)
             db.commit()
-        return {"message": f"Player with ID {player_id} has been deleted from team with ID {team_id}"}
+        return {"message": f"Player with ID {team_player_obj.player_id} has been deleted from team with ID {team_player_obj.team_id}"}
     except Exception as e:
         return(f"Error deleting player from team: {e}")
     
@@ -1503,6 +1515,9 @@ def delete_sport(db:Session, id: int):
     
 def cleanup(db: Session):
     try:       
+        db.query(team_coach).delete()
+        db.query(team_physio).delete()
+        db.query(team_player).delete()
 
         db.query(player_injuries).delete()
         db.query(injuries).delete()
@@ -1525,6 +1540,7 @@ def cleanup(db: Session):
 
         db.query(coach_info).delete()
         db.query(coach_login).delete()
+
 
 
         db.flush()
