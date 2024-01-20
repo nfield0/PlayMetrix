@@ -373,6 +373,9 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     if (userRole == UserRole.player)
                       bigButton("Log Out", () {
+                        ref.read(userRoleProvider.notifier).state =
+                            UserRole.manager;
+                        ref.read(userIdProvider.notifier).state = 0;
                         Navigator.push(
                           context,
                           MaterialPageRoute(

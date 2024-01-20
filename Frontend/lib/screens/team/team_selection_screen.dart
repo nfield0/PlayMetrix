@@ -6,6 +6,31 @@ import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> addTeamPlayer(int id) async {
+  final apiUrl =
+      'http://127.0.0.1:8000/team_player/$id'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response =
+        await http.post(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      // Successfully added data to the backend
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to add data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
 
 class TeamSelectionScreen extends ConsumerWidget {
   @override
@@ -30,7 +55,7 @@ class TeamSelectionScreen extends ConsumerWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Team Selection',
+                    const Text('Select Your Team',
                         style: TextStyle(
                           color: AppColours.darkBlue,
                           fontFamily: AppFonts.gabarito,

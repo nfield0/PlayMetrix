@@ -1,93 +1,87 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class PlayerProfileSetUpScreen extends StatefulWidget {
-  const PlayerProfileSetUpScreen({Key? key}) : super(key: key);
-
+class PlayerProfileSetUpScreen extends ConsumerWidget {
   @override
-  _PlayerProfileSetUpScreenState createState() =>
-      _PlayerProfileSetUpScreenState();
-}
-
-class _PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
-          ),
-          iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Image.asset(
+          'lib/assets/logo.png',
+          width: 150,
+          fit: BoxFit.contain,
         ),
-        body: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.all(35),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Profile Set Up',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      const SizedBox(height: 10),
-                      divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Form(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                  child: Column(children: [
-                                Image.asset(
-                                  "lib/assets/icons/profile_placeholder.png",
-                                  width: 120,
-                                ),
-                                const SizedBox(height: 10),
-                                underlineButtonTransparent(
-                                    "Edit picture", () {}),
-                              ])),
-                              formFieldBottomBorder("Number", "6"),
-                              formFieldBottomBorder(
-                                  "Date of birth", "22/01/2002"),
-                              formFieldBottomBorder("Height", "183cm"),
-                              dropdownWithDivider(
-                                  "Position",
+        iconTheme: const IconThemeData(
+          color: AppColours.darkBlue, //change your color here
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: SingleChildScrollView(
+          child: Container(
+              padding: const EdgeInsets.all(35),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Profile Set Up',
+                        style: TextStyle(
+                          color: AppColours.darkBlue,
+                          fontFamily: AppFonts.gabarito,
+                          fontSize: 36.0,
+                          fontWeight: FontWeight.w700,
+                        )),
+                    const SizedBox(height: 10),
+                    divider(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Form(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                                child: Column(children: [
+                              Image.asset(
+                                "lib/assets/icons/profile_placeholder.png",
+                                width: 120,
+                              ),
+                              const SizedBox(height: 10),
+                              underlineButtonTransparent("Edit picture", () {}),
+                            ])),
+                            formFieldBottomBorder("Number", "6"),
+                            formFieldBottomBorder(
+                                "Date of birth", "22/01/2002"),
+                            formFieldBottomBorder("Height", "183cm"),
+                            dropdownWithDivider(
+                                "Position",
+                                "Defender",
+                                [
+                                  "Forward",
+                                  "Midfielder",
                                   "Defender",
-                                  [
-                                    "Forward",
-                                    "Midfielder",
-                                    "Defender",
-                                    "Goalkeeper"
-                                  ],
-                                  (p0) {}),
-                              const SizedBox(height: 30),
-                              bigButton("Save Changes", () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
-                              })
-                            ]),
-                      )
-                    ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+                                  "Goalkeeper"
+                                ],
+                                (p0) {}),
+                            const SizedBox(height: 30),
+                            bigButton("Save Changes", () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()));
+                            })
+                          ]),
+                    )
+                  ]))),
+    );
   }
 }
 

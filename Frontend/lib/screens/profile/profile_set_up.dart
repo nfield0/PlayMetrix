@@ -1,22 +1,64 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class ProfileSetUpScreen extends StatefulWidget {
-  const ProfileSetUpScreen({Key? key}) : super(key: key);
+Future<void> updateManagerProfile(String contactNumber, String image) async {
+final apiUrl =
+        'http://127.0.0.1:8000/register_manager'; // Replace with your actual backend URL
 
-  @override
-  _ProfileSetUpScreenState createState() => _ProfileSetUpScreenState();
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          // 'manager_firstname': firstName,
+          // 'manager_surname': surname,
+          // 'manager_email': email,
+          // 'manager_password': password,
+          'manager_contact_number': "",
+          'manager_image': "",
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully registered, handle the response accordingly
+        print('Registration successful!');
+        print('Response: ${response.body}');
+
+      } else {
+        // Failed to register, handle the error accordingly
+        print('Failed to register. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      print('Error: $error');
+    }
 }
 
-class _ProfileSetUpScreenState extends State<ProfileSetUpScreen> {
+Future<void> updatePhysioProfile() async {}
+
+Future<void> updateCoachProfile() async {}
+
+
+class ProfileSetUpScreen extends ConsumerWidget {
   String selectedDivisionValue = "Division 1";
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
+
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -32,7 +74,7 @@ class _ProfileSetUpScreenState extends State<ProfileSetUpScreen> {
       ),
       body: Form(
           child: Container(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.all(35),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -62,10 +104,17 @@ class _ProfileSetUpScreenState extends State<ProfileSetUpScreen> {
             formFieldBottomBorder("Phone", ""),
             const SizedBox(height: 50),
             bigButton("Save Changes", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
+              if (userRole == UserRole.manager) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TeamSetUpScreen()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              }
             })
           ],
         ),

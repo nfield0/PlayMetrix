@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/profile/edit_profile.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -95,6 +96,9 @@ class ProfileScreen extends ConsumerWidget {
                       detailWithDivider("Email", "bsmith@louthgaa.com"),
                       const SizedBox(height: 25),
                       bigButton("Log Out", () {
+                        ref.read(userRoleProvider.notifier).state =
+                            UserRole.manager;
+                        ref.read(userIdProvider.notifier).state = 0;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
