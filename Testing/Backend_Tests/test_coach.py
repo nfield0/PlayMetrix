@@ -33,6 +33,31 @@ def test_add_coach():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+
+def test_get_coach():
+    url = 'http://127.0.0.1:8000/coaches/info/1'
+    headers = {'Content-Type': 'application/json'}
+    
+    response = requests.get(url, headers=headers)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.status_code == 200
+    expected_data = {
+        "coach_email": "testcoach@gmail.com",
+        "coach_password": "Hidden",
+        "coach_firstname": "test",
+        "coach_surname": "tester",
+        "coach_contact": "012345",
+        "coach_image": "h"
+    
+    }
+    try:
+        response_json = response.json()
+        assert response_json == expected_data
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 def test_login_coach():
     url = 'http://127.0.0.1:8000/login'
     headers = {'Content-Type': 'application/json'}
