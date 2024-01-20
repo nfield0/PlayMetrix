@@ -169,6 +169,15 @@ class TeamPlayerBase(BaseModel):
     player_id: int
     team_position: str
 
+class TeamCoachBase(BaseModel):
+    team_id: int
+    coach_id: int
+    team_role: str
+    
+class TeamPhysioBase(BaseModel):
+    team_id: int
+    physio_id: int
+
 class TeamPlayerDelete(BaseModel):
     team_id: int
     player_id: int

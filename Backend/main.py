@@ -337,12 +337,12 @@ def read_team_coach(id: int, db:Session = Depends(get_db)):
     return crud.get_coach_by_team_id(db, id)
 
 @app.post("/team_coach")
-def insert_team_coach(team_id: int, coach_id: int, db:Session = Depends(get_db)):
-    return crud.insert_team_coach_by_team_id(db, coach_id, team_id)
+def insert_team_coach(team_coach: TeamCoachBase, db:Session = Depends(get_db)):
+    return crud.insert_team_coach_by_team_id(db, team_coach)
 
 @app.put("/team_coach/{id}")
-def update_team_coach(coach_id: int, team_id: int, db:Session = Depends(get_db)):
-    return crud.update_team_coach_by_team_id(db, team_id, coach_id)
+def update_team_coach(id: int, team_coach: TeamCoachBase, db:Session = Depends(get_db)):
+    return crud.update_team_coach_by_team_id(db, team_coach, id)
 
 @app.delete("/team_coach/{id}")
 def delete_coach_team_id(id: int, db:Session = Depends(get_db)):
@@ -358,12 +358,12 @@ def read_team_physio(id: int, db:Session = Depends(get_db)):
     return crud.get_physio_by_team_id(db, id)
 
 @app.post("/team_physio")
-def insert_team_physio(team_id: int, physio_id: int, db:Session = Depends(get_db)):
-    return crud.insert_team_physio_by_team_id(db, physio_id, team_id)
+def insert_team_physio(team_physio: TeamPhysioBase, db:Session = Depends(get_db)):
+    return crud.insert_team_physio_by_team_id(db, team_physio)
 
-@app.put("/team_physio/{id}")
-def update_team_physio(physio_id: int, team_id: int, db:Session = Depends(get_db)):
-    return crud.update_team_physio_by_team_id(db, team_id, physio_id)
+# @app.put("/team_physio/{id}")
+# def update_team_physio(physio_id: int, team_id: int, db:Session = Depends(get_db)):
+#     return crud.update_team_physio_by_team_id(db, team_id, physio_id)
 
 
 #may prove redundant

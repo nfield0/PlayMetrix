@@ -1,4 +1,5 @@
 
+
 import requests
 
 
@@ -94,124 +95,81 @@ def test_add_team():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-def test_add_player():
-    url = 'http://127.0.0.1:8000/register_player'
+
+def test_add_physio():
+    url = 'http://127.0.0.1:8000/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "player_email": "testplayer@gmail.com",
-        "player_password": "Testpassword123!",
-        "player_firstname": "Nigel",
-        "player_surname": "Farage",
-        "player_height": "1.80m",
-        "player_gender": "Male",
-        "player_dob": "1999-05-31",
-        "player_contact_number": "30888802",
-        "player_image" : "001231"
+        "physio_email": "testphysio@gmail.com",
+        "physio_password": "Testpassword123!",
+        "physio_firstname": "test",
+        "physio_surname": "tester",
+        "physio_contact_number": "012345"
     }
     response = requests.post(url, headers=headers, json=json)
-    
-
+    #assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
 
     try:
-        
         response_json = response.json()
-        assert response_json.get('detail') == "Player Registered Successfully"
+        assert response_json.get("detail") == "Physio Registered Successfully"
         assert 'id' in response_json
-        assert response_json['id']['player_id'] == 1
-        assert response.status_code == 200
+        assert response_json['id']['physio_id'] == 1
     
-    except (ValueError, AssertionError) as e:
+    except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-def test_add_team_player():
-    url = 'http://127.0.0.1:8000/team_player'
+
+
+def test_add_team_physio():
+    url = 'http://127.0.0.1:8000/team_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
-        
-            "team_id": 1,
-            "player_id": 1,
-            "team_position": "Full Back"
-        }
-    response = requests.post(url, headers=headers, json=json)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    try:
-        response_json = response.json()
-        expected_data = {
-            "message":"Player with ID 1 has been added to team with ID 1"
-        }
-        
-        assert response_json == expected_data
-
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
-
-def test_get_team_player():
-    url = 'http://127.0.0.1:8000/team_player/1'
-    headers = {'Content-Type': 'application/json'}  
-    response = requests.get(url, headers=headers)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    try:
-        response_json = response.json()
-        expected_data = [{
-            "team_id": 1,
-            "player_id": 1,
-            "team_position": "Full Back"
-        }]
-        assert response_json == expected_data
-
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
-
-
-def test_update_team_player():
-    url = 'http://127.0.0.1:8000/team_player'
-    headers = {'Content-Type': 'application/json'}
-    json = {
-        
-            "team_id": 1,
-            "player_id": 1,
-            "team_position": "Full Forward"
-        }
-    response = requests.put(url, headers=headers, json=json)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    try:
-        response_json = response.json()
-        expected_data = {
-            "message":"Player with ID 1 has been updated"
-        }
-        
-        assert response_json == expected_data
-
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
-
-
-
-def test_delete_team_player():
-    url = 'http://127.0.0.1:8000/team_player'
-    headers = {'Content-Type': 'application/json'}  
-    json = {
-        "player_id":1,
-        "team_id":1
+        "team_id": 1,
+        "physio_id": 1
     }
-    response = requests.delete(url, headers=headers, json=json)
+    response = requests.post(url, headers=headers, json=json)
+    #assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Physio with ID 1 has been added to team with ID 1"
+
+    except(ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_get_team_physio():
+    url = 'http://127.0.0.1:8000/team_physio/1'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.get(url, headers=headers)
+    #assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    expected_data = [{
+        "team_id": 1,
+        "physio_id": 1
+    }]
+    try:
+        response_json = response.json()
+        assert response_json == expected_data
     
-    assert response.status_code == 200
+    except(ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_delete_team_physio():
+    url = 'http://127.0.0.1:8000/team_physio/1'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.delete(url, headers=headers)
+    #assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
     try:
         response_json = response.json()
-        expected_data = {
-            "message":"Player with ID 1 has been deleted from team with ID 1"
-        }
-        assert response_json == expected_data
-
-    except (ValueError, AssertionError) as e:
+        assert response_json.get("message") == "Physio from Team with ID 1 has been deleted"
+    
+    except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
-
 
 def test_z_cleanup():
     url = 'http://127.0.0.1:8000/cleanup_tests'

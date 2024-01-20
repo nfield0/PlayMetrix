@@ -1129,23 +1129,23 @@ def get_coach_by_team_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving team coaches: {e}")
     
-def insert_team_coach_by_team_id(db:Session, coach_id: int, team_id: int):
+def insert_team_coach_by_team_id(db:Session, team_coach_obj: TeamCoachBase):
     try:
-        new_team_coach = team_coach(team_id=team_id, coach_id=coach_id)
+        new_team_coach = team_coach(team_id=team_coach_obj.team_id, coach_id=team_coach_obj.coach_id, team_role=team_coach_obj.team_role)
         db.add(new_team_coach)
         db.commit()
-        return {"message": f"Coach with ID {coach_id} has been added to team with ID {team_id}"}
+        return {"message": f"Coach with ID {team_coach_obj.coach_id} has been added to team with ID {team_coach_obj.team_id}"}
     except Exception as e:
         return(f"Error adding coach to team: {e}")
     
-def update_team_coach_by_team_id(db:Session, team_id: int, coach_id: int):
+def update_team_coach_by_team_id(db:Session, team_coach: TeamCoachBase, id: int):
     try:
-        team_to_update = db.query(team_coach).filter_by(team_id=team_id).first()
+        team_to_update = db.query(team_coach).filter_by(team_id=id).first()
         if not team_to_update:
             raise HTTPException(status_code=404, detail="Team not found")
-        team_to_update.coach_id = coach_id
+        team_to_update.coach_id = team_coach.coach_id
         db.commit()
-        return {"message": f"Team with ID {team_id} has been updated"}
+        return {"message": f"Team with ID {team_coach.team_id} has been updated"}
     except Exception as e:
         return(f"Error updating team: {e}")
     
@@ -1173,32 +1173,32 @@ def get_physio_by_team_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving team physio: {e}")
     
-def insert_team_physio_by_team_id(db:Session, physio_id: int, team_id: int):
+def insert_team_physio_by_team_id(db:Session, team_physio_obj: TeamPhysioBase):
     try:
-        if not get_physio_login_by_id(db, physio_id):
+        if not get_physio_login_by_id(db, team_physio_obj.physio_id):
             raise HTTPException(status_code=400, detail="Physio ID Does not Exist")
-        if not get_team_by_id(db, team_id):
+        if not get_team_by_id(db, team_physio_obj.team_id):
             raise HTTPException(status_code=400, detail="Team ID Does not Exist")
         
-        new_team_physio = team_physio(team_id=team_id, physio_id=physio_id)
+        new_team_physio = team_physio(team_id= team_physio_obj.team_id, physio_id= team_physio_obj.physio_id)
         db.add(new_team_physio)
         db.commit()
-        return {"message": f"Physio with ID {physio_id} has been added to team with ID {team_id}"}
+        return {"message": f"Physio with ID {team_physio_obj.physio_id} has been added to team with ID { team_physio_obj.team_id}"}
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
         return(f"Error adding physio to team: {e}")
     
-def update_team_physio_by_team_id(db:Session, team_id: int, physio_id: int):
-    try:
-        team_to_update = db.query(team_physio).filter_by(team_id=team_id).first()
-        if not team_to_update:
-            raise HTTPException(status_code=404, detail="Team not found")
-        team_to_update.physio_id = physio_id
-        db.commit()
-        return {"message": f"Team with ID {team_id} has been updated"}
-    except Exception as e:
-        return(f"Error updating team: {e}")
+# def update_team_physio_by_team_id(db:Session,  team_physio: ):
+#     try:
+#         team_to_update = db.query(team_physio).filter_by(team_id=team_id).first()
+#         if not team_to_update:
+#             raise HTTPException(status_code=404, detail="Team not found")
+#         team_to_update.physio_id = physio_id
+#         db.commit()
+#         return {"message": f"Team with ID {team_id} has been updated"}
+#     except Exception as e:
+#         return(f"Error updating team: {e}")
 
 def delete_physio_team_id(db:Session, id: int):
     try:        
@@ -1206,7 +1206,7 @@ def delete_physio_team_id(db:Session, id: int):
         if team_to_delete:
             db.delete(team_to_delete)
             db.commit()
-        return {"message": f"Team with ID {id} has been deleted"}
+        return {"message": f"Physio from Team with ID {id} has been deleted"}
     except Exception as e:
         return(f"Error deleting team physio: {e}")
     
