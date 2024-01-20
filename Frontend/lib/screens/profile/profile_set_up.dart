@@ -50,8 +50,7 @@ Future<ProfileName> getManagerProfile(int id) async {
 
 Future<void> updateManagerProfile(int id, ProfileName name,
     String contactNumber, Uint8List? imageBytes) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/managers/info/$id'; // Replace with your actual backend URL
+  final apiUrl = 'http://127.0.0.1:8000/managers/info/$id';
 
   try {
     final response = await http.put(
@@ -69,11 +68,9 @@ Future<void> updateManagerProfile(int id, ProfileName name,
     );
 
     if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
       print('Registration successful!');
       print('Response: ${response.body}');
     } else {
-      // Failed to register, handle the error accordingly
       print('Failed to register. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
     }
@@ -83,7 +80,59 @@ Future<void> updateManagerProfile(int id, ProfileName name,
   }
 }
 
-Future<void> updatePhysioProfile() async {}
+Future<ProfileName> getPhysioProfile(int id) async {
+  final apiUrl = 'http://127.0.0.1:8000/physio/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+      final parsed = jsonDecode(response.body);
+
+      return ProfileName(parsed['physio_firstname'], parsed['physio_surname']);
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  return ProfileName("", "");
+}
+
+Future<void> updatePhysioProfile(
+    int id, ProfileName name, String contactNumber) async {
+  final apiUrl = 'http://127.0.0.1:8000/physio/info/$id';
+
+  try {
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'physio_id': id,
+        'physio_firstname': name.firstName,
+        'physio_surname': name.surname,
+        'physio_contact_number': contactNumber,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Registration successful!');
+      print('Response: ${response.body}');
+    } else {
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
 
 Future<void> updateCoachProfile() async {}
 
@@ -173,6 +222,16 @@ class ProfileSetUpScreen extends ConsumerWidget {
                   MaterialPageRoute(builder: (context) => TeamSetUpScreen()),
                 );
               } else {
+                if (userRole == UserRole.physio) {
+                  int userId = ref.watch(userIdProvider.notifier).state;
+                  ProfileName physioName = await getPhysioProfile(userId);
+
+                  await updatePhysioProfile(
+                    userId,
+                    physioName,
+                    _phoneController.text,
+                  );
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => HomeScreen()),
