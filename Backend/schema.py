@@ -63,8 +63,6 @@ class Coach(BaseModel):
 
 class CoachInfo(BaseModel):
     coach_id: int
-    coach_email: str
-    coach_password: str
     coach_firstname: str
     coach_surname: str
     coach_contact: str
@@ -98,8 +96,6 @@ class Physio(BaseModel):
     
 class PhysioInfo(BaseModel):
     physio_id: int
-    physio_email: str
-    physio_password: str
     physio_firstname: str
     physio_surname: str
     physio_contact_number: str
@@ -128,16 +124,16 @@ class PlayerBase(BaseModel):
     player_id: int
     player_email: str
     player_password: str
-    player_firstname: str 
-    player_surname: str 
-    player_dob: str 
-    player_contact_number: str
-    player_image: bytes
-    matches_played: int
-    matches_started: int 
-    matches_off_the_bench: int
-    injury_prone: bool
-    minutes_played: int
+    # player_firstname: str 
+    # player_surname: str 
+    # player_dob: str 
+    # player_contact_number: str
+    # player_image: bytes
+    # matches_played: int
+    # matches_started: int 
+    # matches_off_the_bench: int
+    # injury_prone: bool
+    # minutes_played: int
 
 class PlayerInfo(BaseModel):
     player_id: int

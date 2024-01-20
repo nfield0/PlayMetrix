@@ -146,6 +146,54 @@ def test_update_manager():
         assert False, f"Test failed: {e}"
 
 
+def test_update_manager_login():
+    url = 'http://127.0.0.1:8000/managers/login/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "manager_id": 1,
+            "manager_email": "testmanager@gmail.com",
+            "manager_password": "Password123!?"
+    }
+
+    response = requests.put(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        print(response_json)
+        assert response_json.get("message") == "Manager Login with ID 1 has been updated"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
+
+def test_update_manager_info():
+    url = 'http://127.0.0.1:8000/managers/info/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "manager_id": 1,
+            "manager_firstname": "test1",
+            "manager_surname": "tester1",
+            "manager_contact_number": "012345",
+            "manager_image": "something"
+        
+    }
+
+    response = requests.put(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        print(response_json)
+        assert response_json.get("message") == "Manager Info with ID 1 has been updated"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
 # test is passable on static databases with hashed password returning
 def test_get_manager_info():
     url = 'http://127.0.0.1:8000/managers/1'
@@ -158,8 +206,8 @@ def test_get_manager_info():
         expected_data = {
             "manager_email": "testmanager@gmail.com",
             "manager_password": "Hidden",
-            "manager_firstname": "test",
-            "manager_surname": "tester",
+            "manager_firstname": "test1",
+            "manager_surname": "tester1",
             "manager_contact_number": "012345",
             "manager_image": "something"
         }
@@ -168,6 +216,7 @@ def test_get_manager_info():
 
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
+
 
 def test_delete_manager():
     url = 'http://127.0.0.1:8000/managers/1'

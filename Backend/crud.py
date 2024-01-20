@@ -652,7 +652,7 @@ def update_player_stat_by_id(db:Session, player: PlayerStat,id: int ):
     except Exception as e:
                 return(f"Error retrieving player stats: {e}")
 
-def update_player_by_id(db:Session, id: int, player: PlayerInfo):
+def update_player_by_id(db:Session,  player: PlayerBase, id: int):
     try:
         player_to_update = db.query(player_login).filter_by(player_id=id).first()
         if not player_to_update:

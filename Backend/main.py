@@ -188,7 +188,7 @@ def read_player(id: int, db:Session = Depends(get_db)):
 # def insert_player(player: PlayerBase, db:Session = Depends(get_db)):
 #     return crud.insert_new_player(db, player)
 
-@app.put("/players/{id}")
+@app.put("/players/login/{id}")
 def update_player_login(id: int, player: PlayerBase, db:Session = Depends(get_db)):
     return crud.update_player_by_id(db, player, id)
 

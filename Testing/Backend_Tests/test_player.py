@@ -157,6 +157,28 @@ def test_update_player_info():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_update_player_login():
+    url = 'http://127.0.0.1:8000/players/login/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "player_id": 1,
+            "player_email": "testplayergmailcom",
+        "player_password": "test_password",
+            
+        }
+    
+    response = requests.put(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        print(response_json)
+        assert response_json.get("message") == "Player Login with ID 1 has been updated"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 def test_get_player_info():
     url = 'http://127.0.0.1:8000/players/info/1'
     headers = {'Content-Type': 'application/json'}

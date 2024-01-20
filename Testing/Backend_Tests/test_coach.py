@@ -108,6 +108,52 @@ def test_update_coach():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_update_coach_login():
+    url = 'http://127.0.0.1:8000/coaches/login/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "coach_id": 1,   
+        "coach_email": "updatetestcoach@gmail.com",
+        "coach_password": "Testpassword1!",
+        
+    }
+
+    response = requests.put(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        print(response_json)
+        assert response_json.get("message") == "Coach Login with ID 1 has been updated"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_update_coach_info():
+    url = 'http://127.0.0.1:8000/coaches/info/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "coach_id": 1,   
+        "coach_firstname": "test",
+        "coach_surname": "tester",
+        "coach_contact": "012345",
+        "coach_image": "h"        
+    }
+
+    response = requests.put(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        print(response_json)
+        assert response_json.get("message") == "Coach Info with ID 1 has been updated"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
 def test_update_coach_invalid_email():
     url = 'http://127.0.0.1:8000/coaches/1'
     headers = {'Content-Type': 'application/json'}
