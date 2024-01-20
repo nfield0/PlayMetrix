@@ -24,7 +24,18 @@ class ProfileName {
   ProfileName(this.firstName, this.surname);
 }
 
-Future<ProfileName> getManagerProfile(int id) async {
+class Profile {
+  final String firstName;
+  final String surname;
+  final String contactNumber;
+  final String email;
+  final Uint8List? imageBytes;
+
+  Profile(this.firstName, this.surname, this.contactNumber, this.email,
+      this.imageBytes);
+}
+
+Future<Profile> getManagerProfile(int id) async {
   final apiUrl = 'http://127.0.0.1:8000/managers/$id';
   try {
     final response =
@@ -36,8 +47,12 @@ Future<ProfileName> getManagerProfile(int id) async {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
-      return ProfileName(
-          parsed['manager_firstname'], parsed['manager_surname']);
+      return Profile(
+          parsed['manager_firstname'],
+          parsed['manager_surname'],
+          parsed['manager_contact_number'],
+          parsed['manager_email'],
+          base64Decode((parsed['manager_image'])));
     } else {
       print('Error message: ${response.body}');
     }
@@ -45,7 +60,7 @@ Future<ProfileName> getManagerProfile(int id) async {
     print('Error: $error');
   }
 
-  return ProfileName("", "");
+  return Profile("", "", "", "", null);
 }
 
 Future<void> updateManagerProfile(int id, ProfileName name,
@@ -80,8 +95,8 @@ Future<void> updateManagerProfile(int id, ProfileName name,
   }
 }
 
-Future<ProfileName> getPhysioProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/physio/$id';
+Future<Profile> getPhysioProfile(int id) async {
+  final apiUrl = 'http://127.0.0.1:8000/physio/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -92,7 +107,8 @@ Future<ProfileName> getPhysioProfile(int id) async {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
-      return ProfileName(parsed['physio_firstname'], parsed['physio_surname']);
+      return Profile(parsed['physio_firstname'], parsed['physio_surname'],
+          parsed['physio_contact_number'], parsed['physio_email'], null);
     } else {
       print('Error message: ${response.body}');
     }
@@ -100,7 +116,7 @@ Future<ProfileName> getPhysioProfile(int id) async {
     print('Error: $error');
   }
 
-  return ProfileName("", "");
+  return Profile("", "", "", "", null);
 }
 
 Future<void> updatePhysioProfile(
@@ -134,8 +150,9 @@ Future<void> updatePhysioProfile(
   }
 }
 
-Future<ProfileName> getCoachProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/coaches/$id';
+// TODO: doesn't work
+Future<Profile> getCoachProfile(int id) async {
+  final apiUrl = 'http://127.0.0.1:8000/coaches/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -146,7 +163,12 @@ Future<ProfileName> getCoachProfile(int id) async {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
-      return ProfileName(parsed['coach_firstname'], parsed['coach_surname']);
+      return Profile(
+          parsed['coach_firstname'],
+          parsed['coach_surname'],
+          parsed['coach_contact'],
+          parsed['coach_email'],
+          parsed['coach_image']);
     } else {
       print('Error message: ${response.body}');
     }
@@ -154,7 +176,7 @@ Future<ProfileName> getCoachProfile(int id) async {
     print('Error: $error');
   }
 
-  return ProfileName("", "");
+  return Profile("", "", "", "", null);
 }
 
 Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
@@ -263,11 +285,11 @@ class ProfileSetUpScreen extends ConsumerWidget {
             bigButton("Save Changes", () async {
               if (userRole == UserRole.manager) {
                 int userId = ref.watch(userIdProvider.notifier).state;
-                ProfileName managerName = await getManagerProfile(userId);
+                Profile manager = await getManagerProfile(userId);
 
                 await updateManagerProfile(
                     userId,
-                    managerName,
+                    ProfileName(manager.firstName, manager.surname),
                     _phoneController.text,
                     ref.read(profilePictureProvider.notifier).state);
                 Navigator.push(
@@ -277,20 +299,20 @@ class ProfileSetUpScreen extends ConsumerWidget {
               } else {
                 if (userRole == UserRole.physio) {
                   int userId = ref.watch(userIdProvider.notifier).state;
-                  ProfileName physioName = await getPhysioProfile(userId);
+                  Profile physio = await getPhysioProfile(userId);
 
                   await updatePhysioProfile(
                     userId,
-                    physioName,
+                    ProfileName(physio.firstName, physio.surname),
                     _phoneController.text,
                   );
                 } else if (userRole == UserRole.coach) {
                   int userId = ref.watch(userIdProvider.notifier).state;
-                  ProfileName coachName = await getCoachProfile(userId);
+                  Profile coach = await getCoachProfile(userId);
 
                   await updateCoachProfile(
                       userId,
-                      coachName,
+                      ProfileName(coach.firstName, coach.surname),
                       _phoneController.text,
                       ref.read(profilePictureProvider.notifier).state);
                 }
