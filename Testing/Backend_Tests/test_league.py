@@ -58,6 +58,17 @@ def test_get_league_by_id():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_get_league_by_false_id():
+    url = 'http://127.0.0.1:8000/leagues/.1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+    # assert response.headers['Content-Type'] == 'application/json'
+    try:
+        assert response.status_code == 422          
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 def test_update_league_by_id():
     url = 'http://127.0.0.1:8000/leagues/1'
     headers = {'Content-Type': 'application/json'}

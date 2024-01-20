@@ -56,6 +56,18 @@ class CoachCreate(BaseModel):
     coach_contact: str
     coach_image: bytes
 
+class Coach(BaseModel):
+    coach_id: int
+    coach_email: str
+    coach_password: str
+
+class CoachInfo(BaseModel):
+    coach_id: int
+    coach_firstname: str
+    coach_surname: str
+    coach_contact: str
+    coach_image: bytes
+
 
 class Manager(BaseModel):
     manager_id: int
@@ -76,6 +88,17 @@ class ManagerNoID(BaseModel):
     manager_surname: str
     manager_contact_number: str
     manager_image: bytes
+
+class Physio(BaseModel):
+    physio_id: int
+    physio_email: str
+    physio_password: str
+    
+class PhysioInfo(BaseModel):
+    physio_id: int
+    physio_firstname: str
+    physio_surname: str
+    physio_contact_number: str
 
 class PhysioNoID(BaseModel):
     physio_email: str
@@ -101,16 +124,16 @@ class PlayerBase(BaseModel):
     player_id: int
     player_email: str
     player_password: str
-    player_firstname: str 
-    player_surname: str 
-    player_dob: str 
-    player_contact_number: str
-    player_image: bytes
-    matches_played: int
-    matches_started: int 
-    matches_off_the_bench: int
-    injury_prone: bool
-    minutes_played: int
+    # player_firstname: str 
+    # player_surname: str 
+    # player_dob: str 
+    # player_contact_number: str
+    # player_image: bytes
+    # matches_played: int
+    # matches_started: int 
+    # matches_off_the_bench: int
+    # injury_prone: bool
+    # minutes_played: int
 
 class PlayerInfo(BaseModel):
     player_id: int
@@ -130,4 +153,13 @@ class PlayerStat(BaseModel):
     injury_prone: bool
     minutes_played: int
     
+class InjuryBase(BaseModel):
+    injury_type: str
+    expected_recovery_time: str
+    recovery_method: str
 
+class PlayerInjuryBase(BaseModel):
+    injury_id: int
+    date_of_injury: str
+    date_of_recovery: str
+    player_id: int
