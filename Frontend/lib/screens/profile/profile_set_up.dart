@@ -134,7 +134,60 @@ Future<void> updatePhysioProfile(
   }
 }
 
-Future<void> updateCoachProfile() async {}
+Future<ProfileName> getCoachProfile(int id) async {
+  final apiUrl = 'http://127.0.0.1:8000/coaches/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+      final parsed = jsonDecode(response.body);
+
+      return ProfileName(parsed['coach_firstname'], parsed['coach_surname']);
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  return ProfileName("", "");
+}
+
+Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
+    Uint8List? imageBytes) async {
+  final apiUrl = 'http://127.0.0.1:8000/coaches/info/$id';
+
+  try {
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'coach_id': id,
+        'coach_firstname': name.firstName,
+        'coach_surname': name.surname,
+        'coach_contact': contactNumber,
+        'coach_image': base64Encode(imageBytes!),
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Registration successful!');
+      print('Response: ${response.body}');
+    } else {
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
 
 class ProfileSetUpScreen extends ConsumerWidget {
   final TextEditingController _phoneController = TextEditingController();
@@ -231,6 +284,15 @@ class ProfileSetUpScreen extends ConsumerWidget {
                     physioName,
                     _phoneController.text,
                   );
+                } else if (userRole == UserRole.coach) {
+                  int userId = ref.watch(userIdProvider.notifier).state;
+                  ProfileName coachName = await getCoachProfile(userId);
+
+                  await updateCoachProfile(
+                      userId,
+                      coachName,
+                      _phoneController.text,
+                      ref.read(profilePictureProvider.notifier).state);
                 }
                 Navigator.push(
                   context,
