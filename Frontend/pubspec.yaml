@@ -38,6 +38,7 @@ dependencies:
   http: ^1.1.2
   flutter_riverpod: ^2.4.9
   provider: ^6.1.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
