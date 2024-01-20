@@ -11,13 +11,105 @@ import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class PlayerData {
+  final int player_id;
+  final String player_firstname;
+  final String player_surname;
+  final String player_dob;
+  final String player_contact_number;
+  final String player_image;
+  final String player_height;
+  final String player_gender;
+
+  PlayerData({
+    required this.player_id,
+    required this.player_firstname,
+    required this.player_surname,
+    required this.player_dob,
+    required this.player_contact_number,
+    required this.player_image,
+    required this.player_height,
+    required this.player_gender,
+  });
+
+  factory PlayerData.fromJson(Map<String, dynamic> json) {
+    return PlayerData(
+      player_id: json['player_id'],
+      player_firstname: json['player_firstname'],
+      player_surname: json['player_surname'],
+      player_dob: json['player_dob'],
+      player_contact_number: json['player_contact_number'],
+      player_image: json['player_image'],
+      player_height: json['player_height'],
+      player_gender: json['player_gender'],
+    );
+  }
+}
+
+Future<PlayerData> getPlayerById(int id) async {
+  print('Player ID in home page: $id');
+  final apiUrl =
+      'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
+    
+
+      // Access individual variables
+      print('${player.player_id}');
+      print('${player.player_firstname}');
+      print('${player.player_surname}');
+      print('${player.player_dob}');
+      print('${player.player_contact_number}');
+      print('${player.player_image}');
+      print('${player.player_height}');
+      print('${player.player_gender}');
+      return player;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print("user");
+    print('Error: $error');
+  }
+  throw Exception('Failed to retrieve player data');
+}
+
 
 class HomeScreen extends ConsumerWidget {
   int selectedMenuIndex = 0;
+  late PlayerData player;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
+    final userId = ref.watch(userIdProvider.notifier).state;
+
+    return FutureBuilder<PlayerData>(
+      future: getPlayerById(userId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          player = snapshot.data!;
+          String name = player.player_firstname;
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +154,7 @@ class HomeScreen extends ConsumerWidget {
             ]),
             const SizedBox(height: 40),
             Text(
-              "Hey, Brian!",
+              "Hey, $name!",
               style: TextStyle(
                 fontFamily: AppFonts.gabarito,
                 color: AppColours.darkBlue,
@@ -79,7 +171,11 @@ class HomeScreen extends ConsumerWidget {
           roleBasedBottomNavBar(userRole, context, selectedMenuIndex),
     );
   }
-}
+  else {
+          return Text('No data available');
+        }
+});}
+
 
 Widget _buildMenuItem(
     String text, String imagePath, Color colour, VoidCallback onPressed) {
@@ -288,4 +384,5 @@ Widget _managerMenu(BuildContext context) {
       );
     }),
   ]);
+}
 }
