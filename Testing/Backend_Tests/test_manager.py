@@ -5,11 +5,7 @@ def test_add_manager():
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
-<<<<<<< HEAD
-        "manager_password": "Testpassword123",
-=======
         "manager_password": "Testpassword123!",
->>>>>>> origin/alpha_release
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
@@ -36,11 +32,7 @@ def test_login_manager():
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testmanager@gmail.com",
-<<<<<<< HEAD
-        "user_password": "Testpassword123"
-=======
         "user_password": "Testpassword123!"
->>>>>>> origin/alpha_release
     }
     response = requests.post(url, headers=headers, json=json)
 
