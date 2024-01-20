@@ -84,7 +84,7 @@ class _TeamSetUpScreenState extends State<TeamSetUpScreen> {
       ),
       body: Form(
           child: Container(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.all(35),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
