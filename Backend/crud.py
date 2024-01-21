@@ -530,6 +530,67 @@ def delete_team_schedule_by_id(db:Session, id: int):
     
 #endregion
 
+#region announcements
+    
+def get_announcement(id: int, db: Session):
+    try:
+        result = db.query(announcements).filter_by(announcements_id=id).first()
+        return result
+    except Exception as e:
+        return(f"Error retrieving announcements: {e}")
+    
+def insert_new_announcement(db:Session, new_announcement: AnnouncementBase):
+    try:
+        if new_announcement is not None:
+            if get_manager_by_id(db, new_announcement.manager_id):
+                new_announcement = announcements(announcements_title=new_announcement.announcements_title,
+                                        announcements_desc=new_announcement.announcements_desc,
+                                        announcements_date=new_announcement.announcements_date,
+                                        manager_id=new_announcement.manager_id,
+                                        schedule_id=new_announcement.schedule_id)
+                db.add(new_announcement)
+                db.commit()
+                db.refresh(new_announcement)
+                return {"message": "Announcement inserted successfully", "id": new_announcement.announcements_id}
+            raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
+        return {"message": "Announcement is empty or invalid"}
+    except Exception as e:
+        return (f"Error inserting announcement: {e}")
+    
+def update_announcement(db, updated_announcement: AnnouncementBase, id):
+    try:        
+        announcement_to_update = db.query(announcements).filter_by(announcements_id= id).first()
+        
+        if not announcement_to_update:
+            raise HTTPException(status_code=404, detail="Announcement not found")
+        
+        announcement_to_update.announcements_title = updated_announcement.announcements_title
+        announcement_to_update.announcements_desc = updated_announcement.announcements_desc
+        announcement_to_update.announcements_date = updated_announcement.announcements_date
+        announcement_to_update.manager_id = updated_announcement.manager_id
+        announcement_to_update.schedule_id = updated_announcement.schedule_id
+        
+        db.commit()
+        return {"message": f"Announcement with ID {id} has been updated"}
+    except Exception as e:
+        return(f"Error updating announcement: {e}")
+    
+def delete_announcement_by_id(db:Session, id: int):
+    try:        
+        announcement_to_delete = db.query(announcements).filter_by(announcements_id=id).first()
+        if announcement_to_delete:
+            db.delete(announcement_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Announcement deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting announcement: {e}")
+
+
+
+#endregion
+
 #region managers
 
 def get_manager_by_id(db:Session, id: int):
