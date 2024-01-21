@@ -205,3 +205,10 @@ class AnnouncementBase(BaseModel):
     announcements_date: str
     manager_id: int
     schedule_id: int
+
+class AnnouncementBaseNoID(BaseModel):
+    announcements_title: str
+    announcements_desc: str
+    announcements_date: str
+    manager_id: int
+    schedule_id: int
