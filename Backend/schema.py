@@ -188,6 +188,11 @@ class ScheduleBase(BaseModel):
     schedule_start_time: str
     schedule_end_time: str
 
+class ScheduleBaseNoID(BaseModel):
+    schedule_type: str
+    schedule_start_time: str
+    schedule_end_time: str
+
 class TeamScheduleBase(BaseModel):
     schedule_id: int
     team_id: int

@@ -173,7 +173,7 @@ def read_schedule(id: int, db:Session = Depends(get_db)):
     return crud.get_schedule_by_id(db, id)
 
 @app.post("/schedules")
-def insert_schedule(schedule: ScheduleBase, db:Session = Depends(get_db)):
+def insert_schedule(schedule: ScheduleBaseNoID, db:Session = Depends(get_db)):
     return crud.insert_new_schedule(db, schedule)
 
 @app.put("/schedules/{id}")
