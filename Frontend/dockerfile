@@ -1,0 +1,33 @@
+# Stage 1 - Install dependencies and build the app in a build environment
+FROM debian:latest AS build-env
+
+# Install flutter dependencies
+RUN apt-get update && \
+    apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback lib32stdc++6 python3 sed cmake && \
+    apt-get clean
+
+# Clone the flutter repo
+RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
+
+# Set flutter path
+ENV PATH="${PATH}:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
+
+# Create and set working directory
+WORKDIR /app
+
+# Copy project files to container
+COPY . .
+
+RUN flutter upgrade
+
+RUN flutter config --enable-web && \
+    flutter precache && \
+    flutter clean && \
+    flutter pub outdated && \
+    flutter pub upgrade && \  
+    flutter pub get && \
+    flutter build web --release -v
+
+# Stage 2 - Create the run-time image
+FROM nginx:1.21.1-alpine
+COPY --from=build-env /app/build/web /usr/share/nginx/html
