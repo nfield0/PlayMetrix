@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
@@ -18,9 +20,9 @@ class PlayerData {
   final int player_id;
   final String player_firstname;
   final String player_surname;
-  final String player_dob;
+  final DateTime player_dob;
   final String player_contact_number;
-  final String player_image;
+  final Uint8List? player_image;
   final String player_height;
   final String player_gender;
 
@@ -65,7 +67,6 @@ Future<PlayerData> getPlayerById(int id) async {
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
       PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
-    
 
       // Access individual variables
       print('${player.player_id}');
@@ -90,7 +91,6 @@ Future<PlayerData> getPlayerById(int id) async {
   throw Exception('Failed to retrieve player data');
 }
 
-
 class HomeScreen extends ConsumerWidget {
   int selectedMenuIndex = 0;
   late PlayerData player;
@@ -101,288 +101,286 @@ class HomeScreen extends ConsumerWidget {
     final userId = ref.watch(userIdProvider.notifier).state;
 
     return FutureBuilder<PlayerData>(
-      future: getPlayerById(userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (snapshot.hasData) {
-          player = snapshot.data!;
-          String name = player.player_firstname;
+        future: getPlayerById(userId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            player = snapshot.data!;
+            String name = player.player_firstname;
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Image.asset(
-          'lib/assets/logo.png',
-          width: 150,
-          fit: BoxFit.contain,
-        ),
-        iconTheme: const IconThemeData(
-          color: AppColours.darkBlue, //change your color here
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              smallPill(userRoleText(userRole)),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                          const NotificationsScreen(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.notifications,
-                  color: AppColours.darkBlue,
-                  size: 32,
+            return Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                title: Image.asset(
+                  'lib/assets/logo.png',
+                  width: 150,
+                  fit: BoxFit.contain,
                 ),
-              )
-            ]),
-            const SizedBox(height: 40),
-            Text(
-              "Hey, $name!",
-              style: TextStyle(
-                fontFamily: AppFonts.gabarito,
-                color: AppColours.darkBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 36,
+                iconTheme: const IconThemeData(
+                  color: AppColours.darkBlue, //change your color here
+                ),
+                elevation: 0,
+                backgroundColor: Colors.transparent,
               ),
-            ),
-            const SizedBox(height: 40),
-            _menu(userRole, context)
-          ],
-        ),
-      )),
-      bottomNavigationBar:
-          roleBasedBottomNavBar(userRole, context, selectedMenuIndex),
-    );
-  }
-  else {
-          return Text('No data available');
-        }
-});}
-
-
-Widget _buildMenuItem(
-    String text, String imagePath, Color colour, VoidCallback onPressed) {
-  return InkWell(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-        decoration: BoxDecoration(
-          // color: AppColours.darkBlue,
-          border: Border.all(color: colour, width: 5),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Image.asset(
-              imagePath,
-              width: 100,
-              height: 100,
-            ),
-            Flexible(
-              child: Wrap(
-                children: [
-                  Text(
-                    text,
-                    style: TextStyle(
-                      color: colour,
-                      fontFamily: AppFonts.gabarito,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 32,
+              body: SingleChildScrollView(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          smallPill(userRoleText(userRole)),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation1, animation2) =>
+                                          const NotificationsScreen(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ),
+                              );
+                            },
+                            child: const Icon(
+                              Icons.notifications,
+                              color: AppColours.darkBlue,
+                              size: 32,
+                            ),
+                          )
+                        ]),
+                    const SizedBox(height: 40),
+                    Text(
+                      "Hey, $name!",
+                      style: TextStyle(
+                        fontFamily: AppFonts.gabarito,
+                        color: AppColours.darkBlue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 36,
+                      ),
                     ),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ));
-}
-
-Widget _menu(UserRole userRole, BuildContext context) {
-  switch (userRole) {
-    case UserRole.manager:
-      return _managerMenu(context);
-    case UserRole.coach:
-      return _coachMenu(context);
-    case UserRole.player:
-      return _playerMenu(context);
-    case UserRole.physio:
-      return _physioMenu(context);
+                    const SizedBox(height: 40),
+                    _menu(userRole, context)
+                  ],
+                ),
+              )),
+              bottomNavigationBar:
+                  roleBasedBottomNavBar(userRole, context, selectedMenuIndex),
+            );
+          } else {
+            return Text('No data available');
+          }
+        });
   }
-}
 
-Widget _coachMenu(BuildContext context) {
-  return Column(children: [
-    _buildMenuItem('Players', 'lib/assets/icons/players_menu.png',
-        AppColours.mediumDarkBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem(
-        'Schedule', 'lib/assets/icons/schedule_menu.png', AppColours.mediumBlue,
-        () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) =>
-              MonthlyScheduleScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
-        AppColours.lightBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => ProfileScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-  ]);
-}
+  Widget _buildMenuItem(
+      String text, String imagePath, Color colour, VoidCallback onPressed) {
+    return InkWell(
+        onTap: onPressed,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+          decoration: BoxDecoration(
+            // color: AppColours.darkBlue,
+            border: Border.all(color: colour, width: 5),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Image.asset(
+                imagePath,
+                width: 100,
+                height: 100,
+              ),
+              Flexible(
+                child: Wrap(
+                  children: [
+                    Text(
+                      text,
+                      style: TextStyle(
+                        color: colour,
+                        fontFamily: AppFonts.gabarito,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 32,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
 
-Widget _playerMenu(BuildContext context) {
-  return Column(children: [
-    _buildMenuItem('Statistics', 'lib/assets/icons/statistics_menu.png',
-        AppColours.mediumDarkBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem(
-        'Schedule', 'lib/assets/icons/schedule_menu.png', AppColours.mediumBlue,
-        () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) =>
-              MonthlyScheduleScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem(
-        'My Profile', 'lib/assets/icons/players_menu.png', AppColours.lightBlue,
-        () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) =>
-              PlayerProfileScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-  ]);
-}
+  Widget _menu(UserRole userRole, BuildContext context) {
+    switch (userRole) {
+      case UserRole.manager:
+        return _managerMenu(context);
+      case UserRole.coach:
+        return _coachMenu(context);
+      case UserRole.player:
+        return _playerMenu(context);
+      case UserRole.physio:
+        return _physioMenu(context);
+    }
+  }
 
-Widget _physioMenu(BuildContext context) {
-  return Column(children: [
-    _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
-        AppColours.mediumDarkBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
-        AppColours.lightBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => ProfileScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-  ]);
-}
+  Widget _coachMenu(BuildContext context) {
+    return Column(children: [
+      _buildMenuItem('Players', 'lib/assets/icons/players_menu.png',
+          AppColours.mediumDarkBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
+          AppColours.mediumBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
+          AppColours.lightBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+    ]);
+  }
 
-Widget _managerMenu(BuildContext context) {
-  return Column(children: [
-    _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
-        AppColours.mediumDarkBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem(
-        'Schedule', 'lib/assets/icons/schedule_menu.png', AppColours.mediumBlue,
-        () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) =>
-              MonthlyScheduleScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-    const SizedBox(height: 20),
-    _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
-        AppColours.lightBlue, () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => ProfileScreen(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }),
-  ]);
-}
+  Widget _playerMenu(BuildContext context) {
+    return Column(children: [
+      _buildMenuItem('Statistics', 'lib/assets/icons/statistics_menu.png',
+          AppColours.mediumDarkBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
+          AppColours.mediumBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('My Profile', 'lib/assets/icons/players_menu.png',
+          AppColours.lightBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                PlayerProfileScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+    ]);
+  }
+
+  Widget _physioMenu(BuildContext context) {
+    return Column(children: [
+      _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
+          AppColours.mediumDarkBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
+          AppColours.lightBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+    ]);
+  }
+
+  Widget _managerMenu(BuildContext context) {
+    return Column(children: [
+      _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
+          AppColours.mediumDarkBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
+          AppColours.mediumBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+      const SizedBox(height: 20),
+      _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
+          AppColours.lightBlue, () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      }),
+    ]);
+  }
 }

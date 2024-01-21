@@ -3,47 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-class PlayerData {
-  final int player_id;
-  final String player_firstname;
-  final String player_surname;
-  final String player_dob;
-  final String player_contact_number;
-  final Image player_image;
-  final String player_height;
-  final String player_gender;
-
-  PlayerData({
-    required this.player_id,
-    required this.player_firstname,
-    required this.player_surname,
-    required this.player_dob,
-    required this.player_contact_number,
-    required this.player_image,
-    required this.player_height,
-    required this.player_gender,
-  });
-
-  factory PlayerData.fromJson(Map<String, dynamic> json) {
-    return PlayerData(
-      player_id: json['player_id'],
-      player_firstname: json['player_firstname'],
-      player_surname: json['player_surname'],
-      player_dob: json['player_dob'],
-      player_contact_number: json['player_contact_number'],
-      player_image: json['player_image'],
-      player_height: json['player_height'],
-      player_gender: json['player_gender'],
-    );
-  }
-}
 
 Future<void> getPlapyerById(String id) async {
   final apiUrl =

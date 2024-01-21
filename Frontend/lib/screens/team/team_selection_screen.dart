@@ -17,7 +17,8 @@ final teamIdProvider = StateProvider<int>((ref) => 0);
 
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition) async {
   final apiUrl = 'http://127.0.0.1:8000/team_player';
-
+  print(teamId);
+  print(userId);
   try {
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -27,12 +28,16 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition) async {
       body: jsonEncode(<String, dynamic>{
         "team_id": teamId,
         "player_id": userId,
-        "team_position": teamPosition
+        "team_position": teamPosition,
+        "player_team_number": 0,
+        "playing_status": "",
+        "lineup_status": ""
       }),
     );
 
     if (response.statusCode == 200) {
       // Successfully added data to the backend
+      print("Successfully added player to team");
     } else {
       // Failed to retrieve data, handle the error accordingly
       print('Failed to add data. Status code: ${response.statusCode}');

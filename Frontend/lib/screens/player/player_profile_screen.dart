@@ -7,6 +7,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -15,41 +16,6 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-class PlayerData {
-  final int player_id;
-  final String player_firstname;
-  final String player_surname;
-  final String player_dob;
-  final String player_contact_number;
-  final String player_image;
-  final String player_height;
-  final String player_gender;
-
-  PlayerData({
-    required this.player_id,
-    required this.player_firstname,
-    required this.player_surname,
-    required this.player_dob,
-    required this.player_contact_number,
-    required this.player_image,
-    required this.player_height,
-    required this.player_gender,
-  });
-
-  factory PlayerData.fromJson(Map<String, dynamic> json) {
-    return PlayerData(
-      player_id: json['player_id'],
-      player_firstname: json['player_firstname'],
-      player_surname: json['player_surname'],
-      player_dob: json['player_dob'],
-      player_contact_number: json['player_contact_number'],
-      player_image: json['player_image'],
-      player_height: json['player_height'],
-      player_gender: json['player_gender'],
-    );
-  }
-}
 
 Future<PlayerData> getPlayerById(int id) async {
   print('Player ID in home page: $id');
@@ -314,11 +280,11 @@ class PlayerProfileScreen extends ConsumerWidget {
                             PlayerData player = snapshot.data!;
                             String first_name = player.player_firstname;
                             String second_name = player.player_surname;
-                            String dob = player.player_dob;
+                            DateTime dob = player.player_dob;
                             String height = player.player_height;
                             String gender = player.player_height;
                             return _playerProfile(first_name, second_name, 7,
-                                dob, height, gender, limited);
+                                dob.toString(), height, gender, limited);
                           } else {
                             return Text('No data available');
                           }

@@ -234,6 +234,43 @@ Widget datePickerWithDivider(BuildContext context, String title,
   );
 }
 
+Widget datePickerNoDivider(BuildContext context, String title,
+    DateTime selectedDate, void Function(DateTime) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Call the onChanged callback with the selected date
+                onChanged(pickedDate);
+              }
+            },
+            child: Text(
+              "${selectedDate.toLocal().toLocal()}"
+                  .split(' ')[0], // Display selected date
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget timePickerWithDivider(BuildContext context, String title,
     TimeOfDay selectedTime, void Function(TimeOfDay) onChanged) {
   return Column(
