@@ -365,9 +365,9 @@ def insert_team_coach(team_coach: TeamCoachBase, db:Session = Depends(get_db)):
 def update_team_coach(team_id: int, team_coach: TeamCoachBase, db:Session = Depends(get_db)):
     return crud.update_team_coach_by_team_id(db, team_coach, team_id)
 
-@app.delete("/team_coach/{team_id}")
-def delete_coach_team_id(team_id: int, db:Session = Depends(get_db)):
-    return crud.delete_team_coach_by_team_id(db, team_id)
+@app.delete("/team_coach/{team_id}/{coach_id}")
+def delete_coach_team_id(team_id: int, coach_id:int, db:Session = Depends(get_db)):
+    return crud.delete_team_coach_by_team_id(db, team_id, coach_id)
 
 #endregion
 

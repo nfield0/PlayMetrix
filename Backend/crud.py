@@ -1219,9 +1219,9 @@ def update_team_coach_by_team_id(db:Session, team_coach: TeamCoachBase, id: int)
     except Exception as e:
         return(f"Error updating team: {e}")
     
-def delete_team_coach_by_team_id(db:Session, id: int):
+def delete_team_coach_by_team_id(db:Session, team_id: int, coach_id: int):
     try:        
-        team_to_delete = db.query(team_coach).filter_by(team_id=id).first()
+        team_to_delete = db.query(team_coach).filter_by(team_id=team_id, coach_id=coach_id).first()
         if team_to_delete:
             db.delete(team_to_delete)
             db.commit()
