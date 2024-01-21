@@ -1094,6 +1094,9 @@ def update_coach_info_by_id(db:Session, coach: CoachInfo, id: int):
         coach_info_to_update.coach_firstname = coach.coach_firstname
         coach_info_to_update.coach_surname = coach.coach_surname
         coach_info_to_update.coach_contact = coach.coach_contact
+        if coach.coach_image is not None:
+            coach_info_to_update.coach_image = coach.coach_image
+
         
         db.commit()
 
