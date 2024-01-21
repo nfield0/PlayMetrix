@@ -531,32 +531,39 @@ def delete_team_schedule_by_id(db:Session, id: int):
 
 #region announcements
     
-def get_announcement(id: int, db: Session):
+def get_announcement(db: Session, id: int):
     try:
         result = db.query(announcements).filter_by(announcements_id=id).first()
         return result
     except Exception as e:
-        return(f"Error retrieving announcements: {e}")
+        error_message = f"Error retrieving announcement with ID {id}: {e}"
+        return error_message
     
-def insert_new_announcement(db:Session, new_announcement: AnnouncementBase):
+def insert_new_announcement(db:Session, new_announcement: AnnouncementBaseNoID):
     try:
-        if new_announcement is not None:
-            if get_manager_by_id(db, new_announcement.manager_id):
-                new_announcement = announcements(announcements_title=new_announcement.announcements_title,
+        if new_announcement is None:
+            raise HTTPException(status_code=400, detail="Announcement is empty or invalid")
+        
+        if get_manager_by_id(db, new_announcement.manager_id) is None:
+            raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
+
+        announcement = announcements(announcements_title=new_announcement.announcements_title,
                                         announcements_desc=new_announcement.announcements_desc,
                                         announcements_date=new_announcement.announcements_date,
                                         manager_id=new_announcement.manager_id,
                                         schedule_id=new_announcement.schedule_id)
-                db.add(new_announcement)
-                db.commit()
-                db.refresh(new_announcement)
-                return {"message": "Announcement inserted successfully", "id": new_announcement.announcements_id}
-            raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
-        return {"message": "Announcement is empty or invalid"}
+        db.add(announcement)
+        db.commit()
+        db.refresh(announcement)
+        return {"message": "Announcement inserted successfully", "id": announcement.announcements_id}
+
+    except HTTPException as http_err:
+        raise http_err
     except Exception as e:
         return (f"Error inserting announcement: {e}")
     
-def update_announcement(db, updated_announcement: AnnouncementBase, id):
+def update_announcement(db, updated_announcement: AnnouncementBase, id: int):
+
     try:        
         announcement_to_update = db.query(announcements).filter_by(announcements_id= id).first()
         
@@ -1578,6 +1585,7 @@ def delete_sport(db:Session, id: int):
     
 def cleanup(db: Session):
     try:       
+        db.query(announcements).delete()
         db.query(schedule).delete()
         db.query(team_coach).delete()
         db.query(team_physio).delete()
