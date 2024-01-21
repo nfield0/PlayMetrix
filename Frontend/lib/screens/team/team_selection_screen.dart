@@ -14,6 +14,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 final teamIdProvider = StateProvider<int>((ref) => 0);
+final positionProvider = StateProvider<String>((ref) => "Defense");
 
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition) async {
   final apiUrl = 'http://127.0.0.1:8000/team_player';
@@ -170,7 +171,7 @@ class TeamSelectionScreen extends ConsumerWidget {
       TeamRole.goalkeeper,
       TeamRole.headCoach
     ];
-    String selectedRole = teamRoleToText(teamRoles[0]);
+    String selectedRole = ref.watch(positionProvider);
 
     final teamPositions = [
       TeamRole.defense,
@@ -296,7 +297,9 @@ class TeamSelectionScreen extends ConsumerWidget {
                                         }).toList(),
                                         onChanged: (value) {
                                           // Update the selectedTeam when the user makes a selection
-                                          selectedRole = value!;
+                                          ref
+                                              .read(positionProvider.notifier)
+                                              .state = value!;
                                         },
                                       )
                                     ]),
@@ -325,8 +328,9 @@ class TeamSelectionScreen extends ConsumerWidget {
                                           );
                                         }).toList(),
                                         onChanged: (value) {
-                                          // Update the selectedTeam when the user makes a selection
-                                          selectedRole = value!;
+                                          ref
+                                              .read(positionProvider.notifier)
+                                              .state = value!;
                                         },
                                       )
                                     ])
