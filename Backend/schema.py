@@ -192,3 +192,11 @@ class TeamScheduleBase(BaseModel):
     schedule_id: int
     team_id: int
     schedule_date: str
+
+class AnnouncementBase(BaseModel):
+    announcements_id: int
+    announcements_title: str
+    announcements_desc: str
+    announcements_date: str
+    manager_id: int
+    schedule_id: int
