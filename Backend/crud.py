@@ -1312,13 +1312,13 @@ def update_player_on_team(db:Session, team_player_obj: TeamPlayerBase):
         return(f"Error updating player position: {e}")
 
 
-def delete_player_from_team(db:Session, team_player_obj: TeamPlayerDelete ):
+def delete_player_from_team(db:Session, player_id: int, team_id: int ):
     try:        
-        player_to_delete = db.query(team_player).filter_by(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id).first()
+        player_to_delete = db.query(team_player).filter_by(team_id=team_id, player_id=player_id).first()
         if player_to_delete:
             db.delete(player_to_delete)
             db.commit()
-        return {"message": f"Player with ID {team_player_obj.player_id} has been deleted from team with ID {team_player_obj.team_id}"}
+        return {"message": f"Player with ID {player_id} has been deleted from team with ID {team_id}"}
     except Exception as e:
         return(f"Error deleting player from team: {e}")
     
