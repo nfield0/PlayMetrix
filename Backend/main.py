@@ -209,6 +209,27 @@ def delete_team_schedule(id: int, db:Session = Depends(get_db)):
 
 #endregion
 
+#region announcements
+
+@app.get("/announcements/{id}")
+def read_announcement(id: int, db:Session = Depends(get_db)):
+    return crud.get_announcement(db, id)
+
+@app.post("/announcements")
+def insert_announcement(announcement: AnnouncementBase, db:Session = Depends(get_db)):
+    return crud.insert_new_announcement(db, announcement)
+
+@app.put("/announcements/{id}")
+def update_announcement(id: int, announcement: AnnouncementBase, db:Session = Depends(get_db)):
+    return crud.update_announcement(db, announcement, id)
+
+@app.delete("/announcements/{id}")
+def delete_announcement(id: int, db:Session = Depends(get_db)):
+    return crud.delete_announcement_by_id(db, id)
+
+
+
+#endregion
 
 #region players
 
