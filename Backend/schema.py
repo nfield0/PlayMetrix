@@ -168,6 +168,9 @@ class TeamPlayerBase(BaseModel):
     team_id: int
     player_id: int
     team_position: str
+    player_team_number: int
+    playing_status: str
+    lineup_status: str
 
 class TeamCoachBase(BaseModel):
     team_id: int

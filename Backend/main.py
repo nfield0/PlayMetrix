@@ -408,7 +408,7 @@ def add_team_player(team_player: TeamPlayerBase, db:Session = Depends(get_db)):
 def update_team_player(team_player: TeamPlayerBase, db:Session = Depends(get_db)):
     return crud.update_player_on_team(db, team_player)
 
-@app.delete("/team_player/{team_id}/{player_id}}")
+@app.delete("/team_player/{team_id}/{player_id}")
 def delete_team_player(team_id: int, player_id: int, db:Session = Depends(get_db)):
     return crud.delete_player_from_team(db, player_id, team_id)
 

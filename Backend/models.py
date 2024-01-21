@@ -107,6 +107,9 @@ class team_player(Base):
 	player_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
 	team_position = Column(String(30), index = True)
+	player_team_number = Column(Integer, index = True)
+	playing_status = Column(String(25), index = True)
+	lineup_status = Column(String(30), index = True)
 
 class team_coach(Base):
 	__tablename__ = "team_coach"
