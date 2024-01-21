@@ -5,6 +5,7 @@ import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
+import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
@@ -350,12 +351,11 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                         ref.read(userRoleProvider.notifier).state = userRole;
 
                         if (userId != 0) {
-                          if (userRole == UserRole.player) {
+                          if (userRole != UserRole.manager) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      PlayerProfileSetUpScreen()),
+                                  builder: (context) => TeamSelectionScreen()),
                             );
                           } else {
                             Navigator.push(

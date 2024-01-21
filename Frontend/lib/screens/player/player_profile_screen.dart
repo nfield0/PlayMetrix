@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +15,6 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 
 class PlayerData {
   final int player_id;
@@ -66,7 +67,6 @@ Future<PlayerData> getPlayerById(int id) async {
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
       PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
-    
 
       // Access individual variables
       print('${player.player_id}');
@@ -94,8 +94,8 @@ Future<PlayerData> getPlayerById(int id) async {
 class TeamData {
   final int team_id;
   final String team_name;
-  final Image team_logo;
-  final String manager_id;
+  final Uint8List? team_logo;
+  final int manager_id;
   final int league_id;
   final int sport_id;
   final String team_location;
@@ -244,8 +244,6 @@ class AvailabilityData {
   AvailabilityData(this.status, this.message, this.icon, this.color);
 }
 
-
-
 class PlayerProfileScreen extends ConsumerWidget {
   late PlayerData player;
   late Future<String?> leagueName;
@@ -266,8 +264,6 @@ class PlayerProfileScreen extends ConsumerWidget {
     final userId = ref.watch(userIdProvider.notifier).state;
 
     //leagueName = getTeamLeagueName(teamData.league_id.toString());
-    
-      
 
     return Scaffold(
         appBar: AppBar(
@@ -303,33 +299,30 @@ class PlayerProfileScreen extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
                 child: Center(
                   child: Column(children: [
-                     FutureBuilder<PlayerData>(
-                      future: getPlayerById(userId),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          // Display a loading indicator while the data is being fetched
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          // Display an error message if the data fetching fails
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          // Data has been successfully fetched, use it here
-                        PlayerData player = snapshot.data!;
-                        String first_name = player.player_firstname;
-                        String second_name = player.player_surname;
-                        String dob = player.player_dob;
-                        String height = player.player_height;
-                        String gender = player.player_height;
-                        return _playerProfile(
-                        first_name,
-                        second_name,
-                        7,
-                        dob,
-                        height,
-                        gender,
-                        limited);
-                        }
-                        else{ return Text('No data available'); }}),
+                    FutureBuilder<PlayerData>(
+                        future: getPlayerById(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // Display a loading indicator while the data is being fetched
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            // Display an error message if the data fetching fails
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            // Data has been successfully fetched, use it here
+                            PlayerData player = snapshot.data!;
+                            String first_name = player.player_firstname;
+                            String second_name = player.player_surname;
+                            String dob = player.player_dob;
+                            String height = player.player_height;
+                            String gender = player.player_height;
+                            return _playerProfile(first_name, second_name, 7,
+                                dob, height, gender, limited);
+                          } else {
+                            return Text('No data available');
+                          }
+                        }),
                     const SizedBox(height: 20),
                     divider(),
                     const SizedBox(height: 20),
@@ -386,9 +379,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                   ]),
                 ))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
-        
   }
-  
 }
 
 Widget _playerProfile(String firstName, String surname, int playerNumber,
