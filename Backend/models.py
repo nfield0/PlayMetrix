@@ -142,3 +142,14 @@ class team_schedule(Base):
 	schedule_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
 	schedule_date = Column(Date, index = True)
+
+
+class announcements(Base):
+	announcements_id = Column(Integer, primary_key = True, index = True)
+	announcements_title = Column(String(100), index = True)
+	announcements_desc = Column(String(255), index = True)
+	announcements_date = Column(Date, index = True)
+	manager_id = Column(Integer, index = True)
+	schedule_id = Column(Integer, index = True)
+
+
