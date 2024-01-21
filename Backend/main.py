@@ -216,7 +216,7 @@ def read_announcement(id: int, db:Session = Depends(get_db)):
     return crud.get_announcement(db, id)
 
 @app.post("/announcements")
-def insert_announcement(announcement: AnnouncementBase, db:Session = Depends(get_db)):
+def insert_announcement(announcement: AnnouncementBaseNoID, db:Session = Depends(get_db)):
     return crud.insert_new_announcement(db, announcement)
 
 @app.put("/announcements/{id}")

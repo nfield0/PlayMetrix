@@ -145,6 +145,7 @@ class team_schedule(Base):
 
 
 class announcements(Base):
+	__tablename__ = "announcements"
 	announcements_id = Column(Integer, primary_key = True, index = True)
 	announcements_title = Column(String(100), index = True)
 	announcements_desc = Column(String(255), index = True)
