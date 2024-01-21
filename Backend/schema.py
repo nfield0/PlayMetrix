@@ -168,6 +168,9 @@ class TeamPlayerBase(BaseModel):
     team_id: int
     player_id: int
     team_position: str
+    player_team_number: int
+    playing_status: str
+    lineup_status: str
 
 class TeamCoachBase(BaseModel):
     team_id: int
@@ -188,7 +191,27 @@ class ScheduleBase(BaseModel):
     schedule_start_time: str
     schedule_end_time: str
 
+class ScheduleBaseNoID(BaseModel):
+    schedule_type: str
+    schedule_start_time: str
+    schedule_end_time: str
+
 class TeamScheduleBase(BaseModel):
     schedule_id: int
     team_id: int
     schedule_date: str
+
+class AnnouncementBase(BaseModel):
+    announcements_id: int
+    announcements_title: str
+    announcements_desc: str
+    announcements_date: str
+    manager_id: int
+    schedule_id: int
+
+class AnnouncementBaseNoID(BaseModel):
+    announcements_title: str
+    announcements_desc: str
+    announcements_date: str
+    manager_id: int
+    schedule_id: int

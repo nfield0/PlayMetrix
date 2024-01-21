@@ -107,6 +107,9 @@ class team_player(Base):
 	player_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
 	team_position = Column(String(30), index = True)
+	player_team_number = Column(Integer, index = True)
+	playing_status = Column(String(25), index = True)
+	lineup_status = Column(String(30), index = True)
 
 class team_coach(Base):
 	__tablename__ = "team_coach"
@@ -142,3 +145,15 @@ class team_schedule(Base):
 	schedule_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
 	schedule_date = Column(Date, index = True)
+
+
+class announcements(Base):
+	__tablename__ = "announcements"
+	announcements_id = Column(Integer, primary_key = True, index = True)
+	announcements_title = Column(String(100), index = True)
+	announcements_desc = Column(String(255), index = True)
+	announcements_date = Column(Date, index = True)
+	manager_id = Column(Integer, index = True)
+	schedule_id = Column(Integer, index = True)
+
+

@@ -425,18 +425,17 @@ def get_schedule_by_team_id_and_type(db: Session, id: int, type: str):
         return(f"Error retrieving schedules: {e}")
 
 
-def insert_new_schedule(db:Session, new_schedule: ScheduleBase):
+def insert_new_schedule(db:Session, new_schedule: ScheduleBaseNoID):
     try:
         if new_schedule is not None:
-            if get_team_by_id(db, new_schedule.team_id):
-                new_schedule = schedule(schedule_type=new_schedule.schedule_type,
+            new_schedule = schedule(schedule_type=new_schedule.schedule_type,
                                         schedule_start_time=new_schedule.schedule_start_time,
                                         schedule_end_time=new_schedule.schedule_end_time)
-                db.add(new_schedule)
-                db.commit()
-                db.refresh(new_schedule)
-                return {"message": "Schedule inserted successfully", "id": new_schedule.schedule_id}
-            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+            db.add(new_schedule)
+            db.commit()
+            db.refresh(new_schedule)
+            return {"message": "Schedule inserted successfully", "id": new_schedule.schedule_id}
+            
         return {"message": "Schedule is empty or invalid"}
     except Exception as e:
         return (f"Error inserting schedule: {e}")
@@ -528,6 +527,74 @@ def delete_team_schedule_by_id(db:Session, id: int):
         return(f"Error deleting team schedule: {e}")
     
     
+#endregion
+
+#region announcements
+    
+def get_announcement(db: Session, id: int):
+    try:
+        result = db.query(announcements).filter_by(announcements_id=id).first()
+        return result
+    except Exception as e:
+        error_message = f"Error retrieving announcement with ID {id}: {e}"
+        return error_message
+    
+def insert_new_announcement(db:Session, new_announcement: AnnouncementBaseNoID):
+    try:
+        if new_announcement is None:
+            raise HTTPException(status_code=400, detail="Announcement is empty or invalid")
+        
+        if get_manager_by_id(db, new_announcement.manager_id) is None:
+            raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
+
+        announcement = announcements(announcements_title=new_announcement.announcements_title,
+                                        announcements_desc=new_announcement.announcements_desc,
+                                        announcements_date=new_announcement.announcements_date,
+                                        manager_id=new_announcement.manager_id,
+                                        schedule_id=new_announcement.schedule_id)
+        db.add(announcement)
+        db.commit()
+        db.refresh(announcement)
+        return {"message": "Announcement inserted successfully", "id": announcement.announcements_id}
+
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return (f"Error inserting announcement: {e}")
+    
+def update_announcement(db, updated_announcement: AnnouncementBase, id: int):
+
+    try:        
+        announcement_to_update = db.query(announcements).filter_by(announcements_id= id).first()
+        
+        if not announcement_to_update:
+            raise HTTPException(status_code=404, detail="Announcement not found")
+        
+        announcement_to_update.announcements_title = updated_announcement.announcements_title
+        announcement_to_update.announcements_desc = updated_announcement.announcements_desc
+        announcement_to_update.announcements_date = updated_announcement.announcements_date
+        announcement_to_update.manager_id = updated_announcement.manager_id
+        announcement_to_update.schedule_id = updated_announcement.schedule_id
+        
+        db.commit()
+        return {"message": f"Announcement with ID {id} has been updated"}
+    except Exception as e:
+        return(f"Error updating announcement: {e}")
+    
+def delete_announcement_by_id(db:Session, id: int):
+    try:        
+        announcement_to_delete = db.query(announcements).filter_by(announcements_id=id).first()
+        if announcement_to_delete:
+            db.delete(announcement_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Announcement deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting announcement: {e}")
+
+
+
 #endregion
 
 #region managers
@@ -1152,9 +1219,9 @@ def update_team_coach_by_team_id(db:Session, team_coach: TeamCoachBase, id: int)
     except Exception as e:
         return(f"Error updating team: {e}")
     
-def delete_team_coach_by_team_id(db:Session, id: int):
+def delete_team_coach_by_team_id(db:Session, team_id: int, coach_id: int):
     try:        
-        team_to_delete = db.query(team_coach).filter_by(team_id=id).first()
+        team_to_delete = db.query(team_coach).filter_by(team_id=team_id, coach_id=coach_id).first()
         if team_to_delete:
             db.delete(team_to_delete)
             db.commit()
@@ -1226,7 +1293,8 @@ def get_players_by_team_id(db: Session, id: int):
     
 def add_player_to_team(db:Session, team_player_obj: TeamPlayerBase):
     try:
-        new_team_player = team_player(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id, team_position=team_player_obj.team_position)
+        new_team_player = team_player(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id, team_position=team_player_obj.team_position, player_team_number=team_player_obj.player_team_number,
+                                       playing_status=team_player_obj.playing_status, lineup_status=team_player_obj.lineup_status)
         db.add(new_team_player)
         db.commit()
         return {"message": f"Player with ID {str(team_player_obj.player_id)} has been added to team with ID {str(team_player_obj.team_id)}"}
@@ -1239,19 +1307,22 @@ def update_player_on_team(db:Session, team_player_obj: TeamPlayerBase):
         if not player_to_update:
             raise HTTPException(status_code=404, detail="Player not found")
         player_to_update.team_position = team_player_obj.team_position
+        player_to_update.player_team_number = team_player_obj.player_team_number
+        player_to_update.playing_status = team_player_obj.playing_status
+        player_to_update.lineup_status = team_player_obj.lineup_status
         db.commit()
         return {"message": f"Player with ID {str(team_player_obj.player_id)} has been updated"}
     except Exception as e:
         return(f"Error updating player position: {e}")
 
 
-def delete_player_from_team(db:Session, team_player_obj: TeamPlayerDelete ):
+def delete_player_from_team(db:Session, player_id: int, team_id: int ):
     try:        
-        player_to_delete = db.query(team_player).filter_by(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id).first()
+        player_to_delete = db.query(team_player).filter_by(team_id=team_id, player_id=player_id).first()
         if player_to_delete:
             db.delete(player_to_delete)
             db.commit()
-        return {"message": f"Player with ID {team_player_obj.player_id} has been deleted from team with ID {team_player_obj.team_id}"}
+        return {"message": f"Player with ID {player_id} has been deleted from team with ID {team_id}"}
     except Exception as e:
         return(f"Error deleting player from team: {e}")
     
@@ -1518,6 +1589,8 @@ def delete_sport(db:Session, id: int):
     
 def cleanup(db: Session):
     try:       
+        db.query(announcements).delete()
+        db.query(schedule).delete()
         db.query(team_coach).delete()
         db.query(team_physio).delete()
         db.query(team_player).delete()
