@@ -344,8 +344,7 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                           print("error: user type not found");
                         }
 
-                        int userId =
-                            const JsonDecoder().convert(response)["id"][idType];
+                        int userId = jsonDecode(response)["id"];
                         print("user id: " + userId.toString());
                         ref.read(userIdProvider.notifier).state = userId;
                         ref.read(userRoleProvider.notifier).state = userRole;

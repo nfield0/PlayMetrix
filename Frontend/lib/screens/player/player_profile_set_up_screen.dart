@@ -327,10 +327,10 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                               await updateTeamPlayer(teamPlayer,
                                   int.parse(_numberController.text));
 
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => HomeScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()));
                             })
                           ]),
                     )
