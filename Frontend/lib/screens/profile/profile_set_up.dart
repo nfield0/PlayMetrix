@@ -120,8 +120,8 @@ Future<Profile> getPhysioProfile(int id) async {
   return Profile("", "", "", "", null);
 }
 
-Future<void> updatePhysioProfile(
-    int id, ProfileName name, String contactNumber) async {
+Future<void> updatePhysioProfile(int id, ProfileName name, String contactNumber,
+    Uint8List? imageBytes) async {
   final apiUrl = 'http://127.0.0.1:8000/physio/info/$id';
 
   try {
@@ -135,6 +135,7 @@ Future<void> updatePhysioProfile(
         'physio_firstname': name.firstName,
         'physio_surname': name.surname,
         'physio_contact_number': contactNumber,
+        'physio_image': imageBytes != null ? base64Encode(imageBytes) : "",
       }),
     );
 
@@ -303,10 +304,10 @@ class ProfileSetUpScreen extends ConsumerWidget {
                   Profile physio = await getPhysioProfile(userId);
 
                   await updatePhysioProfile(
-                    userId,
-                    ProfileName(physio.firstName, physio.surname),
-                    _phoneController.text,
-                  );
+                      userId,
+                      ProfileName(physio.firstName, physio.surname),
+                      _phoneController.text,
+                      ref.read(profilePictureProvider.notifier).state);
                 } else if (userRole == UserRole.coach) {
                   int userId = ref.watch(userIdProvider.notifier).state;
                   Profile coach = await getCoachProfile(userId);

@@ -172,7 +172,8 @@ Future<String> registerUser({
           'physio_password': password,
           'physio_firstname': firstName,
           'physio_surname': surname,
-          'physio_contact_number': ''
+          'physio_contact_number': '',
+          'physio_image': '',
         }),
       );
 
@@ -345,7 +346,8 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                         }
 
                         int userId = 0;
-                        if (userRole == UserRole.player) {
+                        if (userRole == UserRole.player ||
+                            userRole == UserRole.physio) {
                           userId = jsonDecode(response)["id"];
                           print("user id: " + userId.toString());
                           ref.read(userIdProvider.notifier).state = userId;
@@ -367,7 +369,8 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PlayerProfileSetUpScreen(),
+                                builder: (context) =>
+                                    PlayerProfileSetUpScreen(),
                               ),
                             );
                           }
