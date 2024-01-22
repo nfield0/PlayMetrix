@@ -344,23 +344,30 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                           print("error: user type not found");
                         }
 
-                        int userId = jsonDecode(response)["id"];
-                        print("user id: " + userId.toString());
-                        ref.read(userIdProvider.notifier).state = userId;
-                        ref.read(userRoleProvider.notifier).state = userRole;
+                        int userId = 0;
+                        if (userRole == UserRole.player) {
+                          userId = jsonDecode(response)["id"];
+                          print("user id: " + userId.toString());
+                          ref.read(userIdProvider.notifier).state = userId;
+                          ref.read(userRoleProvider.notifier).state = userRole;
+                        } else {
+                          userId = jsonDecode(response)["id"][idType];
+                          ref.read(userIdProvider.notifier).state = userId;
+                          ref.read(userRoleProvider.notifier).state = userRole;
+                        }
 
                         if (userId != 0) {
-                          if (userRole != UserRole.manager) {
+                          if (userRole != UserRole.player) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => TeamSelectionScreen()),
+                                  builder: (context) => ProfileSetUpScreen()),
                             );
                           } else {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProfileSetUpScreen(),
+                                builder: (context) => PlayerProfileSetUpScreen(),
                               ),
                             );
                           }

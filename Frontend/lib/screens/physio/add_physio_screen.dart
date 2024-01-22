@@ -14,7 +14,8 @@ Future<void> registerPhysio({
   required String email,
   required String password,
 }) async {
-  final apiUrl = 'http://127.0.0.1:8000/register/'; // Replace with your actual backend URL
+  final apiUrl =
+      'http://127.0.0.1:8000/register/'; // Replace with your actual backend URL
 
   try {
     final response = await http.post(
@@ -47,7 +48,6 @@ Future<void> registerPhysio({
   }
 }
 
-
 class AddPhysioScreen extends StatefulWidget {
   const AddPhysioScreen({Key? key}) : super(key: key);
 
@@ -56,7 +56,7 @@ class AddPhysioScreen extends StatefulWidget {
 }
 
 class _AddPhysioScreenState extends State<AddPhysioScreen> {
-   final _formKey = "physio";
+  final _formKey = "physio";
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -76,7 +76,7 @@ class _AddPhysioScreenState extends State<AddPhysioScreen> {
             padding: EdgeInsets.all(40),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Add Physio',
+              Text('Add Physio to Team',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,
@@ -96,7 +96,7 @@ class _AddPhysioScreenState extends State<AddPhysioScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Enter registered player email:",
+                        "Enter registered physio email:",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w500),
                       ),
@@ -136,12 +136,12 @@ class _AddPhysioScreenState extends State<AddPhysioScreen> {
                       const SizedBox(height: 40),
                       bigButton("Add Physio", () {
                         registerPhysio(
-                            userType: _formKey,
-                            firstName: _firstNameController.text,
-                            surname: _surnameController.text,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
+                          userType: _formKey,
+                          firstName: _firstNameController.text,
+                          surname: _surnameController.text,
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
                       })
                     ]),
               )

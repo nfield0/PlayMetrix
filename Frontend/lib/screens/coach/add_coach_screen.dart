@@ -28,7 +28,7 @@ class _AddCoachScreenState extends State<AddCoachScreen> {
             padding: EdgeInsets.all(40),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Add Coach',
+              Text('Add Coach to Team',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,

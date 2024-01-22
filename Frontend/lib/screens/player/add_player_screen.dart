@@ -76,7 +76,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
             padding: EdgeInsets.all(40),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Add Player',
+              Text('Add Player to Team',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,

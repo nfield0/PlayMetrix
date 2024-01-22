@@ -319,8 +319,7 @@ class ProfileSetUpScreen extends ConsumerWidget {
                 }
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => TeamSelectionScreen()),
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
                 );
               }
             })
