@@ -3,43 +3,108 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:typed_data';
 
-Future<void> getPlapyerById(String id) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
+Future<PlayerData> getPlayerProfile(int id) async {
+  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+      final parsed = jsonDecode(response.body);
+
+      print('Player ID: $id');
+      print('Player First Name: ${parsed['player_firstname']}');
+      print('Player Surname: ${parsed['player_surname']}');
+      print('Player Contact Number: ${parsed['player_contact_number']}');
+      print('Player Date of Birth: ${parsed['player_dob']}');
+      print('Player Height: ${parsed['player_height']}');
+      print('Player Gender: ${parsed['player_gender']}');
+      print('Player Image: ${parsed['player_image']}');
+
+      DateTime playerDob;
+      if (parsed['player_dob'] != null && parsed['player_dob'] != "") {
+        playerDob = DateTime.parse(parsed['player_dob']);
+      } else {
+        playerDob = DateTime.now();
+      }
+
+      Uint8List? playerImage;
+      if (parsed['player_image'] != null && parsed['player_image'] != "") {
+        playerImage = base64.decode(parsed['player_image']);
+      } else {
+        playerImage = null; // Or set it to an empty Uint8List
+      }
+
+      return PlayerData(
+        player_id: id,
+        player_firstname: parsed['player_firstname'],
+        player_surname: parsed['player_surname'],
+        player_contact_number: parsed['player_contact_number'],
+        player_dob: playerDob,
+        player_height: parsed['player_height'],
+        player_gender: parsed['player_gender'],
+        player_image: playerImage,
+      );
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  throw Exception('Player not found');
+}
+
+
+Future<void> updatePlayerProfile(
+    int id,
+    PlayerData player,
+    String contactNumber,
+    DateTime dob,
+    String height,
+    String gender,
+    Uint8List? image) async {
+  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
 
   try {
-    final response = await http.get(
+    final response = await http.put(
       Uri.parse(apiUrl),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
+      body: jsonEncode(<String, dynamic>{
+        'player_id': id,
+        'player_firstname': player.player_firstname,
+        'player_surname': player.player_surname,
+        'player_contact_number': contactNumber,
+        'player_dob': dob.toIso8601String(),
+        'player_height': height,
+        'player_gender': gender,
+        'player_image': image != null ? base64Encode(image) : "",
+      }),
     );
 
     if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final playerData = PlayerData.fromJson(responseData);
-
-      // Access individual variables
-      print('${playerData.player_id}');
-      print('${playerData.player_firstname}');
-      print('${playerData.player_surname}');
-      print('${playerData.player_dob}');
-      print('${playerData.player_contact_number}');
-      print('${playerData.player_image}');
-      print('${playerData.player_height}');
-      print('${playerData.player_gender}');
+      print('Registration successful!');
+      print('Response: ${response.body}');
     } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Failed to register. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
     }
   } catch (error) {
@@ -48,53 +113,10 @@ Future<void> getPlapyerById(String id) async {
   }
 }
 
-Future<void> editPlayer({
-  required int player_id,
-  required String player_firstname,
-  required String player_surname,
-  required String player_dob,
-  required String player_contact_number,
-  required String player_image,
-  required String player_height,
-  required String player_gender,
-}) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/players/info/$getPlapyerById'; // Replace with your actual API URL
-
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'player_id': player_id,
-        'player_firstname': player_firstname,
-        'player_surname': player_surname,
-        'player_dob': player_dob,
-        'player_contact_number': player_contact_number,
-        'player_image': player_image,
-        'player_height': player_height,
-        'player_gender': player_gender,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Team updated successfully
-      print('Team updated successfully');
-    } else {
-      // Handle errors
-      print('Failed to update team. Status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error updating team: $e');
-  }
-}
 
 class EditPlayerProfileScreen extends ConsumerWidget {
   late PlayerData playerData;
   // Form controllers for text fields
-  final TextEditingController _playerIdController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
@@ -107,6 +129,25 @@ class EditPlayerProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
+    final playerId = ref.watch(userIdProvider.notifier).state;
+
+
+    Uint8List? profilePicture = ref.watch(profilePictureProvider);
+    DateTime selectedDob = ref.watch(dobProvider);
+    String selectedGender = ref.watch(genderProvider);
+
+    Future<void> pickImage() async {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        List<int> imageBytes = await pickedFile.readAsBytes();
+
+        ref.read(profilePictureProvider.notifier).state =
+            Uint8List.fromList(imageBytes);
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Players"),
@@ -151,21 +192,27 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 underlineButtonTransparent(
-                                    "Edit picture", () {}),
+                                    "Edit picture", () {pickImage();}),
                               ])),
                               formFieldBottomBorderController(
                                   "First Name", _firstNameController),
                               formFieldBottomBorderController(
                                   "Surname", _surnameController),
-                              formFieldBottomBorderController(
-                                  "Date of Birth", _dobController),
+                              datePickerNoDivider(
+                                context, "Date of birth", selectedDob, (value) {
+                              ref.read(dobProvider.notifier).state = value;
+                            }),
                               formFieldBottomBorderController(
                                   "Contact Number", _contactNumberController),
                               formFieldBottomBorderController(
                                   "Height", _heightController),
-                              formFieldBottomBorderController(
-                                  "Gender", _genderController),
-                              const SizedBox(height: 10),
+                                  const SizedBox(height: 10),
+                              dropdownWithDivider("Gender", selectedGender,
+                                ["Man", "Woman", "Others"], (value) {
+                              ref.read(genderProvider.notifier).state = value!;
+                            }),
+                            const SizedBox(height: 50),
+                              //const SizedBox(height: 10),
                               dropdownWithDivider(
                                   "Position",
                                   "Defender",
@@ -177,20 +224,26 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                                   ],
                                   (p0) {}),
                               const SizedBox(height: 30),
-                              bigButton("Save Changes", () {
-                                editPlayer(
-                                  player_id:
-                                      int.parse(_playerIdController.text),
-                                  player_firstname: _firstNameController.text,
-                                  player_surname: _surnameController.text,
-                                  player_dob: _dobController.text,
-                                  player_contact_number:
-                                      _contactNumberController.text,
-                                  player_image: _playerImageController.text,
-                                  player_height: _heightController.text,
-                                  player_gender: _genderController.text,
-                                );
-                              })
+                              bigButton("Save Changes", () async {
+                                 PlayerData player =
+                                  await getPlayerProfile(playerId);
+                              await updatePlayerProfile(
+                                  playerId,
+                                  player,
+                                  _contactNumberController.text,
+                                  ref.read(dobProvider.notifier).state,
+                                  _heightController.text,
+                                  ref.read(genderProvider.notifier).state,
+                                  ref
+                                      .read(profilePictureProvider.notifier)
+                                      .state);
+                                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PlayerProfileScreen()),
+                        );
+                              }
+                      
+                              )
                             ]),
                       )
                     ]))),

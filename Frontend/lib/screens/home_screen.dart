@@ -42,9 +42,9 @@ class PlayerData {
       player_id: json['player_id'],
       player_firstname: json['player_firstname'],
       player_surname: json['player_surname'],
-      player_dob: json['player_dob'],
+      player_dob: DateTime.parse(json['player_dob']),
       player_contact_number: json['player_contact_number'],
-      player_image: json['player_image'],
+      player_image: base64.decode(json['player_image']),
       player_height: json['player_height'],
       player_gender: json['player_gender'],
     );
