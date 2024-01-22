@@ -96,6 +96,7 @@ class physio_info(Base):
 	physio_firstname = Column(String(25), index = True)
 	physio_surname = Column(String(25), index = True)
 	physio_contact_number = Column(String(20), index = True)
+	physio_image = Column(LargeBinary, index = True)
 
 class team_physio(Base):
 	__tablename__ = "team_physio"

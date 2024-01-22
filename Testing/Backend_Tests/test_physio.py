@@ -8,7 +8,8 @@ def test_add_physio():
         "physio_password": "Testpassword123!",
         "physio_firstname": "test",
         "physio_surname": "tester",
-        "physio_contact_number": "012345"
+        "physio_contact_number": "012345",
+        "physio_image": "something"
     }
     response = requests.post(url, headers=headers, json=json)
     #assert response.status_code == 200
@@ -18,7 +19,7 @@ def test_add_physio():
         response_json = response.json()
         assert response_json.get("detail") == "Physio Registered Successfully"
         assert 'id' in response_json
-        assert response_json['id']['physio_id'] == 1
+        assert response_json['id'] == 1
     
     except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
@@ -31,7 +32,8 @@ def test_add_physio_incorrect_email():
         "physio_password": "Password123!",
         "physio_firstname": "test",
         "physio_surname": "tester",
-        "physio_contact_number": "012345"
+        "physio_contact_number": "012345",
+        "physio_image": "0"
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 400
@@ -52,7 +54,8 @@ def test_add_physio_incorrect_name():
         "physio_password": "Password123!",
         "physio_firstname": "123",
         "physio_surname": "tester",
-        "physio_contact_number": "012345"
+        "physio_contact_number": "012345",
+        "physio_image": "0"
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 400
@@ -79,7 +82,8 @@ def test_get_physio():
         "physio_password": "Hidden",
         "physio_firstname": "test",
         "physio_surname": "tester",
-        "physio_contact_number": "012345"
+        "physio_contact_number": "012345",
+        "physio_image": "something"
     }
         assert response_json == expected_data
     except(ValueError, AssertionError) as e:
@@ -144,7 +148,8 @@ def test_update_physio():
             "physio_password": "Password123!",
             "physio_firstname": "test",
             "physio_surname": "tester",
-            "physio_contact_number": "012345"
+            "physio_contact_number": "012345",
+        "physio_image": "0"
         
     }
 
@@ -166,7 +171,7 @@ def test_update_physio_login():
     json = {
             "physio_id": 1,
             "physio_email": "testphysioupdate@gmail.com",
-            "physio_password": "Password123!",
+            "physio_password": "Password123!"
     }
 
     response = requests.put(url, headers=headers, json=json)
@@ -188,7 +193,8 @@ def test_update_physio_info():
             "physio_id": 1,
             "physio_firstname": "test",
             "physio_surname": "tester",
-            "physio_contact_number": "012345"
+            "physio_contact_number": "012345",
+        "physio_image": "0"
     }
 
     response = requests.put(url, headers=headers, json=json)
@@ -211,7 +217,8 @@ def test_update_physio_fail():
             "physio_password": "Password123!",
             "physio_firstname": "123",
             "physio_surname": "456",
-            "physio_contact_number": "012345"
+            "physio_contact_number": "012345",
+        "physio_image": "0"
         
     }
 
@@ -347,7 +354,8 @@ def test_add_physio_2():
         "physio_password": "Testpassword123!",
         "physio_firstname": "test",
         "physio_surname": "tester",
-        "physio_contact_number": "012345"
+        "physio_contact_number": "012345",
+        "physio_image": "0"
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -357,7 +365,7 @@ def test_add_physio_2():
         response_json = response.json()
         assert response_json.get("detail") == "Physio Registered Successfully"
         assert 'id' in response_json
-        assert response_json['id']['physio_id'] == 2
+        assert response_json['id'] == 2
     
     except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"

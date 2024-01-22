@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class LeagueBase(BaseModel):
@@ -28,7 +29,7 @@ class PlayerCreate(BaseModel):
     player_height: str
     player_gender: str
     player_contact_number: str
-    player_image: bytes
+    player_image: Optional[bytes] = None
 
 class SportBase(BaseModel):
     sport_name : str
@@ -39,7 +40,7 @@ class ManagerCreate(BaseModel):
     manager_firstname: str 
     manager_surname: str 
     manager_contact_number: str
-    manager_image: bytes
+    manager_image: Optional[bytes] = None
 
 class PhysioCreate(BaseModel):
     physio_email: str
@@ -47,6 +48,7 @@ class PhysioCreate(BaseModel):
     physio_firstname: str 
     physio_surname: str 
     physio_contact_number: str
+    physio_image: Optional[bytes] = None
 
 class CoachCreate(BaseModel):
     coach_email: str
@@ -54,7 +56,7 @@ class CoachCreate(BaseModel):
     coach_firstname: str
     coach_surname: str
     coach_contact: str
-    coach_image: bytes
+    coach_image: Optional[bytes] = None
 
 class Coach(BaseModel):
     coach_id: int
@@ -66,7 +68,7 @@ class CoachInfo(BaseModel):
     coach_firstname: str
     coach_surname: str
     coach_contact: str
-    coach_image: bytes
+    coach_image: Optional[bytes] = None
 
 
 class Manager(BaseModel):
@@ -79,7 +81,7 @@ class ManagerInfo(BaseModel):
     manager_firstname: str
     manager_surname: str
     manager_contact_number: str
-    manager_image: bytes
+    manager_image: Optional[bytes] = None
 
 class ManagerNoID(BaseModel):
     manager_email: str
@@ -87,7 +89,7 @@ class ManagerNoID(BaseModel):
     manager_firstname: str
     manager_surname: str
     manager_contact_number: str
-    manager_image: bytes
+    manager_image: Optional[bytes] = None
 
 class Physio(BaseModel):
     physio_id: int
@@ -99,6 +101,7 @@ class PhysioInfo(BaseModel):
     physio_firstname: str
     physio_surname: str
     physio_contact_number: str
+    physio_image: Optional[bytes] = None
 
 class PhysioNoID(BaseModel):
     physio_email: str
@@ -106,11 +109,11 @@ class PhysioNoID(BaseModel):
     physio_firstname: str
     physio_surname: str
     physio_contact_number: str
-    # physio_image: bytes
+    physio_image: Optional[bytes] = None
 
 class TeamBase(BaseModel):
     team_name: str
-    team_logo: bytes
+    team_logo: Optional[bytes] = None
     manager_id: int
     league_id: int
     sport_id: int
@@ -141,7 +144,7 @@ class PlayerInfo(BaseModel):
     player_surname: str 
     player_dob: str 
     player_contact_number: str
-    player_image: bytes
+    player_image: Optional[bytes] = None
     player_height: str
     player_gender: str
 
