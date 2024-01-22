@@ -110,10 +110,15 @@ def register_player(db, user):
                                 player_dob=user.player_dob,player_contact_number=user.player_contact_number,
                                 player_image=user.player_image,player_height=user.player_height,player_gender=user.player_gender)
                                    
-    db.add(new_user_info)  
-    db.commit()
+    db.add(new_user_info)
 
-    return {"detail": "Player Registered Successfully", "id": get_user_by_email(db,"player",user.player_email)}
+    new_user_stats = player_stats(player_id=new_user_id.player_id, matches_played=0, matches_started=0, 
+                                  matches_off_the_bench=0, injury_prone=False, minutes_played=0)
+    db.add(new_user_stats)
+    db.commit()
+    db.refresh(new_user_stats)
+
+    return {"detail": "Player Registered Successfully", "id": new_user.player_id}
 
 def register_manager(db, user):
     existing_user = get_user_by_email(db, "manager", user.manager_email)

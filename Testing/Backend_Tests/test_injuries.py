@@ -124,7 +124,7 @@ def test_add_player():
         response_json = response.json()
         assert response_json.get('detail') == "Player Registered Successfully"
         assert 'id' in response_json
-        assert response_json['id']['player_id'] == 1
+        assert response_json['id'] == 1
         assert response.status_code == 200
     
     except (ValueError, AssertionError) as e:
