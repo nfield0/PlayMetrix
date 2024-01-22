@@ -68,6 +68,10 @@ def read_root():
 # def register_user(user: UserCreate, db: Session = Depends(get_db)):
 #     return crud.register_user(db, user)
 
+@app.get("/users")
+def get_user_by_email(email: str, db:Session = Depends(get_db)):
+    return crud.get_user_by_email(db, email)
+
 @app.post("/register_player")
 def register_player(user: PlayerCreate, db: Session = Depends(get_db)):
     return crud.register_player(db, user)
