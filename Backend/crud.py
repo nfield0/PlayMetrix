@@ -171,14 +171,13 @@ def register_physio(db, user):
     
     db.commit()
     db.refresh(new_user)
-    new_user_id = get_user_by_email(db,"physio",user.physio_email)
-    new_user_info = physio_info(physio_id=new_user_id.physio_id, physio_firstname=user.physio_firstname,physio_surname=user.physio_surname,
-                                physio_contact_number=user.physio_contact_number)
+    new_user_info = physio_info(physio_id=new_user.physio_id, physio_firstname=user.physio_firstname,physio_surname=user.physio_surname,
+                                physio_contact_number=user.physio_contact_number, physio_image=user.physio_image)
                                    
     db.add(new_user_info)  
     db.commit()
 
-    return {"detail": "Physio Registered Successfully", "id": get_user_by_email(db,"physio",user.physio_email)}
+    return {"detail": "Physio Registered Successfully", "id": new_user.physio_id}
 
 def register_coach(db, user):
     try:
@@ -958,7 +957,7 @@ def get_physio_with_info_by_id(db: Session, id: int):
         if info_result:
             physio = PhysioNoID(physio_email=result.physio_email,physio_password="Hidden",
                                   physio_firstname=info_result.physio_firstname,physio_surname=info_result.physio_surname,
-                                  physio_contact_number=info_result.physio_contact_number)
+                                  physio_contact_number=info_result.physio_contact_number, physio_image=info_result.physio_image)
             return physio
         else:
             raise HTTPException(status_code=404, detail="Physio Info not found")
@@ -994,12 +993,14 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
             new_physio_info = physio_info(physio_id=id,
                                         physio_firstname=physio.physio_firstname,
                                         physio_surname=physio.physio_surname,
-                                        physio_contact_number=physio.physio_contact_number)
+                                        physio_contact_number=physio.physio_contact_number,
+                                        physio_image = physio.physio_image)
             db.add(new_physio_info)
         else:
             physio_info_to_update.physio_firstname = physio.physio_firstname
             physio_info_to_update.physio_surname = physio.physio_surname
             physio_info_to_update.physio_contact_number = physio.physio_contact_number
+            physio_info_to_update.physio_image = physio.physio_image
         
         db.commit()
 
