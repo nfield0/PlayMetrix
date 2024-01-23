@@ -11,6 +11,10 @@ class UserLoginBase(BaseModel):
     user_email: bool
     user_password: bool
 
+class UserType(BaseModel):
+    user_type: str
+    user_email: str
+
 class UserCreate(BaseModel):
     user_type: str
     user_email: str
