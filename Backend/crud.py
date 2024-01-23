@@ -1038,6 +1038,7 @@ def update_physio_info_by_id(db:Session, physio: PhysioInfo, id: int):
         physio_info_to_update.physio_firstname = physio.physio_firstname
         physio_info_to_update.physio_surname = physio.physio_surname
         physio_info_to_update.physio_contact_number = physio.physio_contact_number
+        physio_info_to_update.physio_image = physio.physio_image
         
         db.commit()
 
