@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
@@ -12,6 +15,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
+
+Future<List<LeagueData>> getAllLeagues() async {
+  final apiUrl = 'http://127.0.0.1:8000/leagues/';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data from the backend
+      final List<dynamic> data = jsonDecode(response.body);
+
+      // Convert List<dynamic> to List<Map<String, dynamic>>
+      final List<Map<String, dynamic>> teamJsonList =
+          List<Map<String, dynamic>>.from(data);
+
+      final List<LeagueData> leagues =
+          teamJsonList.map((json) => LeagueData.fromJson(json)).toList();
+
+      return leagues;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to get data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to load leagues.');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to load leagues');
+  }
+}
 
 class AddTeamData {
   final String team_name;
@@ -30,8 +66,11 @@ class AddTeamData {
     required this.team_location,
   });
 }
-Future<String> addTeam(String teamName, Uint8List? imageBytes, int managerId, int sportId, int leagueId, String teamLocation) async {
-  final apiUrl = 'http://127.0.0.1:8000/teams/'; // Replace with your actual backend URL and provide the user ID
+
+Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
+    int sportId, int leagueId, String teamLocation) async {
+  final apiUrl =
+      'http://127.0.0.1:8000/teams/'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.post(
@@ -53,7 +92,7 @@ Future<String> addTeam(String teamName, Uint8List? imageBytes, int managerId, in
       // Successfully retrieved data, parse and store it in individual variables
       print("Team added successfully");
       print("Response: ${response.body}");
-      return response.body;
+      return jsonDecode(response.body)["id"];
     } else {
       // Failed to retrieve data, handle the error accordingly
       print('Failed to retrieve data. Status code: ${response.statusCode}');
@@ -67,25 +106,13 @@ Future<String> addTeam(String teamName, Uint8List? imageBytes, int managerId, in
   }
 }
 
-
-final divisionProvider = StateProvider<int>((ref) => 0);
-final teamIdProvider = StateProvider<int>((ref) => 0);
-// class TeamSetUpScreen extends StatefulWidget {
-//   const TeamSetUpScreen({Key? key}) : super(key: key);
-
-//   @override
-//   _TeamSetUpScreenState createState() => _TeamSetUpScreenState();
-  
-// }
+final leagueProvider = StateProvider<int>((ref) => 0);
+final teamLogoProvider = StateProvider<Uint8List?>((ref) => null);
 
 class TeamSetUpScreen extends ConsumerWidget {
   String selectedDivisionValue = "Division 1";
 
   final TextEditingController _teamNameController = TextEditingController();
-  final TextEditingController _teamLogoController = TextEditingController();
-  final TextEditingController _managerIdController = TextEditingController();
-  final TextEditingController _leagueIdController = TextEditingController();
-  final TextEditingController _sportIdController = TextEditingController();
   final TextEditingController _teamLocationController = TextEditingController();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -96,16 +123,14 @@ class TeamSetUpScreen extends ConsumerWidget {
       if (pickedFile != null) {
         List<int> imageBytes = await pickedFile.readAsBytes();
 
-        ref.read(profilePictureProvider.notifier).state =
+        ref.read(teamLogoProvider.notifier).state =
             Uint8List.fromList(imageBytes);
       }
     }
 
-    final userRole = ref.watch(userRoleProvider.notifier).state;
-    Uint8List? profilePicture = ref.watch(profilePictureProvider);
     int userId = ref.watch(userIdProvider.notifier).state;
-    int divisionId = ref.watch(divisionProvider.notifier).state;
-    int teamId = ref.watch(teamIdProvider.notifier).state;
+    int leagueId = ref.watch(leagueProvider);
+    Uint8List? logo = ref.watch(teamLogoProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -141,63 +166,97 @@ class TeamSetUpScreen extends ConsumerWidget {
             const SizedBox(height: 20),
             Center(
                 child: Column(children: [
-              Image.asset(
-                "lib/assets/icons/logo_placeholder.png",
-                width: 100,
-              ),
+              logo != null
+                  ? Image.memory(
+                      logo,
+                      width: 100,
+                    )
+                  : Image.asset(
+                      "lib/assets/icons/logo_placeholder.png",
+                      width: 100,
+                    ),
               const SizedBox(height: 10),
-              underlineButtonTransparent("Upload logo", () { pickImage(); }),
+              underlineButtonTransparent("Upload logo", () {
+                pickImage();
+              }),
             ])),
             // formFieldBottomBorder("Club name", ""), // NOT IN BACKEND ENDPOINT
             // const SizedBox(height: 10),
-            formFieldBottomBorder("Team name", _teamNameController.text),
+            formFieldBottomBorderController("Team name", _teamNameController,
+                (value) {
+              return "";
+            }),
             const SizedBox(height: 10),
-            formFieldBottomBorder("Location", _teamLocationController.text),
+            formFieldBottomBorderController("Location", _teamLocationController,
+                (value) {
+              return "";
+            }),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Division",
+                  "League",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 20),
                 SizedBox(
                   // Wrap the DropdownButtonFormField with a Container
                   width: 220, // Provide a specific width
-                  child: DropdownButtonFormField<String>(
-                    focusColor: AppColours.darkBlue,
-                    value: selectedDivisionValue,
-                    onChanged: (newValue) {
-                      // setState(() {
-                        selectedDivisionValue = newValue!;
-                      // });
+                  child: FutureBuilder<List<LeagueData>>(
+                    future: getAllLeagues(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<LeagueData> leagues = snapshot.data!;
+                        // Initialize the selectedTeam with the first team name
+                        if (leagueId == 0 && leagues.isNotEmpty) {
+                          leagueId = leagues[0].league_id;
+                          Future.delayed(Duration.zero, () {
+                            ref.read(leagueProvider.notifier).state = leagueId;
+                          });
+                        }
+
+                        return DropdownButton<int>(
+                          value: leagueId,
+                          items: leagues.map((LeagueData league) {
+                            return DropdownMenuItem<int>(
+                              value: league.league_id,
+                              child: Text(
+                                league.league_name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            // Update the selectedTeam when the user makes a selection
+                            ref.read(leagueProvider.notifier).state = value!;
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error loading leagues");
+                      } else {
+                        return CircularProgressIndicator();
+                      }
                     },
-                    items: ['Division 1', 'Division 2', 'Division 3']
-                        .map((String option) {
-                      return DropdownMenuItem<String>(
-                        value: option,
-                        child: Text(option),
-                      );
-                    }).toList(),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 50),
             bigButton("Save Changes", () async {
-                    if (selectedDivisionValue == "Division 1") {
-                      divisionId = 1;
-                    } else if (selectedDivisionValue == "Division 2") {
-                      divisionId = 2;
-                    } else if (selectedDivisionValue == "Division 3") {
-                      divisionId = 3;
-                    }
-                    String teamId = await addTeam(_teamNameController.text, ref.read(profilePictureProvider.notifier).state, userId, 1, divisionId, _teamLocationController.text);  
-                    ref.read(teamIdProvider.notifier).state = int.parse(teamId);
+              int teamId = await addTeam(
+                  _teamNameController.text,
+                  ref.read(teamLogoProvider.notifier).state,
+                  userId,
+                  1,
+                  leagueId,
+                  _teamLocationController.text);
+              ref.read(teamIdProvider.notifier).state = teamId;
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TeamProfileScreen()),
+                MaterialPageRoute(builder: (context) => HomeScreen()),
               );
             })
           ],

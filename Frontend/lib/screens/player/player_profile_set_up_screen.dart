@@ -215,6 +215,7 @@ Future<void> updatePlayerProfile(
 }
 
 class PlayerProfileSetUpScreen extends ConsumerWidget {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
@@ -238,6 +239,9 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
     Uint8List? profilePicture = ref.watch(profilePictureProvider);
     DateTime selectedDob = ref.watch(dobProvider);
     String selectedGender = ref.watch(genderProvider);
+
+    final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
+    final heightRegex = RegExp(r'^[1-9]\d{0,2}(\.\d{1,2})?$');
 
     return Scaffold(
       appBar: AppBar(
@@ -272,6 +276,8 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                       height: 20,
                     ),
                     Form(
+                      key: _formKey,
+                      autovalidateMode: AutovalidateMode.always,
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -296,9 +302,19 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                               ref.read(dobProvider.notifier).state = value;
                             }),
                             formFieldBottomBorderController(
-                                "Height", _heightController),
+                                "Height (cm)", _heightController, (value) {
+                              return (value != null &&
+                                      !heightRegex.hasMatch(value))
+                                  ? 'Invalid height.'
+                                  : null;
+                            }),
                             formFieldBottomBorderController(
-                                "Phone", _phoneController),
+                                "Phone", _phoneController, (value) {
+                              return (value != null &&
+                                      !phoneRegex.hasMatch(value))
+                                  ? 'Invalid phone number.'
+                                  : null;
+                            }),
                             const SizedBox(height: 5),
                             dropdownWithDivider("Gender", selectedGender,
                                 ["Male", "Female", "Others"], (value) {
@@ -306,23 +322,25 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                             }),
                             const SizedBox(height: 50),
                             bigButton("Save Changes", () async {
-                              PlayerData player =
-                                  await getPlayerProfile(playerId);
-                              await updatePlayerProfile(
-                                  playerId,
-                                  player,
-                                  _phoneController.text,
-                                  ref.read(dobProvider.notifier).state,
-                                  _heightController.text,
-                                  ref.read(genderProvider.notifier).state,
-                                  ref
-                                      .read(profilePictureProvider.notifier)
-                                      .state);
+                              if (_formKey.currentState!.validate()) {
+                                PlayerData player =
+                                    await getPlayerProfile(playerId);
+                                await updatePlayerProfile(
+                                    playerId,
+                                    player,
+                                    _phoneController.text,
+                                    ref.read(dobProvider.notifier).state,
+                                    _heightController.text,
+                                    ref.read(genderProvider.notifier).state,
+                                    ref
+                                        .read(profilePictureProvider.notifier)
+                                        .state);
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeScreen()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomeScreen()));
+                              }
                             })
                           ]),
                     )

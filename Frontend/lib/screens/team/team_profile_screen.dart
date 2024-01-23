@@ -160,9 +160,9 @@ class TeamProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
     final userId = ref.watch(userIdProvider.notifier).state;
-    final teamId = ref.watch(teamIdProvider.notifier).state;
+    final teamId = ref.watch(leagueProvider.notifier).state;
     final managerId = ref.watch(managerIdProvider.notifier).state;
-    final division = ref.watch(divisionProvider.notifier).state;
+    final division = ref.watch(leagueProvider.notifier).state;
     Uint8List? profilePicture = ref.watch(profilePictureProvider);
     
     return Scaffold(

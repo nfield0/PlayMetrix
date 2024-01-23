@@ -71,7 +71,6 @@ Future<PlayerData> getPlayerProfile(int id) async {
   throw Exception('Player not found');
 }
 
-
 Future<void> updatePlayerProfile(
     int id,
     PlayerData player,
@@ -113,7 +112,6 @@ Future<void> updatePlayerProfile(
   }
 }
 
-
 class EditPlayerProfileScreen extends ConsumerWidget {
   late PlayerData playerData;
   // Form controllers for text fields
@@ -130,7 +128,6 @@ class EditPlayerProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
     final playerId = ref.watch(userIdProvider.notifier).state;
-
 
     Uint8List? profilePicture = ref.watch(profilePictureProvider);
     DateTime selectedDob = ref.watch(dobProvider);
@@ -191,27 +188,39 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                                   width: 120,
                                 ),
                                 const SizedBox(height: 10),
-                                underlineButtonTransparent(
-                                    "Edit picture", () {pickImage();}),
+                                underlineButtonTransparent("Edit picture", () {
+                                  pickImage();
+                                }),
                               ])),
                               formFieldBottomBorderController(
-                                  "First Name", _firstNameController),
+                                  "First Name", _firstNameController, (value) {
+                                return "";
+                              }),
                               formFieldBottomBorderController(
-                                  "Surname", _surnameController),
+                                  "Surname", _surnameController, (value) {
+                                return "";
+                              }),
                               datePickerNoDivider(
-                                context, "Date of birth", selectedDob, (value) {
-                              ref.read(dobProvider.notifier).state = value;
-                            }),
+                                  context, "Date of birth", selectedDob,
+                                  (value) {
+                                ref.read(dobProvider.notifier).state = value;
+                              }),
                               formFieldBottomBorderController(
-                                  "Contact Number", _contactNumberController),
+                                  "Contact Number", _contactNumberController,
+                                  (value) {
+                                return "";
+                              }),
                               formFieldBottomBorderController(
-                                  "Height", _heightController),
-                                  const SizedBox(height: 10),
+                                  "Height", _heightController, (value) {
+                                return "";
+                              }),
+                              const SizedBox(height: 10),
                               dropdownWithDivider("Gender", selectedGender,
-                                ["Man", "Woman", "Others"], (value) {
-                              ref.read(genderProvider.notifier).state = value!;
-                            }),
-                            const SizedBox(height: 50),
+                                  ["Man", "Woman", "Others"], (value) {
+                                ref.read(genderProvider.notifier).state =
+                                    value!;
+                              }),
+                              const SizedBox(height: 50),
                               //const SizedBox(height: 10),
                               dropdownWithDivider(
                                   "Position",
@@ -225,25 +234,25 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                                   (p0) {}),
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () async {
-                                 PlayerData player =
-                                  await getPlayerProfile(playerId);
-                              await updatePlayerProfile(
-                                  playerId,
-                                  player,
-                                  _contactNumberController.text,
-                                  ref.read(dobProvider.notifier).state,
-                                  _heightController.text,
-                                  ref.read(genderProvider.notifier).state,
-                                  ref
-                                      .read(profilePictureProvider.notifier)
-                                      .state);
-                                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PlayerProfileScreen()),
-                        );
-                              }
-                      
-                              )
+                                PlayerData player =
+                                    await getPlayerProfile(playerId);
+                                await updatePlayerProfile(
+                                    playerId,
+                                    player,
+                                    _contactNumberController.text,
+                                    ref.read(dobProvider.notifier).state,
+                                    _heightController.text,
+                                    ref.read(genderProvider.notifier).state,
+                                    ref
+                                        .read(profilePictureProvider.notifier)
+                                        .state);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PlayerProfileScreen()),
+                                );
+                              })
                             ]),
                       )
                     ]))),

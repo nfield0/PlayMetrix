@@ -250,7 +250,7 @@ Widget datePickerNoDivider(BuildContext context, String title,
               final DateTime? pickedDate = await showDatePicker(
                 context: context,
                 initialDate: selectedDate,
-                firstDate: DateTime(2000),
+                firstDate: DateTime(1920),
                 lastDate: DateTime(2101),
               );
 
@@ -337,8 +337,8 @@ Widget formFieldBottomBorder(String title, String initialValue) {
   );
 }
 
-Widget formFieldBottomBorderController(
-    String title, TextEditingController controller) {
+Widget formFieldBottomBorderController(String title,
+    TextEditingController controller, String? Function(String?)? validator) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -351,7 +351,7 @@ Widget formFieldBottomBorderController(
       const SizedBox(width: 30),
       Container(
         width: 210, // Set a fixed width for the TextField
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           decoration: const InputDecoration(
             // labelText: 'Your Label',
@@ -363,6 +363,7 @@ Widget formFieldBottomBorderController(
               borderSide: BorderSide(color: Colors.grey),
             ),
           ),
+          validator: validator,
         ),
       ),
     ],

@@ -245,6 +245,7 @@ Future<Profile> getPlayerProfile(int id) async {
 }
 
 class ProfileSetUpScreen extends ConsumerWidget {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController();
 
   @override
@@ -264,6 +265,8 @@ class ProfileSetUpScreen extends ConsumerWidget {
     final userRole = ref.watch(userRoleProvider.notifier).state;
     Uint8List? profilePicture = ref.watch(profilePictureProvider);
 
+    final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -279,86 +282,96 @@ class ProfileSetUpScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
       ),
       body: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.always,
           child: Container(
-        padding: EdgeInsets.all(35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Profile Set Up',
-                style: TextStyle(
+            padding: EdgeInsets.all(35),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Profile Set Up',
+                    style: TextStyle(
+                      color: AppColours.darkBlue,
+                      fontFamily: AppFonts.gabarito,
+                      fontSize: 36.0,
+                      fontWeight: FontWeight.w700,
+                    )),
+                const Divider(
                   color: AppColours.darkBlue,
-                  fontFamily: AppFonts.gabarito,
-                  fontSize: 36.0,
-                  fontWeight: FontWeight.w700,
-                )),
-            const Divider(
-              color: AppColours.darkBlue,
-              thickness: 1.0, // Set the thickness of the line
-              height: 40.0, // Set the height of the line
+                  thickness: 1.0, // Set the thickness of the line
+                  height: 40.0, // Set the height of the line
+                ),
+                const SizedBox(height: 20),
+                Center(
+                    child: Column(children: [
+                  profilePicture != null
+                      ? Image.memory(
+                          profilePicture,
+                          width: 100,
+                        )
+                      : Image.asset(
+                          "lib/assets/icons/profile_placeholder.png",
+                          width: 100,
+                        ),
+                  const SizedBox(height: 10),
+                  underlineButtonTransparent("Upload picture", () {
+                    pickImage();
+                  }),
+                ])),
+                const SizedBox(height: 20),
+                formFieldBottomBorderController("Phone", _phoneController,
+                    (value) {
+                  return (value != null && !phoneRegex.hasMatch(value))
+                      ? 'Invalid phone number.'
+                      : null;
+                }),
+                const SizedBox(height: 50),
+                bigButton("Save Changes", () async {
+                  if (_formKey.currentState!.validate()) {
+                    if (userRole == UserRole.manager) {
+                      int userId = ref.watch(userIdProvider.notifier).state;
+                      Profile manager = await getManagerProfile(userId);
+
+                      await updateManagerProfile(
+                          userId,
+                          ProfileName(manager.firstName, manager.surname),
+                          _phoneController.text,
+                          ref.read(profilePictureProvider.notifier).state);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TeamSetUpScreen()),
+                      );
+                    } else {
+                      if (userRole == UserRole.physio) {
+                        int userId = ref.watch(userIdProvider.notifier).state;
+                        Profile physio = await getPhysioProfile(userId);
+
+                        await updatePhysioProfile(
+                            userId,
+                            ProfileName(physio.firstName, physio.surname),
+                            _phoneController.text,
+                            ref.read(profilePictureProvider.notifier).state);
+                      } else if (userRole == UserRole.coach) {
+                        int userId = ref.watch(userIdProvider.notifier).state;
+                        Profile coach = await getCoachProfile(userId);
+
+                        await updateCoachProfile(
+                            userId,
+                            ProfileName(coach.firstName, coach.surname),
+                            _phoneController.text,
+                            ref.read(profilePictureProvider.notifier).state);
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    }
+                  }
+                })
+              ],
             ),
-            const SizedBox(height: 20),
-            Center(
-                child: Column(children: [
-              profilePicture != null
-                  ? Image.memory(
-                      profilePicture,
-                      width: 100,
-                    )
-                  : Image.asset(
-                      "lib/assets/icons/profile_placeholder.png",
-                      width: 100,
-                    ),
-              const SizedBox(height: 10),
-              underlineButtonTransparent("Upload picture", () {
-                pickImage();
-              }),
-            ])),
-            const SizedBox(height: 20),
-            formFieldBottomBorderController("Phone", _phoneController),
-            const SizedBox(height: 50),
-            bigButton("Save Changes", () async {
-              if (userRole == UserRole.manager) {
-                int userId = ref.watch(userIdProvider.notifier).state;
-                Profile manager = await getManagerProfile(userId);
-
-                await updateManagerProfile(
-                    userId,
-                    ProfileName(manager.firstName, manager.surname),
-                    _phoneController.text,
-                    ref.read(profilePictureProvider.notifier).state);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TeamSetUpScreen()),
-                );
-              } else {
-                if (userRole == UserRole.physio) {
-                  int userId = ref.watch(userIdProvider.notifier).state;
-                  Profile physio = await getPhysioProfile(userId);
-
-                  await updatePhysioProfile(
-                      userId,
-                      ProfileName(physio.firstName, physio.surname),
-                      _phoneController.text,
-                      ref.read(profilePictureProvider.notifier).state);
-                } else if (userRole == UserRole.coach) {
-                  int userId = ref.watch(userIdProvider.notifier).state;
-                  Profile coach = await getCoachProfile(userId);
-
-                  await updateCoachProfile(
-                      userId,
-                      ProfileName(coach.firstName, coach.surname),
-                      _phoneController.text,
-                      ref.read(profilePictureProvider.notifier).state);
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              }
-            })
-          ],
-        ),
-      )),
+          )),
     );
   }
 }

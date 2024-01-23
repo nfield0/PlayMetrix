@@ -283,7 +283,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             String second_name = player.player_surname;
                             DateTime dob = player.player_dob;
                             String height = player.player_height;
-                            String gender = player.player_height;
+                            String gender = player.player_gender;
                             Uint8List? profilePicture = player.player_image;
 
                             String formattedDate =
@@ -295,7 +295,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                                 7,
                                 formattedDate,
                                 height,
-                                selectedGender,
+                                gender,
                                 limited,
                                 profilePicture);
                           } else {
@@ -350,7 +350,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                         ref.read(userIdProvider.notifier).state = 0;
                         ref.read(profilePictureProvider.notifier).state = null;
                         ref.read(dobProvider.notifier).state = DateTime.now();
-                        ref.read(genderProvider.notifier).state = "";
+                        ref.read(genderProvider.notifier).state = "Male";
                         Navigator.push(
                           context,
                           MaterialPageRoute(
