@@ -4,17 +4,23 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:typed_data';
 
 class TeamData {
   final int team_id;
   final String team_name;
-  final Image team_logo;
-  final String manager_id;
+  final Uint8List? team_logo;
+  final int manager_id;
   final int league_id;
   final int sport_id;
   final String team_location;
@@ -42,7 +48,7 @@ class TeamData {
   }
 }
 
-Future<TeamData> getTeamById(String id) async {
+Future<TeamData> getTeamById(int id) async {
   final apiUrl = 'http://127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
@@ -55,8 +61,7 @@ Future<TeamData> getTeamById(String id) async {
 
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final teamData = TeamData.fromJson(responseData);
+      TeamData teamData = TeamData.fromJson(jsonDecode(response.body));
 
       // Access individual variables
       print('${teamData.team_id}');
@@ -81,14 +86,16 @@ Future<TeamData> getTeamById(String id) async {
 }
 
 class ManagerData {
-  final int manager_id;
+  final String manager_email;
+  final String manager_password;
   final String manager_firstname;
-  final Image manager_surname;
+  final String manager_surname;
   final String manager_contact_number;
-  final int manager_image;
+  final Uint8List? manager_image;
 
   ManagerData({
-    required this.manager_id,
+    required this.manager_email,
+    required this.manager_password,
     required this.manager_firstname,
     required this.manager_surname,
     required this.manager_contact_number,
@@ -97,7 +104,8 @@ class ManagerData {
 
   factory ManagerData.fromJson(Map<String, dynamic> json) {
     return ManagerData(
-      manager_id: json['manager_id'],
+      manager_email: json['manager_email'],
+      manager_password: json['manager_password'],
       manager_firstname: json['manager_firstname'],
       manager_surname: json['manager_surname'],
       manager_contact_number: json['manager_contact_number'],
@@ -106,7 +114,7 @@ class ManagerData {
   }
 }
 
-Future<ManagerData> getManagerById(String managerID) async {
+Future<ManagerData> getManagerById(int managerID) async {
   final apiUrl = 'http://127.0.0.1:8000/teams/info/$managerID'; // Replace with your actual backend URL and provide the user ID
 
   try {
@@ -119,15 +127,9 @@ Future<ManagerData> getManagerById(String managerID) async {
 
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final managerData = ManagerData.fromJson(responseData);
+      ManagerData managerData = ManagerData.fromJson(jsonDecode(response.body));
 
-      // Access individual variables
-      print('${managerData.manager_id}');
-      print('${managerData.manager_firstname}');
-      print('${managerData.manager_surname}');
-      print('${managerData.manager_contact_number}');
-      print('${managerData.manager_image}');
+      
       return managerData;
     } else {
       // Failed to retrieve data, handle the error accordingly
@@ -142,20 +144,27 @@ Future<ManagerData> getManagerById(String managerID) async {
   }
 }
 
-class TeamProfileScreen extends StatefulWidget {
-  const TeamProfileScreen({Key? key}) : super(key: key);
+// class TeamProfileScreen extends ConsumerWidget {
+//   const TeamProfileScreen({Key? key}) : super(key: key);
+
+//   @override
+//   _TeamProfileScreenState createState() => _TeamProfileScreenState();
+
+// }
+
+final managerIdProvider = StateProvider<int>((ref) => 0);
+
+class TeamProfileScreen extends ConsumerWidget {
 
   @override
-  _TeamProfileScreenState createState() => _TeamProfileScreenState();
-}
-
-class _TeamProfileScreenState extends State<TeamProfileScreen> {
-  late TeamData teamData;
-  late String managerID = teamData.manager_id.toString();
-  late ManagerData managerData;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(userRoleProvider.notifier).state;
+    final userId = ref.watch(userIdProvider.notifier).state;
+    final teamId = ref.watch(teamIdProvider.notifier).state;
+    final managerId = ref.watch(managerIdProvider.notifier).state;
+    final division = ref.watch(divisionProvider.notifier).state;
+    Uint8List? profilePicture = ref.watch(profilePictureProvider);
+    
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -185,15 +194,36 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
               child: Center(
                 child: Column(
                   children: [
-                    Text(
-                      teamData.team_name,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFonts.gabarito,
-                        fontSize: 32,
-                      ),
-                    ),
+                     FutureBuilder<TeamData>(
+                        future: getTeamById(teamId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // Display a loading indicator while the data is being fetched
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            // Display an error message if the data fetching fails
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            // Data has been successfully fetched, use it here
+                            TeamData team = snapshot.data!;
+                            String teamName = team.team_name;
+                            int managerId = team.manager_id;
+                            ref.read(managerIdProvider.notifier).state = managerId;
+                            return Text(
+                                        teamName,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: AppFonts.gabarito,
+                                          fontSize: 32,
+                                        ),
+                                      );
+                          } else {
+                            return Text('No data available');
+                          }
+                        }),
+                
                     const SizedBox(height: 50),
                     Image.asset(
                       'lib/assets/icons/logo_placeholder.png',
@@ -231,8 +261,30 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    profilePill(managerData.manager_firstname, managerData.manager_contact_number,
-                        "lib/assets/icons/profile_placeholder.png", () {}),
+                    FutureBuilder<ManagerData>(
+                        future: getManagerById(managerId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // Display a loading indicator while the data is being fetched
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            // Display an error message if the data fetching fails
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            // Data has been successfully fetched, use it here
+                            ManagerData manager = snapshot.data!;
+                            String manager_firstname = manager.manager_firstname;
+                            String manager_contact_number = manager.manager_contact_number;
+
+                            ref.read(managerIdProvider.notifier).state = managerId;
+                            return profilePill(manager_firstname, manager_contact_number,
+                        "lib/assets/icons/profile_placeholder.png", () {});
+                          } else {
+                            return Text('No data available');
+                          }
+                        }),
+                   
                     const SizedBox(height: 20),
                     divider(),
                     Padding(
@@ -292,6 +344,7 @@ class _TeamProfileScreenState extends State<TeamProfileScreen> {
                     const SizedBox(height: 20),
                     emptySection(Icons.person_off, "No coaches added yet"),
                     const SizedBox(height: 50),
+                    
                   ],
                 ),
               ))),

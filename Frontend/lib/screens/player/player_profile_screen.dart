@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +13,6 @@ import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -228,6 +227,7 @@ class PlayerProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
     final userId = ref.watch(userIdProvider.notifier).state;
+    String selectedGender = ref.watch(genderProvider);
 
     //leagueName = getTeamLeagueName(teamData.league_id.toString());
 
@@ -284,7 +284,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             String height = player.player_height;
                             String gender = player.player_height;
                             return _playerProfile(first_name, second_name, 7,
-                                dob.toString(), height, gender, limited);
+                                dob.toString(), height, selectedGender, limited);
                           } else {
                             return Text('No data available');
                           }

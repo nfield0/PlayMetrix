@@ -212,6 +212,35 @@ Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
   }
 }
 
+Future<Profile> getPlayerProfile(int id) async {
+  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+      final parsed = jsonDecode(response.body);
+
+      return Profile(
+          parsed['player_firstname'],
+          parsed['player_surname'],
+          parsed['player_contact_number'],
+          parsed['player_height'],
+          base64Decode((parsed['player_image'])));
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  return Profile("", "", "", "", null);
+}
+
+
 class ProfileSetUpScreen extends ConsumerWidget {
   final TextEditingController _phoneController = TextEditingController();
 

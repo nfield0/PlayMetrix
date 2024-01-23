@@ -21,7 +21,7 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
     return await getPhysioProfile(userId);
   } else if (userRole == UserRole.coach) {
     return await getCoachProfile(userId);
-  }
+  } 
 
   return Profile(
       "firstName", "surname", "contactNumber", "email", Uint8List(0));
@@ -35,7 +35,7 @@ class ProfileScreen extends ConsumerWidget {
     final userId = ref.watch(userIdProvider.notifier).state;
 
     return FutureBuilder<Profile>(
-        future: getProfileDetails(4, UserRole.coach),
+        future: getProfileDetails(userId, userRole),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();

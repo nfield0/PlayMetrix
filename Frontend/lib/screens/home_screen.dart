@@ -9,6 +9,7 @@ import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -91,25 +92,39 @@ Future<PlayerData> getPlayerById(int id) async {
   throw Exception('Failed to retrieve player data');
 }
 
+Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
+  if (userRole == UserRole.manager) {
+    return await getManagerProfile(userId);
+  } else if (userRole == UserRole.physio) {
+    return await getPhysioProfile(userId);
+  } else if (userRole == UserRole.coach) {
+    return await getCoachProfile(userId);
+  }else if(userRole == UserRole.player) {
+    return await getPlayerProfile(userId);
+  } 
+
+  return Profile(
+      "firstName", "surname", "contactNumber", "email", Uint8List(0));
+}
+
 class HomeScreen extends ConsumerWidget {
   int selectedMenuIndex = 0;
-  late PlayerData player;
-
+  late Profile profile;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
     final userId = ref.watch(userIdProvider.notifier).state;
 
-    return FutureBuilder<PlayerData>(
-        future: getPlayerById(userId),
+    return FutureBuilder<Profile>(
+        future: getProfileDetails(userId, userRole),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            player = snapshot.data!;
-            String name = player.player_firstname;
+            profile = snapshot.data!;
+            
 
             return Scaffold(
               appBar: AppBar(
@@ -157,7 +172,7 @@ class HomeScreen extends ConsumerWidget {
                         ]),
                     const SizedBox(height: 40),
                     Text(
-                      "Hey, $name!",
+                      "Hey, ${profile.firstName}!",
                       style: TextStyle(
                         fontFamily: AppFonts.gabarito,
                         color: AppColours.darkBlue,
