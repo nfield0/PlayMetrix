@@ -108,8 +108,12 @@ Future<Profile> getPhysioProfile(int id) async {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
-      return Profile(parsed['physio_firstname'], parsed['physio_surname'],
-          parsed['physio_contact_number'], parsed['physio_email'], null);
+      return Profile(
+          parsed['physio_firstname'],
+          parsed['physio_surname'],
+          parsed['physio_contact_number'],
+          parsed['physio_email'],
+          base64Decode((parsed['physio_image'])));
     } else {
       print('Error message: ${response.body}');
     }
