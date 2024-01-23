@@ -283,8 +283,20 @@ class PlayerProfileScreen extends ConsumerWidget {
                             DateTime dob = player.player_dob;
                             String height = player.player_height;
                             String gender = player.player_height;
-                            return _playerProfile(first_name, second_name, 7,
-                                dob.toString(), height, selectedGender, limited);
+                            Uint8List? profilePicture = player.player_image;
+
+                            String formattedDate =
+                                "${dob.toLocal()}".split(' ')[0];
+
+                            return _playerProfile(
+                                first_name,
+                                second_name,
+                                7,
+                                formattedDate,
+                                height,
+                                selectedGender,
+                                limited,
+                                profilePicture);
                           } else {
                             return Text('No data available');
                           }
@@ -348,8 +360,15 @@ class PlayerProfileScreen extends ConsumerWidget {
   }
 }
 
-Widget _playerProfile(String firstName, String surname, int playerNumber,
-    String dob, String height, String gender, AvailabilityData availability) {
+Widget _playerProfile(
+    String firstName,
+    String surname,
+    int playerNumber,
+    String dob,
+    String height,
+    String gender,
+    AvailabilityData availability,
+    Uint8List? profilePicture) {
   return Container(
     alignment: Alignment.center,
     padding: const EdgeInsets.all(20),
@@ -377,8 +396,6 @@ Widget _playerProfile(String firstName, String surname, int playerNumber,
           )),
       const SizedBox(height: 25),
       Container(
-        child:
-            Image.asset("lib/assets/icons/profile_placeholder.png", width: 150),
         decoration: BoxDecoration(
           border: Border.all(
             color: availability.color, // Set the border color
@@ -386,6 +403,15 @@ Widget _playerProfile(String firstName, String surname, int playerNumber,
           ),
           borderRadius: BorderRadius.circular(20), // Set the border radius
         ),
+        child: profilePicture != null
+            ? Image.memory(
+                profilePicture,
+                width: 150,
+              )
+            : Image.asset(
+                "lib/assets/icons/profile_placeholder.png",
+                width: 150,
+              ),
       ),
       const SizedBox(height: 20),
       Text(firstName,

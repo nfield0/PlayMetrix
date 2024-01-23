@@ -16,7 +16,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 final dobProvider = StateProvider<DateTime>((ref) => DateTime.now());
-final genderProvider = StateProvider<String>((ref) => "Man");
+final genderProvider = StateProvider<String>((ref) => "Male");
 
 class TeamPlayerData {
   final int team_id;
@@ -215,7 +215,6 @@ Future<void> updatePlayerProfile(
 }
 
 class PlayerProfileSetUpScreen extends ConsumerWidget {
-  final TextEditingController _numberController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
@@ -297,14 +296,12 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                               ref.read(dobProvider.notifier).state = value;
                             }),
                             formFieldBottomBorderController(
-                                "Number", _numberController),
-                            formFieldBottomBorderController(
                                 "Height", _heightController),
                             formFieldBottomBorderController(
                                 "Phone", _phoneController),
                             const SizedBox(height: 5),
                             dropdownWithDivider("Gender", selectedGender,
-                                ["Man", "Woman", "Others"], (value) {
+                                ["Male", "Female", "Others"], (value) {
                               ref.read(genderProvider.notifier).state = value!;
                             }),
                             const SizedBox(height: 50),
@@ -321,11 +318,6 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                                   ref
                                       .read(profilePictureProvider.notifier)
                                       .state);
-
-                              TeamPlayerData teamPlayer =
-                                  await getTeamPlayerData(teamId, playerId);
-                              await updateTeamPlayer(teamPlayer,
-                                  int.parse(_numberController.text));
 
                               Navigator.push(
                                   context,
