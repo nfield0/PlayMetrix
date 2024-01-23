@@ -240,7 +240,6 @@ Future<Profile> getPlayerProfile(int id) async {
   return Profile("", "", "", "", null);
 }
 
-
 class ProfileSetUpScreen extends ConsumerWidget {
   final TextEditingController _phoneController = TextEditingController();
 

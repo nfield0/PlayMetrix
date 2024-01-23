@@ -9,6 +9,7 @@ import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -347,6 +348,9 @@ class PlayerProfileScreen extends ConsumerWidget {
                         ref.read(userRoleProvider.notifier).state =
                             UserRole.manager;
                         ref.read(userIdProvider.notifier).state = 0;
+                        ref.read(profilePictureProvider.notifier).state = null;
+                        ref.read(dobProvider.notifier).state = DateTime.now();
+                        ref.read(genderProvider.notifier).state = "";
                         Navigator.push(
                           context,
                           MaterialPageRoute(

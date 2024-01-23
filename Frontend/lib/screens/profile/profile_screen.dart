@@ -7,6 +7,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/profile/edit_profile.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -21,7 +22,7 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
     return await getPhysioProfile(userId);
   } else if (userRole == UserRole.coach) {
     return await getCoachProfile(userId);
-  } 
+  }
 
   return Profile(
       "firstName", "surname", "contactNumber", "email", Uint8List(0));
@@ -137,6 +138,12 @@ class ProfileScreen extends ConsumerWidget {
                                 ref.read(userRoleProvider.notifier).state =
                                     UserRole.manager;
                                 ref.read(userIdProvider.notifier).state = 0;
+                                ref
+                                    .read(profilePictureProvider.notifier)
+                                    .state = null;
+                                ref.read(dobProvider.notifier).state =
+                                    DateTime.now();
+                                ref.read(genderProvider.notifier).state = "";
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
