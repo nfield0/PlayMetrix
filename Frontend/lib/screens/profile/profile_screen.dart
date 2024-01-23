@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -98,7 +99,8 @@ class ProfileScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              profile.imageBytes != null
+                              profile.imageBytes != null &&
+                                      profile.imageBytes!.isNotEmpty
                                   ? Image.memory(
                                       profile.imageBytes!,
                                       width: 150,
