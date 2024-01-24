@@ -70,7 +70,7 @@ def read_root():
 
 @app.post("/users")
 def get_user_by_email(user: UserType, db:Session = Depends(get_db)):
-    return crud.get_user_by_email(db, user)
+    return crud.get_user_by_type(db, user)
 
 @app.post("/register_player")
 def register_player(user: PlayerCreate, db: Session = Depends(get_db)):
