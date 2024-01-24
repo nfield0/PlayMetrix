@@ -15,7 +15,7 @@ Future<void> updateInjury({
   required String recovery_method,
 }) async {
   final apiUrl =
-      'http://127.0.0.1:8000/injuries/$injuryId/'; // Replace with your actual backend URL
+      '$apiBaseUrl/injuries/$injuryId/'; // Replace with your actual backend URL
 
   try {
     final response = await http.put(

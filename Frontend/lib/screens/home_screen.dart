@@ -55,7 +55,7 @@ class PlayerData {
 Future<PlayerData> getPlayerById(int id) async {
   print('Player ID in home page: $id');
   final apiUrl =
-      'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
+      '$apiBaseUrl/players/info/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
@@ -99,9 +99,9 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
     return await getPhysioProfile(userId);
   } else if (userRole == UserRole.coach) {
     return await getCoachProfile(userId);
-  }else if(userRole == UserRole.player) {
+  } else if (userRole == UserRole.player) {
     return await getPlayerProfile(userId);
-  } 
+  }
 
   return Profile(
       "firstName", "surname", "contactNumber", "email", Uint8List(0));
@@ -124,7 +124,6 @@ class HomeScreen extends ConsumerWidget {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             profile = snapshot.data!;
-            
 
             return Scaffold(
               appBar: AppBar(

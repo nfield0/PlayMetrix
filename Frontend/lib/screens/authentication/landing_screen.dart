@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
-import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LandingScreen extends ConsumerWidget {
@@ -13,15 +10,14 @@ class LandingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // int userId = ref.watch(userIdProvider);
+    // String selectedGender = ref.watch(genderProvider);
+    // int teamId = ref.watch(teamIdProvider);
 
-    int userId = ref.watch(userIdProvider);
-    String selectedGender = ref.watch(genderProvider);
-    int teamId = ref.watch(teamIdProvider);
+    // userId = 0;
+    // selectedGender = "";
+    // teamId = 0;
 
-    userId = 0;
-    selectedGender = "";
-    teamId = 0;
-    
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(

@@ -18,9 +18,8 @@ import 'package:image_picker/image_picker.dart';
 
 final teamIdProvider = StateProvider<int>((ref) => 0);
 
-
 Future<List<TeamData>> getAllTeams() async {
-  final apiUrl = 'http://127.0.0.1:8000/teams';
+  final apiUrl = '$apiBaseUrl/teams';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -56,7 +55,6 @@ Future<List<TeamData>> getAllTeams() async {
   }
 }
 
-
 enum TeamRole { defense, attack, midfield, goalkeeper, headCoach }
 
 String teamRoleToText(TeamRole role) {
@@ -75,7 +73,7 @@ String teamRoleToText(TeamRole role) {
 }
 
 Future<List<LeagueData>> getAllLeagues() async {
-  final apiUrl = 'http://127.0.0.1:8000/leagues/';
+  final apiUrl = '$apiBaseUrl/leagues/';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -127,8 +125,7 @@ class AddTeamData {
 
 Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     int sportId, int leagueId, String teamLocation) async {
-  final apiUrl =
-      'http://127.0.0.1:8000/teams/'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl = '$apiBaseUrl/teams/';
 
   try {
     final response = await http.post(

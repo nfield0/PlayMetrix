@@ -11,7 +11,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<String> loginUser(String email, String password, String userType) async {
-  final apiUrl = 'http://127.0.0.1:8000/login';
+  final apiUrl = '$apiBaseUrl/login';
 
   try {
     final response = await http.post(

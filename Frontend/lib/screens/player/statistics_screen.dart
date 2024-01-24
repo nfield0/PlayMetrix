@@ -23,7 +23,7 @@ class StatisticsData {
 }
 
 Future<StatisticsData> getStatisticsData(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/stats/$id';
+  final apiUrl = '$apiBaseUrl/players/stats/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{

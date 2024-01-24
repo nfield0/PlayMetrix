@@ -18,7 +18,7 @@ import 'package:http/http.dart' as http;
 final positionProvider = StateProvider<String>((ref) => "Defense");
 
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition) async {
-  final apiUrl = 'http://127.0.0.1:8000/team_player';
+  final apiUrl = '$apiBaseUrl/team_player';
   print(teamId);
   print(userId);
   try {
@@ -52,7 +52,7 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition) async {
 }
 
 Future<void> addTeamPhysio(int teamId, int userId) async {
-  final apiUrl = 'http://127.0.0.1:8000/team_physio';
+  final apiUrl = '$apiBaseUrl/team_physio';
 
   try {
     final response = await http.post(
@@ -78,7 +78,7 @@ Future<void> addTeamPhysio(int teamId, int userId) async {
 }
 
 Future<void> addTeamCoach(int teamId, int userId, String role) async {
-  final apiUrl = 'http://127.0.0.1:8000/team_coach';
+  final apiUrl = '$apiBaseUrl/team_coach';
   try {
     final response = await http.post(
       Uri.parse(apiUrl),

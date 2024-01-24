@@ -37,7 +37,7 @@ class Profile {
 }
 
 Future<Profile> getManagerProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/managers/$id';
+  final apiUrl = '$apiBaseUrl/managers/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -66,7 +66,7 @@ Future<Profile> getManagerProfile(int id) async {
 
 Future<void> updateManagerProfile(int id, ProfileName name,
     String contactNumber, Uint8List? imageBytes) async {
-  final apiUrl = 'http://127.0.0.1:8000/managers/info/$id';
+  final apiUrl = '$apiBaseUrl/managers/info/$id';
 
   try {
     final response = await http.put(
@@ -97,7 +97,7 @@ Future<void> updateManagerProfile(int id, ProfileName name,
 }
 
 Future<Profile> getPhysioProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/physio/info/$id';
+  final apiUrl = '$apiBaseUrl/physio/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -126,7 +126,7 @@ Future<Profile> getPhysioProfile(int id) async {
 
 Future<void> updatePhysioProfile(int id, ProfileName name, String contactNumber,
     Uint8List? imageBytes) async {
-  final apiUrl = 'http://127.0.0.1:8000/physio/info/$id';
+  final apiUrl = '$apiBaseUrl/physio/info/$id';
 
   try {
     final response = await http.put(
@@ -157,7 +157,7 @@ Future<void> updatePhysioProfile(int id, ProfileName name, String contactNumber,
 }
 
 Future<Profile> getCoachProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/coaches/info/$id';
+  final apiUrl = '$apiBaseUrl/coaches/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -186,7 +186,7 @@ Future<Profile> getCoachProfile(int id) async {
 
 Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
     Uint8List? imageBytes) async {
-  final apiUrl = 'http://127.0.0.1:8000/coaches/info/$id';
+  final apiUrl = '$apiBaseUrl/coaches/info/$id';
 
   try {
     final response = await http.put(
@@ -217,7 +217,7 @@ Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
 }
 
 Future<Profile> getPlayerProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  final apiUrl = '$apiBaseUrl/players/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{

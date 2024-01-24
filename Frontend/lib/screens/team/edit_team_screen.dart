@@ -17,7 +17,7 @@ Future<void> editTeam({
   required String teamLocation,
 }) async {
   final apiUrl =
-      'http://127.0.0.1:8000/login/teams/'; // Replace with your actual API URL
+      '$apiBaseUrl/login/teams/'; // Replace with your actual API URL
 
   try {
     final response = await http.put(

@@ -17,7 +17,7 @@ import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 Future<PlayerData> getPlayerProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  final apiUrl = '$apiBaseUrl/players/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -79,7 +79,7 @@ Future<void> updatePlayerProfile(
     String height,
     String gender,
     Uint8List? image) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  final apiUrl = '$apiBaseUrl/players/info/$id';
 
   try {
     final response = await http.put(

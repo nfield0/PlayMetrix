@@ -15,7 +15,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<List<PlayerData>> getAllPlayers() async {
-  final apiUrl = 'http:/127.0.0.1:8000/players/'; // URL for getting all players
+  final apiUrl = '$apiBaseUrl/players/'; // URL for getting all players
 
   try {
     final response = await http.get(

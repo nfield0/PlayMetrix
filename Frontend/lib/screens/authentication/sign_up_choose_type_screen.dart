@@ -46,7 +46,7 @@ Future<String> registerUser({
 }) async {
   if (userType == "manager") {
     final apiUrl =
-        'http://127.0.0.1:8000/register_manager'; // Replace with your actual backend URL
+        '$apiBaseUrl/register_manager'; // Replace with your actual backend URL
 
     try {
       final response = await http.post(
@@ -82,7 +82,7 @@ Future<String> registerUser({
   }
   if (userType == "player") {
     final apiUrl =
-        'http://127.0.0.1:8000/register_player'; // Replace with your actual backend URL
+        '$apiBaseUrl/register_player'; // Replace with your actual backend URL
 
     try {
       final response = await http.post(
@@ -122,7 +122,7 @@ Future<String> registerUser({
 
   if (userType == "coach") {
     final apiUrl =
-        'http://127.0.0.1:8000/register_coach'; // Replace with your actual backend URL
+        '$apiBaseUrl/register_coach'; // Replace with your actual backend URL
 
     try {
       final response = await http.post(
@@ -159,7 +159,7 @@ Future<String> registerUser({
 
   if (userType == "physio") {
     final apiUrl =
-        'http://127.0.0.1:8000/register_physio'; // Replace with your actual backend URL
+        '$apiBaseUrl/register_physio'; // Replace with your actual backend URL
 
     try {
       final response = await http.post(

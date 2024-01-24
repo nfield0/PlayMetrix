@@ -18,7 +18,7 @@ final availabilityProvider =
 
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
     int number, AvailabilityData playingStatus) async {
-  final apiUrl = 'http://127.0.0.1:8000/team_player';
+  final apiUrl = '$apiBaseUrl/team_player';
 
   try {
     final response = await http.post(

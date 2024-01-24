@@ -37,7 +37,7 @@ class TeamPlayerData {
 }
 
 Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
-  final apiUrl = 'http://127.0.0.1:8000/team_player/$teamId';
+  final apiUrl = '$apiBaseUrl/team_player/$teamId';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -87,7 +87,7 @@ Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
 }
 
 Future<void> updateTeamPlayer(TeamPlayerData teamPlayer, int number) async {
-  final apiUrl = 'http://127.0.0.1:8000/team_player';
+  final apiUrl = '$apiBaseUrl/team_player';
 
   try {
     final response = await http.put(
@@ -119,7 +119,7 @@ Future<void> updateTeamPlayer(TeamPlayerData teamPlayer, int number) async {
 }
 
 Future<PlayerData> getPlayerProfile(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  final apiUrl = '$apiBaseUrl/players/info/$id';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -181,7 +181,7 @@ Future<void> updatePlayerProfile(
     String height,
     String gender,
     Uint8List? image) async {
-  final apiUrl = 'http://127.0.0.1:8000/players/info/$id';
+  final apiUrl = '$apiBaseUrl/players/info/$id';
 
   try {
     final response = await http.put(
