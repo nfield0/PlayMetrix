@@ -1,26 +1,64 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class AddPlayerScreen extends StatefulWidget {
-  const AddPlayerScreen({Key? key}) : super(key: key);
+final positionProvider =
+    StateProvider<String>((ref) => teamRoleToText(TeamRole.defense));
+final availabilityProvider =
+    StateProvider<AvailabilityData>((ref) => availabilityData[0]);
 
-  @override
-  _AddPlayerScreenState createState() => _AddPlayerScreenState();
+Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
+    int number, AvailabilityData playingStatus) async {
+  final apiUrl = 'http://127.0.0.1:8000/team_player';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "team_id": teamId,
+        "player_id": userId,
+        "team_position": teamPosition,
+        "player_team_number": 0,
+        "playing_status": playingStatus.message,
+        "lineup_status": ""
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully added data to the backend
+      print("Successfully added player to team");
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to add data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
 }
 
-class _AddPlayerScreenState extends State<AddPlayerScreen> {
+class AddPlayerScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _numberController = TextEditingController();
-  final TextEditingController _positionController = TextEditingController();
-  
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    String selectedRole = ref.watch(positionProvider);
+    AvailabilityData selectedStatus = ref.watch(availabilityProvider);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Players"),
@@ -31,7 +69,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: Container(
-            padding: EdgeInsets.all(40),
+            padding: const EdgeInsets.all(35),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('Add Player to Team',
@@ -93,6 +131,57 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                               : null;
                         },
                       ),
+                      const SizedBox(height: 10),
+                      formFieldBottomBorderController(
+                          "Number",
+                          _numberController,
+                          (value) => (value != null &&
+                                  !RegExp(r'^[1-9]|[1-9]\d|99$')
+                                      .hasMatch(value))
+                              ? 'Number must be from 1-99.'
+                              : null),
+                      const SizedBox(height: 10),
+                      dropdownWithDivider("Position", selectedRole, [
+                        teamRoleToText(TeamRole.defense),
+                        teamRoleToText(TeamRole.attack),
+                        teamRoleToText(TeamRole.midfield),
+                        teamRoleToText(TeamRole.goalkeeper),
+                      ], (value) {
+                        ref.read(positionProvider.notifier).state = value!;
+                      }),
+                      const SizedBox(height: 10),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Playing Status",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            DropdownButton<AvailabilityData>(
+                              value: selectedStatus,
+                              items:
+                                  availabilityData.map((AvailabilityData item) {
+                                return DropdownMenuItem<AvailabilityData>(
+                                  value: item,
+                                  child: Row(
+                                    children: [
+                                      Icon(item.icon, color: item.color),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        item.message,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                ref.read(availabilityProvider.notifier).state =
+                                    value!;
+                              },
+                            ),
+                          ]),
                       const SizedBox(height: 40),
                       bigButton("Add Player", () {
                         if (_formKey.currentState!.validate()) {}

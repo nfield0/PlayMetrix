@@ -139,6 +139,15 @@ class AvailabilityData {
   AvailabilityData(this.status, this.message, this.icon, this.color);
 }
 
+final List<AvailabilityData> availabilityData = [
+  AvailabilityData(AvailabilityStatus.Available, "Available",
+      Icons.check_circle, AppColours.green),
+  AvailabilityData(
+      AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow),
+  AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable", Icons.cancel,
+      AppColours.red)
+];
+
 class PlayerProfileScreen extends ConsumerWidget {
   late PlayerData player;
   late Future<String?> leagueName;

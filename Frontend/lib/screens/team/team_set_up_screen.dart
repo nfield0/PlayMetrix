@@ -16,6 +16,64 @@ import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 
+final teamIdProvider = StateProvider<int>((ref) => 0);
+
+
+Future<List<TeamData>> getAllTeams() async {
+  final apiUrl = 'http://127.0.0.1:8000/teams';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data from the backend
+      final List<dynamic> data = jsonDecode(response.body);
+
+      // Convert List<dynamic> to List<Map<String, dynamic>>
+      final List<Map<String, dynamic>> teamJsonList =
+          List<Map<String, dynamic>>.from(data);
+
+      final List<TeamData> teams =
+          teamJsonList.map((json) => TeamData.fromJson(json)).toList();
+
+      for (var team in teams) {
+        print('Team Name: ${team.team_name}');
+      }
+
+      return teams;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to get data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to load teams');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to load teams');
+  }
+}
+
+
+enum TeamRole { defense, attack, midfield, goalkeeper, headCoach }
+
+String teamRoleToText(TeamRole role) {
+  switch (role) {
+    case TeamRole.defense:
+      return 'Defense';
+    case TeamRole.attack:
+      return 'Attack';
+    case TeamRole.midfield:
+      return 'Midfield';
+    case TeamRole.goalkeeper:
+      return 'Goalkeeper';
+    case TeamRole.headCoach:
+      return 'Head Coach';
+  }
+}
+
 Future<List<LeagueData>> getAllLeagues() async {
   final apiUrl = 'http://127.0.0.1:8000/leagues/';
   try {

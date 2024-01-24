@@ -123,7 +123,7 @@ class PlayersScreen extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const AddPlayerScreen()),
+                                builder: (context) => AddPlayerScreen()),
                           );
                         })
                     ],
