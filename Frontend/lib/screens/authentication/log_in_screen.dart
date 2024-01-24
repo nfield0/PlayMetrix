@@ -10,7 +10,8 @@ import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<String> loginUser(String email, String password, String userType) async {
+Future<String> loginUser(BuildContext context, String email, String password,
+    String userType) async {
   final apiUrl = '$apiBaseUrl/login';
 
   try {
@@ -32,8 +33,49 @@ Future<String> loginUser(String email, String password, String userType) async {
       // Successfully logged in, handle the response accordingly
       print('Login successful!');
       print('Response: ${response.body}');
-      return response.body;
-      // You can parse the response JSON here and perform actions based on it
+
+      if (response.body.toLowerCase().contains("error")) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Login Error'),
+              content: Text("User with that email doesn't exist."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        if (!jsonDecode(response.body)['user_password']) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Login Error'),
+                content: Text('Wrong password. Please try again.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          return "";
+        }
+
+        return response.body;
+      }
     } else {
       // Failed to log in, handle the error accordingly
       print('Failed to log in. Status code: ${response.statusCode}');
@@ -195,28 +237,36 @@ class LogInScreen extends ConsumerWidget {
                     if (_formKey.currentState!.validate()) {
                       // Only execute if all fields are valid
                       // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE LOGIN FUNCTION AND HOW TO GET THE USER TYPE
-                      String response = await loginUser(_emailController.text,
-                          _passwordController.text, _formKey.toString());
-                      if (const JsonDecoder()
-                              .convert(response)['user_password'] !=
-                          false) {
-                        int userId =
-                            const JsonDecoder().convert(response)['user_id'];
-                        ref.read(userIdProvider.notifier).state = userId;
-
-                        UserRole userRole = stringToUserRole(
-                            const JsonDecoder().convert(response)['user_type']);
-                        ref.read(userRoleProvider.notifier).state = userRole;
-
-                        if (userRole == UserRole.manager) {
-                          int teamId = await getTeamByManagerId(userId);
-                          ref.read(teamIdProvider.notifier).state = teamId;
-                        }
-
-                        Navigator.push(
+                      String response = await loginUser(
                           context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                        );
+                          _emailController.text,
+                          _passwordController.text,
+                          _formKey.toString());
+
+                      if (response != "") {
+                        if (const JsonDecoder()
+                                .convert(response)['user_password'] !=
+                            false) {
+                          int userId =
+                              const JsonDecoder().convert(response)['user_id'];
+                          ref.read(userIdProvider.notifier).state = userId;
+
+                          UserRole userRole = stringToUserRole(
+                              const JsonDecoder()
+                                  .convert(response)['user_type']);
+                          ref.read(userRoleProvider.notifier).state = userRole;
+
+                          if (userRole == UserRole.manager) {
+                            int teamId = await getTeamByManagerId(userId);
+                            ref.read(teamIdProvider.notifier).state = teamId;
+                          }
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                          );
+                        }
                       }
                     }
                   })),

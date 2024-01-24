@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
@@ -10,12 +11,6 @@ import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'sign_up_screen.dart';
-
-String firstName2 = firstName;
-String surname2 = surname;
-String email2 = email;
-String password2 = password;
 
 // create a fucntion to check the user type and then send the data to the backend
 String checkUserType(String userType) {
@@ -327,10 +322,12 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                             ref.read(userRoleProvider.notifier).state;
                         String response = await registerUser(
                             userType: userRoleText(userRole).toLowerCase(),
-                            firstName: firstName2,
-                            surname: surname2,
-                            email: email2,
-                            password: password2);
+                            firstName:
+                                ref.read(firstNameProvider.notifier).state,
+                            surname: ref.read(surnameProvider.notifier).state,
+                            email: ref.read(emailProvider.notifier).state,
+                            password:
+                                ref.read(passwordProvider.notifier).state);
 
                         String idType = "";
                         if (userRole == UserRole.manager) {
@@ -375,6 +372,11 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                             );
                           }
                         }
+
+                        ref.read(firstNameProvider.notifier).state = "";
+                        ref.read(surnameProvider.notifier).state = "";
+                        ref.read(emailProvider.notifier).state = "";
+                        ref.read(passwordProvider.notifier).state = "";
                       }),
                     ),
                   ],
