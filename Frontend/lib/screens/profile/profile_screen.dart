@@ -12,6 +12,7 @@ import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/profile/edit_profile.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -112,15 +113,33 @@ class ProfileScreen extends ConsumerWidget {
                               const SizedBox(height: 20),
                               smallPill(userRoleText(userRole)),
                               const SizedBox(height: 40),
-                              profilePill("Louth GAA", "Senior Football",
-                                  "lib/assets/icons/logo_placeholder.png", () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          TeamProfileScreen()),
-                                );
-                              }),
+                              FutureBuilder(
+                                  future: getTeamById(
+                                      ref.read(teamIdProvider.notifier).state),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (snapshot.hasData) {
+                                      TeamData team = snapshot.data!;
+                                      return profilePill(
+                                          team.team_name,
+                                          team.team_location,
+                                          "lib/assets/icons/logo_placeholder.png",
+                                          team.team_logo, () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TeamProfileScreen()),
+                                        );
+                                      });
+                                    } else {
+                                      return Text('No data available');
+                                    }
+                                  }),
                               const SizedBox(height: 20),
                               divider(),
                               const SizedBox(height: 20),

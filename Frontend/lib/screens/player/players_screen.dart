@@ -98,7 +98,7 @@ class PlayersScreen extends ConsumerWidget {
                     ]),
                   const SizedBox(height: 10),
                   profilePill("Louth GAA", "Senior Football",
-                      "lib/assets/icons/logo_placeholder.png", () {
+                      "lib/assets/icons/logo_placeholder.png", null, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(

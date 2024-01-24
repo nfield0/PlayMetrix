@@ -5,6 +5,7 @@ import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
+import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -151,8 +152,9 @@ class TeamProfileScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     FutureBuilder<TeamData>(
-                        future:
-                            getTeamById(5), // TODO: Replace with actual team ID
+                        future: getTeamById(ref
+                            .read(teamIdProvider.notifier)
+                            .state), // TODO: Replace with actual team ID
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -168,12 +170,14 @@ class TeamProfileScreen extends ConsumerWidget {
                             String teamLocation = team.team_location;
                             int managerId = team.manager_id;
                             Uint8List? logo = team.team_logo;
-                            ref.read(managerIdProvider.notifier).state =
-                                managerId;
+                            Future.microtask(() {
+                              ref.read(managerIdProvider.notifier).state =
+                                  managerId;
+                            });
                             return Column(children: [
                               Text(
                                 teamName,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: AppFonts.gabarito,
@@ -205,20 +209,21 @@ class TeamProfileScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 20),
                               FutureBuilder(
-                                  future: getTeamLeagueName(5),
+                                  future: getTeamLeagueName(
+                                      ref.read(teamIdProvider.notifier).state),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
                                       // Display a loading indicator while the data is being fetched
-                                      return CircularProgressIndicator();
+                                      return const CircularProgressIndicator();
                                     } else if (snapshot.hasError) {
                                       // Display an error message if the data fetching fails
                                       return Text('Error: ${snapshot.error}');
                                     } else if (snapshot.hasData) {
                                       return Text(snapshot.data.toString(),
-                                          style: TextStyle(fontSize: 18));
+                                          style: const TextStyle(fontSize: 18));
                                     } else {
-                                      return Text('No data available');
+                                      return const Text('No data available');
                                     }
                                   }),
                               const SizedBox(height: 20),
@@ -229,7 +234,7 @@ class TeamProfileScreen extends ConsumerWidget {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
                                       // Display a loading indicator while the data is being fetched
-                                      return CircularProgressIndicator();
+                                      return const CircularProgressIndicator();
                                     } else if (snapshot.hasError) {
                                       // Display an error message if the data fetching fails
                                       return Text('Error: ${snapshot.error}');
@@ -259,6 +264,7 @@ class TeamProfileScreen extends ConsumerWidget {
                                             "${manager.firstName} ${manager.surname}",
                                             manager.email,
                                             "lib/assets/icons/profile_placeholder.png",
+                                            manager.imageBytes,
                                             () {}),
                                         const SizedBox(height: 20),
                                       ]);
@@ -273,7 +279,7 @@ class TeamProfileScreen extends ConsumerWidget {
                         }),
                     divider(),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, top: 10),
+                      padding: const EdgeInsets.only(left: 10, top: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -298,12 +304,16 @@ class TeamProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    profilePill("Sophia Bloggs", "sophiabloggs@louthgaa.com",
-                        "lib/assets/icons/profile_placeholder.png", () {}),
+                    profilePill(
+                        "Sophia Bloggs",
+                        "sophiabloggs@louthgaa.com",
+                        "lib/assets/icons/profile_placeholder.png",
+                        null,
+                        () {}),
                     const SizedBox(height: 20),
                     divider(),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, top: 10),
+                      padding: const EdgeInsets.only(left: 10, top: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

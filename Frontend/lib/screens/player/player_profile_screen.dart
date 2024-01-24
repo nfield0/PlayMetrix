@@ -242,7 +242,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             fontSize: 30)),
                     const SizedBox(height: 20),
                     profilePill("teamData.team_name", "leagueName.toString()",
-                        "lib/assets/icons/logo_placeholder.png", () {
+                        "lib/assets/icons/logo_placeholder.png", null, () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(

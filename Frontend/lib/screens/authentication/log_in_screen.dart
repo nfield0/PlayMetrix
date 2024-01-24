@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -44,6 +46,22 @@ Future<String> loginUser(String email, String password, String userType) async {
   return "";
 }
 
+Future<int> getTeamByManagerId(int managerId) async {
+  final teams = await getAllTeams();
+
+  try {
+    for (TeamData team in teams) {
+      if (team.manager_id == managerId) {
+        return team.team_id;
+      }
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw (Exception("Team not found."));
+}
+
 final userIdProvider = StateProvider<int>((ref) => 0);
 final passwordVisibilityNotifier = StateProvider<bool>((ref) => true);
 
@@ -52,9 +70,6 @@ class LogInScreen extends ConsumerWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-  final _passwordRegex = RegExp(
-    r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -182,18 +197,22 @@ class LogInScreen extends ConsumerWidget {
                       // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE LOGIN FUNCTION AND HOW TO GET THE USER TYPE
                       String response = await loginUser(_emailController.text,
                           _passwordController.text, _formKey.toString());
-                      print("email:" + _emailController.text);
-                      print("password: " + _passwordController.text);
-                      int userId =
-                          const JsonDecoder().convert(response)['user_id'];
-                      print("user id: " + userId.toString());
-                      ref.read(userIdProvider.notifier).state = userId;
-                      UserRole userRole = stringToUserRole(
-                          const JsonDecoder().convert(response)['user_type']);
-                      ref.read(userRoleProvider.notifier).state = userRole;
                       if (const JsonDecoder()
                               .convert(response)['user_password'] !=
                           false) {
+                        int userId =
+                            const JsonDecoder().convert(response)['user_id'];
+                        ref.read(userIdProvider.notifier).state = userId;
+
+                        UserRole userRole = stringToUserRole(
+                            const JsonDecoder().convert(response)['user_type']);
+                        ref.read(userRoleProvider.notifier).state = userRole;
+
+                        if (userRole == UserRole.manager) {
+                          int teamId = await getTeamByManagerId(userId);
+                          ref.read(teamIdProvider.notifier).state = teamId;
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => HomeScreen()),

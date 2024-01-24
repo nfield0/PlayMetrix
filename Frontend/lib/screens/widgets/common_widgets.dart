@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 
@@ -20,7 +22,7 @@ Widget smallPill(String text) {
 }
 
 Widget profilePill(String title, String description, String imagePath,
-    VoidCallback onPressed) {
+    Uint8List? imageBytes, VoidCallback onPressed) {
   return InkWell(
     onTap: onPressed,
     child: Container(
@@ -33,7 +35,9 @@ Widget profilePill(String title, String description, String imagePath,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(imagePath, width: 60),
+          imageBytes != null && imageBytes.isNotEmpty
+              ? Image.memory(imageBytes, width: 60)
+              : Image.asset(imagePath, width: 60),
           const SizedBox(width: 15),
           Expanded(
             child: Column(
