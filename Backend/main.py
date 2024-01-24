@@ -68,7 +68,7 @@ def read_root():
 # def register_user(user: UserCreate, db: Session = Depends(get_db)):
 #     return crud.register_user(db, user)
 
-@app.get("/users")
+@app.post("/users")
 def get_user_by_email(user: UserType, db:Session = Depends(get_db)):
     return crud.get_user_by_email(db, user)
 
