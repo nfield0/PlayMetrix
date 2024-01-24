@@ -16,6 +16,36 @@ final positionProvider =
 final availabilityProvider =
     StateProvider<AvailabilityData>((ref) => availabilityData[0]);
 
+Future<int> findPlayerIdByEmail(String email) async {
+  const apiUrl = '$apiBaseUrl/users';
+
+  try {
+    final response = await http.post(Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({"user_type": "player", "user_email": email}));
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data != null) {
+        return data['player_id'];
+      }
+      return -1;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      return -1;
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    return -1;
+  }
+}
+
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
     int number, AvailabilityData playingStatus) async {
   final apiUrl = '$apiBaseUrl/team_player';
@@ -30,7 +60,7 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
         "team_id": teamId,
         "player_id": userId,
         "team_position": teamPosition,
-        "player_team_number": 0,
+        "player_team_number": number,
         "playing_status": playingStatus.message,
         "lineup_status": ""
       }),
@@ -53,6 +83,7 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
 class AddPlayerScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _numberController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -100,6 +131,7 @@ class AddPlayerScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 25),
                       TextFormField(
+                        controller: _emailController,
                         cursorColor: AppColours.darkBlue,
                         decoration: const InputDecoration(
                           focusedErrorBorder: OutlineInputBorder(
@@ -183,8 +215,20 @@ class AddPlayerScreen extends ConsumerWidget {
                             ),
                           ]),
                       const SizedBox(height: 40),
-                      bigButton("Add Player", () {
-                        if (_formKey.currentState!.validate()) {}
+                      bigButton("Add Player", () async {
+                        if (_formKey.currentState!.validate()) {
+                          int playerId =
+                              await findPlayerIdByEmail(_emailController.text);
+
+                          if (playerId != -1) {
+                            await addTeamPlayer(
+                                ref.read(teamIdProvider.notifier).state,
+                                playerId,
+                                ref.read(positionProvider.notifier).state,
+                                int.parse(_numberController.text),
+                                selectedStatus);
+                          }
+                        }
                       })
                     ]),
               )
