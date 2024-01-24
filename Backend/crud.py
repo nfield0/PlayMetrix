@@ -287,7 +287,7 @@ def get_user_details_by_email_password(db:Session, email: str, password: str):
         return(f"Error retrieving user: {e}")
 
 def get_user_by_type(db:Session, user: UserType):
-    get_user_by_email(db, user.user_type, user.user_email)
+    return get_user_by_email(db, user.user_type, user.user_email)
 
     
 def get_user_by_email(db:Session, type: str, email: str):
