@@ -88,7 +88,7 @@ def encrypt_password(password):
 #     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
 def register_player(db, user):
-    existing_user = get_user_by_email(db, "player", user.player_email)
+    existing_user = check_user_exists_by_email(db, user.player_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     if not user.player_email or not user.player_password:
@@ -121,7 +121,7 @@ def register_player(db, user):
     return {"detail": "Player Registered Successfully", "id": new_user.player_id}
 
 def register_manager(db, user):
-    existing_user = get_user_by_email(db, "manager", user.manager_email)
+    existing_user = check_user_exists_by_email(db, user.manager_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     if not user.manager_email or not user.manager_password:
@@ -150,7 +150,7 @@ def register_manager(db, user):
     return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
 
 def register_physio(db, user):
-    existing_user = get_user_by_email(db, "physio", user.physio_email)
+    existing_user = check_user_exists_by_email(db, user.physio_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     if not user.physio_email or not user.physio_password:
@@ -181,7 +181,7 @@ def register_physio(db, user):
 
 def register_coach(db, user):
     try:
-        existing_user = get_user_by_email(db, "coach", user.coach_email)
+        existing_user = check_user_exists_by_email(db, user.coach_email)
         if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
         if not user.coach_email or not user.coach_password:
@@ -289,7 +289,27 @@ def get_user_details_by_email_password(db:Session, email: str, password: str):
 def get_user_by_type(db:Session, user: UserType):
     return get_user_by_email(db, user.user_type, user.user_email)
 
-    
+def check_user_exists_by_email(db:Session, email: str):
+    try:
+        manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
+        player_login_result = db.query(player_login).filter_by(player_email=email).first()
+        physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
+        coach_login_result = db.query(coach_login).filter_by(coach_email=email).first()
+
+
+        if manager_login_result:
+            return True
+        elif player_login_result:
+            return True
+        elif physio_login_result:
+            return True
+        elif coach_login_result:
+            return True
+        else:
+            return False
+        
+    except Exception as e:
+        return(f"Error retrieving user: {e}")
 def get_user_by_email(db:Session, type: str, email: str):
     # raise HTTPException(status_code=200, detail=email)
 
