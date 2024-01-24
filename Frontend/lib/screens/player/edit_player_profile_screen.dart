@@ -113,6 +113,7 @@ Future<void> updatePlayerProfile(
 }
 
 class EditPlayerProfileScreen extends ConsumerWidget {
+  final _formKey = GlobalKey<FormState>();
   late PlayerData playerData;
   // Form controllers for text fields
   final TextEditingController _firstNameController = TextEditingController();
@@ -132,6 +133,10 @@ class EditPlayerProfileScreen extends ConsumerWidget {
     Uint8List? profilePicture = ref.watch(profilePictureProvider);
     DateTime selectedDob = ref.watch(dobProvider);
     String selectedGender = ref.watch(genderProvider);
+
+    final nameRegex = RegExp(r'^[A-Za-z]+$');
+    final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
+    final heightRegex = RegExp(r'^[1-9]\d{0,2}(\.\d{1,2})?$');
 
     Future<void> pickImage() async {
       final picker = ImagePicker();
@@ -173,6 +178,8 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                         height: 20,
                       ),
                       Form(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.always,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -194,33 +201,43 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                               ])),
                               formFieldBottomBorderController(
                                   "First Name", _firstNameController, (value) {
-                                return "";
+                                return (value != null &&
+                                        !nameRegex.hasMatch(value))
+                                    ? 'Invalid first name.'
+                                    : null;
+                                ;
                               }),
                               formFieldBottomBorderController(
                                   "Surname", _surnameController, (value) {
-                                return "";
+                                return (value != null &&
+                                        !nameRegex.hasMatch(value))
+                                    ? 'Invalid surname.'
+                                    : null;
+                              }),
+                              formFieldBottomBorderController(
+                                  "Phone", _contactNumberController, (value) {
+                                return (value != null &&
+                                        !phoneRegex.hasMatch(value))
+                                    ? 'Invalid phone number.'
+                                    : null;
+                              }),
+                              formFieldBottomBorderController(
+                                  "Height", _heightController, (value) {
+                                return (value != null &&
+                                        !heightRegex.hasMatch(value))
+                                    ? 'Invalid height.'
+                                    : null;
                               }),
                               datePickerNoDivider(
                                   context, "Date of birth", selectedDob,
                                   (value) {
                                 ref.read(dobProvider.notifier).state = value;
                               }),
-                              formFieldBottomBorderController(
-                                  "Contact Number", _contactNumberController,
-                                  (value) {
-                                return "";
-                              }),
-                              formFieldBottomBorderController(
-                                  "Height", _heightController, (value) {
-                                return "";
-                              }),
-                              const SizedBox(height: 10),
                               dropdownWithDivider("Gender", selectedGender,
-                                  ["Man", "Woman", "Others"], (value) {
+                                  ["Male", "Female", "Others"], (value) {
                                 ref.read(genderProvider.notifier).state =
                                     value!;
                               }),
-                              const SizedBox(height: 50),
                               //const SizedBox(height: 10),
                               dropdownWithDivider(
                                   "Position",
@@ -234,24 +251,26 @@ class EditPlayerProfileScreen extends ConsumerWidget {
                                   (p0) {}),
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () async {
-                                PlayerData player =
-                                    await getPlayerProfile(playerId);
-                                await updatePlayerProfile(
-                                    playerId,
-                                    player,
-                                    _contactNumberController.text,
-                                    ref.read(dobProvider.notifier).state,
-                                    _heightController.text,
-                                    ref.read(genderProvider.notifier).state,
-                                    ref
-                                        .read(profilePictureProvider.notifier)
-                                        .state);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PlayerProfileScreen()),
-                                );
+                                if (_formKey.currentState!.validate()) {
+                                  PlayerData player =
+                                      await getPlayerProfile(playerId);
+                                  await updatePlayerProfile(
+                                      playerId,
+                                      player,
+                                      _contactNumberController.text,
+                                      ref.read(dobProvider.notifier).state,
+                                      _heightController.text,
+                                      ref.read(genderProvider.notifier).state,
+                                      ref
+                                          .read(profilePictureProvider.notifier)
+                                          .state);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PlayerProfileScreen()),
+                                  );
+                                }
                               })
                             ]),
                       )

@@ -13,6 +13,9 @@ class AddCoachScreen extends StatefulWidget {
 }
 
 class _AddCoachScreenState extends State<AddCoachScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +47,8 @@ class _AddCoachScreenState extends State<AddCoachScreen> {
                 height: 20,
               ),
               Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -55,6 +60,7 @@ class _AddCoachScreenState extends State<AddCoachScreen> {
                       const SizedBox(height: 25),
                       TextFormField(
                         cursorColor: AppColours.darkBlue,
+                        controller: _emailController,
                         decoration: const InputDecoration(
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -86,7 +92,9 @@ class _AddCoachScreenState extends State<AddCoachScreen> {
                         },
                       ),
                       const SizedBox(height: 40),
-                      bigButton("Add Coach", () {})
+                      bigButton("Add Coach", () {
+                        if (_formKey.currentState!.validate()) {}
+                      })
                     ]),
               )
             ])),

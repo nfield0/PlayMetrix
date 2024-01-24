@@ -7,9 +7,6 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
-
-
 class AddPlayerScreen extends StatefulWidget {
   const AddPlayerScreen({Key? key}) : super(key: key);
 
@@ -18,9 +15,10 @@ class AddPlayerScreen extends StatefulWidget {
 }
 
 class _AddPlayerScreenState extends State<AddPlayerScreen> {
-  final _formKey = "player";
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +50,8 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                 height: 20,
               ),
               Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -95,7 +95,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                       ),
                       const SizedBox(height: 40),
                       bigButton("Add Player", () {
-                        
+                        if (_formKey.currentState!.validate()) {}
                       })
                     ]),
               )
