@@ -57,77 +57,6 @@ Future<PlayerData> getPlayerById(int id) async {
   throw Exception('Failed to retrieve player data');
 }
 
-class TeamData {
-  final int team_id;
-  final String team_name;
-  final Uint8List? team_logo;
-  final int manager_id;
-  final int league_id;
-  final int sport_id;
-  final String team_location;
-
-  TeamData({
-    required this.team_id,
-    required this.team_name,
-    required this.team_logo,
-    required this.manager_id,
-    required this.sport_id,
-    required this.league_id,
-    required this.team_location,
-  });
-
-  factory TeamData.fromJson(Map<String, dynamic> json) {
-    return TeamData(
-      team_id: json['team_id'],
-      team_name: json['team_name'],
-      team_logo: json['team_logo'],
-      manager_id: json['manager_id'],
-      sport_id: json['sport_id'],
-      league_id: json['league_id'],
-      team_location: json['team_location'],
-    );
-  }
-}
-
-Future<TeamData> getTeamById(String id) async {
-  final apiUrl =
-      'http:/127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final teamData = TeamData.fromJson(responseData);
-
-      // Access individual variables
-      print('${teamData.team_id}');
-      print('${teamData.team_name}');
-      print('${teamData.team_logo}');
-      print('${teamData.manager_id}');
-      print('${teamData.sport_id}');
-      print('${teamData.league_id}');
-      print('${teamData.team_location}');
-      return teamData;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve team data');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to retrieve team data');
-  }
-}
-
 class LeagueData {
   final int league_id;
   final String league_name;
@@ -181,9 +110,9 @@ Future<List<LeagueData>> getLeagues() async {
   }
 }
 
-Future<String?> getTeamLeagueName(String teamId) async {
+Future<String?> getTeamLeagueName(int teamId) async {
   try {
-    final TeamData? teamData = await getTeamById(teamId);
+    final TeamData teamData = await getTeamById(teamId);
     final List<LeagueData> leagues = await getLeagues();
 
     for (var league in leagues) {

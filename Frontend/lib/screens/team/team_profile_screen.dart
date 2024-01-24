@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -39,7 +40,7 @@ class TeamData {
     return TeamData(
       team_id: json['team_id'],
       team_name: json['team_name'],
-      team_logo: json['team_logo'],
+      team_logo: base64.decode(json['team_logo']),
       manager_id: json['manager_id'],
       sport_id: json['sport_id'],
       league_id: json['league_id'],
@@ -49,7 +50,8 @@ class TeamData {
 }
 
 Future<TeamData> getTeamById(int id) async {
-  final apiUrl = 'http://127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl =
+      'http://127.0.0.1:8000/teams/$id'; // Replace with your actual backend URL and provide the user ID
 
   try {
     final response = await http.get(
@@ -64,13 +66,6 @@ Future<TeamData> getTeamById(int id) async {
       TeamData teamData = TeamData.fromJson(jsonDecode(response.body));
 
       // Access individual variables
-      print('${teamData.team_id}');
-      print('${teamData.team_name}');
-      print('${teamData.team_logo}');
-      print('${teamData.manager_id}');
-      print('${teamData.sport_id}');
-      print('${teamData.league_id}');
-      print('${teamData.team_location}');
       return teamData;
     } else {
       // Failed to retrieve data, handle the error accordingly
@@ -114,57 +109,18 @@ class ManagerData {
   }
 }
 
-Future<ManagerData> getManagerById(int managerID) async {
-  final apiUrl = 'http://127.0.0.1:8000/teams/info/$managerID'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      ManagerData managerData = ManagerData.fromJson(jsonDecode(response.body));
-
-      
-      return managerData;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve team data');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to retrieve team data');
-  }
-}
-
-// class TeamProfileScreen extends ConsumerWidget {
-//   const TeamProfileScreen({Key? key}) : super(key: key);
-
-//   @override
-//   _TeamProfileScreenState createState() => _TeamProfileScreenState();
-
-// }
-
 final managerIdProvider = StateProvider<int>((ref) => 0);
 
 class TeamProfileScreen extends ConsumerWidget {
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRole = ref.watch(userRoleProvider.notifier).state;
-    final userId = ref.watch(userIdProvider.notifier).state;
-    final teamId = ref.watch(leagueProvider.notifier).state;
-    final managerId = ref.watch(managerIdProvider.notifier).state;
-    final division = ref.watch(leagueProvider.notifier).state;
-    Uint8List? profilePicture = ref.watch(profilePictureProvider);
-    
+    // final userRole = ref.watch(userRoleProvider.notifier).state;
+    // final userId = ref.watch(userIdProvider.notifier).state;
+    // final teamId = ref.watch(leagueProvider.notifier).state;
+    // final managerId = ref.watch(managerIdProvider.notifier).state;
+    // final division = ref.watch(leagueProvider.notifier).state;
+    // Uint8List? profilePicture = ref.watch(profilePictureProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -194,8 +150,9 @@ class TeamProfileScreen extends ConsumerWidget {
               child: Center(
                 child: Column(
                   children: [
-                     FutureBuilder<TeamData>(
-                        future: getTeamById(teamId),
+                    FutureBuilder<TeamData>(
+                        future:
+                            getTeamById(5), // TODO: Replace with actual team ID
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -208,84 +165,112 @@ class TeamProfileScreen extends ConsumerWidget {
                             // Data has been successfully fetched, use it here
                             TeamData team = snapshot.data!;
                             String teamName = team.team_name;
+                            String teamLocation = team.team_location;
                             int managerId = team.manager_id;
-                            ref.read(managerIdProvider.notifier).state = managerId;
-                            return Text(
-                                        teamName,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: AppFonts.gabarito,
-                                          fontSize: 32,
+                            Uint8List? logo = team.team_logo;
+                            ref.read(managerIdProvider.notifier).state =
+                                managerId;
+                            return Column(children: [
+                              Text(
+                                teamName,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFonts.gabarito,
+                                  fontSize: 32,
+                                ),
+                              ),
+                              const SizedBox(height: 50),
+                              logo != null
+                                  ? Image.memory(
+                                      logo,
+                                      width: 150,
+                                    )
+                                  : Image.asset(
+                                      "lib/assets/icons/logo_placeholder.png",
+                                      width: 150,
+                                    ),
+                              // const SizedBox(height: 40),
+                              // smallPill("Senior Football"),
+                              const SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.pin_drop,
+                                      color: Colors.red, size: 28),
+                                  const SizedBox(width: 10),
+                                  Text(teamLocation,
+                                      style: const TextStyle(fontSize: 18)),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              FutureBuilder(
+                                  future: getTeamLeagueName(5),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      // Display a loading indicator while the data is being fetched
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      // Display an error message if the data fetching fails
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (snapshot.hasData) {
+                                      return Text(snapshot.data.toString(),
+                                          style: TextStyle(fontSize: 18));
+                                    } else {
+                                      return Text('No data available');
+                                    }
+                                  }),
+                              const SizedBox(height: 20),
+                              divider(),
+                              FutureBuilder(
+                                  future: getManagerProfile(managerId),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      // Display a loading indicator while the data is being fetched
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      // Display an error message if the data fetching fails
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (snapshot.hasData) {
+                                      Profile manager = snapshot.data!;
+                                      return Column(children: [
+                                        const Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 10, top: 10),
+                                              child: Text(
+                                                "Manager",
+                                                style: TextStyle(
+                                                    color: AppColours.darkBlue,
+                                                    fontFamily:
+                                                        AppFonts.gabarito,
+                                                    fontSize: 28,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      );
+                                        const SizedBox(height: 20),
+                                        profilePill(
+                                            "${manager.firstName} ${manager.surname}",
+                                            manager.email,
+                                            "lib/assets/icons/profile_placeholder.png",
+                                            () {}),
+                                        const SizedBox(height: 20),
+                                      ]);
+                                    } else {
+                                      return Text('No data available');
+                                    }
+                                  })
+                            ]);
                           } else {
                             return Text('No data available');
                           }
                         }),
-                
-                    const SizedBox(height: 50),
-                    Image.asset(
-                      'lib/assets/icons/logo_placeholder.png',
-                      width: 150,
-                      fit: BoxFit.contain,
-                    ),
-                    const SizedBox(height: 40),
-                    smallPill("Senior Football"),
-                    const SizedBox(height: 30),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.pin_drop, color: Colors.red, size: 28),
-                        SizedBox(width: 10),
-                        Text("Louth", style: TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Text("Divison 1", style: TextStyle(fontSize: 18)),
-                    const SizedBox(height: 20),
-                    divider(),
-                    const Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 10, top: 10),
-                          child: Text(
-                            "Manager",
-                            style: TextStyle(
-                                color: AppColours.darkBlue,
-                                fontFamily: AppFonts.gabarito,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    FutureBuilder<ManagerData>(
-                        future: getManagerById(managerId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // Display a loading indicator while the data is being fetched
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            // Display an error message if the data fetching fails
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            // Data has been successfully fetched, use it here
-                            ManagerData manager = snapshot.data!;
-                            String manager_firstname = manager.manager_firstname;
-                            String manager_contact_number = manager.manager_contact_number;
-
-                            ref.read(managerIdProvider.notifier).state = managerId;
-                            return profilePill(manager_firstname, manager_contact_number,
-                        "lib/assets/icons/profile_placeholder.png", () {});
-                          } else {
-                            return Text('No data available');
-                          }
-                        }),
-                   
-                    const SizedBox(height: 20),
                     divider(),
                     Padding(
                       padding: EdgeInsets.only(left: 10, top: 10),
@@ -344,7 +329,6 @@ class TeamProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     emptySection(Icons.person_off, "No coaches added yet"),
                     const SizedBox(height: 50),
-                    
                   ],
                 ),
               ))),
