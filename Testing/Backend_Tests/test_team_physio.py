@@ -108,7 +108,7 @@ def test_add_physio():
         "physio_image": ""
     }
     response = requests.post(url, headers=headers, json=json)
-    #assert response.status_code == 200
+    assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
 
     try:
@@ -130,7 +130,7 @@ def test_add_team_physio():
         "physio_id": 1
     }
     response = requests.post(url, headers=headers, json=json)
-    #assert response.status_code == 200
+    assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
 
     try:
@@ -145,7 +145,7 @@ def test_get_team_physio():
     headers = {'Content-Type': 'application/json'}
 
     response = requests.get(url, headers=headers)
-    #assert response.status_code == 200
+    assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
     expected_data = [{
         "team_id": 1,
@@ -157,6 +157,27 @@ def test_get_team_physio():
     
     except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
+
+def test_get_physios_by_team_id():
+    url = 'http://127.0.0.1:8000/physios_team/1'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    expected_data = [{
+        "team_id": 1,
+        "physio_id": 1
+    }]
+    try:
+        response_json = response.json()
+        assert response_json == expected_data
+    
+    except(ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
+
 
 def test_delete_team_physio():
     url = 'http://127.0.0.1:8000/team_physio/1'

@@ -197,6 +197,27 @@ def test_update_team_player():
         assert False, f"Test failed: {e}"
 
 
+def test_get_players_by_team_id():
+    url = 'http://127.0.0.1:8000/players_team/1'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    expected_data = [{
+            "team_id": 1,
+            "player_id": 1,
+            "team_position": "Full Back",
+            "player_team_number": 1,
+            "playing_status": "Unavailable",
+            "lineup_status": "Starting 15"
+        }]
+    try:
+        response_json = response.json()
+        assert response_json == expected_data
+    
+    except(ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 def test_delete_team_player():
     url = 'http://127.0.0.1:8000/team_player/1/1'

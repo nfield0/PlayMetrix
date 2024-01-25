@@ -1221,6 +1221,13 @@ def delete_coach_by_id(db:Session, id: int):
     
 #region team_coach
     
+def get_team_coaches(db: Session, coach_id: int):
+    try:
+        result = db.query(team_coach).filter_by(coach_id=coach_id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team coaches: {e}")
+
 def get_coach_by_team_id(db: Session, id: int):
     try:
         result = db.query(team_coach).filter_by(team_id=id).all()
@@ -1264,6 +1271,14 @@ def delete_team_coach_by_team_id(db:Session, team_id: int, coach_id: int):
 
 
 #region team_physio
+
+def get_team_physio(db: Session, physio_id: int):
+    try:
+        result = db.query(team_physio).filter_by(physio_id=physio_id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team physio: {e}")
+
 
 def get_physio_by_team_id(db: Session, id: int):
     try:
@@ -1312,7 +1327,14 @@ def delete_physio_team_id(db:Session, id: int):
 #endregion
 
 #region team_player
-    
+
+def get_team_players(db: Session, player_id: int):
+    try:
+        result = db.query(team_player).filter_by(player_id=player_id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving team players: {e}")
+
 def get_players_by_team_id(db: Session, id: int):
     try:
         result = db.query(team_player).filter_by(team_id=id).all()
