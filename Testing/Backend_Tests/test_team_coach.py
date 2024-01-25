@@ -159,6 +159,26 @@ def test_get_team_coach():
     except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_get_coaches_by_team_id():
+    url = 'http://127.0.0.1:8000/coaches_team/1'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.get(url, headers=headers)
+    #assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    expected_data = [{
+        "coach_id": 1,
+        "team_id": 1,
+        "team_role": "Head Coach"
+    }]
+    try:
+        response_json = response.json()
+        assert response_json == expected_data
+    
+    except(ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
 
 
 def test_z_cleanup():
