@@ -5,7 +5,6 @@ import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
-import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -296,8 +295,7 @@ class TeamProfileScreen extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AddPhysioScreen()),
+                                  builder: (context) => AddPhysioScreen()),
                             );
                           }),
                         ],
@@ -330,7 +328,7 @@ class TeamProfileScreen extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AddCoachScreen()),
+                                  builder: (context) => AddCoachScreen()),
                             );
                           }),
                         ],

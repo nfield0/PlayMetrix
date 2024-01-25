@@ -1,23 +1,83 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class AddCoachScreen extends StatefulWidget {
-  const AddCoachScreen({Key? key}) : super(key: key);
+final roleProvider =
+    StateProvider<String>((ref) => teamRoleToText(TeamRole.headCoach));
 
-  @override
-  _AddCoachScreenState createState() => _AddCoachScreenState();
+Future<int> findCoachIdByEmail(String email) async {
+  const apiUrl = '$apiBaseUrl/users';
+
+  try {
+    final response = await http.post(Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({"user_type": "coach", "user_email": email}));
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data != null) {
+        return data['coach_id'];
+      }
+      return -1;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      return -1;
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    return -1;
+  }
 }
 
-class _AddCoachScreenState extends State<AddCoachScreen> {
+Future<void> addTeamCoach(int teamId, int userId, String role) async {
+  final apiUrl = '$apiBaseUrl/team_coach';
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "team_id": teamId,
+        "coach_id": userId,
+        "team_role": role
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully added data to the backend
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to add data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
+
+class AddCoachScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    String selectedRole = ref.watch(roleProvider);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Team Profile"),
@@ -91,9 +151,54 @@ class _AddCoachScreenState extends State<AddCoachScreen> {
                               : null;
                         },
                       ),
+                      const SizedBox(height: 20),
+                      dropdownWithDivider("Role", selectedRole, [
+                        teamRoleToText(TeamRole.headCoach),
+                        teamRoleToText(TeamRole.defense),
+                        teamRoleToText(TeamRole.attack),
+                        teamRoleToText(TeamRole.midfield),
+                        teamRoleToText(TeamRole.goalkeeper),
+                      ], (value) {
+                        ref.read(roleProvider.notifier).state = value!;
+                      }),
                       const SizedBox(height: 40),
-                      bigButton("Add Coach", () {
-                        if (_formKey.currentState!.validate()) {}
+                      bigButton("Add Coach", () async {
+                        if (_formKey.currentState!.validate()) {
+                          int coachId =
+                              await findCoachIdByEmail(_emailController.text);
+
+                          if (coachId != -1) {
+                            await addTeamCoach(
+                                ref.read(teamIdProvider.notifier).state,
+                                coachId,
+                                selectedRole);
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Coach Not Found',
+                                      style: TextStyle(
+                                          color: AppColours.darkBlue,
+                                          fontFamily: AppFonts.gabarito,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold)),
+                                  content: Text(
+                                      'Sorry, coach with that email does not exist. Please enter a different email address and try again.',
+                                      style: TextStyle(fontSize: 16)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
                       })
                     ]),
               )

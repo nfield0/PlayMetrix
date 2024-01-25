@@ -77,7 +77,7 @@ class _CoachesScreenState extends State<CoachesScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const AddCoachScreen()),
+                              builder: (context) => AddCoachScreen()),
                         );
                       })
                     ],

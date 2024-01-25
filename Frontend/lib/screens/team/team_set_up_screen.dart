@@ -4,7 +4,6 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_selection_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';

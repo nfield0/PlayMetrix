@@ -346,9 +346,16 @@ class SignUpScreen extends ConsumerWidget {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Email Already in Use'),
+                                    title: Text('Email Already in Use',
+                                        style: TextStyle(
+                                            color: AppColours.darkBlue,
+                                            fontFamily: AppFonts.gabarito,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold)),
                                     content: Text(
-                                        'Sorry, an account with this email already exists. Please use a different email address and try again.'),
+                                      'Sorry, an account with this email already exists. Please use a different email address and try again.',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                     actions: [
                                       TextButton(
                                         onPressed: () {

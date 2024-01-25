@@ -165,13 +165,23 @@ class AddPlayerScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 10),
                       formFieldBottomBorderController(
-                          "Number",
-                          _numberController,
-                          (value) => (value != null &&
-                                  !RegExp(r'^[1-9]|[1-9]\d|99$')
-                                      .hasMatch(value))
-                              ? 'Number must be from 1-99.'
-                              : null),
+                        "Number",
+                        _numberController,
+                        (value) {
+                          if (value != null &&
+                              RegExp(r'^\d+$').hasMatch(value)) {
+                            int numericValue = int.tryParse(value) ?? 0;
+
+                            if (numericValue > 0 && numericValue < 100) {
+                              return null;
+                            } else {
+                              return "Enter a valid number from 1-99.";
+                            }
+                          }
+
+                          return "Enter a valid digit.";
+                        },
+                      ),
                       const SizedBox(height: 10),
                       dropdownWithDivider("Position", selectedRole, [
                         teamRoleToText(TeamRole.defense),
@@ -227,6 +237,35 @@ class AddPlayerScreen extends ConsumerWidget {
                                 ref.read(positionProvider.notifier).state,
                                 int.parse(_numberController.text),
                                 selectedStatus);
+                            ref.read(positionProvider.notifier).state =
+                                teamRoleToText(TeamRole.defense);
+                            ref.read(availabilityProvider.notifier).state =
+                                availabilityData[0];
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Player Not Found',
+                                      style: TextStyle(
+                                          color: AppColours.darkBlue,
+                                          fontFamily: AppFonts.gabarito,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold)),
+                                  content: Text(
+                                      'Sorry, player with that email does not exist. Please enter a different email address and try again.',
+                                      style: TextStyle(fontSize: 16)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
                         }
                       })

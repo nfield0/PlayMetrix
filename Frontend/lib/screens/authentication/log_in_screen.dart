@@ -39,8 +39,16 @@ Future<String> loginUser(BuildContext context, String email, String password,
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Login Error'),
-              content: Text("User with that email doesn't exist."),
+              title: Text('Login Error',
+                  style: TextStyle(
+                      color: AppColours.darkBlue,
+                      fontFamily: AppFonts.gabarito,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold)),
+              content: Text(
+                "User with that email doesn't exist.",
+                style: TextStyle(fontSize: 16),
+              ),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -58,8 +66,16 @@ Future<String> loginUser(BuildContext context, String email, String password,
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Login Error'),
-                content: Text('Wrong password. Please try again.'),
+                title: Text('Login Error',
+                    style: TextStyle(
+                        color: AppColours.darkBlue,
+                        fontFamily: AppFonts.gabarito,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold)),
+                content: Text(
+                  'Wrong password. Please try again.',
+                  style: TextStyle(fontSize: 16),
+                ),
                 actions: [
                   TextButton(
                     onPressed: () {
