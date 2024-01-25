@@ -104,7 +104,7 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
   }
 
   return Profile(
-      "firstName", "surname", "contactNumber", "email", Uint8List(0));
+      -1, "firstName", "surname", "contactNumber", "email", Uint8List(0));
 }
 
 class HomeScreen extends ConsumerWidget {

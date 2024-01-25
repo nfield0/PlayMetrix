@@ -25,13 +25,14 @@ class ProfileName {
 }
 
 class Profile {
+  final int id;
   final String firstName;
   final String surname;
   final String contactNumber;
   final String email;
   final Uint8List? imageBytes;
 
-  Profile(this.firstName, this.surname, this.contactNumber, this.email,
+  Profile(this.id, this.firstName, this.surname, this.contactNumber, this.email,
       this.imageBytes);
 }
 
@@ -48,6 +49,7 @@ Future<Profile> getManagerProfile(int id) async {
       final parsed = jsonDecode(response.body);
 
       return Profile(
+          id,
           parsed['manager_firstname'],
           parsed['manager_surname'],
           parsed['manager_contact_number'],
@@ -60,7 +62,7 @@ Future<Profile> getManagerProfile(int id) async {
     print('Error: $error');
   }
 
-  return Profile("", "", "", "", null);
+  return Profile(-1, "", "", "", "", null);
 }
 
 Future<void> updateManagerProfile(int id, ProfileName name,
@@ -108,6 +110,7 @@ Future<Profile> getPhysioProfile(int id) async {
       final parsed = jsonDecode(response.body);
 
       return Profile(
+          id,
           parsed['physio_firstname'],
           parsed['physio_surname'],
           parsed['physio_contact_number'],
@@ -120,7 +123,7 @@ Future<Profile> getPhysioProfile(int id) async {
     print('Error: $error');
   }
 
-  return Profile("", "", "", "", null);
+  return Profile(-1, "", "", "", "", null);
 }
 
 Future<void> updatePhysioProfile(int id, ProfileName name, String contactNumber,
@@ -168,6 +171,7 @@ Future<Profile> getCoachProfile(int id) async {
       final parsed = jsonDecode(response.body);
 
       return Profile(
+          id,
           parsed['coach_firstname'],
           parsed['coach_surname'],
           parsed['coach_contact'],
@@ -180,7 +184,7 @@ Future<Profile> getCoachProfile(int id) async {
     print('Error: $error');
   }
 
-  return Profile("", "", "", "", null);
+  return Profile(-1, "", "", "", "", null);
 }
 
 Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
@@ -228,6 +232,7 @@ Future<Profile> getPlayerProfile(int id) async {
       final parsed = jsonDecode(response.body);
 
       return Profile(
+          id,
           parsed['player_firstname'],
           parsed['player_surname'],
           parsed['player_contact_number'],
@@ -240,7 +245,7 @@ Future<Profile> getPlayerProfile(int id) async {
     print('Error: $error');
   }
 
-  return Profile("", "", "", "", null);
+  return Profile(-1, "", "", "", "", null);
 }
 
 class ProfileSetUpScreen extends ConsumerWidget {
