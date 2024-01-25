@@ -49,9 +49,42 @@ class TeamData {
   }
 }
 
-Future<TeamData> getTeamById(int id) async {
-  final apiUrl =
-      '$apiBaseUrl/teams/$id'; // Replace with your actual backend URL and provide the user ID
+Future<TeamData?> getTeamById(int id) async {
+  if (id != -1) {
+    final apiUrl =
+        '$apiBaseUrl/teams/$id'; // Replace with your actual backend URL and provide the user ID
+
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully retrieved data, parse and store it in individual variables
+        TeamData teamData = TeamData.fromJson(jsonDecode(response.body));
+
+        // Access individual variables
+        return teamData;
+      } else {
+        // Failed to retrieve data, handle the error accordingly
+        print('Failed to retrieve data. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+        throw Exception('Failed to retrieve team data');
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      print('Error: $error');
+      throw Exception('Failed to retrieve team data');
+    }
+  }
+  return null;
+}
+
+Future<List<Profile>> getPhysiosForTeam(int teamId) async {
+  final apiUrl = '$apiBaseUrl/team_physio/$teamId';
 
   try {
     final response = await http.get(
@@ -63,20 +96,68 @@ Future<TeamData> getTeamById(int id) async {
 
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
-      TeamData teamData = TeamData.fromJson(jsonDecode(response.body));
+      List<dynamic> data = jsonDecode(response.body);
 
-      // Access individual variables
-      return teamData;
+      final List<Map<String, dynamic>> physiosJsonList =
+          List<Map<String, dynamic>>.from(data);
+
+      List<Profile> physios = [];
+
+      for (Map<String, dynamic> physioJson in physiosJsonList) {
+        Profile physio = await getPhysioProfile(physioJson['physio_id']);
+        physios.add(physio);
+      }
+
+      return physios;
     } else {
       // Failed to retrieve data, handle the error accordingly
       print('Failed to retrieve data. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve team data');
+      throw Exception('Failed to retrieve physio data');
     }
   } catch (error) {
     // Handle any network or other errors
     print('Error: $error');
-    throw Exception('Failed to retrieve team data');
+    throw Exception('Failed to retrieve physio data');
+  }
+}
+
+Future<List<Profile>> getCoachesForTeam(int teamId) async {
+  final apiUrl = '$apiBaseUrl/team_coach/$teamId';
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      List<dynamic> data = jsonDecode(response.body);
+
+      final List<Map<String, dynamic>> coachesJsonList =
+          List<Map<String, dynamic>>.from(data);
+
+      List<Profile> coaches = [];
+
+      for (Map<String, dynamic> physioJson in coachesJsonList) {
+        Profile coach = await getCoachProfile(physioJson['coach_id']);
+        coaches.add(coach);
+      }
+
+      return coaches;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to retrieve physio data');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to retrieve physio data');
   }
 }
 
@@ -150,7 +231,7 @@ class TeamProfileScreen extends ConsumerWidget {
               child: Center(
                 child: Column(
                   children: [
-                    FutureBuilder<TeamData>(
+                    FutureBuilder<TeamData?>(
                         future: getTeamById(ref
                             .read(teamIdProvider.notifier)
                             .state), // TODO: Replace with actual team ID
@@ -302,12 +383,36 @@ class TeamProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    profilePill(
-                        "Sophia Bloggs",
-                        "sophiabloggs@louthgaa.com",
-                        "lib/assets/icons/profile_placeholder.png",
-                        null,
-                        () {}),
+                    FutureBuilder(
+                        future: getPhysiosForTeam(
+                            ref.read(teamIdProvider.notifier).state),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            List<Profile> physios =
+                                snapshot.data as List<Profile>;
+                            return physios.isNotEmpty
+                                ? Column(
+                                    children: [
+                                      for (Profile physio in physios)
+                                        profilePill(
+                                            "${physio.firstName} ${physio.surname}",
+                                            physio.email,
+                                            "lib/assets/icons/profile_placeholder.png",
+                                            physio.imageBytes,
+                                            () {}),
+                                    ],
+                                  )
+                                : emptySection(
+                                    Icons.person_off, "No physios added yet");
+                          } else {
+                            return const Text('No data available');
+                          }
+                        }),
                     const SizedBox(height: 20),
                     divider(),
                     Padding(
@@ -335,7 +440,36 @@ class TeamProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    emptySection(Icons.person_off, "No coaches added yet"),
+                    FutureBuilder(
+                        future: getCoachesForTeam(
+                            ref.read(teamIdProvider.notifier).state),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            List<Profile> coaches =
+                                snapshot.data as List<Profile>;
+                            return coaches.isNotEmpty
+                                ? Column(
+                                    children: [
+                                      for (Profile coach in coaches)
+                                        profilePill(
+                                            "${coach.firstName} ${coach.surname}",
+                                            coach.email,
+                                            "lib/assets/icons/profile_placeholder.png",
+                                            coach.imageBytes,
+                                            () {}),
+                                    ],
+                                  )
+                                : emptySection(
+                                    Icons.person_off, "No coaches added yet");
+                          } else {
+                            return const Text('No data available');
+                          }
+                        }),
                     const SizedBox(height: 50),
                   ],
                 ),

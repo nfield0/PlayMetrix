@@ -120,6 +120,84 @@ Future<int> getTeamByManagerId(int managerId) async {
   throw (Exception("Team not found."));
 }
 
+Future<int> getTeamByCoachId(int coachId) async {
+  final apiUrl = '$apiBaseUrl/coaches_team/$coachId';
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data.length > 0) {
+        return data[0]['team_id'];
+      } else {
+        return -1;
+      }
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw (Exception("Team not found."));
+}
+
+Future<int> getTeamByPhysioId(int physioId) async {
+  final apiUrl = '$apiBaseUrl/physios_team/$physioId';
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data.length > 0) {
+        return data[0]['team_id'];
+      } else {
+        return -1;
+      }
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw (Exception("Team not found."));
+}
+
+Future<int> getTeamByPlayerId(int playerId) async {
+  final apiUrl = '$apiBaseUrl/players_team/$playerId';
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data.length > 0) {
+        return data[0]['team_id'];
+      } else {
+        return -1;
+      }
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw (Exception("Team not found."));
+}
+
 final userIdProvider = StateProvider<int>((ref) => 0);
 final passwordVisibilityNotifier = StateProvider<bool>((ref) => true);
 
@@ -274,6 +352,15 @@ class LogInScreen extends ConsumerWidget {
 
                           if (userRole == UserRole.manager) {
                             int teamId = await getTeamByManagerId(userId);
+                            ref.read(teamIdProvider.notifier).state = teamId;
+                          } else if (userRole == UserRole.coach) {
+                            int teamId = await getTeamByCoachId(userId);
+                            ref.read(teamIdProvider.notifier).state = teamId;
+                          } else if (userRole == UserRole.physio) {
+                            int teamId = await getTeamByPhysioId(userId);
+                            ref.read(teamIdProvider.notifier).state = teamId;
+                          } else if (userRole == UserRole.player) {
+                            int teamId = await getTeamByPlayerId(userId);
                             ref.read(teamIdProvider.notifier).state = teamId;
                           }
 

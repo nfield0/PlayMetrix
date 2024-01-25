@@ -112,7 +112,7 @@ Future<List<LeagueData>> getLeagues() async {
 
 Future<String?> getTeamLeagueName(int teamId) async {
   try {
-    final TeamData teamData = await getTeamById(teamId);
+    final TeamData? teamData = await getTeamById(teamId);
     final List<LeagueData> leagues = await getLeagues();
 
     for (var league in leagues) {

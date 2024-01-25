@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 
-final teamIdProvider = StateProvider<int>((ref) => 0);
+final teamIdProvider = StateProvider<int>((ref) => -1);
 
 Future<List<TeamData>> getAllTeams() async {
   final apiUrl = '$apiBaseUrl/teams';

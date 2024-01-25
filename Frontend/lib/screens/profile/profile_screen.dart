@@ -27,7 +27,7 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
   }
 
   return Profile(
-      "firstName", "surname", "contactNumber", "email", Uint8List(0));
+      -1, "firstName", "surname", "contactNumber", "email", Uint8List(0));
 }
 
 class ProfileScreen extends ConsumerWidget {
@@ -137,7 +137,8 @@ class ProfileScreen extends ConsumerWidget {
                                         );
                                       });
                                     } else {
-                                      return Text('No data available');
+                                      return emptySection(
+                                          Icons.group_off, "No team yet");
                                     }
                                   }),
                               const SizedBox(height: 20),
