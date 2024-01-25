@@ -101,6 +101,10 @@ def logout():
   SessionLocal.close_all()
   return RedirectResponse(url="/login"), HTTPException(status_code=200)
 
+@app.post("/check_email_exists")
+def check_email_exists(email: str, db: Session = Depends(get_db)):
+    return crud.check_user_exists_by_email(db, email)
+
 #endregion
 
 #region managers

@@ -15,6 +15,37 @@ final passwordProvider = StateProvider<String>((ref) => "");
 final passwordVisibilityNotifier = StateProvider<bool>((ref) => true);
 final confirmPasswordVisibilityNotifier = StateProvider<bool>((ref) => true);
 
+Future<bool> checkEmailExists(String email) async {
+  final apiUrl =
+      '$apiBaseUrl/check_email_exists?email=${Uri.encodeComponent(email)}';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+
+      if (response.body == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw Exception('Failed to check email');
+}
+
 class SignUpScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -286,28 +317,50 @@ class SignUpScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 40.0),
                       child: bigButton(
                         "Continue",
-                        () {
+                        () async {
                           // sign up functionality
                           if (_formKey.currentState!.validate()) {
-                            ref.read(firstNameProvider.notifier).state =
-                                _firstNameController.text;
-                            ref.read(surnameProvider.notifier).state =
-                                _surnameController.text;
-                            ref.read(emailProvider.notifier).state =
-                                _emailController.text;
-                            ref.read(passwordProvider.notifier).state =
-                                _passwordController.text;
-                            // Only execute if all fields are valid
-                            print("first name:" + _firstNameController.text);
-                            print("surname:" + _surnameController.text);
-                            print("email:" + _emailController.text);
-                            print("password: " + _passwordController.text);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      SignUpChooseTypeScreen()),
-                            );
+                            if (!await checkEmailExists(
+                                _emailController.text)) {
+                              ref.read(firstNameProvider.notifier).state =
+                                  _firstNameController.text;
+                              ref.read(surnameProvider.notifier).state =
+                                  _surnameController.text;
+                              ref.read(emailProvider.notifier).state =
+                                  _emailController.text;
+                              ref.read(passwordProvider.notifier).state =
+                                  _passwordController.text;
+                              // Only execute if all fields are valid
+                              print("first name:" + _firstNameController.text);
+                              print("surname:" + _surnameController.text);
+                              print("email:" + _emailController.text);
+                              print("password: " + _passwordController.text);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SignUpChooseTypeScreen()),
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Email Already in Use'),
+                                    content: Text(
+                                        'Sorry, an account with this email already exists. Please use a different email address and try again.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           }
                         },
                       )),
