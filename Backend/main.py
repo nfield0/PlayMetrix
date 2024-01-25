@@ -357,6 +357,10 @@ def delete_coach(id: int, db:Session = Depends(get_db)):
 
 #region team_coaches
 
+@app.get("/coaches_team/{coach_id}")
+def read_team_coaches(coach_id: int, db:Session = Depends(get_db)):
+    return crud.get_team_coaches(db, coach_id)
+
 @app.get("/team_coach/{team_id}")
 def read_team_coach(team_id: int, db:Session = Depends(get_db)):
     return crud.get_coach_by_team_id(db, team_id)
@@ -373,10 +377,17 @@ def update_team_coach(team_id: int, team_coach: TeamCoachBase, db:Session = Depe
 def delete_coach_team_id(team_id: int, coach_id:int, db:Session = Depends(get_db)):
     return crud.delete_team_coach_by_team_id(db, team_id, coach_id)
 
+
+
+
 #endregion
 
 
 #region team_physio
+
+@app.get("/physios_team/{physio_id}")
+def read_team_phyiso(physio_id: int, db:Session = Depends(get_db)):
+    return crud.get_team_physio(db, physio_id)
 
 @app.get("/team_physio/{team_id}")
 def read_team_physio(team_id: int, db:Session = Depends(get_db)):
@@ -399,6 +410,10 @@ def delete_physio_team_id(team_id: int, db:Session = Depends(get_db)):
 #endregion
 
 #region team_player
+
+@app.get("/players_team/{player_id}")
+def read_team_players(player_id: int, db:Session = Depends(get_db)):
+    return crud.get_team_players(db, player_id)
 
 @app.get("/team_player/{team_id}")
 def read_team_player(team_id: int, db:Session = Depends(get_db)):
