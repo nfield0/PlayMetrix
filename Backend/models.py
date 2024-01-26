@@ -143,7 +143,6 @@ class schedule(Base):
 	schedule_start_time = Column(String(10), index = True)
 	schedule_end_time = Column(String(10), index = True)
 	schedule_alert_time = Column(String(50), index = True)
-	announcements_id = Column(Integer, index = True)
 
 
 class team_schedule(Base):
@@ -160,5 +159,6 @@ class announcements(Base):
 	announcements_desc = Column(String(255), index = True)
 	announcements_date = Column(Date, index = True)
 	manager_id = Column(Integer, index = True)
+	schedule_id = Column(Integer, index = True)
 
 
