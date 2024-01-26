@@ -137,9 +137,14 @@ class coach_info(Base):
 class schedule(Base):
 	__tablename__ = "schedule"
 	schedule_id = Column(Integer, primary_key = True, index = True)
+	schedule_title = Column(String(50), index = True)
+	schedule_location = Column(String(50), index = True)
 	schedule_type = Column(String(100), index = True)
 	schedule_start_time = Column(String(10), index = True)
 	schedule_end_time = Column(String(10), index = True)
+	schedule_alert_time = Column(String(50), index = True)
+	announcements_id = Column(Integer, index = True)
+
 
 class team_schedule(Base):
 	__tablename__ = "team_schedule"
@@ -155,6 +160,5 @@ class announcements(Base):
 	announcements_desc = Column(String(255), index = True)
 	announcements_date = Column(Date, index = True)
 	manager_id = Column(Integer, index = True)
-	schedule_id = Column(Integer, index = True)
 
 
