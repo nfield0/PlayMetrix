@@ -25,6 +25,8 @@ Frontend -
 Flutter: https://docs.flutter.dev/get-started/install
 
 # Installation & Running
+### Install & Setup Database first, then install & run Backend in it's own terminal, and finally install & run Front-end in a separate terminal.
+
 
 ## Database: 
 #### Go to PostgreSQL website and download the latest
@@ -37,6 +39,11 @@ Flutter: https://docs.flutter.dev/get-started/install
 
 ## Backend:
 
+### To run install automatically, click run button in main.py file. Accept prompt to create Virtual Environment.
+
+
+
+### Manual Code setup
 > Create a Virtual Environment on Windows (Ctrl + Shift + P in VSCode)
 ```
 python -m venv .venv
