@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -12,42 +17,8 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class PlayerData {
-  final int player_id;
-  final String player_firstname;
-  final String player_surname;
-  final String player_dob;
-  final String player_contact_number;
-  final String player_image;
-  final String player_height;
-  final String player_gender;
-
-  PlayerData({
-    required this.player_id,
-    required this.player_firstname,
-    required this.player_surname,
-    required this.player_dob,
-    required this.player_contact_number,
-    required this.player_image,
-    required this.player_height,
-    required this.player_gender,
-  });
-
-  factory PlayerData.fromJson(Map<String, dynamic> json) {
-    return PlayerData(
-      player_id: json['player_id'],
-      player_firstname: json['player_firstname'],
-      player_surname: json['player_surname'],
-      player_dob: json['player_dob'],
-      player_contact_number: json['player_contact_number'],
-      player_image: json['player_image'],
-      player_height: json['player_height'],
-      player_gender: json['player_gender'],
-    );
-  }
-}
-
-Future<void> getPlapyerById(String id) async {
+Future<PlayerData> getPlayerById(int id) async {
+  print('Player ID in home page: $id');
   final apiUrl =
       'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
 
@@ -61,18 +32,18 @@ Future<void> getPlapyerById(String id) async {
 
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final playerData = PlayerData.fromJson(responseData);
+      PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
 
       // Access individual variables
-      print('${playerData.player_id}');
-      print('${playerData.player_firstname}');
-      print('${playerData.player_surname}');
-      print('${playerData.player_dob}');
-      print('${playerData.player_contact_number}');
-      print('${playerData.player_image}');
-      print('${playerData.player_height}');
-      print('${playerData.player_gender}');
+      print('${player.player_id}');
+      print('${player.player_firstname}');
+      print('${player.player_surname}');
+      print('${player.player_dob}');
+      print('${player.player_contact_number}');
+      print('${player.player_image}');
+      print('${player.player_height}');
+      print('${player.player_gender}');
+      return player;
     } else {
       // Failed to retrieve data, handle the error accordingly
       print('Failed to retrieve data. Status code: ${response.statusCode}');
@@ -80,79 +51,10 @@ Future<void> getPlapyerById(String id) async {
     }
   } catch (error) {
     // Handle any network or other errors
+    print("user");
     print('Error: $error');
   }
-}
-
-class TeamData {
-  final int team_id;
-  final String team_name;
-  final Image team_logo;
-  final String manager_id;
-  final int league_id;
-  final int sport_id;
-  final String team_location;
-
-  TeamData({
-    required this.team_id,
-    required this.team_name,
-    required this.team_logo,
-    required this.manager_id,
-    required this.sport_id,
-    required this.league_id,
-    required this.team_location,
-  });
-
-  factory TeamData.fromJson(Map<String, dynamic> json) {
-    return TeamData(
-      team_id: json['team_id'],
-      team_name: json['team_name'],
-      team_logo: json['team_logo'],
-      manager_id: json['manager_id'],
-      sport_id: json['sport_id'],
-      league_id: json['league_id'],
-      team_location: json['team_location'],
-    );
-  }
-}
-
-Future<TeamData> getTeamById(String id) async {
-  final apiUrl =
-      'http:/127.0.0.1:8000/teams/info/$id'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final teamData = TeamData.fromJson(responseData);
-
-      // Access individual variables
-      print('${teamData.team_id}');
-      print('${teamData.team_name}');
-      print('${teamData.team_logo}');
-      print('${teamData.manager_id}');
-      print('${teamData.sport_id}');
-      print('${teamData.league_id}');
-      print('${teamData.team_location}');
-      return teamData;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve team data');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to retrieve team data');
-  }
+  throw Exception('Failed to retrieve player data');
 }
 
 class LeagueData {
@@ -208,7 +110,7 @@ Future<List<LeagueData>> getLeagues() async {
   }
 }
 
-Future<String?> getTeamLeagueName(String teamId) async {
+Future<String?> getTeamLeagueName(int teamId) async {
   try {
     final TeamData? teamData = await getTeamById(teamId);
     final List<LeagueData> leagues = await getLeagues();
@@ -237,26 +139,17 @@ class AvailabilityData {
   AvailabilityData(this.status, this.message, this.icon, this.color);
 }
 
+final List<AvailabilityData> availabilityData = [
+  AvailabilityData(AvailabilityStatus.Available, "Available",
+      Icons.check_circle, AppColours.green),
+  AvailabilityData(
+      AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow),
+  AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable", Icons.cancel,
+      AppColours.red)
+];
+
 class PlayerProfileScreen extends ConsumerWidget {
-  final PlayerData playerData = PlayerData(
-    player_id: 0,
-    player_firstname: "",
-    player_surname: "",
-    player_dob: "",
-    player_contact_number: "",
-    player_image: "",
-    player_height: "",
-    player_gender: ""
-  );
-  final TeamData teamData = TeamData(
-    team_id: 0,
-    team_name: "",
-    team_logo: Image.asset("lib/assets/icons/logo_placeholder.png"),
-    manager_id: "",
-    sport_id: 0,
-    league_id: 0,
-    team_location: ""
-  );
+  late PlayerData player;
   late Future<String?> leagueName;
 
   AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
@@ -272,8 +165,10 @@ class PlayerProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
+    final userId = ref.watch(userIdProvider.notifier).state;
+    String selectedGender = ref.watch(genderProvider);
 
-    leagueName = getTeamLeagueName(teamData.league_id.toString());
+    //leagueName = getTeamLeagueName(teamData.league_id.toString());
 
     return Scaffold(
         appBar: AppBar(
@@ -309,14 +204,42 @@ class PlayerProfileScreen extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
                 child: Center(
                   child: Column(children: [
-                    _playerProfile(
-                        playerData.player_firstname,
-                        playerData.player_surname,
-                        7,
-                        playerData.player_dob,
-                        playerData.player_height,
-                        playerData.player_gender,
-                        limited),
+                    FutureBuilder<PlayerData>(
+                        future: getPlayerById(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // Display a loading indicator while the data is being fetched
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            // Display an error message if the data fetching fails
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            // Data has been successfully fetched, use it here
+                            PlayerData player = snapshot.data!;
+                            String first_name = player.player_firstname;
+                            String second_name = player.player_surname;
+                            DateTime dob = player.player_dob;
+                            String height = player.player_height;
+                            String gender = player.player_gender;
+                            Uint8List? profilePicture = player.player_image;
+
+                            String formattedDate =
+                                "${dob.toLocal()}".split(' ')[0];
+
+                            return _playerProfile(
+                                first_name,
+                                second_name,
+                                7,
+                                formattedDate,
+                                height,
+                                gender,
+                                limited,
+                                profilePicture);
+                          } else {
+                            return Text('No data available');
+                          }
+                        }),
                     const SizedBox(height: 20),
                     divider(),
                     const SizedBox(height: 20),
@@ -327,8 +250,8 @@ class PlayerProfileScreen extends ConsumerWidget {
                             color: AppColours.darkBlue,
                             fontSize: 30)),
                     const SizedBox(height: 20),
-                    profilePill(teamData.team_name, leagueName.toString(),
-                        "lib/assets/icons/logo_placeholder.png", () {
+                    profilePill("teamData.team_name", "leagueName.toString()",
+                        "lib/assets/icons/logo_placeholder.png", null, () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -360,6 +283,12 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     if (userRole == UserRole.player)
                       bigButton("Log Out", () {
+                        ref.read(userRoleProvider.notifier).state =
+                            UserRole.manager;
+                        ref.read(userIdProvider.notifier).state = 0;
+                        ref.read(profilePictureProvider.notifier).state = null;
+                        ref.read(dobProvider.notifier).state = DateTime.now();
+                        ref.read(genderProvider.notifier).state = "Male";
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -373,8 +302,15 @@ class PlayerProfileScreen extends ConsumerWidget {
   }
 }
 
-Widget _playerProfile(String firstName, String surname, int playerNumber,
-    String dob, String height, String gender, AvailabilityData availability) {
+Widget _playerProfile(
+    String firstName,
+    String surname,
+    int playerNumber,
+    String dob,
+    String height,
+    String gender,
+    AvailabilityData availability,
+    Uint8List? profilePicture) {
   return Container(
     alignment: Alignment.center,
     padding: const EdgeInsets.all(20),
@@ -402,8 +338,6 @@ Widget _playerProfile(String firstName, String surname, int playerNumber,
           )),
       const SizedBox(height: 25),
       Container(
-        child:
-            Image.asset("lib/assets/icons/profile_placeholder.png", width: 150),
         decoration: BoxDecoration(
           border: Border.all(
             color: availability.color, // Set the border color
@@ -411,6 +345,15 @@ Widget _playerProfile(String firstName, String surname, int playerNumber,
           ),
           borderRadius: BorderRadius.circular(20), // Set the border radius
         ),
+        child: profilePicture != null
+            ? Image.memory(
+                profilePicture,
+                width: 150,
+              )
+            : Image.asset(
+                "lib/assets/icons/profile_placeholder.png",
+                width: 150,
+              ),
       ),
       const SizedBox(height: 20),
       Text(firstName,

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 
@@ -20,7 +22,7 @@ Widget smallPill(String text) {
 }
 
 Widget profilePill(String title, String description, String imagePath,
-    VoidCallback onPressed) {
+    Uint8List? imageBytes, VoidCallback onPressed) {
   return InkWell(
     onTap: onPressed,
     child: Container(
@@ -33,7 +35,9 @@ Widget profilePill(String title, String description, String imagePath,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(imagePath, width: 60),
+          imageBytes != null && imageBytes.isNotEmpty
+              ? Image.memory(imageBytes, width: 60)
+              : Image.asset(imagePath, width: 60),
           const SizedBox(width: 15),
           Expanded(
             child: Column(
@@ -234,6 +238,43 @@ Widget datePickerWithDivider(BuildContext context, String title,
   );
 }
 
+Widget datePickerNoDivider(BuildContext context, String title,
+    DateTime selectedDate, void Function(DateTime) onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime(1920),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Call the onChanged callback with the selected date
+                onChanged(pickedDate);
+              }
+            },
+            child: Text(
+              "${selectedDate.toLocal().toLocal()}"
+                  .split(' ')[0], // Display selected date
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget timePickerWithDivider(BuildContext context, String title,
     TimeOfDay selectedTime, void Function(TimeOfDay) onChanged) {
   return Column(
@@ -300,8 +341,8 @@ Widget formFieldBottomBorder(String title, String initialValue) {
   );
 }
 
-Widget formFieldBottomBorderController(
-    String title, TextEditingController controller) {
+Widget formFieldBottomBorderController(String title,
+    TextEditingController controller, String? Function(String?)? validator) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -314,7 +355,7 @@ Widget formFieldBottomBorderController(
       const SizedBox(width: 30),
       Container(
         width: 210, // Set a fixed width for the TextField
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           decoration: const InputDecoration(
             // labelText: 'Your Label',
@@ -326,6 +367,7 @@ Widget formFieldBottomBorderController(
               borderSide: BorderSide(color: Colors.grey),
             ),
           ),
+          validator: validator,
         ),
       ),
     ],

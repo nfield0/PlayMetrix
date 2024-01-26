@@ -1,20 +1,54 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<void> registerPLayer({
-  required String userType,
-  required String firstName,
-  required String surname,
-  required String email,
-  required String password,
-}) async {
-  final apiUrl = 'http://127.0.0.1:8000/register/'; // Replace with your actual backend URL
+final positionProvider =
+    StateProvider<String>((ref) => teamRoleToText(TeamRole.defense));
+final availabilityProvider =
+    StateProvider<AvailabilityData>((ref) => availabilityData[0]);
+
+Future<int> findPlayerIdByEmail(String email) async {
+  const apiUrl = '$apiBaseUrl/users';
+
+  try {
+    final response = await http.post(Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({"user_type": "player", "user_email": email}));
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data != null) {
+        return data['player_id'];
+      }
+      return -1;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      return -1;
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    return -1;
+  }
+}
+
+Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
+    int number, AvailabilityData playingStatus) async {
+  final apiUrl = '$apiBaseUrl/team_player';
 
   try {
     final response = await http.post(
@@ -23,22 +57,21 @@ Future<void> registerPLayer({
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        'user_type': userType,
-        'first_name': firstName,
-        'surname': surname,
-        'user_email': email,
-        'user_password': password,
+        "team_id": teamId,
+        "player_id": userId,
+        "team_position": teamPosition,
+        "player_team_number": number,
+        "playing_status": playingStatus.message,
+        "lineup_status": ""
       }),
     );
 
     if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
+      // Successfully added data to the backend
+      print("Successfully added player to team");
     } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to add data. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
     }
   } catch (error) {
@@ -47,22 +80,16 @@ Future<void> registerPLayer({
   }
 }
 
-
-class AddPlayerScreen extends StatefulWidget {
-  const AddPlayerScreen({Key? key}) : super(key: key);
-
-  @override
-  _AddPlayerScreenState createState() => _AddPlayerScreenState();
-}
-
-class _AddPlayerScreenState extends State<AddPlayerScreen> {
-  final _formKey = "player";
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _surnameController = TextEditingController();
+class AddPlayerScreen extends ConsumerWidget {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _numberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    String selectedRole = ref.watch(positionProvider);
+    AvailabilityData selectedStatus = ref.watch(availabilityProvider);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Players"),
@@ -73,10 +100,10 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: Container(
-            padding: EdgeInsets.all(40),
+            padding: const EdgeInsets.all(35),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Add Player',
+              Text('Add Player to Team',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,
@@ -92,6 +119,8 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                 height: 20,
               ),
               Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -102,6 +131,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                       ),
                       const SizedBox(height: 25),
                       TextFormField(
+                        controller: _emailController,
                         cursorColor: AppColours.darkBlue,
                         decoration: const InputDecoration(
                           focusedErrorBorder: OutlineInputBorder(
@@ -133,15 +163,111 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                               : null;
                         },
                       ),
+                      const SizedBox(height: 10),
+                      formFieldBottomBorderController(
+                        "Number",
+                        _numberController,
+                        (value) {
+                          if (value != null &&
+                              RegExp(r'^\d+$').hasMatch(value)) {
+                            int numericValue = int.tryParse(value) ?? 0;
+
+                            if (numericValue > 0 && numericValue < 100) {
+                              return null;
+                            } else {
+                              return "Enter a valid number from 1-99.";
+                            }
+                          }
+
+                          return "Enter a valid digit.";
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      dropdownWithDivider("Position", selectedRole, [
+                        teamRoleToText(TeamRole.defense),
+                        teamRoleToText(TeamRole.attack),
+                        teamRoleToText(TeamRole.midfield),
+                        teamRoleToText(TeamRole.goalkeeper),
+                      ], (value) {
+                        ref.read(positionProvider.notifier).state = value!;
+                      }),
+                      const SizedBox(height: 10),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Playing Status",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            DropdownButton<AvailabilityData>(
+                              value: selectedStatus,
+                              items:
+                                  availabilityData.map((AvailabilityData item) {
+                                return DropdownMenuItem<AvailabilityData>(
+                                  value: item,
+                                  child: Row(
+                                    children: [
+                                      Icon(item.icon, color: item.color),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        item.message,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                ref.read(availabilityProvider.notifier).state =
+                                    value!;
+                              },
+                            ),
+                          ]),
                       const SizedBox(height: 40),
-                      bigButton("Add Player", () {
-                        registerPLayer(
-                            userType: _formKey,
-                            firstName: _firstNameController.text,
-                            surname: _surnameController.text,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
+                      bigButton("Add Player", () async {
+                        if (_formKey.currentState!.validate()) {
+                          int playerId =
+                              await findPlayerIdByEmail(_emailController.text);
+
+                          if (playerId != -1) {
+                            await addTeamPlayer(
+                                ref.read(teamIdProvider.notifier).state,
+                                playerId,
+                                ref.read(positionProvider.notifier).state,
+                                int.parse(_numberController.text),
+                                selectedStatus);
+                            ref.read(positionProvider.notifier).state =
+                                teamRoleToText(TeamRole.defense);
+                            ref.read(availabilityProvider.notifier).state =
+                                availabilityData[0];
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Player Not Found',
+                                      style: TextStyle(
+                                          color: AppColours.darkBlue,
+                                          fontFamily: AppFonts.gabarito,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold)),
+                                  content: Text(
+                                      'Sorry, player with that email does not exist. Please enter a different email address and try again.',
+                                      style: TextStyle(fontSize: 16)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
                       })
                     ]),
               )

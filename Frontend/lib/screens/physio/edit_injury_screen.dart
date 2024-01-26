@@ -14,7 +14,8 @@ Future<void> updateInjury({
   required String expected_recovery_time,
   required String recovery_method,
 }) async {
-  final apiUrl = 'http://127.0.0.1:8000/injuries/$injuryId/'; // Replace with your actual backend URL
+  final apiUrl =
+      '$apiBaseUrl/injuries/$injuryId/'; // Replace with your actual backend URL
 
   try {
     final response = await http.put(
@@ -45,7 +46,6 @@ Future<void> updateInjury({
   }
 }
 
-
 class EditInjuryScreen extends StatefulWidget {
   const EditInjuryScreen({Key? key}) : super(key: key);
 
@@ -56,8 +56,11 @@ class EditInjuryScreen extends StatefulWidget {
 class _EditInjuryScreenState extends State<EditInjuryScreen> {
   final TextEditingController _injuryIdController = TextEditingController();
   final TextEditingController _injuryTypeController = TextEditingController();
-  final TextEditingController _expectedRecoveryTimeController = TextEditingController();
-  final TextEditingController _recoveryMethodController = TextEditingController();
+  final TextEditingController _expectedRecoveryTimeController =
+      TextEditingController();
+  final TextEditingController _recoveryMethodController =
+      TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +92,8 @@ class _EditInjuryScreenState extends State<EditInjuryScreen> {
                         height: 20,
                       ),
                       Form(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.always,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -110,26 +115,48 @@ class _EditInjuryScreenState extends State<EditInjuryScreen> {
                               // const SizedBox(height: 5),
                               // formFieldBottomBorder("Date of recovery", ""),
                               const SizedBox(height: 5),
-                              formFieldBottomBorder("Injury type", ""),
+                              formFieldBottomBorderController(
+                                  "Injury type", _injuryTypeController,
+                                  (value) {
+                                return (value != null)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
                               const SizedBox(height: 5),
-                              formFieldBottomBorder(
-                                  "Expected recovery time", ""),
+                              formFieldBottomBorderController(
+                                  "Expected recovery time",
+                                  _expectedRecoveryTimeController, (value) {
+                                return (value != null)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
                               // const SizedBox(height: 5),
                               // formFieldBottomBorder("Injury location", ""),
                               const SizedBox(height: 5),
-                              formFieldBottomBorder("Recovery method", ""),
+                              formFieldBottomBorderController(
+                                  "Recovery method", _recoveryMethodController,
+                                  (value) {
+                                return (value != null)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
                               const SizedBox(height: 35),
                               bigButton("Save Changes", () {
-                                updateInjury(
-                                  injuryId: int.parse(_injuryIdController.text),
-                                  injury_type: _injuryTypeController.text,
-                                  expected_recovery_time: _expectedRecoveryTimeController.text,
-                                  recovery_method: _recoveryMethodController.text,
-                                );
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
+                                if (_formKey.currentState!.validate()) {
+                                  updateInjury(
+                                    injuryId:
+                                        int.parse(_injuryIdController.text),
+                                    injury_type: _injuryTypeController.text,
+                                    expected_recovery_time:
+                                        _expectedRecoveryTimeController.text,
+                                    recovery_method:
+                                        _recoveryMethodController.text,
+                                  );
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen()));
+                                }
                               })
                             ]),
                       )

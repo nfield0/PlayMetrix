@@ -3,12 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // int userId = ref.watch(userIdProvider);
+    // String selectedGender = ref.watch(genderProvider);
+    // int teamId = ref.watch(teamIdProvider);
+
+    // userId = 0;
+    // selectedGender = "";
+    // teamId = 0;
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -32,8 +41,7 @@ class LandingScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignUpScreen()),
+                    MaterialPageRoute(builder: (context) => SignUpScreen()),
                   );
                 },
                 borderRadius: BorderRadius.circular(25),
@@ -65,8 +73,7 @@ class LandingScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const LogInScreen()),
+                    MaterialPageRoute(builder: (context) => LogInScreen()),
                   );
                 },
                 borderRadius: BorderRadius.circular(25),

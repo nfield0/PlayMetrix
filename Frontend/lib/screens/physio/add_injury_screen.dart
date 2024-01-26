@@ -13,7 +13,8 @@ Future<void> AddInjury({
   required String expected_recovery_time,
   required String recovery_method,
 }) async {
-  final apiUrl = 'http://127.0.0.1:8000/injuries/'; // Replace with your actual backend URL
+  final apiUrl =
+      '$apiBaseUrl/injuries/'; // Replace with your actual backend URL
 
   try {
     final response = await http.post(
@@ -52,10 +53,14 @@ class AddInjuryScreen extends StatefulWidget {
 }
 
 class _AddInjuryScreenState extends State<AddInjuryScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   // Controllers for form fields
   final TextEditingController injuryTypeController = TextEditingController();
-  final TextEditingController expectedRecoveryTimeController = TextEditingController();
-  final TextEditingController recoveryMethodController = TextEditingController();
+  final TextEditingController expectedRecoveryTimeController =
+      TextEditingController();
+  final TextEditingController recoveryMethodController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +92,8 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
                         height: 20,
                       ),
                       Form(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.always,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -108,24 +115,45 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
                               // const SizedBox(height: 5),
                               // formFieldBottomBorder("Date of recovery", ""),
                               const SizedBox(height: 5),
-                              formFieldBottomBorder("Injury type", injuryTypeController.text),
+                              formFieldBottomBorderController(
+                                  "Injury type", injuryTypeController, (value) {
+                                return (value != null)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
                               const SizedBox(height: 5),
-                              formFieldBottomBorder("Expected recovery time", expectedRecoveryTimeController.text),
+                              formFieldBottomBorderController(
+                                  "Expected recovery time",
+                                  expectedRecoveryTimeController, (value) {
+                                return (value != null)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
                               // const SizedBox(height: 5),
                               // formFieldBottomBorder("Injury location", ""),
                               const SizedBox(height: 5),
-                              formFieldBottomBorder("Recovery method", recoveryMethodController.text),  
+                              formFieldBottomBorderController(
+                                  "Recovery method", recoveryMethodController,
+                                  (value) {
+                                return (value != null)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
                               const SizedBox(height: 35),
                               bigButton("Add Injury", () {
-                                AddInjury(
-                                  injury_type: injuryTypeController.text,
-                                  expected_recovery_time: expectedRecoveryTimeController.text,
-                                  recovery_method: recoveryMethodController.text,
-                                );
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
+                                if (_formKey.currentState!.validate()) {
+                                  AddInjury(
+                                    injury_type: injuryTypeController.text,
+                                    expected_recovery_time:
+                                        expectedRecoveryTimeController.text,
+                                    recovery_method:
+                                        recoveryMethodController.text,
+                                  );
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen()));
+                                }
                               })
                             ]),
                       )

@@ -8,6 +8,16 @@ import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
 class EditProfileScreen extends ConsumerWidget {
+  final _formKey = GlobalKey<FormState>();
+  final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
+  final nameRegex = RegExp(r'^[A-Za-z]+$');
+  final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
@@ -40,6 +50,8 @@ class EditProfileScreen extends ConsumerWidget {
                         height: 20,
                       ),
                       Form(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.always,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -54,13 +66,40 @@ class EditProfileScreen extends ConsumerWidget {
                                 underlineButtonTransparent(
                                     "Edit picture", () {}),
                               ])),
-                              formFieldBottomBorder("First name", "Brian"),
-                              formFieldBottomBorder("Surname", "Smith"),
-                              formFieldBottomBorder(
-                                  "Email", "bsmith@louthgaa.com"),
-                              formFieldBottomBorder("Phone", "+353812837123"),
+                              formFieldBottomBorderController(
+                                  "First name", firstNameController,
+                                  (String? value) {
+                                return (value != null &&
+                                        !nameRegex.hasMatch(value))
+                                    ? 'Invalid first name.'
+                                    : null;
+                              }),
+                              formFieldBottomBorderController(
+                                  "Surname", surnameController,
+                                  (String? value) {
+                                return (value != null &&
+                                        !nameRegex.hasMatch(value))
+                                    ? 'Invalid surname.'
+                                    : null;
+                              }),
+                              formFieldBottomBorderController(
+                                  "Email", emailController, (String? value) {
+                                return (value != null &&
+                                        !emailRegex.hasMatch(value))
+                                    ? 'Invalid email.'
+                                    : null;
+                              }),
+                              formFieldBottomBorderController(
+                                  "Phone", phoneController, (String? value) {
+                                return (value != null &&
+                                        !phoneRegex.hasMatch(value))
+                                    ? 'Invalid phone number.'
+                                    : null;
+                              }),
                               const SizedBox(height: 30),
-                              bigButton("Save Changes", () {})
+                              bigButton("Save Changes", () {
+                                if (_formKey.currentState!.validate()) {}
+                              })
                             ]),
                       )
                     ]))),

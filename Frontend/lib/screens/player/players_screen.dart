@@ -4,52 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/coach/coaches_screen.dart';
+import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class PlayerData {
-  final int player_id;
-  final String player_firstname;
-  final String player_surname;
-  final String player_dob;
-  final String player_contact_number;
-  final String player_image;
-  final String player_height;
-  final String player_gender;
-
-  PlayerData({
-    required this.player_id,
-    required this.player_firstname,
-    required this.player_surname,
-    required this.player_dob,
-    required this.player_contact_number,
-    required this.player_image,
-    required this.player_height,
-    required this.player_gender,
-  });
-
-  factory PlayerData.fromJson(Map<String, dynamic> json) {
-    return PlayerData(
-      player_id: json['player_id'],
-      player_firstname: json['player_firstname'],
-      player_surname: json['player_surname'],
-      player_dob: json['player_dob'],
-      player_contact_number: json['player_contact_number'],
-      player_image: json['player_image'],
-      player_height: json['player_height'],
-      player_gender: json['player_gender'],
-    );
-  }
-}
-
 Future<List<PlayerData>> getAllPlayers() async {
-  final apiUrl = 'http://127.0.0.1:8000/players'; // URL for getting all players
+  final apiUrl = '$apiBaseUrl/players/'; // URL for getting all players
 
   try {
     final response = await http.get(
@@ -123,22 +90,40 @@ class PlayersScreen extends ConsumerWidget {
                           context,
                           PageRouteBuilder(
                             pageBuilder: (context, animation1, animation2) =>
-                                const CoachesScreen(),
+                                CoachesScreen(),
                             transitionDuration: Duration.zero,
                             reverseTransitionDuration: Duration.zero,
                           ),
                         );
                       }),
                     ]),
-                  const SizedBox(height: 10),
-                  profilePill("Louth GAA", "Senior Football",
-                      "lib/assets/icons/logo_placeholder.png", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TeamProfileScreen()),
-                    );
-                  }),
+                  const SizedBox(height: 25),
+                  FutureBuilder(
+                      future:
+                          getTeamById(ref.read(teamIdProvider.notifier).state),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          TeamData team = snapshot.data!;
+                          return profilePill(
+                              team.team_name,
+                              team.team_location,
+                              "lib/assets/icons/logo_placeholder.png",
+                              team.team_logo, () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TeamProfileScreen()),
+                            );
+                          });
+                        } else {
+                          return emptySection(Icons.group_off, "No team yet");
+                        }
+                      }),
                   const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,7 +142,7 @@ class PlayersScreen extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const AddPlayerScreen()),
+                                builder: (context) => AddPlayerScreen()),
                           );
                         })
                     ],
@@ -171,7 +156,7 @@ class PlayersScreen extends ConsumerWidget {
                       children: players.map((PlayerData player) {
                         return playerProfilePill(
                             context, // Assuming 'player_image' is an Image object
-                            player.player_image,
+                            player.player_image.toString(),
                             player.player_firstname,
                             player.player_surname,
                             7,
@@ -185,7 +170,7 @@ class PlayersScreen extends ConsumerWidget {
                       children: players.map((PlayerData player) {
                         return playerProfilePill(
                             context, // Assuming 'player_image' is an Image object
-                            player.player_image,
+                            player.player_image.toString(),
                             player.player_firstname,
                             player.player_surname,
                             7,

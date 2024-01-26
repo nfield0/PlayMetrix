@@ -17,7 +17,7 @@ Future<void> editTeam({
   required String teamLocation,
 }) async {
   final apiUrl =
-      'http://127.0.0.1:8000/login/teams/'; // Replace with your actual API URL
+      '$apiBaseUrl/login/teams/'; // Replace with your actual API URL
 
   try {
     final response = await http.put(
@@ -56,6 +56,7 @@ class EditTeamScreen extends StatefulWidget {
 
 class _EditTeamScreenState extends State<EditTeamScreen> {
   String selectedDivisionValue = "Division 1";
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _teamNameController = TextEditingController();
   final TextEditingController _teamLogoController = TextEditingController();
@@ -84,88 +85,98 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.always,
           child: Container(
-        padding: EdgeInsets.all(35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Edit Team',
-                style: TextStyle(
-                  color: AppColours.darkBlue,
-                  fontFamily: AppFonts.gabarito,
-                  fontSize: 36.0,
-                  fontWeight: FontWeight.w700,
-                )),
-            const Divider(
-              color: AppColours.darkBlue,
-              thickness: 1.0, // Set the thickness of the line
-              height: 40.0, // Set the height of the line
-            ),
-            const SizedBox(height: 20),
-            Center(
-                child: Column(children: [
-              Image.asset(
-                "lib/assets/icons/logo_placeholder.png",
-                width: 100,
-              ),
-              const SizedBox(height: 10),
-              underlineButtonTransparent("Upload logo", () {}),
-            ])),
-            formFieldBottomBorder(
-                "Club name", "Louth GAA"), // NOT IN BACKEND ENDPOINT
-            const SizedBox(height: 10),
-            formFieldBottomBorder("Team name", _teamNameController.text),
-            const SizedBox(height: 10),
-            formFieldBottomBorder("Location", _teamLocationController.text),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: EdgeInsets.all(35),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Division",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                const Text('Edit Team',
+                    style: TextStyle(
+                      color: AppColours.darkBlue,
+                      fontFamily: AppFonts.gabarito,
+                      fontSize: 36.0,
+                      fontWeight: FontWeight.w700,
+                    )),
+                const Divider(
+                  color: AppColours.darkBlue,
+                  thickness: 1.0, // Set the thickness of the line
+                  height: 40.0, // Set the height of the line
                 ),
-                const SizedBox(width: 20),
-                SizedBox(
-                  // Wrap the DropdownButtonFormField with a Container
-                  width: 220, // Provide a specific width
-                  child: DropdownButtonFormField<String>(
-                    focusColor: AppColours.darkBlue,
-                    value: selectedDivisionValue,
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedDivisionValue = newValue!;
-                      });
-                    },
-                    items: ['Division 1', 'Division 2', 'Division 3']
-                        .map((String option) {
-                      return DropdownMenuItem<String>(
-                        value: option,
-                        child: Text(option),
-                      );
-                    }).toList(),
+                const SizedBox(height: 20),
+                Center(
+                    child: Column(children: [
+                  Image.asset(
+                    "lib/assets/icons/logo_placeholder.png",
+                    width: 100,
                   ),
+                  const SizedBox(height: 10),
+                  underlineButtonTransparent("Upload logo", () {}),
+                ])),
+                const SizedBox(height: 10),
+                formFieldBottomBorderController(
+                    "Team name", _teamNameController, (String? value) {
+                  return (value != null) ? 'This field is required.' : null;
+                }),
+                const SizedBox(height: 10),
+                formFieldBottomBorderController(
+                    "Location", _teamLocationController, (String? value) {
+                  return (value != null) ? 'This field is required.' : null;
+                }),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "League",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 20),
+                    SizedBox(
+                      // Wrap the DropdownButtonFormField with a Container
+                      width: 220, // Provide a specific width
+                      child: DropdownButtonFormField<String>(
+                        focusColor: AppColours.darkBlue,
+                        value: selectedDivisionValue,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedDivisionValue = newValue!;
+                          });
+                        },
+                        items: ['Division 1', 'Division 2', 'Division 3']
+                            .map((String option) {
+                          return DropdownMenuItem<String>(
+                            value: option,
+                            child: Text(option),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 50),
+                bigButton("Save Changes", () {
+                  if (_formKey.currentState!.validate()) {
+                    // editTeam(
+                    //   teamName: _teamNameController.text,
+                    //   teamLogo: _teamLogoController.text,
+                    //   managerId: _managerIdController, // replace with actual manager ID
+                    //   leagueId: _leagueIdController, // replace with actual league ID
+                    //   sportId: _sportIdController, // replace with actual sport ID
+                    //   teamLocation: _teamLocationController.text,
+                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TeamProfileScreen()),
+                    );
+                  }
+                })
               ],
             ),
-            const SizedBox(height: 50),
-            bigButton("Save Changes", () {
-              // editTeam(
-              //   teamName: _teamNameController.text,
-              //   teamLogo: _teamLogoController.text,
-              //   managerId: _managerIdController, // replace with actual manager ID
-              //   leagueId: _leagueIdController, // replace with actual league ID
-              //   sportId: _sportIdController, // replace with actual sport ID
-              //   teamLocation: _teamLocationController.text,
-              // );
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TeamProfileScreen()),
-              );
-            })
-          ],
-        ),
-      )),
+          )),
     );
   }
 }

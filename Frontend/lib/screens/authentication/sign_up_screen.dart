@@ -1,27 +1,53 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-String firstName = "";
-String surname = "";
-String email = "";
-String password = "";
+final firstNameProvider = StateProvider<String>((ref) => "");
+final surnameProvider = StateProvider<String>((ref) => "");
+final emailProvider = StateProvider<String>((ref) => "");
+final passwordProvider = StateProvider<String>((ref) => "");
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+final passwordVisibilityNotifier = StateProvider<bool>((ref) => true);
+final confirmPasswordVisibilityNotifier = StateProvider<bool>((ref) => true);
 
-  @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+Future<bool> checkEmailExists(String email) async {
+  final apiUrl =
+      '$apiBaseUrl/check_email_exists?email=${Uri.encodeComponent(email)}';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+
+      if (response.body == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw Exception('Failed to check email');
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
-  bool _passwordIsObscure = true;
-  bool _confirmPasswordIsObscure = true;
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -33,7 +59,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _nameRegex = RegExp(r'^[A-Za-z]+$');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final passwordIsObscure = ref.watch(passwordVisibilityNotifier);
+    final confirmPasswordIsObscure =
+        ref.watch(confirmPasswordVisibilityNotifier);
+
     return Scaffold(
         appBar: AppBar(
           title: Image.asset(
@@ -180,7 +210,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.only(top: 25.0),
                     child: TextFormField(
                       controller: _passwordController,
-                      obscureText: _passwordIsObscure,
+                      obscureText: passwordIsObscure,
                       cursorColor: AppColours.darkBlue,
                       decoration: InputDecoration(
                         focusedErrorBorder: const OutlineInputBorder(
@@ -204,16 +234,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _passwordIsObscure
+                            passwordIsObscure
                                 ? Icons.visibility_off
                                 : Icons.visibility,
                             color: AppColours.darkBlue,
                           ),
                           onPressed: () {
                             // Toggle the visibility of the password
-                            setState(() {
-                              _passwordIsObscure = !_passwordIsObscure;
-                            });
+                            ref
+                                .read(passwordVisibilityNotifier.notifier)
+                                .state = !passwordIsObscure;
                           },
                         ),
                         labelText: 'Password',
@@ -233,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.only(top: 25.0),
                     child: TextFormField(
                       // controller: _passwordController,
-                      obscureText: _confirmPasswordIsObscure,
+                      obscureText: confirmPasswordIsObscure,
                       cursorColor: AppColours.darkBlue,
                       decoration: InputDecoration(
                         focusedErrorBorder: const OutlineInputBorder(
@@ -257,17 +287,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _confirmPasswordIsObscure
+                            confirmPasswordIsObscure
                                 ? Icons.visibility_off
                                 : Icons.visibility,
                             color: AppColours.darkBlue,
                           ),
                           onPressed: () {
                             // Toggle the visibility of the password
-                            setState(() {
-                              _confirmPasswordIsObscure =
-                                  !_confirmPasswordIsObscure;
-                            });
+                            ref
+                                .read(
+                                    confirmPasswordVisibilityNotifier.notifier)
+                                .state = !confirmPasswordIsObscure;
                           },
                         ),
                         labelText: 'Confirm password',
@@ -287,25 +317,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       padding: const EdgeInsets.only(top: 40.0),
                       child: bigButton(
                         "Continue",
-                        () {
-                          // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE REGISTER FUNCTION AND HOW TO GET THE USER TYPE
-                            firstName = _firstNameController.text;
-                            surname = _surnameController.text;
-                            email = _emailController.text;
-                            password = _passwordController.text;
+                        () async {
                           // sign up functionality
                           if (_formKey.currentState!.validate()) {
-                            // Only execute if all fields are valid
-                            print("first name:" + _firstNameController.text);
-                            print("surname:" + _surnameController.text);
-                            print("email:" + _emailController.text);
-                            print("password: " + _passwordController.text);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      SignUpChooseTypeScreen()),
-                            );
+                            if (!await checkEmailExists(
+                                _emailController.text)) {
+                              ref.read(firstNameProvider.notifier).state =
+                                  _firstNameController.text;
+                              ref.read(surnameProvider.notifier).state =
+                                  _surnameController.text;
+                              ref.read(emailProvider.notifier).state =
+                                  _emailController.text;
+                              ref.read(passwordProvider.notifier).state =
+                                  _passwordController.text;
+                              // Only execute if all fields are valid
+                              print("first name:" + _firstNameController.text);
+                              print("surname:" + _surnameController.text);
+                              print("email:" + _emailController.text);
+                              print("password: " + _passwordController.text);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SignUpChooseTypeScreen()),
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Email Already in Use',
+                                        style: TextStyle(
+                                            color: AppColours.darkBlue,
+                                            fontFamily: AppFonts.gabarito,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold)),
+                                    content: Text(
+                                      'Sorry, an account with this email already exists. Please use a different email address and try again.',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           }
                         },
                       )),

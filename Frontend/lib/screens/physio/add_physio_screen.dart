@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<void> registerPhysio({
-  required String userType,
-  required String firstName,
-  required String surname,
-  required String email,
-  required String password,
-}) async {
-  final apiUrl = 'http://127.0.0.1:8000/register/'; // Replace with your actual backend URL
+Future<void> addTeamPhysio(int teamId, int userId) async {
+  const apiUrl = '$apiBaseUrl/team_physio';
 
   try {
     final response = await http.post(
@@ -22,23 +19,15 @@ Future<void> registerPhysio({
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, dynamic>{
-        'user_type': userType,
-        'first_name': firstName,
-        'surname': surname,
-        'user_email': email,
-        'user_password': password,
-      }),
+      body:
+          jsonEncode(<String, dynamic>{"team_id": teamId, "physio_id": userId}),
     );
 
     if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
+      // Successfully added data to the backend
     } else {
-      // Failed to register, handle the error accordingly
-      print('Failed to register. Status code: ${response.statusCode}');
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to add data. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
     }
   } catch (error) {
@@ -47,22 +36,42 @@ Future<void> registerPhysio({
   }
 }
 
+Future<int> findPhysioIdByEmail(String email) async {
+  const apiUrl = '$apiBaseUrl/users';
 
-class AddPhysioScreen extends StatefulWidget {
-  const AddPhysioScreen({Key? key}) : super(key: key);
+  try {
+    final response = await http.post(Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({"user_type": "physio", "user_email": email}));
 
-  @override
-  _AddPhysioScreenState createState() => _AddPhysioScreenState();
+    if (response.statusCode == 200) {
+      // Successfully retrieved data
+      final data = jsonDecode(response.body);
+      if (data != null) {
+        return data['physio_id'];
+      }
+      return -1;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      return -1;
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    return -1;
+  }
 }
 
-class _AddPhysioScreenState extends State<AddPhysioScreen> {
-   final _formKey = "physio";
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _surnameController = TextEditingController();
+class AddPhysioScreen extends ConsumerWidget {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Team Profile"),
@@ -76,7 +85,7 @@ class _AddPhysioScreenState extends State<AddPhysioScreen> {
             padding: EdgeInsets.all(40),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Add Physio',
+              Text('Add Physio to Team',
                   style: TextStyle(
                     color: AppColours.darkBlue,
                     fontFamily: AppFonts.gabarito,
@@ -92,16 +101,19 @@ class _AddPhysioScreenState extends State<AddPhysioScreen> {
                 height: 20,
               ),
               Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Enter registered player email:",
+                        "Enter registered physio email:",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 25),
                       TextFormField(
+                        controller: _emailController,
                         cursorColor: AppColours.darkBlue,
                         decoration: const InputDecoration(
                           focusedErrorBorder: OutlineInputBorder(
@@ -134,14 +146,41 @@ class _AddPhysioScreenState extends State<AddPhysioScreen> {
                         },
                       ),
                       const SizedBox(height: 40),
-                      bigButton("Add Physio", () {
-                        registerPhysio(
-                            userType: _formKey,
-                            firstName: _firstNameController.text,
-                            surname: _surnameController.text,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
+                      bigButton("Add Physio", () async {
+                        if (_formKey.currentState!.validate()) {
+                          int physioId =
+                              await findPhysioIdByEmail(_emailController.text);
+
+                          if (physioId != -1) {
+                            await addTeamPhysio(
+                                ref.read(teamIdProvider), physioId);
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Physio Not Found',
+                                      style: TextStyle(
+                                          color: AppColours.darkBlue,
+                                          fontFamily: AppFonts.gabarito,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold)),
+                                  content: Text(
+                                      'Sorry, physio with that email does not exist. Please enter a different email address and try again.',
+                                      style: TextStyle(fontSize: 16)),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
                       })
                     ]),
               )

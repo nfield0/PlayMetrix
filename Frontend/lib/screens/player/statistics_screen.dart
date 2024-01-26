@@ -1,20 +1,56 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class StatisticsScreen extends StatefulWidget {
-  const StatisticsScreen({Key? key}) : super(key: key);
+class StatisticsData {
+  final int matchesPlayed;
+  final int matchesStarted;
+  final int matchesOffTheBench;
+  final int totalMinutesPlayed;
+  final bool injuryProne;
 
-  @override
-  _StatisticsScreenState createState() => _StatisticsScreenState();
+  StatisticsData(this.matchesPlayed, this.matchesStarted,
+      this.matchesOffTheBench, this.totalMinutesPlayed, this.injuryProne);
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
+Future<StatisticsData> getStatisticsData(int id) async {
+  final apiUrl = '$apiBaseUrl/players/stats/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+      final parsed = jsonDecode(response.body);
+
+      return StatisticsData(
+          parsed["matches_played"],
+          parsed["matches_started"],
+          parsed["matches_off_the_bench"],
+          parsed["minutes_played"],
+          parsed["injury_prone"]);
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  throw Exception('Failed to load player statistics');
+}
+
+class StatisticsScreen extends ConsumerWidget {
   AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
       "Available", Icons.check_circle, AppColours.green);
   AvailabilityData limited = AvailabilityData(
@@ -26,9 +62,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       AppColours.red);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userId = ref.watch(userIdProvider.notifier).state;
+
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Image.asset(
             'lib/assets/logo.png',
             width: 150,
@@ -64,35 +103,66 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       const SizedBox(
                         height: 25,
                       ),
-                      _statisticsDetailWithDivider(
-                          "Matches played", "10", available),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      _statisticsDetailWithDivider(
-                          "Matches started", "4", limited),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      _statisticsDetailWithDivider(
-                          "Matches off the bench", "6", unavailable),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      _statisticsDetailWithDivider(
-                          "Total minutes played", "230", unavailable),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      _statisticsDetailWithDivider(
-                          "Number of injuries", "1", available)
+                      FutureBuilder<StatisticsData>(
+                          future: getStatisticsData(userId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // Display a loading indicator while the data is being fetched
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              // Display an error message if the data fetching fails
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              // Data has been successfully fetched, use it here
+                              StatisticsData statistics = snapshot.data!;
+                              return Column(
+                                children: [
+                                  _statisticsDetailWithDivider(
+                                      "Matches played",
+                                      statistics.matchesPlayed.toString(),
+                                      available),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  _statisticsDetailWithDivider(
+                                      "Matches started",
+                                      statistics.matchesStarted.toString(),
+                                      limited),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  _statisticsDetailWithDivider(
+                                      "Matches off the bench",
+                                      statistics.matchesOffTheBench.toString(),
+                                      unavailable),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  _statisticsDetailWithDivider(
+                                      "Total minutes played",
+                                      statistics.totalMinutesPlayed.toString(),
+                                      unavailable),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  _statisticsDetailWithDivider(
+                                      "Injury Prone",
+                                      statistics.injuryProne ? "Yes" : "No",
+                                      null)
+                                ],
+                              );
+                            } else {
+                              return Text('No data available');
+                            }
+                          }),
                     ]))),
         bottomNavigationBar: playerBottomNavBar(context, 1));
   }
 }
 
 Widget _statisticsDetailWithDivider(
-    String title, String detail, AvailabilityData availability) {
+    String title, String detail, AvailabilityData? availability) {
   return Column(
     children: [
       Row(
@@ -105,7 +175,9 @@ Widget _statisticsDetailWithDivider(
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(width: 7),
-              Icon(availability.icon, color: availability.color, size: 16),
+              availability != null
+                  ? Icon(availability.icon, color: availability.color, size: 16)
+                  : Container(),
             ],
           ),
         ],
