@@ -26,40 +26,54 @@ class DailyScheduleScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: Container(
-            padding: const EdgeInsets.all(30),
-            child: SfCalendar(
-              onTap: (CalendarTapDetails details) {
-                if (details.targetElement == CalendarElement.appointment) {
-                  ref.watch(appointmentIdProvider.notifier).state =
-                      details.appointments![0].id;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ScheduleDetailsScreen(),
+          padding: const EdgeInsets.all(30),
+          child: FutureBuilder(
+              future: getCalendarDataSource(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final dataSource = snapshot.data;
+
+                  return SfCalendar(
+                    onTap: (CalendarTapDetails details) {
+                      if (details.targetElement ==
+                          CalendarElement.appointment) {
+                        ref.watch(appointmentIdProvider.notifier).state =
+                            details.appointments![0].id;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScheduleDetailsScreen(),
+                          ),
+                        );
+                      }
+                    },
+                    view: CalendarView.day,
+                    headerStyle: const CalendarHeaderStyle(
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: AppFonts.gabarito,
+                      ),
                     ),
+                    todayHighlightColor: AppColours.darkBlue,
+                    selectionDecoration: BoxDecoration(
+                      border:
+                          Border.all(color: AppColours.darkBlue, width: 2.0),
+                    ),
+                    initialSelectedDate: selectedDate,
+                    initialDisplayDate: selectedDate,
+                    timeSlotViewSettings: const TimeSlotViewSettings(
+                      numberOfDaysInView: 1,
+                    ),
+                    dataSource: AppointmentDataSource(dataSource!),
                   );
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
                 }
-              },
-              view: CalendarView.day,
-              headerStyle: const CalendarHeaderStyle(
-                textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: AppFonts.gabarito,
-                ),
-              ),
-              todayHighlightColor: AppColours.darkBlue,
-              selectionDecoration: BoxDecoration(
-                border: Border.all(color: AppColours.darkBlue, width: 2.0),
-              ),
-              initialSelectedDate: selectedDate,
-              initialDisplayDate: selectedDate,
-              timeSlotViewSettings: const TimeSlotViewSettings(
-                numberOfDaysInView: 1,
-              ),
-              dataSource: AppointmentDataSource(getCalendarDataSource()),
-            )),
+                return const CircularProgressIndicator();
+              }),
+        ),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
   }
 }
