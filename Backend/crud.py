@@ -454,9 +454,12 @@ def get_schedule_by_team_id_and_type(db: Session, id: int, type: str):
 def insert_new_schedule(db:Session, new_schedule: ScheduleBaseNoID):
     try:
         if new_schedule is not None:
-            new_schedule = schedule(schedule_type=new_schedule.schedule_type,
-                                        schedule_start_time=new_schedule.schedule_start_time,
-                                        schedule_end_time=new_schedule.schedule_end_time)
+            new_schedule = schedule(schedule_title=new_schedule.schedule_title,schedule_location=new_schedule.schedule_location,
+                                    schedule_type=new_schedule.schedule_type,
+                                    schedule_start_time=new_schedule.schedule_start_time,
+                                    schedule_end_time=new_schedule.schedule_end_time,
+                                    schedule_alert_time=new_schedule.schedule_alert_time,
+                                    announcements_id=new_schedule.announcements_id)
             db.add(new_schedule)
             db.commit()
             db.refresh(new_schedule)
@@ -576,8 +579,7 @@ def insert_new_announcement(db:Session, new_announcement: AnnouncementBaseNoID):
         announcement = announcements(announcements_title=new_announcement.announcements_title,
                                         announcements_desc=new_announcement.announcements_desc,
                                         announcements_date=new_announcement.announcements_date,
-                                        manager_id=new_announcement.manager_id,
-                                        schedule_id=new_announcement.schedule_id)
+                                        manager_id=new_announcement.manager_id)
         db.add(announcement)
         db.commit()
         db.refresh(announcement)
@@ -600,7 +602,6 @@ def update_announcement(db, updated_announcement: AnnouncementBase, id: int):
         announcement_to_update.announcements_desc = updated_announcement.announcements_desc
         announcement_to_update.announcements_date = updated_announcement.announcements_date
         announcement_to_update.manager_id = updated_announcement.manager_id
-        announcement_to_update.schedule_id = updated_announcement.schedule_id
         
         db.commit()
         return {"message": f"Announcement with ID {id} has been updated"}

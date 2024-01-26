@@ -199,9 +199,14 @@ class ScheduleBase(BaseModel):
     schedule_end_time: str
 
 class ScheduleBaseNoID(BaseModel):
+    schedule_title: str
+    schedule_location: str
     schedule_type: str
     schedule_start_time: str
     schedule_end_time: str
+    schedule_alert_time: str
+    announcements_id: int
+
 
 class TeamScheduleBase(BaseModel):
     schedule_id: int
@@ -214,11 +219,9 @@ class AnnouncementBase(BaseModel):
     announcements_desc: str
     announcements_date: str
     manager_id: int
-    schedule_id: int
 
 class AnnouncementBaseNoID(BaseModel):
     announcements_title: str
     announcements_desc: str
     announcements_date: str
     manager_id: int
-    schedule_id: int

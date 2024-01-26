@@ -197,12 +197,30 @@ CREATE TABLE IF NOT EXISTS  player_injuries
 		REFERENCES player_info(player_id)
 );
 
+/*Anouncements Table*/
+CREATE TABLE IF NOT EXISTS announcements
+(
+	announcements_id serial PRIMARY KEY,
+	announcements_title VARCHAR(100) NOT NULL,
+	announcements_desc VARCHAR(255), 
+	announcements_date TIMESTAMP, 
+	manager_id INT NOT NULL,
+	FOREIGN KEY(manager_id)
+		REFERENCES manager_info(manager_id)
+);
+
 CREATE TABLE IF NOT EXISTS schedule
 (
 	schedule_id serial PRIMARY KEY,
+	schedule_title VARCHAR(50),
+	schedule_location VARCHAR(50),
 	schedule_type VARCHAR (100),
 	schedule_start_time TIMESTAMP,
-	schedule_end_time TIMESTAMP
+	schedule_end_time TIMESTAMP,
+	schedule_alert_time VARCHAR(50),
+	announcements_id INT NOT NULL,
+	FOREIGN KEY (announcements_id)
+		REFERENCES announcements (announcements_id)
 	
 );
 
@@ -218,20 +236,7 @@ CREATE TABLE team_schedule
 		REFERENCES player_info(player_id)
 
 );
-/*Anouncements Table*/
-CREATE TABLE IF NOT EXISTS announcements
-(
-	announcements_id serial PRIMARY KEY,
-	announcements_title VARCHAR(100) NOT NULL,
-	announcements_desc VARCHAR(255), 
-	announcements_date TIMESTAMP, 
-	manager_id INT NOT NULL,
-	schedule_id INT NOT NULL,
-	FOREIGN KEY(manager_id)
-		REFERENCES manager_info(manager_id),
-	FOREIGN KEY(schedule_id)
-		REFERENCES schedule(schedule_id)
-);
+
 
 
 
@@ -564,6 +569,7 @@ SELECT  DISTINCT managerInfo.manager_firstname, managerInfo.manager_surname,
 FROM manager_info managerInfo, coach_info coachInfo, team_coach teamCoach, team teamInfo, player_team teamPlayer
 WHERE managerInfo.manager_id = teamInfo.manager_id AND coachInfo.coach_id = teamCoach.coach_id
 GROUP BY manager_firstname, manager_surname, coach_firstname, coach_surname, team_role
+
 
 
 /*A Query that Counts the number of training/match days that a player misses 
