@@ -212,6 +212,8 @@ CREATE TABLE IF NOT EXISTS announcements
 CREATE TABLE IF NOT EXISTS schedule
 (
 	schedule_id serial PRIMARY KEY,
+	schedule_title VARCHAR(50),
+	schedule_location VARCHAR(50),
 	schedule_type VARCHAR (100),
 	schedule_start_time TIMESTAMP,
 	schedule_end_time TIMESTAMP
