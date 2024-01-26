@@ -13,6 +13,30 @@ This application has several Key Features:
 3. Players can view their own statistics regarding recovery and performance.
 
 
+## Technologies Used
+
+<div align="center">
+<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/001448fb-5083-4536-8ec4-76a655a6051a" width="300px">
+
+AWS - for Server Hosting
+
+
+<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/3e8ecb75-1f5a-406c-a7e7-70802fc65334" width="300px">
+
+PostgreSQL - for Database Management
+
+
+<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/0f713af8-e38d-4d2e-aea3-a00f7771dd35" width="300px">
+
+FastAPI - for RESTful API's
+
+
+<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/68149bc7-f7a2-4edd-aab4-5a291359c3df" width="300px">
+
+Flutter - for Frontend Implementation
+</div>
+
+
 ### Prerequisites
 
 Database - 
@@ -135,28 +159,6 @@ cd Frontend
 flutter run
 ```
 
-## Technologies Used
-
-<div align="center">
-<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/001448fb-5083-4536-8ec4-76a655a6051a" width="300px">
-
-AWS - for Server Hosting
-
-
-<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/3e8ecb75-1f5a-406c-a7e7-70802fc65334" width="300px">
-
-PostgreSQL - for Database Management
-
-
-<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/0f713af8-e38d-4d2e-aea3-a00f7771dd35" width="300px">
-
-FastAPI - for RESTful API's
-
-
-<img src="https://github.com/nfield0/PlayMetrix/assets/92158821/68149bc7-f7a2-4edd-aab4-5a291359c3df" width="300px">
-
-Flutter - for Frontend Implementation
-</div>
 
 
 
