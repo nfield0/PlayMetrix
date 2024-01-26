@@ -197,20 +197,7 @@ CREATE TABLE IF NOT EXISTS  player_injuries
 		REFERENCES player_info(player_id)
 );
 
-/*Anouncements Table*/
-CREATE TABLE IF NOT EXISTS announcements
-(
-	announcements_id serial PRIMARY KEY,
-	announcements_title VARCHAR(100) NOT NULL,
-	announcements_desc VARCHAR(255), 
-	announcements_date TIMESTAMP, 
-	manager_id INT NOT NULL,
-  schedule_id INT NOT NULL,
-	FOREIGN KEY(manager_id)
-		REFERENCES manager_info(manager_id),
-  FOREIGN KEY (schedule_id)
-   REFERENCES schedule (schedule_id)
-);
+
 
 CREATE TABLE IF NOT EXISTS schedule
 (
@@ -236,7 +223,20 @@ CREATE TABLE team_schedule
 
 );
 
-
+/*Anouncements Table*/
+CREATE TABLE IF NOT EXISTS announcements
+(
+	announcements_id serial PRIMARY KEY,
+	announcements_title VARCHAR(100) NOT NULL,
+	announcements_desc VARCHAR(255), 
+	announcements_date TIMESTAMP, 
+	manager_id INT NOT NULL,
+  schedule_id INT NOT NULL,
+	FOREIGN KEY(manager_id)
+		REFERENCES manager_info(manager_id),
+  FOREIGN KEY (schedule_id)
+   REFERENCES schedule (schedule_id)
+);
 
 
 /*--------------------------------------QUERIES---------------------------------------------*/
