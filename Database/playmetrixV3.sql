@@ -205,8 +205,11 @@ CREATE TABLE IF NOT EXISTS announcements
 	announcements_desc VARCHAR(255), 
 	announcements_date TIMESTAMP, 
 	manager_id INT NOT NULL,
+  schedule_id INT NOT NULL,
 	FOREIGN KEY(manager_id)
-		REFERENCES manager_info(manager_id)
+		REFERENCES manager_info(manager_id),
+  FOREIGN KEY (schedule_id)
+   REFERENCES schedule (schedule_id)
 );
 
 CREATE TABLE IF NOT EXISTS schedule
@@ -217,11 +220,7 @@ CREATE TABLE IF NOT EXISTS schedule
 	schedule_type VARCHAR (100),
 	schedule_start_time TIMESTAMP,
 	schedule_end_time TIMESTAMP,
-	schedule_alert_time VARCHAR(50),
-	announcements_id INT NOT NULL,
-	FOREIGN KEY (announcements_id)
-		REFERENCES announcements (announcements_id)
-	
+	schedule_alert_time VARCHAR(50)
 );
 
 CREATE TABLE team_schedule
