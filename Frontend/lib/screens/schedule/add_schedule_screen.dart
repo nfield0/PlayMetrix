@@ -111,8 +111,10 @@ Future<void> addSchedule(
     if (response.statusCode == 200) {
       int scheduleId = jsonDecode(response.body)["id"];
 
-      // TODO: Need to add schedule to team once team_schedule table is implemented
-      // final apiUrl = "$apiBaseUrl/schedules/$scheduleId/teams";
+      final teamScheduleApiUrl = "$apiBaseUrl/team_schedules/$teamId";
+
+      await http.post(Uri.parse(teamScheduleApiUrl),
+          body: {"schedule_id": scheduleId, "team_id": teamId});
 
       print("Schedule added");
     } else {
@@ -124,6 +126,9 @@ Future<void> addSchedule(
 }
 
 class AddScheduleScreen extends ConsumerWidget {
+  TextEditingController titleController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -158,8 +163,10 @@ class AddScheduleScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(children: [
-                  formFieldBottomBorderNoTitle("Title", "", true),
-                  formFieldBottomBorderNoTitle("Location", "", false)
+                  formFieldBottomBorderNoTitle(
+                      "Title", "", true, titleController),
+                  formFieldBottomBorderNoTitle(
+                      "Location", "", false, locationController),
                 ]),
               ),
               const SizedBox(height: 30),

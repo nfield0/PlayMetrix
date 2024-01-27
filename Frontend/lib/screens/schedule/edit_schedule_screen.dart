@@ -13,6 +13,9 @@ class EditScheduleScreen extends StatefulWidget {
 }
 
 class _EditScheduleScreenState extends State<EditScheduleScreen> {
+  TextEditingController titleController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +50,10 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(children: [
-                  formFieldBottomBorderNoTitle("Title", "", true),
-                  formFieldBottomBorderNoTitle("Location", "", false)
+                  formFieldBottomBorderNoTitle(
+                      "Title", "", true, titleController),
+                  formFieldBottomBorderNoTitle(
+                      "Location", "", false, locationController)
                 ]),
               ),
               const SizedBox(height: 30),

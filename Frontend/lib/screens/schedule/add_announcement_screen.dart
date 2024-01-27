@@ -13,6 +13,9 @@ class AddAnnouncementScreen extends StatefulWidget {
 }
 
 class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
+  TextEditingController titleController = TextEditingController();
+  TextEditingController detailsController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +50,10 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(children: [
-                  formFieldBottomBorderNoTitle("Title", "", true),
-                  formFieldBottomBorderNoTitle("Details", "", false)
+                  formFieldBottomBorderNoTitle(
+                      "Title", "", true, titleController),
+                  formFieldBottomBorderNoTitle(
+                      "Details", "", false, detailsController)
                 ]),
               ),
               const SizedBox(height: 30),
