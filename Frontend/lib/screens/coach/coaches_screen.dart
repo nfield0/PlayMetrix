@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
+import 'package:play_metrix/screens/profile/profile_view_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -117,8 +119,17 @@ class CoachesScreen extends ConsumerWidget {
                                           "${coach.firstName} ${coach.surname}",
                                           coach.email,
                                           "lib/assets/icons/profile_placeholder.png",
-                                          coach.imageBytes,
-                                          () {}),
+                                          coach.imageBytes, () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfileViewScreen(
+                                                    userId: coach.id,
+                                                    userRole: UserRole.coach,
+                                                  )),
+                                        );
+                                      }),
                                   ],
                                 )
                               : emptySection(

@@ -4,6 +4,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_view_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -142,8 +143,8 @@ Future<List<Profile>> getCoachesForTeam(int teamId) async {
 
       List<Profile> coaches = [];
 
-      for (Map<String, dynamic> physioJson in coachesJsonList) {
-        Profile coach = await getCoachProfile(physioJson['coach_id']);
+      for (Map<String, dynamic> coachJson in coachesJsonList) {
+        Profile coach = await getCoachProfile(coachJson['coach_id']);
         coaches.add(coach);
       }
 
@@ -210,13 +211,15 @@ class TeamProfileScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 appBarTitlePreviousPage("Team Profile"),
-                smallButton(Icons.edit, "Edit", () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EditTeamScreen()),
-                  );
-                })
+                if (ref.read(userRoleProvider.notifier).state ==
+                    UserRole.manager)
+                  smallButton(Icons.edit, "Edit", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const EditTeamScreen()),
+                    );
+                  })
               ],
             )),
         iconTheme: const IconThemeData(
@@ -344,8 +347,18 @@ class TeamProfileScreen extends ConsumerWidget {
                                             "${manager.firstName} ${manager.surname}",
                                             manager.email,
                                             "lib/assets/icons/profile_placeholder.png",
-                                            manager.imageBytes,
-                                            () {}),
+                                            manager.imageBytes, () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileViewScreen(
+                                                      userId: manager.id,
+                                                      userRole:
+                                                          UserRole.manager,
+                                                    )),
+                                          );
+                                        }),
                                         const SizedBox(height: 20),
                                       ]);
                                     } else {
@@ -372,13 +385,15 @@ class TeamProfileScreen extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          smallButton(Icons.person_add, "Add", () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddPhysioScreen()),
-                            );
-                          }),
+                          if (ref.read(userRoleProvider.notifier).state ==
+                              UserRole.manager)
+                            smallButton(Icons.person_add, "Add", () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddPhysioScreen()),
+                              );
+                            }),
                         ],
                       ),
                     ),
@@ -403,8 +418,17 @@ class TeamProfileScreen extends ConsumerWidget {
                                             "${physio.firstName} ${physio.surname}",
                                             physio.email,
                                             "lib/assets/icons/profile_placeholder.png",
-                                            physio.imageBytes,
-                                            () {}),
+                                            physio.imageBytes, () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileViewScreen(
+                                                      userId: physio.id,
+                                                      userRole: UserRole.physio,
+                                                    )),
+                                          );
+                                        }),
                                     ],
                                   )
                                 : emptySection(
@@ -429,13 +453,15 @@ class TeamProfileScreen extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          smallButton(Icons.person_add, "Add", () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddCoachScreen()),
-                            );
-                          }),
+                          if (ref.read(userRoleProvider.notifier).state ==
+                              UserRole.manager)
+                            smallButton(Icons.person_add, "Add", () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddCoachScreen()),
+                              );
+                            }),
                         ],
                       ),
                     ),
@@ -460,8 +486,17 @@ class TeamProfileScreen extends ConsumerWidget {
                                             "${coach.firstName} ${coach.surname}",
                                             coach.email,
                                             "lib/assets/icons/profile_placeholder.png",
-                                            coach.imageBytes,
-                                            () {}),
+                                            coach.imageBytes, () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileViewScreen(
+                                                      userId: coach.id,
+                                                      userRole: UserRole.coach,
+                                                    )),
+                                          );
+                                        }),
                                     ],
                                   )
                                 : emptySection(

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:play_metrix/screens/coach/coaches_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -15,8 +18,32 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<List<PlayerData>> getAllPlayers() async {
-  final apiUrl = '$apiBaseUrl/players/'; // URL for getting all players
+AvailabilityStatus stringToAvailabilityStatus(String status) {
+  switch (status) {
+    case "Available":
+      return AvailabilityStatus.Available;
+    case "Unavailable":
+      return AvailabilityStatus.Unavailable;
+    case "Limited":
+      return AvailabilityStatus.Limited;
+  }
+  return AvailabilityStatus.Available;
+}
+
+class PlayerProfile {
+  final int playerId;
+  final String firstName;
+  final String surname;
+  final int teamNumber;
+  final AvailabilityStatus status;
+  final Uint8List? imageBytes;
+
+  PlayerProfile(this.playerId, this.firstName, this.surname, this.teamNumber,
+      this.status, this.imageBytes);
+}
+
+Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
+  final apiUrl = '$apiBaseUrl/team_player/$teamId';
 
   try {
     final response = await http.get(
@@ -28,19 +55,21 @@ Future<List<PlayerData>> getAllPlayers() async {
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
-      final List<PlayerData> players =
-          responseData.map((json) => PlayerData.fromJson(json)).toList();
 
-      // Access individual players
-      for (var player in players) {
-        print('Player ID: ${player.player_id}');
-        print('Player First Name: ${player.player_firstname}');
-        print('Player Surname: ${player.player_surname}');
-        print('Player DOB: ${player.player_dob}');
-        print('Player Contact Number: ${player.player_contact_number}');
-        print('Player Image: ${player.player_image}');
-        print('Player Height: ${player.player_height}');
-        print('Player Gender: ${player.player_gender}');
+      final List<Map<String, dynamic>> playersJsonList =
+          List<Map<String, dynamic>>.from(responseData);
+
+      List<PlayerProfile> players = [];
+
+      for (Map<String, dynamic> playerJson in playersJsonList) {
+        Profile player = await getPlayerProfile(playerJson['player_id']);
+        players.add(PlayerProfile(
+            playerJson['player_id'],
+            player.firstName,
+            player.surname,
+            playerJson['player_team_number'],
+            stringToAvailabilityStatus(playerJson['playing_status']),
+            player.imageBytes));
       }
 
       return players;
@@ -58,7 +87,6 @@ Future<List<PlayerData>> getAllPlayers() async {
 }
 
 class PlayersScreen extends ConsumerWidget {
-  late List<PlayerData> players = [];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     UserRole userRole = ref.watch(userRoleProvider);
@@ -148,37 +176,67 @@ class PlayersScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 35),
-                  if (MediaQuery.of(context).size.longestSide >= 1000)
-                    Wrap(
-                      direction: Axis.horizontal,
-                      spacing: 20.0,
-                      runSpacing: 20.0,
-                      children: players.map((PlayerData player) {
-                        return playerProfilePill(
-                            context, // Assuming 'player_image' is an Image object
-                            player.player_image.toString(),
-                            player.player_firstname,
-                            player.player_surname,
-                            7,
-                            AvailabilityStatus
-                                .Available // Call a function to determine availability status
-                            );
-                      }).toList(),
-                    )
-                  else
-                    Column(
-                      children: players.map((PlayerData player) {
-                        return playerProfilePill(
-                            context, // Assuming 'player_image' is an Image object
-                            player.player_image.toString(),
-                            player.player_firstname,
-                            player.player_surname,
-                            7,
-                            AvailabilityStatus
-                                .Available // Call a function to determine availability status
-                            );
-                      }).toList(),
-                    )
+                  FutureBuilder(
+                      future: getAllPlayersForTeam(
+                          ref.read(teamIdProvider.notifier).state),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          List<PlayerProfile> players = snapshot.data!;
+                          return players.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    for (PlayerProfile player in players)
+                                      playerProfilePill(
+                                          context,
+                                          player.imageBytes,
+                                          player.firstName,
+                                          player.surname,
+                                          player.teamNumber,
+                                          player.status),
+                                  ],
+                                )
+                              : emptySection(
+                                  Icons.person_off, "No players added yet");
+                        } else {
+                          return emptySection(Icons.group_off, "No team yet");
+                        }
+                      }),
+                  // if (MediaQuery.of(context).size.longestSide >= 1000)
+                  //   Wrap(
+                  //     direction: Axis.horizontal,
+                  //     spacing: 20.0,
+                  //     runSpacing: 20.0,
+                  //     children: players.map((PlayerData player) {
+                  //       return playerProfilePill(
+                  //           context, // Assuming 'player_image' is an Image object
+                  //           player.player_image.toString(),
+                  //           player.player_firstname,
+                  //           player.player_surname,
+                  //           7,
+                  //           AvailabilityStatus
+                  //               .Available // Call a function to determine availability status
+                  //           );
+                  //     }).toList(),
+                  //   )
+                  // else
+                  //   Column(
+                  //     children: players.map((PlayerData player) {
+                  //       return playerProfilePill(
+                  //           context, // Assuming 'player_image' is an Image object
+                  //           player.player_image.toString(),
+                  //           player.player_firstname,
+                  //           player.player_surname,
+                  //           7,
+                  //           AvailabilityStatus
+                  //               .Available // Call a function to determine availability status
+                  //           );
+                  //     }).toList(),
+                  //   )
                 ]))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 1));
   }
@@ -186,7 +244,7 @@ class PlayersScreen extends ConsumerWidget {
 
 Widget playerProfilePill(
     BuildContext context,
-    String imagePath,
+    Uint8List? imageBytes,
     String firstName,
     String surname,
     int playerNum,
@@ -208,83 +266,91 @@ Widget playerProfilePill(
       break;
   }
 
-  return Stack(
-    clipBehavior: Clip.none,
-    children: [
-      InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PlayerProfileScreen()),
-            );
-          },
-          child: Container(
-            // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
-            decoration: BoxDecoration(
-              border: Border.all(color: statusColour, width: 4),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              children: [
-                Image.asset(
-                  imagePath,
-                  width: 65,
-                ),
-                const SizedBox(
-                  width: 25,
-                ),
-                Text(
-                  "#$playerNum",
-                  style: TextStyle(
-                    color: statusColour,
-                    fontSize: 36,
-                    fontFamily: AppFonts.gabarito,
-                    fontWeight: FontWeight.bold,
+  return Column(children: [
+    Stack(
+      clipBehavior: Clip.none,
+      children: [
+        InkWell(
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => PlayerProfileScreen()),
+              // );
+            },
+            child: Container(
+              // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
+              decoration: BoxDecoration(
+                border: Border.all(color: statusColour, width: 4),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  imageBytes != null && imageBytes.isNotEmpty
+                      ? Image.memory(
+                          imageBytes,
+                          width: 65,
+                        )
+                      : Image.asset(
+                          "lib/assets/icons/profile_placeholder.png",
+                          width: 65,
+                        ),
+                  const SizedBox(
+                    width: 25,
                   ),
-                ),
-                const SizedBox(
-                  width: 25,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      firstName,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontFamily: AppFonts.gabarito,
-                      ),
+                  Text(
+                    "#$playerNum",
+                    style: TextStyle(
+                      color: statusColour,
+                      fontSize: 36,
+                      fontFamily: AppFonts.gabarito,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(
-                      surname,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontFamily: AppFonts.gabarito,
-                        fontWeight: FontWeight.bold,
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        firstName,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontFamily: AppFonts.gabarito,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Text(
+                        surname,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontFamily: AppFonts.gabarito,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )),
+        Positioned(
+          top: -10,
+          right: -10,
+          child: Container(
+            padding: EdgeInsets.zero,
+            decoration: const BoxDecoration(
+              color: Color(0XFFfafafa),
+              shape: BoxShape.circle,
             ),
-          )),
-      Positioned(
-        top: -10,
-        right: -10,
-        child: Container(
-          padding: EdgeInsets.zero,
-          decoration: const BoxDecoration(
-            color: Color(0XFFfafafa),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            statusIcon,
-            color: statusColour,
-            size: 40,
+            child: Icon(
+              statusIcon,
+              color: statusColour,
+              size: 40,
+            ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    ),
+    const SizedBox(height: 20),
+  ]);
 }
