@@ -201,6 +201,10 @@ class ScheduleBase(BaseModel):
     schedule_end_time: str
     schedule_alert_time: str
 
+class PlayerScheduleBase(BaseModel):
+    schedule_id: int
+    player_id: int
+    player_attending: bool
 
 class ScheduleBaseNoID(BaseModel):
     schedule_title: str
@@ -214,7 +218,7 @@ class ScheduleBaseNoID(BaseModel):
 class TeamScheduleBase(BaseModel):
     schedule_id: int
     team_id: int
-    schedule_date: str
+    #schedule_date: str
 
 class AnnouncementBase(BaseModel):
     announcements_id: int

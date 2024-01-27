@@ -144,12 +144,17 @@ class schedule(Base):
 	schedule_end_time = Column(String(10), index = True)
 	schedule_alert_time = Column(String(50), index = True)
 
+class player_schedule(Base):
+	__tablename__ = "player_schedule"
+	schedule_id = Column(Integer, primary_key = True, index = True)
+	player_id = Column(Integer, primary_key = True, index = True)
+	player_attending = Column(Boolean, index = True)
 
 class team_schedule(Base):
 	__tablename__ = "team_schedule"
 	schedule_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
-	schedule_date = Column(Date, index = True)
+	#schedule_date = Column(Date, index = True)
 
 
 class announcements(Base):

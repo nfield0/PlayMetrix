@@ -559,6 +559,65 @@ def delete_team_schedule_by_id(db:Session, id: int):
     
     
 #endregion
+    
+#region player schedules
+
+def get_player_schedules(db: Session, id:int):
+    try:
+        result = db.query(player_schedule).filter_by(player_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving player schedules: {e}")
+    
+def insert_new_player_schedule(db: Session, new_player_schedule: PlayerScheduleBase):
+    try:
+        if new_player_schedule is not None:
+            if get_player_by_id(db, new_player_schedule.player_id):
+                new_schedule = player_schedule(schedule_id=new_player_schedule.schedule_id,
+                                              player_id=new_player_schedule.player_id,
+                                              player_attending=new_player_schedule.player_attending)
+                db.add(new_schedule)
+                db.commit()
+                db.refresh(new_schedule)
+                return {"message": "Player Schedule inserted successfully", "id": new_schedule.schedule_id}
+            raise HTTPException(status_code=400, detail="Player ID Does not Exist")
+        return {"message": "Player Schedule is empty or invalid"}
+    except HTTPException as http_err:
+        raise http_err
+    except Exception as e:
+        return f"Error inserting player schedule: {e}"
+    
+def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, id):
+    try:        
+        player_schedule_to_update = db.query(player_schedule).filter_by(schedule_id= id).first()
+        
+        if not player_schedule_to_update:
+            raise HTTPException(status_code=404, detail="Player Schedule not found")
+        
+        player_schedule_to_update.schedule_id = updated_player_schedule.schedule_id
+        player_schedule_to_update.player_id = updated_player_schedule.player_id
+        player_schedule_to_update.player_attending = updated_player_schedule.player_attending
+        
+        db.commit()
+        return {"message": f"Player Schedule with ID {id} has been updated"}
+    except Exception as e:
+        return(f"Error updating player schedule: {e}")
+    
+def delete_player_schedule_by_id(db:Session, id: int):
+    try:        
+        player_schedule_to_delete = db.query(player_schedule).filter_by(schedule_id=id).first()
+        if player_schedule_to_delete:
+            db.delete(player_schedule_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Player Schedule deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting player schedule: {e}")
+
+
+#endregion
+
 
 #region announcements
     

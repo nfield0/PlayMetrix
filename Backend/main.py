@@ -217,6 +217,27 @@ def delete_team_schedule(id: int, db:Session = Depends(get_db)):
 
 #endregion
 
+#region player_schedules
+
+@app.get("/player_schedules/{id}")
+def read_player_schedules(id: int, db:Session = Depends(get_db)):
+    return crud.get_player_schedules(db, id)
+
+@app.post("/player_schedules")
+def insert_player_schedule(schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
+    return crud.insert_new_player_schedule(db, schedule)
+
+@app.put("/player_schedules/{id}")
+def update_player_schedule(id: int, schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
+    return crud.update_player_schedule(db, schedule, id)
+
+@app.delete("/player_schedules/{id}")
+def delete_player_schedule(id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_schedule_by_id(db, id)
+
+
+#endregion
+
 #region announcements
 
 @app.get("/announcements/{id}")
