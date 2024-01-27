@@ -45,7 +45,6 @@ Future<Profile> getManagerProfile(int id) async {
     });
 
     if (response.statusCode == 200) {
-      print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
       return Profile(
@@ -86,7 +85,6 @@ Future<void> updateManagerProfile(int id, ProfileName name,
 
     if (response.statusCode == 200) {
       print('Registration successful!');
-      print('Response: ${response.body}');
     } else {
       print('Failed to register. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
@@ -106,7 +104,6 @@ Future<Profile> getPhysioProfile(int id) async {
     });
 
     if (response.statusCode == 200) {
-      print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
       return Profile(
@@ -147,7 +144,6 @@ Future<void> updatePhysioProfile(int id, ProfileName name, String contactNumber,
 
     if (response.statusCode == 200) {
       print('Registration successful!');
-      print('Response: ${response.body}');
     } else {
       print('Failed to register. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
@@ -167,7 +163,6 @@ Future<Profile> getCoachProfile(int id) async {
     });
 
     if (response.statusCode == 200) {
-      print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
       return Profile(
@@ -208,7 +203,6 @@ Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
 
     if (response.statusCode == 200) {
       print('Registration successful!');
-      print('Response: ${response.body}');
     } else {
       print('Failed to register. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');

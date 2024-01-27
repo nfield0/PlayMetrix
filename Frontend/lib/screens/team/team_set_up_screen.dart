@@ -145,7 +145,6 @@ Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
       print("Team added successfully");
-      print("Response: ${response.body}");
       return jsonDecode(response.body)["id"];
     } else {
       // Failed to retrieve data, handle the error accordingly

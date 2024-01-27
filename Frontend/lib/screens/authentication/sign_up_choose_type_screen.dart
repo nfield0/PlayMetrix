@@ -61,7 +61,6 @@ Future<String> registerUser({
       if (response.statusCode == 200) {
         // Successfully registered, handle the response accordingly
         print('Registration successful!');
-        print('Response: ${response.body}');
 
         return response.body;
       } else {
@@ -100,7 +99,6 @@ Future<String> registerUser({
       if (response.statusCode == 200) {
         // Successfully registered, handle the response accordingly
         print('Registration successful!');
-        print('Response: ${response.body}');
         return response.body;
         // You can parse the response JSON here and perform actions based on it
       } else {
@@ -137,7 +135,6 @@ Future<String> registerUser({
       if (response.statusCode == 200) {
         // Successfully registered, handle the response accordingly
         print('Registration successful!');
-        print('Response: ${response.body}');
         return response.body;
         // You can parse the response JSON here and perform actions based on it
       } else {
@@ -174,7 +171,6 @@ Future<String> registerUser({
       if (response.statusCode == 200) {
         // Successfully registered, handle the response accordingly
         print('Registration successful!');
-        print('Response: ${response.body}');
         return response.body;
         // You can parse the response JSON here and perform actions based on it
       } else {

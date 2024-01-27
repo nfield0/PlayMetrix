@@ -31,9 +31,6 @@ Future<String> loginUser(BuildContext context, String email, String password,
 
     if (response.statusCode == 200) {
       // Successfully logged in, handle the response accordingly
-      print('Login successful!');
-      print('Response: ${response.body}');
-
       if (response.body.toLowerCase().contains("error")) {
         showDialog(
           context: context,

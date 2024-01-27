@@ -28,8 +28,6 @@ Future<bool> checkEmailExists(String email) async {
     );
 
     if (response.statusCode == 200) {
-      print('Response: ${response.body}');
-
       if (response.body == "true") {
         return true;
       } else {
