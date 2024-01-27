@@ -51,9 +51,13 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
                 ),
                 child: Column(children: [
                   formFieldBottomBorderNoTitle(
-                      "Title", "", true, titleController),
+                      "Title", "", true, titleController, (value) {
+                    return (value != null ? 'This field is required.' : null);
+                  }),
                   formFieldBottomBorderNoTitle(
-                      "Location", "", false, locationController)
+                      "Location", "", false, locationController, (value) {
+                    return (value != null ? 'This field is required.' : null);
+                  })
                 ]),
               ),
               const SizedBox(height: 30),

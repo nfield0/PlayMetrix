@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -8,13 +7,13 @@ import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 enum AlertTime {
   none,
   fifteenMinutes,
   thirtyMinutes,
   oneHour,
+  twoHours,
   oneDay,
   twoDays,
 }
@@ -36,6 +35,8 @@ String alertTimeToText(AlertTime alertTime) {
       return "30 minutes before";
     case AlertTime.oneHour:
       return "1 hour before";
+    case AlertTime.twoHours:
+      return "2 hours before";
     case AlertTime.oneDay:
       return "1 day before";
     case AlertTime.twoDays:
@@ -67,6 +68,8 @@ AlertTime textToAlertTime(String text) {
       return AlertTime.thirtyMinutes;
     case "1 hour before":
       return AlertTime.oneHour;
+    case "2 hours before":
+      return AlertTime.twoHours;
     case "1 day before":
       return AlertTime.oneDay;
     case "2 days before":
@@ -99,22 +102,30 @@ Future<void> addSchedule(
   const apiUrl = "$apiBaseUrl/schedules";
 
   try {
-    final response = await http.post(Uri.parse(apiUrl), body: {
-      "schedule_title": title,
-      "schedule_location": location,
-      "schedule_start_time": startTime,
-      "schedule_end_time": endTime,
-      "schedule_type": scheduleTypeToText(scheduleType),
-      "schedule_alert_time": alertTimeToText(alertTime),
-    });
+    final response = await http.post(Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "schedule_title": title,
+          "schedule_location": location,
+          "schedule_start_time": startTime.toIso8601String(),
+          "schedule_end_time": endTime.toIso8601String(),
+          "schedule_type": scheduleTypeToText(scheduleType),
+          "schedule_alert_time": alertTimeToText(alertTime),
+        }));
 
+    print(response.body);
     if (response.statusCode == 200) {
       int scheduleId = jsonDecode(response.body)["id"];
 
       final teamScheduleApiUrl = "$apiBaseUrl/team_schedules/$teamId";
 
       await http.post(Uri.parse(teamScheduleApiUrl),
-          body: {"schedule_id": scheduleId, "team_id": teamId});
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({"schedule_id": scheduleId, "team_id": teamId}));
 
       print("Schedule added");
     } else {
@@ -125,12 +136,27 @@ Future<void> addSchedule(
   }
 }
 
+final startDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final endDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final typeProvider =
+    StateProvider<String>((ref) => scheduleTypeToText(ScheduleType.training));
+final alertTimeProvider =
+    StateProvider<String>((ref) => alertTimeToText(AlertTime.none));
+
 class AddScheduleScreen extends ConsumerWidget {
-  TextEditingController titleController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  AddScheduleScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String selectedType = ref.watch(typeProvider);
+    String selectedAlertTime = ref.watch(alertTimeProvider);
+    DateTime selectedStartDate = ref.watch(startDateProvider);
+    DateTime selectedEndDate = ref.watch(endDateProvider);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Schedule"),
@@ -142,80 +168,125 @@ class AddScheduleScreen extends ConsumerWidget {
         ),
         body: SingleChildScrollView(
           child: Form(
+              key: formKey,
+              autovalidateMode: AutovalidateMode.always,
               child: Container(
-            padding: const EdgeInsets.all(40.0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('Add Schedule',
-                  style: TextStyle(
-                    color: AppColours.darkBlue,
-                    fontFamily: AppFonts.gabarito,
-                    fontSize: 36.0,
-                    fontWeight: FontWeight.w700,
-                  )),
-              divider(),
-              const SizedBox(height: 25),
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: AppColours.darkBlue, width: 1.5),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(children: [
-                  formFieldBottomBorderNoTitle(
-                      "Title", "", true, titleController),
-                  formFieldBottomBorderNoTitle(
-                      "Location", "", false, locationController),
-                ]),
-              ),
-              const SizedBox(height: 30),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: AppColours.darkBlue, width: 1.5),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(children: [
-                  dateTimePickerWithDivider(
-                      context, "Starts", DateTime.now(), (p0) {}),
-                  greyDivider(),
-                  dateTimePickerWithDivider(
-                      context, "Ends", DateTime.now(), (p0) {}),
-                ]),
-              ),
-              const SizedBox(height: 30),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: AppColours.darkBlue, width: 1.5),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(children: [
-                  dropdownWithDivider("Type", "Training",
-                      ["Training", "Match", "Meeting", "Other"], (p0) {}),
-                  greyDivider(),
-                  dropdownWithDivider(
-                      "Alert",
-                      "1 day before",
-                      [
-                        "15 minutes before",
-                        "30 minutes before",
-                        "1 hour before",
-                        "1 day before",
-                        "2 days before"
-                      ],
-                      (p0) {}),
-                ]),
-              ),
-              const SizedBox(height: 30),
-              bigButton("Add Schedule", () {}),
-            ]),
-          )),
+                padding: const EdgeInsets.all(40.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Add Schedule',
+                          style: TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: AppFonts.gabarito,
+                            fontSize: 36.0,
+                            fontWeight: FontWeight.w700,
+                          )),
+                      divider(),
+                      const SizedBox(height: 25),
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(
+                              color: AppColours.darkBlue, width: 1.5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(children: [
+                          formFieldBottomBorderNoTitle(
+                              "Title", "", true, titleController, (value) {
+                            return (value != null && value == ""
+                                ? 'This field is required.'
+                                : null);
+                          }),
+                          formFieldBottomBorderNoTitle(
+                              "Location", "", false, locationController,
+                              (value) {
+                            return (value != null && value == ""
+                                ? 'This field is required.'
+                                : null);
+                          }),
+                        ]),
+                      ),
+                      const SizedBox(height: 30),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(
+                              color: AppColours.darkBlue, width: 1.5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(children: [
+                          dateTimePickerWithDivider(
+                              context, "Starts", selectedStartDate, (value) {
+                            ref.read(startDateProvider.notifier).state = value;
+                          }),
+                          greyDivider(),
+                          dateTimePickerWithDivider(
+                              context, "Ends", selectedEndDate, (value) {
+                            ref.read(endDateProvider.notifier).state = value;
+                          }),
+                        ]),
+                      ),
+                      const SizedBox(height: 30),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(
+                              color: AppColours.darkBlue, width: 1.5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(children: [
+                          dropdownWithDivider("Type", selectedType, [
+                            scheduleTypeToText(ScheduleType.training),
+                            scheduleTypeToText(ScheduleType.match),
+                            scheduleTypeToText(ScheduleType.meeting),
+                            scheduleTypeToText(ScheduleType.other)
+                          ], (value) {
+                            ref.read(typeProvider.notifier).state = value!;
+                          }),
+                          greyDivider(),
+                          dropdownWithDivider("Alert", selectedAlertTime, [
+                            alertTimeToText(AlertTime.none),
+                            alertTimeToText(AlertTime.fifteenMinutes),
+                            alertTimeToText(AlertTime.thirtyMinutes),
+                            alertTimeToText(AlertTime.oneHour),
+                            alertTimeToText(AlertTime.twoHours),
+                            alertTimeToText(AlertTime.oneDay),
+                            alertTimeToText(AlertTime.twoDays),
+                          ], (value) {
+                            ref.read(alertTimeProvider.notifier).state = value!;
+                          }),
+                        ]),
+                      ),
+                      const SizedBox(height: 30),
+                      bigButton("Add Schedule", () {
+                        if (formKey.currentState!.validate()) {
+                          addSchedule(
+                              titleController.text,
+                              locationController.text,
+                              selectedStartDate,
+                              selectedEndDate,
+                              textToScheduleType(selectedType),
+                              textToAlertTime(selectedAlertTime),
+                              1);
+
+                          ref.read(startDateProvider.notifier).state =
+                              DateTime.now();
+                          ref.read(endDateProvider.notifier).state =
+                              DateTime.now();
+                          ref.read(typeProvider.notifier).state =
+                              scheduleTypeToText(ScheduleType.training);
+                          ref.read(alertTimeProvider.notifier).state =
+                              alertTimeToText(AlertTime.none);
+                        }
+                      }),
+                    ]),
+              )),
         ),
         bottomNavigationBar: managerBottomNavBar(context, 2));
   }

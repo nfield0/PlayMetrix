@@ -375,14 +375,15 @@ Widget formFieldBottomBorderController(String title,
 }
 
 Widget formFieldBottomBorderNoTitle(String title, String initialValue,
-    bool showBorder, TextEditingController controller) {
+    bool showBorder, TextEditingController controller, String? Function(String?)? validator) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Expanded(
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           maxLines: null,
+          validator: validator,
           decoration: InputDecoration(
             // labelText: 'Your Label',
             hintText: title,

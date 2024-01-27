@@ -51,9 +51,13 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                 ),
                 child: Column(children: [
                   formFieldBottomBorderNoTitle(
-                      "Title", "", true, titleController),
+                      "Title", "", true, titleController, (value) {
+                    return (value != null ? 'This field is required.' : null);
+                  }),
                   formFieldBottomBorderNoTitle(
-                      "Details", "", false, detailsController)
+                      "Details", "", false, detailsController, (value) {
+                    return (value != null ? 'This field is required.' : null);
+                  })
                 ]),
               ),
               const SizedBox(height: 30),
