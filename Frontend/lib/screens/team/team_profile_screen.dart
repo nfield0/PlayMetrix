@@ -142,8 +142,8 @@ Future<List<Profile>> getCoachesForTeam(int teamId) async {
 
       List<Profile> coaches = [];
 
-      for (Map<String, dynamic> physioJson in coachesJsonList) {
-        Profile coach = await getCoachProfile(physioJson['coach_id']);
+      for (Map<String, dynamic> coachJson in coachesJsonList) {
+        Profile coach = await getCoachProfile(coachJson['coach_id']);
         coaches.add(coach);
       }
 

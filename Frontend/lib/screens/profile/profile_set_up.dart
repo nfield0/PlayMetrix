@@ -228,7 +228,6 @@ Future<Profile> getPlayerProfile(int id) async {
     });
 
     if (response.statusCode == 200) {
-      print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
       return Profile(
