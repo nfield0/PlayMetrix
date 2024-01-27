@@ -187,135 +187,139 @@ class TeamSetUpScreen extends ConsumerWidget {
     Uint8List? logo = ref.watch(teamLogoProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          'lib/assets/logo.png',
-          width: 150,
-          fit: BoxFit.contain,
+        appBar: AppBar(
+          title: Image.asset(
+            'lib/assets/logo.png',
+            width: 150,
+            fit: BoxFit.contain,
+          ),
+          iconTheme: const IconThemeData(
+            color: AppColours.darkBlue, //change your color here
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
         ),
-        iconTheme: const IconThemeData(
-          color: AppColours.darkBlue, //change your color here
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: Form(
-          child: Container(
-        padding: EdgeInsets.all(35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Team Set Up',
-                style: TextStyle(
-                  color: AppColours.darkBlue,
-                  fontFamily: AppFonts.gabarito,
-                  fontSize: 36.0,
-                  fontWeight: FontWeight.w700,
-                )),
-            const Divider(
-              color: AppColours.darkBlue,
-              thickness: 1.0, // Set the thickness of the line
-              height: 40.0, // Set the height of the line
-            ),
-            const SizedBox(height: 20),
-            Center(
-                child: Column(children: [
-              logo != null
-                  ? Image.memory(
-                      logo,
-                      width: 100,
-                    )
-                  : Image.asset(
-                      "lib/assets/icons/logo_placeholder.png",
-                      width: 100,
-                    ),
-              const SizedBox(height: 10),
-              underlineButtonTransparent("Upload logo", () {
-                pickImage();
-              }),
-            ])),
-            // formFieldBottomBorder("Club name", ""), // NOT IN BACKEND ENDPOINT
-            // const SizedBox(height: 10),
-            formFieldBottomBorderController("Team name", _teamNameController,
-                (value) {
-              return "";
-            }),
-            const SizedBox(height: 10),
-            formFieldBottomBorderController("Location", _teamLocationController,
-                (value) {
-              return "";
-            }),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: SingleChildScrollView(
+          child: Form(
+              child: Container(
+            padding: EdgeInsets.all(35),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "League",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                const Text('Team Set Up',
+                    style: TextStyle(
+                      color: AppColours.darkBlue,
+                      fontFamily: AppFonts.gabarito,
+                      fontSize: 36.0,
+                      fontWeight: FontWeight.w700,
+                    )),
+                const Divider(
+                  color: AppColours.darkBlue,
+                  thickness: 1.0, // Set the thickness of the line
+                  height: 40.0, // Set the height of the line
                 ),
-                const SizedBox(width: 20),
-                SizedBox(
-                  // Wrap the DropdownButtonFormField with a Container
-                  width: 220, // Provide a specific width
-                  child: FutureBuilder<List<LeagueData>>(
-                    future: getAllLeagues(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<LeagueData> leagues = snapshot.data!;
-                        // Initialize the selectedTeam with the first team name
-                        if (leagueId == 0 && leagues.isNotEmpty) {
-                          leagueId = leagues[0].league_id;
-                          Future.delayed(Duration.zero, () {
-                            ref.read(leagueProvider.notifier).state = leagueId;
-                          });
-                        }
+                const SizedBox(height: 20),
+                Center(
+                    child: Column(children: [
+                  logo != null
+                      ? Image.memory(
+                          logo,
+                          width: 100,
+                        )
+                      : Image.asset(
+                          "lib/assets/icons/logo_placeholder.png",
+                          width: 100,
+                        ),
+                  const SizedBox(height: 10),
+                  underlineButtonTransparent("Upload logo", () {
+                    pickImage();
+                  }),
+                ])),
+                // formFieldBottomBorder("Club name", ""), // NOT IN BACKEND ENDPOINT
+                // const SizedBox(height: 10),
+                formFieldBottomBorderController(
+                    "Team name", _teamNameController, (value) {
+                  return "";
+                }),
+                const SizedBox(height: 10),
+                formFieldBottomBorderController(
+                    "Location", _teamLocationController, (value) {
+                  return "";
+                }),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "League",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 20),
+                    SizedBox(
+                      // Wrap the DropdownButtonFormField with a Container
+                      width: 220, // Provide a specific width
+                      child: FutureBuilder<List<LeagueData>>(
+                        future: getAllLeagues(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<LeagueData> leagues = snapshot.data!;
+                            // Initialize the selectedTeam with the first team name
+                            if (leagueId == 0 && leagues.isNotEmpty) {
+                              leagueId = leagues[0].league_id;
+                              Future.delayed(Duration.zero, () {
+                                ref.read(leagueProvider.notifier).state =
+                                    leagueId;
+                              });
+                            }
 
-                        return DropdownButton<int>(
-                          value: leagueId,
-                          items: leagues.map((LeagueData league) {
-                            return DropdownMenuItem<int>(
-                              value: league.league_id,
-                              child: Text(
-                                league.league_name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
+                            return DropdownButton<int>(
+                              value: leagueId,
+                              items: leagues.map((LeagueData league) {
+                                return DropdownMenuItem<int>(
+                                  value: league.league_id,
+                                  child: Text(
+                                    league.league_name,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                // Update the selectedTeam when the user makes a selection
+                                ref.read(leagueProvider.notifier).state =
+                                    value!;
+                              },
                             );
-                          }).toList(),
-                          onChanged: (value) {
-                            // Update the selectedTeam when the user makes a selection
-                            ref.read(leagueProvider.notifier).state = value!;
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("Error loading leagues");
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
+                          } else if (snapshot.hasError) {
+                            return Text("Error loading leagues");
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 50),
+                bigButton("Save Changes", () async {
+                  int teamId = await addTeam(
+                      _teamNameController.text,
+                      ref.read(teamLogoProvider.notifier).state,
+                      userId,
+                      1,
+                      leagueId,
+                      _teamLocationController.text);
+                  ref.read(teamIdProvider.notifier).state = teamId;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                  );
+                })
               ],
             ),
-            const SizedBox(height: 50),
-            bigButton("Save Changes", () async {
-              int teamId = await addTeam(
-                  _teamNameController.text,
-                  ref.read(teamLogoProvider.notifier).state,
-                  userId,
-                  1,
-                  leagueId,
-                  _teamLocationController.text);
-              ref.read(teamIdProvider.notifier).state = teamId;
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            })
-          ],
-        ),
-      )),
-    );
+          )),
+        ));
   }
 }
