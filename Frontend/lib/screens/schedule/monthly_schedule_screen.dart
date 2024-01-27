@@ -6,6 +6,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -60,7 +61,8 @@ class MonthlyScheduleScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 30),
               FutureBuilder(
-                  future: getCalendarDataSource(),
+                  future:
+                      getTeamSchedules(ref.read(teamIdProvider.notifier).state),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final dataSource = snapshot.data;
@@ -117,18 +119,49 @@ class AppointmentDataSource extends CalendarDataSource {
   }
 }
 
-// Future<List<Appointment>> getSchedulesForTeam(int teamId) async {
-// }
+Future<List<Appointment>> getTeamSchedules(int teamId) async {
+  final apiUrl = "$apiBaseUrl/team_schedules/$teamId";
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final schedules = jsonDecode(response.body);
+
+      List<Appointment> appointments = [];
+
+      for (var schedule in schedules) {
+        appointments.add(Appointment(
+          id: schedule["schedule_id"],
+          startTime: DateTime.parse(schedule["schedule_start_time"]),
+          endTime: DateTime.parse(schedule["schedule_end_time"]),
+          subject: schedule["schedule_title"],
+          location: schedule["schedule_location"],
+          color: getColourByScheduleType(
+              textToScheduleType(schedule["schedule_type"])),
+          notes: schedule["schedule_alert_time"],
+        ));
+      }
+
+      return appointments;
+    } else {
+      print("Schedules not found");
+    }
+  } catch (e) {
+    print(e);
+  }
+  throw Exception("Schedules not found");
+}
 
 Color getColourByScheduleType(ScheduleType scheduleType) {
   switch (scheduleType) {
-    case "Training":
+    case ScheduleType.training:
       return Colors.blue;
-    case "Match":
+    case ScheduleType.match:
       return Colors.green;
-    case "Meeting":
+    case ScheduleType.meeting:
       return Colors.red;
-    case "Other":
+    case ScheduleType.other:
       return Colors.yellow;
     default:
       return Colors.grey;
