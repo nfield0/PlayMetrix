@@ -4,6 +4,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -28,7 +29,7 @@ class DailyScheduleScreen extends ConsumerWidget {
         body: Container(
           padding: const EdgeInsets.all(30),
           child: FutureBuilder(
-              future: getCalendarDataSource(),
+              future: getTeamSchedules(ref.read(teamIdProvider.notifier).state),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final dataSource = snapshot.data;

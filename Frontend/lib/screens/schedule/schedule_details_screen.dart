@@ -8,6 +8,7 @@ import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/players_attending_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -27,7 +28,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
 
     return FutureBuilder(
         future: getFilteredDataSource(
-            ref.watch(appointmentIdProvider.notifier).state),
+            ref, ref.watch(appointmentIdProvider.notifier).state),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final dataSource = snapshot.data;
@@ -174,8 +175,10 @@ class ScheduleDetailsScreen extends ConsumerWidget {
   }
 }
 
-Future<AppointmentDataSource> getFilteredDataSource(int id) async {
-  List<Appointment> allAppointments = await getCalendarDataSource();
+Future<AppointmentDataSource> getFilteredDataSource(
+    WidgetRef ref, int id) async {
+  List<Appointment> allAppointments =
+      await getTeamSchedules(ref.read(teamIdProvider.notifier).state);
   // Replace with your specific criteria for filtering
   List<Appointment> filteredAppointments =
       allAppointments.where((appointment) => appointment.id == id).toList();
