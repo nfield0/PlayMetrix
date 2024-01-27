@@ -131,16 +131,7 @@ Future<List<Appointment>> getTeamSchedules(int teamId) async {
       List<Appointment> appointments = [];
 
       for (var schedule in schedules) {
-        appointments.add(Appointment(
-          id: schedule["schedule_id"],
-          startTime: DateTime.parse(schedule["schedule_start_time"]),
-          endTime: DateTime.parse(schedule["schedule_end_time"]),
-          subject: schedule["schedule_title"],
-          location: schedule["schedule_location"],
-          color: getColourByScheduleType(
-              textToScheduleType(schedule["schedule_type"])),
-          notes: schedule["schedule_alert_time"],
-        ));
+        appointments.add(await getScheduleById(schedule["schedule_id"]));
       }
 
       return appointments;
@@ -194,48 +185,4 @@ Future<Appointment> getScheduleById(int scheduleId) async {
     print(e);
   }
   throw Exception("Schedule not found");
-}
-
-Future<List<Appointment>> getCalendarDataSource() async {
-  // List<Appointment> appointments = [
-  //   Appointment(
-  //     id: 1,
-  //     startTime: DateTime(2023, 12, 5, 10, 0),
-  //     endTime: DateTime(2023, 11, 5, 11, 0),
-  //     subject: 'Meeting 1',
-  //     location: 'Location 1',
-  //     color: Colors.blue,
-  //   ),
-  //   Appointment(
-  //     id: 2,
-  //     startTime: DateTime(2023, 11, 12, 14, 0),
-  //     endTime: DateTime(2023, 11, 12, 15, 0),
-  //     subject: 'Meeting 2',
-  //     location: 'Location 2',
-  //     color: Colors.green,
-  //   ),
-  //   Appointment(
-  //     id: 3,
-  //     startTime: DateTime(2023, 12, 20, 16, 0),
-  //     endTime: DateTime(2023, 11, 20, 17, 0),
-  //     subject: 'Meeting 3',
-  //     location: 'Location 3',
-  //     color: Colors.red,
-  //   ),
-  //   Appointment(
-  //     id: 4,
-  //     startTime: DateTime(2023, 11, 20, 16, 0),
-  //     endTime: DateTime(2023, 11, 20, 17, 0),
-  //     subject: 'Meeting 3',
-  //     location: 'Location 3',
-  //     color: Colors.red,
-  //   ),
-  // ];
-
-  // TODO: This is currently hardcoded to get the schedule with id 1, will be fixed once team_schedule table is implemented
-  Appointment appointment = await getScheduleById(1);
-
-  List<Appointment> appointments = [appointment];
-
-  return appointments;
 }
