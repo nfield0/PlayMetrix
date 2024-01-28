@@ -515,17 +515,21 @@ def get_team_schedule_by_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving team schedules: {e}")
 
-def insert_new_team_schedule(db:Session, new_team_schedule: TeamScheduleBase, id: int):
+def insert_new_team_schedule(db:Session, new_team_schedule: TeamScheduleBase):
     try:
         if new_team_schedule is not None:
-            if get_team_by_id(db, id):
+            if not get_schedule_by_id(db, new_team_schedule.schedule_id):
+                raise HTTPException(status_code=400, detail="Schedule ID already exists")
+            if not get_team_by_id(db, new_team_schedule.team_id):
+                raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+            else:
                 new_team_schedule = team_schedule(schedule_id=new_team_schedule.schedule_id,
-                                        team_id=id)
+                                        team_id=new_team_schedule.team_id)
                 db.add(new_team_schedule)
                 db.commit()
                 db.refresh(new_team_schedule)
                 return {"message": "Team Schedule inserted successfully", "id": new_team_schedule.schedule_id}
-            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+            
         return {"message": "Team Schedule is empty or invalid"}
     except Exception as e:
         return (f"Error inserting team schedule: {e}")
@@ -587,9 +591,9 @@ def insert_new_player_schedule(db: Session, new_player_schedule: PlayerScheduleB
     except Exception as e:
         return f"Error inserting player schedule: {e}"
     
-def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, id):
+def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, player_id: int):
     try:        
-        player_schedule_to_update = db.query(player_schedule).filter_by(schedule_id= id).first()
+        player_schedule_to_update = db.query(player_schedule).filter_by(player_id=player_id).first()
         
         if not player_schedule_to_update:
             raise HTTPException(status_code=404, detail="Player Schedule not found")
@@ -599,18 +603,18 @@ def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, id):
         player_schedule_to_update.player_attending = updated_player_schedule.player_attending
         
         db.commit()
-        return {"message": f"Player Schedule with ID {id} has been updated"}
+        return {"message": f"Player with ID {player_id} Schedule has been updated"}
     except Exception as e:
         return(f"Error updating player schedule: {e}")
     
-def delete_player_schedule_by_id(db:Session, id: int):
+def delete_player_schedule_by_id(db:Session, delete_player_id: int):
     try:        
-        player_schedule_to_delete = db.query(player_schedule).filter_by(schedule_id=id).first()
+        player_schedule_to_delete = db.query(player_schedule).filter_by(player_id=delete_player_id).first()
         if player_schedule_to_delete:
             db.delete(player_schedule_to_delete)
             db.commit()
         db.close()
-        return {"message": "Player Schedule deleted successfully"}
+        return {"message": f"Player with ID {delete_player_id} Schedule deleted successfully"}
 
     except Exception as e:
         return(f"Error deleting player schedule: {e}")
@@ -1704,8 +1708,11 @@ def delete_sport(db:Session, id: int):
     
 def cleanup(db: Session):
     try:       
+        db.query(team_schedule).delete()
+        db.query(player_schedule).delete()
         db.query(announcements).delete()
         db.query(schedule).delete()
+        
         db.query(team_coach).delete()
         db.query(team_physio).delete()
         db.query(team_player).delete()

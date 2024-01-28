@@ -199,13 +199,13 @@ def delete_schedule(id: int, db:Session = Depends(get_db)):
 def read_team_schedules(id: int, db:Session = Depends(get_db)):
     return crud.get_team_schedules(db, id)
 
-@app.get("/team_schedules/{id}/{date}")
+@app.get("/team_schedules/{id}")
 def read_team_schedule(id: int, db:Session = Depends(get_db)):
     return crud.get_team_schedule_by_id(db, id)
 
-@app.post("/team_schedules/{id}")
-def insert_team_schedule(id: int, schedule: TeamScheduleBase, db:Session = Depends(get_db)):
-    return crud.insert_new_team_schedule(db, schedule, id)
+@app.post("/team_schedules")
+def insert_team_schedule(schedule: TeamScheduleBase, db:Session = Depends(get_db)):
+    return crud.insert_new_team_schedule(db, schedule)
 
 @app.put("/team_schedules/{id}")
 def update_team_schedule(id: int, schedule: TeamScheduleBase, db:Session = Depends(get_db)):
@@ -219,21 +219,21 @@ def delete_team_schedule(id: int, db:Session = Depends(get_db)):
 
 #region player_schedules
 
-@app.get("/player_schedules/{id}")
-def read_player_schedules(id: int, db:Session = Depends(get_db)):
-    return crud.get_player_schedules(db, id)
+@app.get("/player_schedules/{player_id}")
+def read_player_schedules(player_id: int, db:Session = Depends(get_db)):
+    return crud.get_player_schedules(db, player_id)
 
 @app.post("/player_schedules")
 def insert_player_schedule(schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
     return crud.insert_new_player_schedule(db, schedule)
 
-@app.put("/player_schedules/{id}")
-def update_player_schedule(id: int, schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
-    return crud.update_player_schedule(db, schedule, id)
+@app.put("/player_schedules/{player_id}")
+def update_player_schedule(player_id: int, schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
+    return crud.update_player_schedule(db, schedule, player_id)
 
-@app.delete("/player_schedules/{id}")
-def delete_player_schedule(id: int, db:Session = Depends(get_db)):
-    return crud.delete_player_schedule_by_id(db, id)
+@app.delete("/player_schedules/{player_id}")
+def delete_player_schedule(player_id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_schedule_by_id(db, player_id)
 
 
 #endregion
