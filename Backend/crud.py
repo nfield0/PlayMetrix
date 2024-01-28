@@ -587,9 +587,9 @@ def insert_new_player_schedule(db: Session, new_player_schedule: PlayerScheduleB
     except Exception as e:
         return f"Error inserting player schedule: {e}"
     
-def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, id):
+def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, player_id: int):
     try:        
-        player_schedule_to_update = db.query(player_schedule).filter_by(schedule_id= id).first()
+        player_schedule_to_update = db.query(player_schedule).filter_by(player_id=player_id).first()
         
         if not player_schedule_to_update:
             raise HTTPException(status_code=404, detail="Player Schedule not found")
@@ -599,18 +599,18 @@ def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, id):
         player_schedule_to_update.player_attending = updated_player_schedule.player_attending
         
         db.commit()
-        return {"message": f"Player Schedule with ID {id} has been updated"}
+        return {"message": f"Player with ID {player_id} Schedule has been updated"}
     except Exception as e:
         return(f"Error updating player schedule: {e}")
     
-def delete_player_schedule_by_id(db:Session, id: int):
+def delete_player_schedule_by_id(db:Session, delete_player_id: int):
     try:        
-        player_schedule_to_delete = db.query(player_schedule).filter_by(schedule_id=id).first()
+        player_schedule_to_delete = db.query(player_schedule).filter_by(player_id=delete_player_id).first()
         if player_schedule_to_delete:
             db.delete(player_schedule_to_delete)
             db.commit()
         db.close()
-        return {"message": "Player Schedule deleted successfully"}
+        return {"message": f"Player with ID {delete_player_id} Schedule deleted successfully"}
 
     except Exception as e:
         return(f"Error deleting player schedule: {e}")
@@ -1704,8 +1704,10 @@ def delete_sport(db:Session, id: int):
     
 def cleanup(db: Session):
     try:       
+        db.query(player_schedule).delete()
         db.query(announcements).delete()
         db.query(schedule).delete()
+        db.query(team_schedule).delete()
         db.query(team_coach).delete()
         db.query(team_physio).delete()
         db.query(team_player).delete()

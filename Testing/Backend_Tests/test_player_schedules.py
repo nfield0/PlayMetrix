@@ -76,8 +76,57 @@ def test_add_player_schedule():
     assert response.headers['Content-Type'] == 'application/json'
     try:
         response_json = response.json()
-        assert response_json == "Player Schedule inserted successfully"
+        assert response_json.get("message") == "Player Schedule inserted successfully"
         
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_get_player_schedule():
+    url = 'http://127.0.0.1:8000/player_schedules/1'
+    headers = {'Content-Type': 'application/json'}
+    
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    expected_json = [{
+        "schedule_id": 1,
+        "player_id": 1,
+        "player_attending": True
+    }]
+    try:
+        response_json = response.json()
+        assert response_json == expected_json
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_update_player_schedule():
+    url = 'http://127.0.0.1:8000/player_schedules/1'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "schedule_id": 1,
+        "player_id": 1,
+        "player_attending": False
+    }
+    response = requests.put(url, headers=headers,json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Player with ID 1 Schedule has been updated"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_delete_player_schedule():
+    url = 'http://127.0.0.1:8000/player_schedules/1'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Player with ID 1 Schedule deleted successfully"
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
