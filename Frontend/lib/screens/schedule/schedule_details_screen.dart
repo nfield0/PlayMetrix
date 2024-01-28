@@ -15,6 +15,7 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 
+final scheduleIdProvider = StateProvider<int>((ref) => 0);
 enum ScheduleType { training, match }
 
 class ScheduleDetailsScreen extends ConsumerWidget {
@@ -25,6 +26,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
     // AppointmentDataSource _dataSource =
     //     getFilteredDataSource(ref.watch(appointmentIdProvider.notifier).state);
     UserRole userRole = ref.watch(userRoleProvider);
+    int scheduleId = ref.watch(scheduleIdProvider);
 
     return FutureBuilder(
         future: getFilteredDataSource(
@@ -32,6 +34,9 @@ class ScheduleDetailsScreen extends ConsumerWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final dataSource = snapshot.data;
+            for (var schedule in dataSource?.appointments ?? []) {
+              Appointment sch = schedule;
+              scheduleId = int.parse(sch.id.toString());
 
             return Scaffold(
                 appBar: AppBar(
@@ -39,8 +44,9 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         appBarTitlePreviousPage(DateFormat('MMMM y').format(
-                          dataSource?.appointments?[0].startTime ??
-                              DateTime.now(),
+                          sch.startTime,
+                          // dataSource?.appointments?[0].startTimeZone ??
+                          //     DateTime.now(),
                         )),
                         if (userRole == UserRole.manager)
                           smallButton(Icons.edit, "Edit", () {
@@ -48,7 +54,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    const EditScheduleScreen(),
+                                    EditScheduleScreen(),
                               ),
                             );
                           })
@@ -67,7 +73,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          dataSource?.appointments?[0].subject ?? "",
+                          sch.subject,
                           style: const TextStyle(
                             fontFamily: AppFonts.gabarito,
                             color: Colors.black,
@@ -78,15 +84,17 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                         const SizedBox(height: 10),
                         Text(
                           DateFormat('EEEE, d MMMM y').format(
-                              dataSource?.appointments?[0].startTime ??
-                                  DateTime.now()),
+                                sch.startTime,
+                              // dataSource?.appointments?[0].startTime ??
+                              //     DateTime.now()
+                              ),
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                           ),
                         ),
                         Text(
-                          '${DateFormat('jm').format(dataSource?.appointments?[0].startTime)} to ${DateFormat('jm').format(dataSource?.appointments?[0].endTime)}',
+                          '${DateFormat('jm').format(sch.startTime)} to ${DateFormat('jm').format(sch.endTime)}',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -94,7 +102,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                         ),
                         // Location?
                         Text(
-                          dataSource?.appointments?[0].location ?? "",
+                          sch.location ?? "",
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -122,7 +130,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const PlayersAttendingScreen()),
+                                            PlayersAttendingScreen()),
                                   );
                                 }
                               })
@@ -134,8 +142,8 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                           child: SfCalendar(
                             view: CalendarView.schedule,
                             dataSource: dataSource,
-                            minDate: dataSource?.appointments?[0].startTime!,
-                            maxDate: dataSource?.appointments?[0].startTime!
+                            minDate: sch.startTime,
+                            maxDate: sch.startTime
                                 .add(const Duration(days: 1)),
                             scheduleViewSettings: const ScheduleViewSettings(
                               appointmentItemHeight: 70,
@@ -167,6 +175,7 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                 ),
                 bottomNavigationBar:
                     roleBasedBottomNavBar(userRole, context, 2));
+          }
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
