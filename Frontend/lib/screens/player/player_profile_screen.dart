@@ -128,6 +128,193 @@ Future<String?> getTeamLeagueName(int teamId) async {
   }
 }
 
+class PlayerInjuries {
+  final int injury_id;
+  final String date_of_injury;
+  final String date_of_recovery;
+  final int player_id;
+
+  PlayerInjuries({
+    required this.injury_id,
+    required this.date_of_injury,
+    required this.date_of_recovery,
+    required this.player_id,
+  });
+
+  factory PlayerInjuries.fromJson(Map<String, dynamic> json) {
+    return PlayerInjuries(
+      injury_id: json['injury_id'],
+      date_of_injury: json['date_of_injury'],
+      date_of_recovery: json['date_of_recovery'],
+      player_id: json['player_id'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'PlayerInjuries{injury_id: $injury_id, date_of_injury: $date_of_injury, date_of_recovery: $date_of_recovery, player_id: $player_id}';
+  }
+}
+
+Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) async
+{
+  final apiUrl =
+      '$apiBaseUrl/player_injuries'; // Replace with your actual backend URL and provide the user ID
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data, parse and store it in individual variables
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      List<PlayerInjuries> allPlayerInjuries = jsonResponse
+          .map((json) => PlayerInjuries.fromJson(json))
+          .toList();
+
+      for (var injury in allPlayerInjuries) {
+        print(injury.toString());
+      }
+
+ 
+      List<PlayerInjuries> playerInjuries = [];
+      // loop thourgh all the injuries and get the ones that match the user id passed in
+      for (var injury in allPlayerInjuries) {
+        if (injury.player_id == userId) {
+          playerInjuries.add(injury);
+        }
+      }
+
+      List<int> injuryIds = [];
+      for (var injury in playerInjuries) {
+        injuryIds.add(injury.injury_id); // Corrected property name
+      }
+      
+      final apiUrlForInjuries =
+      '$apiBaseUrl/injuries'; // Replace with your actual backend URL and provide the user ID
+
+      try {
+        final response = await http.get(
+          Uri.parse(apiUrlForInjuries),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          // Successfully retrieved data, parse and store it in individual variables
+          List<dynamic> jsonResponse = jsonDecode(response.body);
+          List<Injury> allInjuries = jsonResponse
+            .map((json) => Injury.fromJson(json))
+            .toList();
+
+          List<Injury> injuriesInIdsList = [];
+
+          for (var injury in allInjuries) {
+            if (injuryIds.contains(injury.injury_id)) {
+              injuriesInIdsList.add(injury);
+            }
+          }
+
+          List<AllPlayerInjuriesData> allPlayerInjuriesData = [];
+          for (var injury in injuriesInIdsList) {
+            for (var playerInjury in playerInjuries) {
+              if (injury.injury_id == playerInjury.injury_id) {
+                // create a AllPlayerInjuriesData object
+                AllPlayerInjuriesData data = AllPlayerInjuriesData(injury.injury_id, injury.injury_type, injury.expected_recovery_time, injury.recovery_method, playerInjury.date_of_injury, playerInjury.date_of_recovery, playerInjury.player_id);
+                allPlayerInjuriesData.add(data);
+              }
+            }
+          }
+          return allPlayerInjuriesData;
+        }
+        else {
+          // Failed to retrieve data, handle the error accordingly
+          print('Failed to retrieve data for injuries request. Status code: ${response.statusCode}');
+          print('Error message for injuries request: ${response.body}');
+        }
+      } catch (error) {
+        // Handle any network or other errors
+        print("injuries");
+        print('Error in injuries request: $error');
+      }
+        throw Exception('Failed to retrieve Injury Data');
+
+    } 
+    else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data for player injuries request. Status code: ${response.statusCode}');
+      print('Error message for player injuries request. Status code: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print("Player Injuries by user id");
+    print('Error: $error');
+  }
+  throw Exception('Failed to retrieve All Player Injuries By User Id data');
+}
+
+void printList(List<dynamic> list) {
+  for (var item in list) {
+    print(item);
+  }
+}
+
+
+class Injury {
+  var injury_id;
+  var injury_type;
+  var expected_recovery_time;
+  var recovery_method;
+
+  Injury(
+    this.injury_id,
+    this.injury_type,
+    this.expected_recovery_time,
+    this.recovery_method,
+  );
+
+  factory Injury.fromJson(Map<String, dynamic> json) {
+    return Injury(
+      json['injury_id'],
+      json['injury_type'],
+      json['expected_recovery_time'],
+      json['recovery_method']
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Injury{injury_id: $injury_id, injury_type: $injury_type, expected_recovery_time: $expected_recovery_time, recovery_method: $recovery_method}';
+  }
+}
+
+class AllPlayerInjuriesData{
+  final int injury_id;
+  final String injury_type;
+  final String expected_recovery_time;
+  final String recovery_method;
+  final String date_of_injury;
+  final String date_of_recovery;
+  final int player_id;
+
+  AllPlayerInjuriesData(
+    this.injury_id,
+    this.injury_type,
+    this.expected_recovery_time,
+    this.recovery_method,
+    this.date_of_injury,
+    this.date_of_recovery,
+    this.player_id,
+
+  );
+}
+
+
 enum AvailabilityStatus { Available, Limited, Unavailable }
 
 class AvailabilityData {
@@ -267,7 +454,27 @@ class PlayerProfileScreen extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                             color: AppColours.darkBlue,
                             fontSize: 30)),
-                    _injuriesSection(3),
+                            FutureBuilder<List<AllPlayerInjuriesData>>(
+                        future: getAllPlayerInjuriesByUserId(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // Display a loading indicator while the data is being fetched
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            // Display an error message if the data fetching fails
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            // Data has been successfully fetched, use it here
+                            List<AllPlayerInjuriesData> playerInjuriesData = snapshot.data!;
+                            int numPlayerIds = playerInjuriesData.length;
+
+                            return _injuriesSection(numPlayerIds, playerInjuriesData);
+                          } else {
+                            return Text('No data available');
+                          }
+                        }),
+                    //_injuriesSection(3),
                     divider(),
                     const SizedBox(height: 20),
                     const Text("Statistics",
@@ -442,14 +649,7 @@ Widget _availabilityTrafficLightItem(
   );
 }
 
-Widget _injuriesSection(int numInjuries) {
-  List<Injury> _data = [
-    Injury("10/04/2022", "10/05/2022", "Hamstring", "4 weeks", "Physio"),
-    Injury(
-        "11/05/2023", "29/07/2023", "Hamstring", "4 weeks", "Light exercise"),
-    Injury("31/10/2023", "-", "Hamstring", "6 weeks", "Physio")
-  ];
-
+Widget _injuriesSection(int numInjuries, List<AllPlayerInjuriesData> playerInjuriesData) {
   return Container(
     child: Column(children: [
       Padding(
@@ -470,13 +670,13 @@ Widget _injuriesSection(int numInjuries) {
       ExpansionPanelList.radio(
         elevation: 0,
         expandedHeaderPadding: EdgeInsets.all(0),
-        children: _data.map<ExpansionPanelRadio>((Injury injury) {
+        children: playerInjuriesData.map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
           return ExpansionPanelRadio(
-            value: injury.dateOfInjury,
+            value: injury.date_of_injury,
             backgroundColor: Colors.transparent,
             headerBuilder: (BuildContext context, bool isExpanded) {
               return ListTile(
-                title: Text(injury.dateOfInjury,
+                title: Text(injury.date_of_injury,
                     style: const TextStyle(
                         color: AppColours.darkBlue,
                         fontWeight: FontWeight.bold)),
@@ -492,36 +692,36 @@ Widget _injuriesSection(int numInjuries) {
   );
 }
 
-class Injury {
-  var dateOfInjury;
-  var dateOfRecovery;
-  var injuryType;
-  var expectedRecoveryTime;
-  var recoveryMethod;
+// class Injury {
+//   var dateOfInjury;
+//   var dateOfRecovery;
+//   var injuryType;
+//   var expectedRecoveryTime;
+//   var recoveryMethod;
 
-  Injury(
-    this.dateOfInjury,
-    this.dateOfRecovery,
-    this.injuryType,
-    this.expectedRecoveryTime,
-    this.recoveryMethod,
-  );
-}
+//   Injury(
+//     this.dateOfInjury,
+//     this.dateOfRecovery,
+//     this.injuryType,
+//     this.expectedRecoveryTime,
+//     this.recoveryMethod,
+//   );
+// }
 
-Widget _injuryDetails(Injury injury) {
+Widget _injuryDetails(AllPlayerInjuriesData injury) {
   return Column(
     children: [
       greyDivider(),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Injury", injury.dateOfInjury),
+      detailWithDivider("Date of Injury", injury.date_of_injury.toString()),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Recovery", injury.dateOfRecovery),
+      detailWithDivider("Date of Recovery", injury.date_of_recovery.toString()),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.injuryType),
+      detailWithDivider("Injury Type", injury.injury_type),
       const SizedBox(height: 10),
-      detailWithDivider("Expected Recovery Time", injury.expectedRecoveryTime),
+      detailWithDivider("Expected Recovery Time", injury.expected_recovery_time),
       const SizedBox(height: 10),
-      detailWithDivider("Recovery Method", injury.recoveryMethod),
+      detailWithDivider("Recovery Method", injury.recovery_method),
       underlineButtonTransparent("View player report", () {})
     ],
   );
