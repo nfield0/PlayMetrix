@@ -118,35 +118,35 @@ class StatisticsScreen extends ConsumerWidget {
                               StatisticsData statistics = snapshot.data!;
                               return Column(
                                 children: [
-                                  _statisticsDetailWithDivider(
+                                  statisticsDetailWithDivider(
                                       "Matches played",
                                       statistics.matchesPlayed.toString(),
                                       available),
                                   const SizedBox(
                                     height: 7,
                                   ),
-                                  _statisticsDetailWithDivider(
+                                  statisticsDetailWithDivider(
                                       "Matches started",
                                       statistics.matchesStarted.toString(),
                                       limited),
                                   const SizedBox(
                                     height: 7,
                                   ),
-                                  _statisticsDetailWithDivider(
+                                  statisticsDetailWithDivider(
                                       "Matches off the bench",
                                       statistics.matchesOffTheBench.toString(),
                                       unavailable),
                                   const SizedBox(
                                     height: 7,
                                   ),
-                                  _statisticsDetailWithDivider(
+                                  statisticsDetailWithDivider(
                                       "Total minutes played",
                                       statistics.totalMinutesPlayed.toString(),
                                       unavailable),
                                   const SizedBox(
                                     height: 7,
                                   ),
-                                  _statisticsDetailWithDivider(
+                                  statisticsDetailWithDivider(
                                       "Injury Prone",
                                       statistics.injuryProne ? "Yes" : "No",
                                       null)
@@ -161,7 +161,7 @@ class StatisticsScreen extends ConsumerWidget {
   }
 }
 
-Widget _statisticsDetailWithDivider(
+Widget statisticsDetailWithDivider(
     String title, String detail, AvailabilityData? availability) {
   return Column(
     children: [

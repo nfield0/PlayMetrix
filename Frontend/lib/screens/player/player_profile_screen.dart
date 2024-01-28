@@ -9,53 +9,16 @@ import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-Future<PlayerData> getPlayerById(int id) async {
-  print('Player ID in home page: $id');
-  final apiUrl =
-      'http://127.0.0.1:8000/players/info/$id'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
-
-      // Access individual variables
-      print('${player.player_id}');
-      print('${player.player_firstname}');
-      print('${player.player_surname}');
-      print('${player.player_dob}');
-      print('${player.player_contact_number}');
-      print('${player.player_image}');
-      print('${player.player_height}');
-      print('${player.player_gender}');
-      return player;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print("user");
-    print('Error: $error');
-  }
-  throw Exception('Failed to retrieve player data');
-}
 
 class LeagueData {
   final int league_id;
@@ -156,8 +119,8 @@ class PlayerInjuries {
   }
 }
 
-Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) async
-{
+Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
+    int userId) async {
   final apiUrl =
       '$apiBaseUrl/player_injuries'; // Replace with your actual backend URL and provide the user ID
 
@@ -172,15 +135,13 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) asy
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
       List<dynamic> jsonResponse = jsonDecode(response.body);
-      List<PlayerInjuries> allPlayerInjuries = jsonResponse
-          .map((json) => PlayerInjuries.fromJson(json))
-          .toList();
+      List<PlayerInjuries> allPlayerInjuries =
+          jsonResponse.map((json) => PlayerInjuries.fromJson(json)).toList();
 
       for (var injury in allPlayerInjuries) {
         print(injury.toString());
       }
 
- 
       List<PlayerInjuries> playerInjuries = [];
       // loop thourgh all the injuries and get the ones that match the user id passed in
       for (var injury in allPlayerInjuries) {
@@ -193,9 +154,9 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) asy
       for (var injury in playerInjuries) {
         injuryIds.add(injury.injury_id); // Corrected property name
       }
-      
+
       final apiUrlForInjuries =
-      '$apiBaseUrl/injuries'; // Replace with your actual backend URL and provide the user ID
+          '$apiBaseUrl/injuries'; // Replace with your actual backend URL and provide the user ID
 
       try {
         final response = await http.get(
@@ -208,9 +169,8 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) asy
         if (response.statusCode == 200) {
           // Successfully retrieved data, parse and store it in individual variables
           List<dynamic> jsonResponse = jsonDecode(response.body);
-          List<Injury> allInjuries = jsonResponse
-            .map((json) => Injury.fromJson(json))
-            .toList();
+          List<Injury> allInjuries =
+              jsonResponse.map((json) => Injury.fromJson(json)).toList();
 
           List<Injury> injuriesInIdsList = [];
 
@@ -225,16 +185,23 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) asy
             for (var playerInjury in playerInjuries) {
               if (injury.injury_id == playerInjury.injury_id) {
                 // create a AllPlayerInjuriesData object
-                AllPlayerInjuriesData data = AllPlayerInjuriesData(injury.injury_id, injury.injury_type, injury.expected_recovery_time, injury.recovery_method, playerInjury.date_of_injury, playerInjury.date_of_recovery, playerInjury.player_id);
+                AllPlayerInjuriesData data = AllPlayerInjuriesData(
+                    injury.injury_id,
+                    injury.injury_type,
+                    injury.expected_recovery_time,
+                    injury.recovery_method,
+                    playerInjury.date_of_injury,
+                    playerInjury.date_of_recovery,
+                    playerInjury.player_id);
                 allPlayerInjuriesData.add(data);
               }
             }
           }
           return allPlayerInjuriesData;
-        }
-        else {
+        } else {
           // Failed to retrieve data, handle the error accordingly
-          print('Failed to retrieve data for injuries request. Status code: ${response.statusCode}');
+          print(
+              'Failed to retrieve data for injuries request. Status code: ${response.statusCode}');
           print('Error message for injuries request: ${response.body}');
         }
       } catch (error) {
@@ -242,13 +209,13 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(int userId) asy
         print("injuries");
         print('Error in injuries request: $error');
       }
-        throw Exception('Failed to retrieve Injury Data');
-
-    } 
-    else {
+      throw Exception('Failed to retrieve Injury Data');
+    } else {
       // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data for player injuries request. Status code: ${response.statusCode}');
-      print('Error message for player injuries request. Status code: ${response.body}');
+      print(
+          'Failed to retrieve data for player injuries request. Status code: ${response.statusCode}');
+      print(
+          'Error message for player injuries request. Status code: ${response.body}');
     }
   } catch (error) {
     // Handle any network or other errors
@@ -264,7 +231,6 @@ void printList(List<dynamic> list) {
   }
 }
 
-
 class Injury {
   var injury_id;
   var injury_type;
@@ -279,12 +245,8 @@ class Injury {
   );
 
   factory Injury.fromJson(Map<String, dynamic> json) {
-    return Injury(
-      json['injury_id'],
-      json['injury_type'],
-      json['expected_recovery_time'],
-      json['recovery_method']
-    );
+    return Injury(json['injury_id'], json['injury_type'],
+        json['expected_recovery_time'], json['recovery_method']);
   }
 
   @override
@@ -293,7 +255,7 @@ class Injury {
   }
 }
 
-class AllPlayerInjuriesData{
+class AllPlayerInjuriesData {
   final int injury_id;
   final String injury_type;
   final String expected_recovery_time;
@@ -310,10 +272,8 @@ class AllPlayerInjuriesData{
     this.date_of_injury,
     this.date_of_recovery,
     this.player_id,
-
   );
 }
-
 
 enum AvailabilityStatus { Available, Limited, Unavailable }
 
@@ -391,42 +351,85 @@ class PlayerProfileScreen extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
                 child: Center(
                   child: Column(children: [
-                    FutureBuilder<PlayerData>(
-                        future: getPlayerById(userId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // Display a loading indicator while the data is being fetched
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            // Display an error message if the data fetching fails
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            // Data has been successfully fetched, use it here
-                            PlayerData player = snapshot.data!;
-                            String first_name = player.player_firstname;
-                            String second_name = player.player_surname;
-                            DateTime dob = player.player_dob;
-                            String height = player.player_height;
-                            String gender = player.player_gender;
-                            Uint8List? profilePicture = player.player_image;
+                    if (ref.read(teamIdProvider.notifier).state == -1)
+                      FutureBuilder<PlayerData>(
+                          future: getPlayerById(userId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // Display a loading indicator while the data is being fetched
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              // Display an error message if the data fetching fails
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              // Data has been successfully fetched, use it here
+                              PlayerData player = snapshot.data!;
+                              String firstName = player.player_firstname;
+                              String surname = player.player_surname;
+                              DateTime dob = player.player_dob;
+                              String height = player.player_height;
+                              String gender = player.player_gender;
+                              Uint8List? profilePicture = player.player_image;
 
-                            String formattedDate =
-                                "${dob.toLocal()}".split(' ')[0];
+                              String formattedDate =
+                                  "${dob.toLocal()}".split(' ')[0];
 
-                            return _playerProfile(
-                                first_name,
-                                second_name,
-                                7,
-                                formattedDate,
-                                height,
-                                gender,
-                                limited,
-                                profilePicture);
-                          } else {
-                            return Text('No data available');
-                          }
-                        }),
+                              return playerProfileNoTeam(
+                                  firstName,
+                                  surname,
+                                  formattedDate,
+                                  height,
+                                  gender,
+                                  profilePicture);
+                            } else {
+                              return Text('No data available');
+                            }
+                          }),
+                    if (ref.read(teamIdProvider.notifier).state != -1)
+                      FutureBuilder<PlayerProfile>(
+                          future: getPlayerTeamProfile(ref.read(teamIdProvider),
+                              ref.read(userIdProvider)),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // Display a loading indicator while the data is being fetched
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              // Display an error message if the data fetching fails
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              // Data has been successfully fetched, use it here
+                              PlayerProfile player = snapshot.data!;
+                              String firstName = player.firstName;
+                              String surname = player.surname;
+                              String dob = player.dob;
+                              String height = player.height;
+                              String gender = player.gender;
+                              Uint8List? profilePicture = player.imageBytes;
+                              int playerNumber = player.teamNumber;
+                              AvailabilityStatus availability = player.status;
+                              AvailabilityData availabilityData =
+                                  availability == AvailabilityStatus.Available
+                                      ? available
+                                      : availability ==
+                                              AvailabilityStatus.Limited
+                                          ? limited
+                                          : unavailable;
+
+                              return playerProfile(
+                                  firstName,
+                                  surname,
+                                  playerNumber,
+                                  dob,
+                                  height,
+                                  gender,
+                                  availabilityData,
+                                  profilePicture);
+                            } else {
+                              return Text('No data available');
+                            }
+                          }),
                     const SizedBox(height: 20),
                     divider(),
                     const SizedBox(height: 20),
@@ -437,14 +440,32 @@ class PlayerProfileScreen extends ConsumerWidget {
                             color: AppColours.darkBlue,
                             fontSize: 30)),
                     const SizedBox(height: 20),
-                    profilePill("teamData.team_name", "leagueName.toString()",
-                        "lib/assets/icons/logo_placeholder.png", null, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TeamProfileScreen()),
-                      );
-                    }),
+                    FutureBuilder(
+                        future: getTeamById(
+                            ref.read(teamIdProvider.notifier).state),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            TeamData team = snapshot.data!;
+                            return profilePill(
+                                team.team_name,
+                                team.team_location,
+                                "lib/assets/icons/logo_placeholder.png",
+                                team.team_logo, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TeamProfileScreen()),
+                              );
+                            });
+                          } else {
+                            return emptySection(Icons.group_off, "No team yet");
+                          }
+                        }),
                     const SizedBox(height: 20),
                     divider(),
                     const SizedBox(height: 20),
@@ -454,7 +475,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                             color: AppColours.darkBlue,
                             fontSize: 30)),
-                            FutureBuilder<List<AllPlayerInjuriesData>>(
+                    FutureBuilder<List<AllPlayerInjuriesData>>(
                         future: getAllPlayerInjuriesByUserId(userId),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -466,10 +487,12 @@ class PlayerProfileScreen extends ConsumerWidget {
                             return Text('Error: ${snapshot.error}');
                           } else if (snapshot.hasData) {
                             // Data has been successfully fetched, use it here
-                            List<AllPlayerInjuriesData> playerInjuriesData = snapshot.data!;
+                            List<AllPlayerInjuriesData> playerInjuriesData =
+                                snapshot.data!;
                             int numPlayerIds = playerInjuriesData.length;
 
-                            return _injuriesSection(numPlayerIds, playerInjuriesData);
+                            return injuriesSection(
+                                numPlayerIds, playerInjuriesData);
                           } else {
                             return Text('No data available');
                           }
@@ -486,7 +509,61 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     Padding(
                         padding: EdgeInsets.all(20),
-                        child: statistics(Statistics(10, 4, 6, 230, 3))),
+                        child: FutureBuilder<StatisticsData>(
+                            future: getStatisticsData(userId),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // Display a loading indicator while the data is being fetched
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                // Display an error message if the data fetching fails
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData) {
+                                // Data has been successfully fetched, use it here
+                                StatisticsData statistics = snapshot.data!;
+                                return Column(
+                                  children: [
+                                    statisticsDetailWithDivider(
+                                        "Matches played",
+                                        statistics.matchesPlayed.toString(),
+                                        available),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    statisticsDetailWithDivider(
+                                        "Matches started",
+                                        statistics.matchesStarted.toString(),
+                                        limited),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    statisticsDetailWithDivider(
+                                        "Matches off the bench",
+                                        statistics.matchesOffTheBench
+                                            .toString(),
+                                        unavailable),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    statisticsDetailWithDivider(
+                                        "Total minutes played",
+                                        statistics.totalMinutesPlayed
+                                            .toString(),
+                                        unavailable),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    statisticsDetailWithDivider(
+                                        "Injury Prone",
+                                        statistics.injuryProne ? "Yes" : "No",
+                                        null)
+                                  ],
+                                );
+                              } else {
+                                return Text('No data available');
+                              }
+                            })),
                     const SizedBox(height: 20),
                     if (userRole == UserRole.player)
                       bigButton("Log Out", () {
@@ -509,7 +586,7 @@ class PlayerProfileScreen extends ConsumerWidget {
   }
 }
 
-Widget _playerProfile(
+Widget playerProfile(
     String firstName,
     String surname,
     int playerNumber,
@@ -552,7 +629,7 @@ Widget _playerProfile(
           ),
           borderRadius: BorderRadius.circular(20), // Set the border radius
         ),
-        child: profilePicture != null
+        child: profilePicture != null && profilePicture.isNotEmpty
             ? Image.memory(
                 profilePicture,
                 width: 150,
@@ -577,18 +654,59 @@ Widget _playerProfile(
             fontSize: 36,
           )),
       const SizedBox(height: 30),
-      _profileDetails("Date of Birth", dob),
+      profileDetails("Date of Birth", dob),
       const SizedBox(height: 15),
-      _profileDetails("Height", "${height}cm"),
+      profileDetails("Height", "${height}cm"),
       const SizedBox(height: 15),
-      _profileDetails("Gender", gender),
+      profileDetails("Gender", gender),
       const SizedBox(height: 35),
-      _availabilityTrafficLight(availability.status),
+      availabilityTrafficLight(availability.status),
     ]),
   );
 }
 
-Widget _profileDetails(String title, String desc) {
+Widget playerProfileNoTeam(String firstName, String surname, String dob,
+    String height, String gender, Uint8List? profilePicture) {
+  return Container(
+    alignment: Alignment.center,
+    padding: const EdgeInsets.all(20),
+    child: Column(children: [
+      Container(
+        child: profilePicture != null && profilePicture.isNotEmpty
+            ? Image.memory(
+                profilePicture,
+                width: 150,
+              )
+            : Image.asset(
+                "lib/assets/icons/profile_placeholder.png",
+                width: 150,
+              ),
+      ),
+      const SizedBox(height: 20),
+      Text(firstName,
+          style: const TextStyle(
+            color: Colors.black,
+            fontFamily: AppFonts.gabarito,
+            fontSize: 36,
+          )),
+      Text(surname,
+          style: const TextStyle(
+            color: Colors.black,
+            fontFamily: AppFonts.gabarito,
+            fontWeight: FontWeight.bold,
+            fontSize: 36,
+          )),
+      const SizedBox(height: 30),
+      profileDetails("Date of Birth", dob),
+      const SizedBox(height: 15),
+      profileDetails("Height", "${height}cm"),
+      const SizedBox(height: 15),
+      profileDetails("Gender", gender),
+    ]),
+  );
+}
+
+Widget profileDetails(String title, String desc) {
   return Text.rich(
     TextSpan(
       text: "$title: ",
@@ -607,7 +725,7 @@ Widget _profileDetails(String title, String desc) {
   );
 }
 
-Widget _availabilityTrafficLight(AvailabilityStatus playerStatus) {
+Widget availabilityTrafficLight(AvailabilityStatus playerStatus) {
   List<AvailabilityData> availability = [
     AvailabilityData(AvailabilityStatus.Available, "Available",
         Icons.check_circle, AppColours.green),
@@ -619,14 +737,14 @@ Widget _availabilityTrafficLight(AvailabilityStatus playerStatus) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-      _availabilityTrafficLightItem(availability[0], playerStatus),
-      _availabilityTrafficLightItem(availability[1], playerStatus),
-      _availabilityTrafficLightItem(availability[2], playerStatus)
+      availabilityTrafficLightItem(availability[0], playerStatus),
+      availabilityTrafficLightItem(availability[1], playerStatus),
+      availabilityTrafficLightItem(availability[2], playerStatus)
     ],
   );
 }
 
-Widget _availabilityTrafficLightItem(
+Widget availabilityTrafficLightItem(
     AvailabilityData availability, AvailabilityStatus playerStatus) {
   double opacity = availability.status == playerStatus ? 1.0 : 0.4;
 
@@ -649,7 +767,8 @@ Widget _availabilityTrafficLightItem(
   );
 }
 
-Widget _injuriesSection(int numInjuries, List<AllPlayerInjuriesData> playerInjuriesData) {
+Widget injuriesSection(
+    int numInjuries, List<AllPlayerInjuriesData> playerInjuriesData) {
   return Container(
     child: Column(children: [
       Padding(
@@ -670,7 +789,8 @@ Widget _injuriesSection(int numInjuries, List<AllPlayerInjuriesData> playerInjur
       ExpansionPanelList.radio(
         elevation: 0,
         expandedHeaderPadding: EdgeInsets.all(0),
-        children: playerInjuriesData.map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
+        children: playerInjuriesData
+            .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
           return ExpansionPanelRadio(
             value: injury.date_of_injury,
             backgroundColor: Colors.transparent,
@@ -683,7 +803,7 @@ Widget _injuriesSection(int numInjuries, List<AllPlayerInjuriesData> playerInjur
               );
             },
             body: ListTile(
-              title: _injuryDetails(injury),
+              title: injuryDetails(injury),
             ),
           );
         }).toList(),
@@ -692,23 +812,7 @@ Widget _injuriesSection(int numInjuries, List<AllPlayerInjuriesData> playerInjur
   );
 }
 
-// class Injury {
-//   var dateOfInjury;
-//   var dateOfRecovery;
-//   var injuryType;
-//   var expectedRecoveryTime;
-//   var recoveryMethod;
-
-//   Injury(
-//     this.dateOfInjury,
-//     this.dateOfRecovery,
-//     this.injuryType,
-//     this.expectedRecoveryTime,
-//     this.recoveryMethod,
-//   );
-// }
-
-Widget _injuryDetails(AllPlayerInjuriesData injury) {
+Widget injuryDetails(AllPlayerInjuriesData injury) {
   return Column(
     children: [
       greyDivider(),
@@ -719,7 +823,8 @@ Widget _injuryDetails(AllPlayerInjuriesData injury) {
       const SizedBox(height: 10),
       detailWithDivider("Injury Type", injury.injury_type),
       const SizedBox(height: 10),
-      detailWithDivider("Expected Recovery Time", injury.expected_recovery_time),
+      detailWithDivider(
+          "Expected Recovery Time", injury.expected_recovery_time),
       const SizedBox(height: 10),
       detailWithDivider("Recovery Method", injury.recovery_method),
       underlineButtonTransparent("View player report", () {})

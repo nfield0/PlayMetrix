@@ -26,8 +26,7 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
     return await getCoachProfile(userId);
   }
 
-  return Profile(
-      -1, "firstName", "surname", "contactNumber", "email", Uint8List(0));
+  throw Exception("Profile not found");
 }
 
 class ProfileScreen extends ConsumerWidget {

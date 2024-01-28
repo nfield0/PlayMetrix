@@ -69,15 +69,6 @@ Future<PlayerData> getPlayerById(int id) async {
       // Successfully retrieved data, parse and store it in individual variables
       PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
 
-      // Access individual variables
-      print('${player.player_id}');
-      print('${player.player_firstname}');
-      print('${player.player_surname}');
-      print('${player.player_dob}');
-      print('${player.player_contact_number}');
-      print('${player.player_image}');
-      print('${player.player_height}');
-      print('${player.player_gender}');
       return player;
     } else {
       // Failed to retrieve data, handle the error accordingly

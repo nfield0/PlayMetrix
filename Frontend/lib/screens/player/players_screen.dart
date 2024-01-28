@@ -34,12 +34,15 @@ class PlayerProfile {
   final int playerId;
   final String firstName;
   final String surname;
+  final String dob;
+  final String gender;
+  final String height;
   final int teamNumber;
   final AvailabilityStatus status;
   final Uint8List? imageBytes;
 
-  PlayerProfile(this.playerId, this.firstName, this.surname, this.teamNumber,
-      this.status, this.imageBytes);
+  PlayerProfile(this.playerId, this.firstName, this.surname, this.dob,
+      this.gender, this.height, this.teamNumber, this.status, this.imageBytes);
 }
 
 Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
@@ -62,17 +65,67 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
       List<PlayerProfile> players = [];
 
       for (Map<String, dynamic> playerJson in playersJsonList) {
-        Profile player = await getPlayerProfile(playerJson['player_id']);
+        PlayerData player = await getPlayerById(playerJson['player_id']);
         players.add(PlayerProfile(
             playerJson['player_id'],
-            player.firstName,
-            player.surname,
+            player.player_firstname,
+            player.player_surname,
+            "${player.player_dob.toLocal()}".split(' ')[0],
+            player.player_gender,
+            player.player_height,
             playerJson['player_team_number'],
             stringToAvailabilityStatus(playerJson['playing_status']),
-            player.imageBytes));
+            player.player_image));
       }
 
       return players;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to retrieve data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to load players');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to load players');
+  }
+}
+
+Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
+  final apiUrl = '$apiBaseUrl/team_player/$teamId';
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+
+      final List<Map<String, dynamic>> playersJsonList =
+          List<Map<String, dynamic>>.from(responseData);
+
+      for (Map<String, dynamic> playerJson in playersJsonList) {
+        if (playerJson['player_id'] == playerId) {
+          PlayerData player = await getPlayerById(playerJson['player_id']);
+          PlayerProfile playerProfile = PlayerProfile(
+              playerJson['player_id'],
+              player.player_firstname,
+              player.player_surname,
+              "${player.player_dob.toLocal()}".split(' ')[0],
+              player.player_gender,
+              player.player_height,
+              playerJson['player_team_number'],
+              stringToAvailabilityStatus(playerJson['playing_status']),
+              player.player_image);
+          return playerProfile;
+        }
+      }
+      throw Exception('Player not found');
     } else {
       // Failed to retrieve data, handle the error accordingly
       print('Failed to retrieve data. Status code: ${response.statusCode}');
