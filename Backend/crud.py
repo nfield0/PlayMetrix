@@ -515,17 +515,21 @@ def get_team_schedule_by_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving team schedules: {e}")
 
-def insert_new_team_schedule(db:Session, new_team_schedule: TeamScheduleBase, id: int):
+def insert_new_team_schedule(db:Session, new_team_schedule: TeamScheduleBase):
     try:
         if new_team_schedule is not None:
-            if get_team_by_id(db, id):
+            if not get_schedule_by_id(db, new_team_schedule.schedule_id):
+                raise HTTPException(status_code=400, detail="Schedule ID already exists")
+            if not get_team_by_id(db, new_team_schedule.team_id):
+                raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+            else:
                 new_team_schedule = team_schedule(schedule_id=new_team_schedule.schedule_id,
-                                        team_id=id)
+                                        team_id=new_team_schedule.team_id)
                 db.add(new_team_schedule)
                 db.commit()
                 db.refresh(new_team_schedule)
                 return {"message": "Team Schedule inserted successfully", "id": new_team_schedule.schedule_id}
-            raise HTTPException(status_code=400, detail="Team ID Does not Exist")
+            
         return {"message": "Team Schedule is empty or invalid"}
     except Exception as e:
         return (f"Error inserting team schedule: {e}")
@@ -1704,10 +1708,11 @@ def delete_sport(db:Session, id: int):
     
 def cleanup(db: Session):
     try:       
+        db.query(team_schedule).delete()
         db.query(player_schedule).delete()
         db.query(announcements).delete()
         db.query(schedule).delete()
-        db.query(team_schedule).delete()
+        
         db.query(team_coach).delete()
         db.query(team_physio).delete()
         db.query(team_player).delete()
