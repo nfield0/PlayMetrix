@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -253,6 +254,12 @@ class AddPlayerScreen extends ConsumerWidget {
                                     ref
                                         .read(availabilityProvider.notifier)
                                         .state = availabilityData[0];
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PlayersScreen()),
+                                    );
                                   } else {
                                     showDialog(
                                       context: context,

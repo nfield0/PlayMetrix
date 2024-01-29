@@ -87,7 +87,7 @@ Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
 }
 
 Future<void> updateTeamPlayer(TeamPlayerData teamPlayer, int number) async {
-  final apiUrl = '$apiBaseUrl/team_player';
+  const apiUrl = '$apiBaseUrl/team_player';
 
   try {
     final response = await http.put(
@@ -129,15 +129,6 @@ Future<PlayerData> getPlayerProfile(int id) async {
     if (response.statusCode == 200) {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
-
-      print('Player ID: $id');
-      print('Player First Name: ${parsed['player_firstname']}');
-      print('Player Surname: ${parsed['player_surname']}');
-      print('Player Contact Number: ${parsed['player_contact_number']}');
-      print('Player Date of Birth: ${parsed['player_dob']}');
-      print('Player Height: ${parsed['player_height']}');
-      print('Player Gender: ${parsed['player_gender']}');
-      print('Player Image: ${parsed['player_image']}');
 
       DateTime playerDob;
       if (parsed['player_dob'] != null && parsed['player_dob'] != "") {
@@ -221,7 +212,6 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int teamId = ref.watch(teamIdProvider);
     int playerId = ref.watch(userIdProvider);
 
     Future<void> pickImage() async {
@@ -347,39 +337,4 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
                   ]))),
     );
   }
-}
-
-Widget _availabilityDropdown() {
-  List<AvailabilityData> availability = [
-    AvailabilityData(AvailabilityStatus.Available, "Available",
-        Icons.check_circle, AppColours.green),
-    AvailabilityData(AvailabilityStatus.Limited, "Limited", Icons.warning,
-        AppColours.yellow),
-    AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable",
-        Icons.cancel, AppColours.red)
-  ];
-
-  return DropdownButton<AvailabilityData>(
-    value: availability[0],
-    items: availability.map((AvailabilityData item) {
-      return DropdownMenuItem<AvailabilityData>(
-        value: item,
-        child: Row(
-          children: [
-            Icon(item.icon, color: item.color),
-            const SizedBox(width: 8),
-            Text(
-              item.message,
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-      );
-    }).toList(),
-    onChanged: (selectedItem) {
-      // Handle the selected item here
-    },
-  );
 }

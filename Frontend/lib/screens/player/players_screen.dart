@@ -238,6 +238,7 @@ class PlayersScreen extends ConsumerWidget {
                           return Text('Error: ${snapshot.error}');
                         } else if (snapshot.hasData) {
                           List<PlayerProfile> players = snapshot.data!;
+
                           return players.isNotEmpty
                               ? MediaQuery.of(context).size.longestSide >= 1000
                                   ? Wrap(
