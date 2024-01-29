@@ -89,10 +89,12 @@ class playerAttending {
 // }
 
 class PlayersAttendingScreen extends ConsumerWidget {
+  final int scheduleId;
   late Schedule schedule;
+
+  PlayersAttendingScreen({super.key, required this.scheduleId});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int scheduleId = ref.watch(scheduleIdProvider);
     return FutureBuilder<Schedule>(
         future: getScheduleById(scheduleId),
         builder: (context, snapshot) {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -285,6 +286,11 @@ class AddScheduleScreen extends ConsumerWidget {
                                 textToScheduleType(selectedType),
                                 textToAlertTime(selectedAlertTime),
                                 1);
+
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MonthlyScheduleScreen();
+                            }));
 
                             titleController.clear();
                             locationController.clear();

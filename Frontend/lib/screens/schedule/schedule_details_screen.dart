@@ -4,7 +4,6 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
 import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
-import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
@@ -16,10 +15,9 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 
-final scheduleIdProvider = StateProvider<int>((ref) => 0);
-
 class ScheduleDetailsScreen extends ConsumerWidget {
-  const ScheduleDetailsScreen({super.key});
+  final int scheduleId;
+  const ScheduleDetailsScreen({super.key, required this.scheduleId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,17 +25,12 @@ class ScheduleDetailsScreen extends ConsumerWidget {
     ScheduleType scheduleType;
 
     return FutureBuilder(
-        future: getFilteredDataSource(
-            ref, ref.watch(appointmentIdProvider.notifier).state),
+        future: getFilteredDataSource(ref, scheduleId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final dataSource = snapshot.data;
             for (var schedule in dataSource?.appointments ?? []) {
               Appointment sch = schedule;
-              Future.microtask(() {
-                ref.read(scheduleIdProvider.notifier).state =
-                    int.parse(sch.id.toString());
-              });
               scheduleType = getScheduleTypeByColour(sch.color);
 
               return Scaffold(
@@ -53,7 +46,9 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EditScheduleScreen(),
+                                  builder: (context) => EditScheduleScreen(
+                                    scheduleId: scheduleId,
+                                  ),
                                 ),
                               );
                             })
@@ -127,7 +122,9 @@ class ScheduleDetailsScreen extends ConsumerWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              PlayersAttendingScreen()),
+                                              PlayersAttendingScreen(
+                                                scheduleId: scheduleId,
+                                              )),
                                     );
                                   }
                                 })
