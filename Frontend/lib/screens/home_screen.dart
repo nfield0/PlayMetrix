@@ -53,7 +53,6 @@ class PlayerData {
 }
 
 Future<PlayerData> getPlayerById(int id) async {
-  print('Player ID in home page: $id');
   final apiUrl =
       '$apiBaseUrl/players/info/$id'; // Replace with your actual backend URL and provide the user ID
 

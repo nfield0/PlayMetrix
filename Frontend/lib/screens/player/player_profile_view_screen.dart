@@ -38,7 +38,6 @@ class PlayerProfileViewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
-    final userId = ref.watch(userIdProvider.notifier).state;
 
     return Scaffold(
         appBar: AppBar(
@@ -111,8 +110,8 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                           }),
                     if (ref.read(teamIdProvider.notifier).state != -1)
                       FutureBuilder<PlayerProfile>(
-                          future: getPlayerTeamProfile(ref.read(teamIdProvider),
-                              ref.read(userIdProvider)),
+                          future: getPlayerTeamProfile(
+                              ref.read(teamIdProvider), userId),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

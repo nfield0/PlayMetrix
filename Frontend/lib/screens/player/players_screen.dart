@@ -64,8 +64,9 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
 
       for (Map<String, dynamic> playerJson in playersJsonList) {
         PlayerData player = await getPlayerById(playerJson['player_id']);
+
         players.add(PlayerProfile(
-            playerJson['player_id'],
+            player.player_id,
             player.player_firstname,
             player.player_surname,
             "${player.player_dob.toLocal()}".split(' ')[0],
