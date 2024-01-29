@@ -131,7 +131,8 @@ Future<List<Appointment>> getTeamSchedules(int teamId) async {
       List<Appointment> appointments = [];
 
       for (var schedule in schedules) {
-        appointments.add(await getScheduleById(schedule["schedule_id"]));
+        appointments
+            .add(await getAppointmentByScheduleId(schedule["schedule_id"]));
       }
 
       return appointments;
@@ -159,7 +160,21 @@ Color getColourByScheduleType(ScheduleType scheduleType) {
   }
 }
 
-Future<Appointment> getScheduleById(int scheduleId) async {
+ScheduleType getScheduleTypeByColour(Color colour) {
+  if (colour == Colors.blue) {
+    return ScheduleType.training;
+  } else if (colour == Colors.green) {
+    return ScheduleType.match;
+  } else if (colour == Colors.red) {
+    return ScheduleType.meeting;
+  } else if (colour == Colors.yellow) {
+    return ScheduleType.other;
+  } else {
+    return ScheduleType.other;
+  }
+}
+
+Future<Appointment> getAppointmentByScheduleId(int scheduleId) async {
   final apiUrl = "$apiBaseUrl/schedules/$scheduleId";
 
   try {

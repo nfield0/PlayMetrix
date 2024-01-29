@@ -47,7 +47,6 @@ Future<Schedule> getScheduleById(int scheduleId) async {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       print('Get players attending successful!');
-      print('Response: ${response.body}');
 
       Schedule schedule = Schedule.fromJson(jsonDecode(response.body));
       return schedule;
@@ -82,8 +81,6 @@ class playerAttending {
   }
 }
 
-
-
 // class PlayersAttendingScreen extends StatefulWidget {
 //   const PlayersAttendingScreen({Key? key}) : super(key: key);
 
@@ -97,61 +94,60 @@ class PlayersAttendingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     int scheduleId = ref.watch(scheduleIdProvider);
     return FutureBuilder<Schedule>(
-	    future: getScheduleById(scheduleId),
-      builder: (context, snapshot) {
-	    if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator();
-      } else if (snapshot.hasError) {
-		    return Text('Error: ${snapshot.error}');
-      } else if (snapshot.hasData) {
-		    schedule = snapshot.data!;
-        String schedule_title = schedule.schedule_title;
-        String schedule_type = schedule.schedule_type;
-        String schedule_start_time = schedule.schedule_start_time;
-      return Scaffold(
-        appBar: AppBar(
-          title: appBarTitlePreviousPage("${schedule_title}"),
-          iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
-        body: SingleChildScrollView(
-            child: Container(
-          padding: const EdgeInsets.all(35),
-          child: Center(
-              child: Column(children: [
-            const Text("Players Attending",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppFonts.gabarito)),
-            const SizedBox(height: 5), 
-            Text("${schedule_type} | ${schedule_start_time}"),
-            
-            const SizedBox(height: 30),
-            // playerProfilePill(
-            //     context,
-            //     "lib/assets/icons/profile_placeholder.png",
-            //     "Luana",
-            //     "Kimley",
-            //     7,
-            //     AvailabilityStatus.Available),
-            // const SizedBox(height: 20),
-            // playerProfilePill(
-            //     context,
-            //     "lib/assets/icons/profile_placeholder.png",
-            //     "Luana",
-            //     "Kimley",
-            //     7,
-            //     AvailabilityStatus.Available),
-          ])),
-        )),
-        bottomNavigationBar: managerBottomNavBar(context, 2)
-        );
-        } else {
+        future: getScheduleById(scheduleId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            schedule = snapshot.data!;
+            String schedule_title = schedule.schedule_title;
+            String schedule_type = schedule.schedule_type;
+            String schedule_start_time = schedule.schedule_start_time;
+            return Scaffold(
+                appBar: AppBar(
+                  title: appBarTitlePreviousPage("${schedule_title}"),
+                  iconTheme: const IconThemeData(
+                    color: AppColours.darkBlue, //change your color here
+                  ),
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                ),
+                body: SingleChildScrollView(
+                    child: Container(
+                  padding: const EdgeInsets.all(35),
+                  child: Center(
+                      child: Column(children: [
+                    const Text("Players Attending",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFonts.gabarito)),
+                    const SizedBox(height: 5),
+                    Text("${schedule_type} | ${schedule_start_time}"),
+
+                    const SizedBox(height: 30),
+                    // playerProfilePill(
+                    //     context,
+                    //     "lib/assets/icons/profile_placeholder.png",
+                    //     "Luana",
+                    //     "Kimley",
+                    //     7,
+                    //     AvailabilityStatus.Available),
+                    // const SizedBox(height: 20),
+                    // playerProfilePill(
+                    //     context,
+                    //     "lib/assets/icons/profile_placeholder.png",
+                    //     "Luana",
+                    //     "Kimley",
+                    //     7,
+                    //     AvailabilityStatus.Available),
+                  ])),
+                )),
+                bottomNavigationBar: managerBottomNavBar(context, 2));
+          } else {
             return Text('No data available');
           }
         });

@@ -121,6 +121,23 @@ Widget detailWithDivider(String title, String detail) {
   );
 }
 
+Widget detailBoldTitle(String title, String detail) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(detail, style: const TextStyle(fontSize: 16)),
+        ],
+      ),
+      const SizedBox(height: 10),
+    ],
+  );
+}
+
 Widget dropdownWithDivider(String title, String selectedValue,
     List<String> dropdownItems, void Function(String?) onChanged) {
   return Column(
@@ -374,8 +391,12 @@ Widget formFieldBottomBorderController(String title,
   );
 }
 
-Widget formFieldBottomBorderNoTitle(String title, String initialValue,
-    bool showBorder, TextEditingController controller, String? Function(String?)? validator) {
+Widget formFieldBottomBorderNoTitle(
+    String title,
+    String initialValue,
+    bool showBorder,
+    TextEditingController controller,
+    String? Function(String?)? validator) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
