@@ -118,12 +118,9 @@ class EditPlayerProfileScreen extends ConsumerWidget {
   // Form controllers for text fields
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
   final TextEditingController _contactNumberController =
       TextEditingController();
-  final TextEditingController _playerImageController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

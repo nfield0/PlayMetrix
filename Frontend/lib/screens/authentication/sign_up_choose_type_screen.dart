@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -39,7 +37,7 @@ Future<String> registerUser({
   required String password,
 }) async {
   if (userType == "manager") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_manager'; // Replace with your actual backend URL
 
     try {
@@ -74,7 +72,7 @@ Future<String> registerUser({
     }
   }
   if (userType == "player") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_player'; // Replace with your actual backend URL
 
     try {
@@ -113,7 +111,7 @@ Future<String> registerUser({
   }
 
   if (userType == "coach") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_coach'; // Replace with your actual backend URL
 
     try {
@@ -149,7 +147,7 @@ Future<String> registerUser({
   }
 
   if (userType == "physio") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_physio'; // Replace with your actual backend URL
 
     try {
