@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
@@ -11,7 +10,6 @@ import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
@@ -196,13 +194,6 @@ final managerIdProvider = StateProvider<int>((ref) => 0);
 class TeamProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final userRole = ref.watch(userRoleProvider.notifier).state;
-    // final userId = ref.watch(userIdProvider.notifier).state;
-    // final teamId = ref.watch(leagueProvider.notifier).state;
-    // final managerId = ref.watch(managerIdProvider.notifier).state;
-    // final division = ref.watch(leagueProvider.notifier).state;
-    // Uint8List? profilePicture = ref.watch(profilePictureProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -235,9 +226,8 @@ class TeamProfileScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     FutureBuilder<TeamData?>(
-                        future: getTeamById(ref
-                            .read(teamIdProvider.notifier)
-                            .state), // TODO: Replace with actual team ID
+                        future: getTeamById(
+                            ref.read(teamIdProvider.notifier).state),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -268,7 +258,7 @@ class TeamProfileScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 50),
-                              logo != null
+                              logo != null && logo.isNotEmpty
                                   ? Image.memory(
                                       logo,
                                       width: 150,

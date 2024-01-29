@@ -17,8 +17,58 @@ import 'package:image_picker/image_picker.dart';
 
 final teamIdProvider = StateProvider<int>((ref) => -1);
 
+class SportData {
+  final int sport_id;
+  final String sport_name;
+
+  SportData({
+    required this.sport_id,
+    required this.sport_name,
+  });
+
+  factory SportData.fromJson(Map<String, dynamic> json) {
+    return SportData(
+      sport_id: json['sport_id'],
+      sport_name: json['sport_name'],
+    );
+  }
+}
+
+Future<int> getFirstSportId() async {
+  const apiUrl = '$apiBaseUrl/sports';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      // Successfully retrieved data from the backend
+      final List<dynamic> data = jsonDecode(response.body);
+
+      // Convert List<dynamic> to List<Map<String, dynamic>>
+      final List<Map<String, dynamic>> sportJsonList =
+          List<Map<String, dynamic>>.from(data);
+
+      final List<SportData> sports =
+          sportJsonList.map((json) => SportData.fromJson(json)).toList();
+
+      return sports[0].sport_id;
+    } else {
+      // Failed to retrieve data, handle the error accordingly
+      print('Failed to get data. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+      throw Exception('Failed to load sports');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+    throw Exception('Failed to load sports');
+  }
+}
+
 Future<List<TeamData>> getAllTeams() async {
-  final apiUrl = '$apiBaseUrl/teams';
+  const apiUrl = '$apiBaseUrl/teams';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -307,14 +357,19 @@ class TeamSetUpScreen extends ConsumerWidget {
                       _teamNameController.text,
                       ref.read(teamLogoProvider.notifier).state,
                       userId,
-                      1,
+                      await getFirstSportId(),
                       leagueId,
                       _teamLocationController.text);
                   ref.read(teamIdProvider.notifier).state = teamId;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
+                  if (teamId != -1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                    _teamNameController.clear();
+                    _teamLocationController.clear();
+                    ref.read(teamLogoProvider.notifier).state = null;
+                  }
                 })
               ],
             ),
