@@ -119,7 +119,7 @@ Future<void> addSchedule(
     if (response.statusCode == 200) {
       int scheduleId = jsonDecode(response.body)["id"];
 
-      final teamScheduleApiUrl = "$apiBaseUrl/team_schedules/$teamId";
+      const teamScheduleApiUrl = "$apiBaseUrl/team_schedules";
 
       await http.post(Uri.parse(teamScheduleApiUrl),
           headers: <String, String>{
@@ -136,8 +136,10 @@ Future<void> addSchedule(
   }
 }
 
-final startDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
-final endDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final startTimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final endTimeProvider = StateProvider<DateTime>((ref) => DateTime.now().add(
+      const Duration(hours: 1),
+    ));
 final typeProvider =
     StateProvider<String>((ref) => scheduleTypeToText(ScheduleType.training));
 final alertTimeProvider =
@@ -154,8 +156,8 @@ class AddScheduleScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String selectedType = ref.watch(typeProvider);
     String selectedAlertTime = ref.watch(alertTimeProvider);
-    DateTime selectedStartDate = ref.watch(startDateProvider);
-    DateTime selectedEndDate = ref.watch(endDateProvider);
+    DateTime selectedStartDate = ref.watch(startTimeProvider);
+    DateTime selectedEndDate = ref.watch(endTimeProvider);
 
     return Scaffold(
         appBar: AppBar(
@@ -221,12 +223,12 @@ class AddScheduleScreen extends ConsumerWidget {
                         child: Column(children: [
                           dateTimePickerWithDivider(
                               context, "Starts", selectedStartDate, (value) {
-                            ref.read(startDateProvider.notifier).state = value;
+                            ref.read(startTimeProvider.notifier).state = value;
                           }),
                           greyDivider(),
                           dateTimePickerWithDivider(
                               context, "Ends", selectedEndDate, (value) {
-                            ref.read(endDateProvider.notifier).state = value;
+                            ref.read(endTimeProvider.notifier).state = value;
                           }),
                         ]),
                       ),
@@ -266,23 +268,35 @@ class AddScheduleScreen extends ConsumerWidget {
                       const SizedBox(height: 30),
                       bigButton("Add Schedule", () {
                         if (formKey.currentState!.validate()) {
-                          addSchedule(
-                              titleController.text,
-                              locationController.text,
-                              selectedStartDate,
-                              selectedEndDate,
-                              textToScheduleType(selectedType),
-                              textToAlertTime(selectedAlertTime),
-                              1);
+                          if (selectedEndDate.isBefore(selectedStartDate)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    backgroundColor: AppColours.red,
+                                    padding: EdgeInsets.all(20.0),
+                                    content: Text(
+                                        "End time cannot be before start time",
+                                        style: TextStyle(fontSize: 16.0))));
+                          } else {
+                            addSchedule(
+                                titleController.text,
+                                locationController.text,
+                                selectedStartDate,
+                                selectedEndDate,
+                                textToScheduleType(selectedType),
+                                textToAlertTime(selectedAlertTime),
+                                1);
 
-                          ref.read(startDateProvider.notifier).state =
-                              DateTime.now();
-                          ref.read(endDateProvider.notifier).state =
-                              DateTime.now();
-                          ref.read(typeProvider.notifier).state =
-                              scheduleTypeToText(ScheduleType.training);
-                          ref.read(alertTimeProvider.notifier).state =
-                              alertTimeToText(AlertTime.none);
+                            titleController.clear();
+                            locationController.clear();
+                            ref.read(startTimeProvider.notifier).state =
+                                DateTime.now();
+                            ref.read(endTimeProvider.notifier).state =
+                                DateTime.now().add(const Duration(hours: 1));
+                            ref.read(typeProvider.notifier).state =
+                                scheduleTypeToText(ScheduleType.training);
+                            ref.read(alertTimeProvider.notifier).state =
+                                alertTimeToText(AlertTime.none);
+                          }
                         }
                       }),
                     ]),

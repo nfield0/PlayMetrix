@@ -80,6 +80,8 @@ class EditScheduleScreen extends ConsumerWidget {
             Schedule schedule = snapshot.data!;
             titleController.text = schedule.schedule_title;
             locationController.text = schedule.schedule_location;
+            // selectedStartDate = DateTime.parse(schedule.schedule_start_time);
+            // selectedEndDate = DateTime.parse(schedule.schedule_end_time);
 
             return Scaffold(
                 appBar: AppBar(
@@ -146,15 +148,40 @@ class EditScheduleScreen extends ConsumerWidget {
                                   dateTimePickerWithDivider(
                                       context, "Starts", selectedStartDate,
                                       (value) {
-                                    ref.read(startDateProvider.notifier).state =
-                                        value;
+                                    if (value.isAfter(DateTime.parse(
+                                        schedule.schedule_end_time))) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              backgroundColor: AppColours.red,
+                                              padding: EdgeInsets.all(20.0),
+                                              content: Text(
+                                                  "Start time cannot be after end time",
+                                                  style: TextStyle(
+                                                      fontSize: 16.0))));
+                                    } else {
+                                      ref
+                                          .read(startDateProvider.notifier)
+                                          .state = value;
+                                    }
                                   }),
                                   greyDivider(),
                                   dateTimePickerWithDivider(
                                       context, "Ends", selectedEndDate,
                                       (value) {
-                                    ref.read(endDateProvider.notifier).state =
-                                        value;
+                                    if (value.isBefore(DateTime.parse(
+                                        schedule.schedule_start_time))) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              backgroundColor: AppColours.red,
+                                              padding: EdgeInsets.all(20.0),
+                                              content: Text(
+                                                  "End time cannot be before start time",
+                                                  style: TextStyle(
+                                                      fontSize: 16.0))));
+                                    } else {
+                                      ref.read(endDateProvider.notifier).state =
+                                          value;
+                                    }
                                   }),
                                 ]),
                               ),
@@ -200,21 +227,33 @@ class EditScheduleScreen extends ConsumerWidget {
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () async {
                                 if (formKey.currentState!.validate()) {
-                                  bool editSuccess = await editSchedule(
-                                      selectedScheduleId,
-                                      titleController.text,
-                                      locationController.text,
-                                      selectedScheduleType,
-                                      selectedStartDate,
-                                      selectedEndDate,
-                                      selectedScheduleAlert);
-                                  if (editSuccess) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ScheduleDetailsScreen()),
-                                    );
+                                  if (selectedEndDate
+                                      .isBefore(selectedStartDate)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            backgroundColor: AppColours.red,
+                                            padding: EdgeInsets.all(20.0),
+                                            content: Text(
+                                                "End time cannot be before start time",
+                                                style: TextStyle(
+                                                    fontSize: 16.0))));
+                                  } else {
+                                    bool editSuccess = await editSchedule(
+                                        selectedScheduleId,
+                                        titleController.text,
+                                        locationController.text,
+                                        selectedScheduleType,
+                                        selectedStartDate,
+                                        selectedEndDate,
+                                        selectedScheduleAlert);
+                                    if (editSuccess) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ScheduleDetailsScreen()),
+                                      );
+                                    }
                                   }
                                 }
                               }),
