@@ -101,8 +101,7 @@ CREATE TABLE IF NOT EXISTS physio_info
 		REFERENCES physio_login(physio_id)
 );
 
-ALTER TABLE physio_info 
-ADD physio_image bytea ; 
+
 
 /*TABLES NEEDED BEFORE TEAM CAN BE ADDED*/
 CREATE TABLE IF NOT EXISTS sport
