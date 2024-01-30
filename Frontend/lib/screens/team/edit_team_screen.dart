@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -16,7 +15,7 @@ Future<void> editTeam({
   required int sportId,
   required String teamLocation,
 }) async {
-  final apiUrl = '$apiBaseUrl/login/teams/'; // Replace with your actual API URL
+  const apiUrl = '$apiBaseUrl/login/teams/'; // Replace with your actual API URL
 
   try {
     final response = await http.put(

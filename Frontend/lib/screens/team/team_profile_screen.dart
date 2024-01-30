@@ -499,7 +499,8 @@ class TeamProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ))),
-      bottomNavigationBar: managerBottomNavBar(context, 0),
+      bottomNavigationBar: roleBasedBottomNavBar(ref.read(userRoleProvider),
+          context, ref.read(userRoleProvider) == UserRole.physio ? 2 : 3),
     );
   }
 }

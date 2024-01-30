@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
@@ -98,8 +96,6 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
 }
 
 class HomeScreen extends ConsumerWidget {
-  int selectedMenuIndex = 0;
-  late Profile profile;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
@@ -113,7 +109,7 @@ class HomeScreen extends ConsumerWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            profile = snapshot.data!;
+            Profile profile = snapshot.data!;
 
             return Scaffold(
               appBar: AppBar(
@@ -174,8 +170,7 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               )),
-              bottomNavigationBar:
-                  roleBasedBottomNavBar(userRole, context, selectedMenuIndex),
+              bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 0),
             );
           } else {
             return Text('No data available');

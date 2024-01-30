@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -92,7 +92,7 @@ String scheduleTypeToText(ScheduleType scheduleType) {
   }
 }
 
-Future<void> addSchedule(
+Future<int> addSchedule(
     String title,
     String location,
     DateTime startTime,
@@ -129,12 +129,14 @@ Future<void> addSchedule(
           body: jsonEncode({"schedule_id": scheduleId, "team_id": teamId}));
 
       print("Schedule added");
+      return scheduleId;
     } else {
       print("Schedule not added");
     }
   } catch (e) {
     print(e);
   }
+  throw Exception("Schedule not added");
 }
 
 final startTimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
@@ -155,6 +157,8 @@ class AddScheduleScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigator = Navigator.of(context);
+
     String selectedType = ref.watch(typeProvider);
     String selectedAlertTime = ref.watch(alertTimeProvider);
     DateTime selectedStartDate = ref.watch(startTimeProvider);
@@ -267,7 +271,7 @@ class AddScheduleScreen extends ConsumerWidget {
                         ]),
                       ),
                       const SizedBox(height: 30),
-                      bigButton("Add Schedule", () {
+                      bigButton("Add Schedule", () async {
                         if (formKey.currentState!.validate()) {
                           if (selectedEndDate.isBefore(selectedStartDate)) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -278,7 +282,7 @@ class AddScheduleScreen extends ConsumerWidget {
                                         "End time cannot be before start time",
                                         style: TextStyle(fontSize: 16.0))));
                           } else {
-                            addSchedule(
+                            int scheduleId = await addSchedule(
                                 titleController.text,
                                 locationController.text,
                                 selectedStartDate,
@@ -287,9 +291,11 @@ class AddScheduleScreen extends ConsumerWidget {
                                 textToAlertTime(selectedAlertTime),
                                 1);
 
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return MonthlyScheduleScreen();
+                            navigator
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ScheduleDetailsScreen(
+                                scheduleId: scheduleId,
+                              );
                             }));
 
                             titleController.clear();
