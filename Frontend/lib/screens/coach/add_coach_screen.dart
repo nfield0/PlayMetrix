@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -77,6 +78,7 @@ class AddCoachScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String selectedRole = ref.watch(roleProvider);
+    final navigator = Navigator.of(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -176,6 +178,11 @@ class AddCoachScreen extends ConsumerWidget {
                                         ref.read(teamIdProvider.notifier).state,
                                         coachId,
                                         selectedRole);
+                                    navigator.push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TeamProfileScreen()),
+                                    );
                                   } else {
                                     showDialog(
                                       context: context,
