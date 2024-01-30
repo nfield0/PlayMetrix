@@ -167,7 +167,7 @@ class AddTeamData {
 
 Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     int sportId, int leagueId, String teamLocation) async {
-  final apiUrl = '$apiBaseUrl/teams/';
+  const apiUrl = '$apiBaseUrl/teams';
 
   try {
     final response = await http.post(
@@ -188,6 +188,7 @@ Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
       print("Team added successfully");
+      print(response.body);
       return jsonDecode(response.body)["id"];
     } else {
       // Failed to retrieve data, handle the error accordingly
@@ -212,6 +213,8 @@ class TeamSetUpScreen extends ConsumerWidget {
   TeamSetUpScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigator = Navigator.of(context);
+
     Future<void> pickImage() async {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -353,10 +356,9 @@ class TeamSetUpScreen extends ConsumerWidget {
                       await getFirstSportId(),
                       leagueId,
                       _teamLocationController.text);
-                  ref.read(teamIdProvider.notifier).state = teamId;
                   if (teamId != -1) {
-                    Navigator.push(
-                      context,
+                    ref.read(teamIdProvider.notifier).state = teamId;
+                    navigator.push(
                       MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
                     _teamNameController.clear();

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -126,7 +127,8 @@ Future<int> addSchedule(
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode({"schedule_id": scheduleId, "team_id": teamId}));
+          body: jsonEncode(
+              <String, int>{"schedule_id": scheduleId, "team_id": teamId}));
 
       print("Schedule added");
       return scheduleId;
@@ -289,7 +291,7 @@ class AddScheduleScreen extends ConsumerWidget {
                                 selectedEndDate,
                                 textToScheduleType(selectedType),
                                 textToAlertTime(selectedAlertTime),
-                                1);
+                                ref.read(teamIdProvider));
 
                             navigator
                                 .push(MaterialPageRoute(builder: (context) {
