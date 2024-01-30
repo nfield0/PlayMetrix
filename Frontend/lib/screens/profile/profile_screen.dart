@@ -162,9 +162,7 @@ class ProfileScreen extends ConsumerWidget {
                                 ref
                                     .read(profilePictureProvider.notifier)
                                     .state = null;
-                                ref.read(dobProvider.notifier).state =
-                                    DateTime.now();
-                                ref.read(genderProvider.notifier).state = "";
+                                ref.read(teamIdProvider.notifier).state = -1;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

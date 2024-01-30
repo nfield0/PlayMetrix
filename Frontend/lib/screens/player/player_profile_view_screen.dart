@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -57,7 +56,11 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditPlayerProfileScreen()),
+                          builder: (context) => EditPlayerProfileScreen(
+                                userRole: userRole,
+                                playerId: userId,
+                                teamId: ref.read(teamIdProvider),
+                              )),
                     );
                   })
                 ],
@@ -293,8 +296,6 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                             UserRole.manager;
                         ref.read(userIdProvider.notifier).state = 0;
                         ref.read(profilePictureProvider.notifier).state = null;
-                        ref.read(dobProvider.notifier).state = DateTime.now();
-                        ref.read(genderProvider.notifier).state = "Male";
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -23,7 +23,7 @@ class PlayerData {
   final String player_surname;
   final DateTime player_dob;
   final String player_contact_number;
-  final Uint8List? player_image;
+  final Uint8List player_image;
   final String player_height;
   final String player_gender;
 

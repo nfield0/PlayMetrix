@@ -353,7 +353,10 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      PlayerProfileSetUpScreen(),
+                                      PlayerProfileSetUpScreen(
+                                          playerId: ref
+                                              .read(userIdProvider.notifier)
+                                              .state),
                                 ),
                               );
                             }

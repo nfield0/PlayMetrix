@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -37,7 +36,7 @@ class LeagueData {
 }
 
 Future<List<LeagueData>> getLeagues() async {
-  final apiUrl = 'http://127.0.0.1:8000/leagues/';
+  const apiUrl = '$apiBaseUrl/leagues';
 
   try {
     final response = await http.get(
@@ -51,12 +50,6 @@ Future<List<LeagueData>> getLeagues() async {
       final List<dynamic> responseData = jsonDecode(response.body);
       final List<LeagueData> leagues =
           responseData.map((json) => LeagueData.fromJson(json)).toList();
-
-      // Access individual variables
-      for (var league in leagues) {
-        print('League ID: ${league.league_id}');
-        print('League Name: ${league.league_name}');
-      }
 
       return leagues;
     } else {
@@ -290,9 +283,11 @@ final List<AvailabilityData> availabilityData = [
 ];
 
 class PlayerProfileScreen extends ConsumerWidget {
-
-  final AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
-      "Available", Icons.check_circle, AppColours.green);
+  final AvailabilityData available = AvailabilityData(
+      AvailabilityStatus.Available,
+      "Available",
+      Icons.check_circle,
+      AppColours.green);
   final AvailabilityData limited = AvailabilityData(
       AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow);
   final AvailabilityData unavailable = AvailabilityData(
@@ -326,7 +321,11 @@ class PlayerProfileScreen extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditPlayerProfileScreen()),
+                          builder: (context) => EditPlayerProfileScreen(
+                                teamId: ref.read(teamIdProvider),
+                                userRole: userRole,
+                                playerId: userId,
+                              )),
                     );
                   })
                 ],
@@ -562,8 +561,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             UserRole.manager;
                         ref.read(userIdProvider.notifier).state = 0;
                         ref.read(profilePictureProvider.notifier).state = null;
-                        ref.read(dobProvider.notifier).state = DateTime.now();
-                        ref.read(genderProvider.notifier).state = "Male";
+                        ref.read(teamIdProvider.notifier).state = -1;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
