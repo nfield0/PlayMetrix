@@ -80,21 +80,6 @@ Future<PlayerData> getPlayerById(int id) async {
   throw Exception('Failed to retrieve player data');
 }
 
-Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
-  if (userRole == UserRole.manager) {
-    return await getManagerProfile(userId);
-  } else if (userRole == UserRole.physio) {
-    return await getPhysioProfile(userId);
-  } else if (userRole == UserRole.coach) {
-    return await getCoachProfile(userId);
-  } else if (userRole == UserRole.player) {
-    return await getPlayerProfile(userId);
-  }
-
-  return Profile(
-      -1, "firstName", "surname", "contactNumber", "email", Uint8List(0));
-}
-
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {

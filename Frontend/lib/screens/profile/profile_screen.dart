@@ -76,7 +76,7 @@ class ProfileScreen extends ConsumerWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          EditProfileScreen()),
+                                          EditProfileScreen(userId: userId, userRole: userRole,)),
                                 );
                               }),
                             ],

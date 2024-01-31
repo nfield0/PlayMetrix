@@ -1,26 +1,79 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/screens/profile/profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class EditProfileScreen extends ConsumerWidget {
+Future<void> updateProfile(UserRole userRole, int id, String firstName,
+    String surname, String contactNumber, Uint8List image) async {
+  if (userRole == UserRole.manager) {
+    return updateManagerProfile(
+        id, ProfileName(firstName, surname), contactNumber, image);
+  } else if (userRole == UserRole.physio) {
+    return updatePhysioProfile(
+        id, ProfileName(firstName, surname), contactNumber, image);
+  } else if (userRole == UserRole.coach) {
+    return updateCoachProfile(
+        id, ProfileName(firstName, surname), contactNumber, image);
+  }
+
+  throw Exception("Profile not found");
+}
+
+class EditProfileScreen extends StatefulWidget {
+  final int userId;
+  final UserRole userRole;
+
+  const EditProfileScreen(
+      {super.key, required this.userId, required this.userRole});
+
+  @override
+  EditProfileScreenState createState() => EditProfileScreenState();
+}
+
+class EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
   final nameRegex = RegExp(r'^[A-Za-z]+$');
-  final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController surnameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
+  Uint8List? _profilePicture;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userRole = ref.watch(userRoleProvider.notifier).state;
+  void initState() {
+    super.initState();
+    getProfileDetails(widget.userId, widget.userRole).then((profile) {
+      setState(() {
+        firstNameController.text = profile.firstName;
+        surnameController.text = profile.surname;
+        phoneController.text = profile.contactNumber;
+        _profilePicture = profile.imageBytes;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Future<void> pickImage() async {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        List<int> imageBytes = await pickedFile.readAsBytes();
+
+        setState(() {
+          _profilePicture = Uint8List.fromList(imageBytes);
+        });
+      }
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -58,13 +111,20 @@ class EditProfileScreen extends ConsumerWidget {
                               const SizedBox(height: 20),
                               Center(
                                   child: Column(children: [
-                                Image.asset(
-                                  "lib/assets/icons/profile_placeholder.png",
-                                  width: 120,
-                                ),
+                                _profilePicture != null &&
+                                        _profilePicture!.isNotEmpty
+                                    ? Image.memory(
+                                        _profilePicture!,
+                                        width: 120,
+                                      )
+                                    : Image.asset(
+                                        "lib/assets/icons/profile_placeholder.png",
+                                        width: 120,
+                                      ),
                                 const SizedBox(height: 10),
-                                underlineButtonTransparent(
-                                    "Edit picture", () {}),
+                                underlineButtonTransparent("Edit picture", () {
+                                  pickImage();
+                                }),
                               ])),
                               formFieldBottomBorderController(
                                   "First name", firstNameController,
@@ -83,13 +143,6 @@ class EditProfileScreen extends ConsumerWidget {
                                     : null;
                               }),
                               formFieldBottomBorderController(
-                                  "Email", emailController, (String? value) {
-                                return (value != null &&
-                                        !emailRegex.hasMatch(value))
-                                    ? 'Invalid email.'
-                                    : null;
-                              }),
-                              formFieldBottomBorderController(
                                   "Phone", phoneController, (String? value) {
                                 return (value != null &&
                                         !phoneRegex.hasMatch(value))
@@ -98,11 +151,28 @@ class EditProfileScreen extends ConsumerWidget {
                               }),
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () {
-                                if (_formKey.currentState!.validate()) {}
+                                if (_formKey.currentState!.validate()) {
+                                  updateProfile(
+                                          widget.userRole,
+                                          widget.userId,
+                                          firstNameController.text,
+                                          surnameController.text,
+                                          phoneController.text,
+                                          _profilePicture ?? Uint8List(0))
+                                      .then((value) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProfileScreen()),
+                                    );
+                                  });
+                                }
                               })
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
+        bottomNavigationBar: roleBasedBottomNavBar(widget.userRole, context,
+            widget.userRole == UserRole.physio ? 2 : 3));
   }
 }
