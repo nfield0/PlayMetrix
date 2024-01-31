@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
@@ -8,8 +7,6 @@ import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'dart:convert';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
@@ -86,10 +83,6 @@ Future<List<TeamData>> getAllTeams() async {
       final List<TeamData> teams =
           teamJsonList.map((json) => TeamData.fromJson(json)).toList();
 
-      for (var team in teams) {
-        print('Team Name: ${team.team_name}');
-      }
-
       return teams;
     } else {
       // Failed to retrieve data, handle the error accordingly
@@ -122,7 +115,7 @@ String teamRoleToText(TeamRole role) {
 }
 
 Future<List<LeagueData>> getAllLeagues() async {
-  final apiUrl = '$apiBaseUrl/leagues/';
+  const apiUrl = '$apiBaseUrl/leagues/';
   try {
     final response =
         await http.get(Uri.parse(apiUrl), headers: <String, String>{
@@ -154,27 +147,9 @@ Future<List<LeagueData>> getAllLeagues() async {
   }
 }
 
-class AddTeamData {
-  final String team_name;
-  final Uint8List? team_logo;
-  final int manager_id;
-  final int league_id;
-  final int sport_id;
-  final String team_location;
-
-  AddTeamData({
-    required this.team_name,
-    required this.team_logo,
-    required this.manager_id,
-    required this.sport_id,
-    required this.league_id,
-    required this.team_location,
-  });
-}
-
 Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     int sportId, int leagueId, String teamLocation) async {
-  final apiUrl = '$apiBaseUrl/teams/';
+  const apiUrl = '$apiBaseUrl/teams';
 
   try {
     final response = await http.post(
@@ -195,6 +170,7 @@ Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     if (response.statusCode == 200) {
       // Successfully retrieved data, parse and store it in individual variables
       print("Team added successfully");
+      print(response.body);
       return jsonDecode(response.body)["id"];
     } else {
       // Failed to retrieve data, handle the error accordingly
@@ -213,12 +189,14 @@ final leagueProvider = StateProvider<int>((ref) => 0);
 final teamLogoProvider = StateProvider<Uint8List?>((ref) => null);
 
 class TeamSetUpScreen extends ConsumerWidget {
-  String selectedDivisionValue = "Division 1";
-
   final TextEditingController _teamNameController = TextEditingController();
   final TextEditingController _teamLocationController = TextEditingController();
+
+  TeamSetUpScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigator = Navigator.of(context);
+
     Future<void> pickImage() async {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -360,10 +338,9 @@ class TeamSetUpScreen extends ConsumerWidget {
                       await getFirstSportId(),
                       leagueId,
                       _teamLocationController.text);
-                  ref.read(teamIdProvider.notifier).state = teamId;
                   if (teamId != -1) {
-                    Navigator.push(
-                      context,
+                    ref.read(teamIdProvider.notifier).state = teamId;
+                    navigator.push(
                       MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
                     _teamNameController.clear();

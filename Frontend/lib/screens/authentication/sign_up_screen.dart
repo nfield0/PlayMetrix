@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 final firstNameProvider = StateProvider<String>((ref) => "");
@@ -50,6 +48,8 @@ class SignUpScreen extends ConsumerWidget {
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final _emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
   final _passwordRegex = RegExp(
     r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
@@ -260,7 +260,7 @@ class SignUpScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0),
                     child: TextFormField(
-                      // controller: _passwordController,
+                      controller: _confirmPasswordController,
                       obscureText: confirmPasswordIsObscure,
                       cursorColor: AppColours.darkBlue,
                       decoration: InputDecoration(
@@ -328,29 +328,40 @@ class SignUpScreen extends ConsumerWidget {
                                   _emailController.text;
                               ref.read(passwordProvider.notifier).state =
                                   _passwordController.text;
-                              // Only execute if all fields are valid
-                              print("first name:" + _firstNameController.text);
-                              print("surname:" + _surnameController.text);
-                              print("email:" + _emailController.text);
-                              print("password: " + _passwordController.text);
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         SignUpChooseTypeScreen()),
                               );
+
+                              ref
+                                  .read(passwordVisibilityNotifier.notifier)
+                                  .state = true;
+
+                              ref
+                                  .read(confirmPasswordVisibilityNotifier
+                                      .notifier)
+                                  .state = true;
+
+                              _firstNameController.clear();
+                              _surnameController.clear();
+                              _emailController.clear();
+                              _passwordController.clear();
+                              _confirmPasswordController.clear();
                             } else {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Email Already in Use',
+                                    title: const Text('Email Already in Use',
                                         style: TextStyle(
                                             color: AppColours.darkBlue,
                                             fontFamily: AppFonts.gabarito,
                                             fontSize: 24,
                                             fontWeight: FontWeight.bold)),
-                                    content: Text(
+                                    content: const Text(
                                       'Sorry, an account with this email already exists. Please use a different email address and try again.',
                                       style: TextStyle(fontSize: 16),
                                     ),
@@ -359,7 +370,7 @@ class SignUpScreen extends ConsumerWidget {
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                       ),
                                     ],
                                   );

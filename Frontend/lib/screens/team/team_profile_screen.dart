@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
@@ -19,7 +20,7 @@ import 'dart:typed_data';
 class TeamData {
   final int team_id;
   final String team_name;
-  final Uint8List? team_logo;
+  final Uint8List team_logo;
   final int manager_id;
   final int league_id;
   final int sport_id;
@@ -206,10 +207,13 @@ class TeamProfileScreen extends ConsumerWidget {
                     UserRole.manager)
                   smallButton(Icons.edit, "Edit", () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditTeamScreen()),
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditTeamScreen(
+                              teamId: ref.read(teamIdProvider.notifier).state,
+                              managerId:
+                                  ref.read(userIdProvider.notifier).state),
+                        ));
                   })
               ],
             )),
@@ -258,7 +262,7 @@ class TeamProfileScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(height: 50),
-                              logo != null && logo.isNotEmpty
+                              logo.isNotEmpty
                                   ? Image.memory(
                                       logo,
                                       width: 150,
@@ -499,7 +503,8 @@ class TeamProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ))),
-      bottomNavigationBar: managerBottomNavBar(context, 0),
+      bottomNavigationBar: roleBasedBottomNavBar(ref.read(userRoleProvider),
+          context, ref.read(userRoleProvider) == UserRole.physio ? 2 : 3),
     );
   }
 }

@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -70,8 +69,12 @@ class AddPhysioScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
 
+  AddPhysioScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigator = Navigator.of(context);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Team Profile"),
@@ -158,6 +161,11 @@ class AddPhysioScreen extends ConsumerWidget {
                                   if (physioId != -1) {
                                     await addTeamPhysio(
                                         ref.read(teamIdProvider), physioId);
+                                    navigator.push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TeamProfileScreen()),
+                                    );
                                   } else {
                                     showDialog(
                                       context: context,

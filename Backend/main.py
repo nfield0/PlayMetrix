@@ -153,7 +153,7 @@ def read_teams(db:Session = Depends(get_db)):
 def read_team(id: int, db:Session = Depends(get_db)):
     return crud.get_team_by_id(db, id)
 
-@app.post("/teams/")
+@app.post("/teams")
 def insert_team(team: TeamBase, db:Session = Depends(get_db)):
     return crud.insert_new_team(db, team)
 

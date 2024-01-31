@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -48,7 +47,7 @@ Future<int> findPlayerIdByEmail(String email) async {
 
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
     int number, AvailabilityData playingStatus) async {
-  final apiUrl = '$apiBaseUrl/team_player';
+  const apiUrl = '$apiBaseUrl/team_player';
 
   try {
     final response = await http.post(
@@ -105,14 +104,14 @@ class AddPlayerScreen extends ConsumerWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Add Player to Team',
+                      const Text('Add Player to Team',
                           style: TextStyle(
                             color: AppColours.darkBlue,
                             fontFamily: AppFonts.gabarito,
                             fontSize: 36.0,
                             fontWeight: FontWeight.w700,
                           )),
-                      Divider(
+                      const Divider(
                         color: AppColours.darkBlue,
                         thickness: 1.0,
                         height: 40.0,
@@ -255,18 +254,24 @@ class AddPlayerScreen extends ConsumerWidget {
                                     ref
                                         .read(availabilityProvider.notifier)
                                         .state = availabilityData[0];
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PlayersScreen()),
+                                    );
                                   } else {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text('Player Not Found',
+                                          title: const Text('Player Not Found',
                                               style: TextStyle(
                                                   color: AppColours.darkBlue,
                                                   fontFamily: AppFonts.gabarito,
                                                   fontSize: 24,
                                                   fontWeight: FontWeight.bold)),
-                                          content: Text(
+                                          content: const Text(
                                               'Sorry, player with that email does not exist. Please enter a different email address and try again.',
                                               style: TextStyle(fontSize: 16)),
                                           actions: [
@@ -274,7 +279,7 @@ class AddPlayerScreen extends ConsumerWidget {
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('OK'),
+                                              child: const Text('OK'),
                                             ),
                                           ],
                                         );

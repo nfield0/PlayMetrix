@@ -1,22 +1,26 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-// DIVISION AND CLUB NAME IS NOT IN BACKEND ENDPOINT, ALSO UNSURE OF HOW TO GET TEAM LOGO AND MANAGER ID, SPORT ID IS ALSO NOT IN BACKEND ENDPOINT, PHYSIO ID
-Future<void> editTeam({
-  required String teamName,
-  required String teamLogo,
-  required int managerId,
-  required int leagueId,
-  required int sportId,
-  required String teamLocation,
-}) async {
-  final apiUrl = '$apiBaseUrl/login/teams/'; // Replace with your actual API URL
+Future<TeamData> editTeam(
+  int teamId,
+  String teamName,
+  Uint8List? teamLogo,
+  int managerId,
+  int leagueId,
+  int sportId,
+  String teamLocation,
+) async {
+  final apiUrl = '$apiBaseUrl/teams/$teamId';
 
   try {
     final response = await http.put(
@@ -24,19 +28,27 @@ Future<void> editTeam({
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode({
-        'team_name': teamName,
-        'team_logo': teamLogo,
-        'manager_id': managerId,
-        'league_id': leagueId,
-        'sport_id': sportId,
-        'team_location': teamLocation,
+      body: jsonEncode(<String, dynamic>{
+        "team_name": teamName,
+        "team_logo": teamLogo != null ? base64Encode(teamLogo) : "",
+        "manager_id": managerId,
+        "league_id": leagueId,
+        "sport_id": sportId,
+        "team_location": teamLocation
       }),
     );
 
     if (response.statusCode == 200) {
       // Team updated successfully
       print('Team updated successfully');
+      return TeamData(
+          team_id: teamId,
+          team_name: teamLocation,
+          team_logo: teamLogo!,
+          manager_id: managerId,
+          sport_id: sportId,
+          league_id: leagueId,
+          team_location: teamLocation);
     } else {
       // Handle errors
       print('Failed to update team. Status code: ${response.statusCode}');
@@ -44,27 +56,69 @@ Future<void> editTeam({
   } catch (e) {
     print('Error updating team: $e');
   }
+  throw Exception('Error updating team');
 }
 
 class EditTeamScreen extends StatefulWidget {
-  const EditTeamScreen({Key? key}) : super(key: key);
+  final int teamId;
+  final int managerId;
+  const EditTeamScreen(
+      {super.key, required this.teamId, required this.managerId});
 
   @override
-  _EditTeamScreenState createState() => _EditTeamScreenState();
+  EditTeamScreenState createState() => EditTeamScreenState();
 }
 
-class _EditTeamScreenState extends State<EditTeamScreen> {
-  String selectedDivisionValue = "Division 1";
+class EditTeamScreenState extends State<EditTeamScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  late TeamData team;
+  late List<LeagueData> leagues = [LeagueData(league_id: 1, league_name: "")];
+
   final TextEditingController _teamNameController = TextEditingController();
-  final TextEditingController _teamLogoController = TextEditingController();
-  final TextEditingController _managerIdController = TextEditingController();
-  final TextEditingController _leagueIdController = TextEditingController();
-  final TextEditingController _sportIdController = TextEditingController();
   final TextEditingController _teamLocationController = TextEditingController();
+
+  Uint8List _teamLogo = Uint8List(0);
+  int _selectedLeagueId = 1;
+  int _sportId = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    getTeamById(widget.teamId).then((value) => setState(() {
+          team = value!;
+          _teamNameController.text = team.team_name;
+          _teamLocationController.text = team.team_location;
+          _teamLogo = team.team_logo;
+          _selectedLeagueId = team.league_id;
+        }));
+
+    getLeagues().then((value) => setState(() {
+          leagues = value;
+        }));
+
+    getFirstSportId().then((value) => setState(() {
+          _sportId = value;
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+
+    Future<void> pickImage() async {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        List<int> imageBytes = await pickedFile.readAsBytes();
+
+        setState(() {
+          _teamLogo = Uint8List.fromList(imageBytes);
+        });
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           title:
@@ -89,7 +143,7 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
               key: _formKey,
               autovalidateMode: AutovalidateMode.always,
               child: Container(
-                padding: EdgeInsets.all(35),
+                padding: const EdgeInsets.all(35),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -108,22 +162,33 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
                     const SizedBox(height: 20),
                     Center(
                         child: Column(children: [
-                      Image.asset(
-                        "lib/assets/icons/logo_placeholder.png",
-                        width: 100,
-                      ),
+                      _teamLogo.isNotEmpty
+                          ? Image.memory(
+                              _teamLogo,
+                              width: 120,
+                            )
+                          : Image.asset(
+                              "lib/assets/icons/logo_placeholder.png",
+                              width: 120,
+                            ),
                       const SizedBox(height: 10),
-                      underlineButtonTransparent("Upload logo", () {}),
+                      underlineButtonTransparent("Upload logo", () {
+                        pickImage();
+                      }),
                     ])),
                     const SizedBox(height: 10),
                     formFieldBottomBorderController(
                         "Team name", _teamNameController, (String? value) {
-                      return (value != null) ? 'This field is required.' : null;
+                      return (value != null && value.isEmpty)
+                          ? 'This field is required.'
+                          : null;
                     }),
                     const SizedBox(height: 10),
                     formFieldBottomBorderController(
                         "Location", _teamLocationController, (String? value) {
-                      return (value != null) ? 'This field is required.' : null;
+                      return (value != null && value.isEmpty)
+                          ? 'This field is required.'
+                          : null;
                     }),
                     const SizedBox(height: 10),
                     Row(
@@ -136,21 +201,19 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
                         ),
                         const SizedBox(width: 20),
                         SizedBox(
-                          // Wrap the DropdownButtonFormField with a Container
-                          width: 220, // Provide a specific width
-                          child: DropdownButtonFormField<String>(
+                          width: 220,
+                          child: DropdownButtonFormField<int>(
                             focusColor: AppColours.darkBlue,
-                            value: selectedDivisionValue,
+                            value: _selectedLeagueId,
                             onChanged: (newValue) {
                               setState(() {
-                                selectedDivisionValue = newValue!;
+                                _selectedLeagueId = newValue!;
                               });
                             },
-                            items: ['Division 1', 'Division 2', 'Division 3']
-                                .map((String option) {
-                              return DropdownMenuItem<String>(
-                                value: option,
-                                child: Text(option),
+                            items: leagues.map((LeagueData option) {
+                              return DropdownMenuItem<int>(
+                                value: option.league_id,
+                                child: Text(option.league_name),
                               );
                             }).toList(),
                           ),
@@ -158,20 +221,20 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
                       ],
                     ),
                     const SizedBox(height: 50),
-                    bigButton("Save Changes", () {
+                    bigButton("Save Changes", () async {
                       if (_formKey.currentState!.validate()) {
-                        // editTeam(
-                        //   teamName: _teamNameController.text,
-                        //   teamLogo: _teamLogoController.text,
-                        //   managerId: _managerIdController, // replace with actual manager ID
-                        //   leagueId: _leagueIdController, // replace with actual league ID
-                        //   sportId: _sportIdController, // replace with actual sport ID
-                        //   teamLocation: _teamLocationController.text,
-                        // );
-                        Navigator.push(
-                          context,
+                        await editTeam(
+                          widget.teamId,
+                          _teamNameController.text,
+                          _teamLogo,
+                          widget.managerId,
+                          _selectedLeagueId,
+                          _sportId,
+                          _teamLocationController.text,
+                        );
+                        navigator.push(
                           MaterialPageRoute(
-                              builder: (context) => TeamProfileScreen()),
+                              builder: (context) => ProfileScreen()),
                         );
                       }
                     })

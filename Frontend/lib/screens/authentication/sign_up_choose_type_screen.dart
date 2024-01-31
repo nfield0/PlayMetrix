@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -39,7 +37,7 @@ Future<String> registerUser({
   required String password,
 }) async {
   if (userType == "manager") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_manager'; // Replace with your actual backend URL
 
     try {
@@ -74,7 +72,7 @@ Future<String> registerUser({
     }
   }
   if (userType == "player") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_player'; // Replace with your actual backend URL
 
     try {
@@ -113,7 +111,7 @@ Future<String> registerUser({
   }
 
   if (userType == "coach") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_coach'; // Replace with your actual backend URL
 
     try {
@@ -149,7 +147,7 @@ Future<String> registerUser({
   }
 
   if (userType == "physio") {
-    final apiUrl =
+    const apiUrl =
         '$apiBaseUrl/register_physio'; // Replace with your actual backend URL
 
     try {
@@ -315,63 +313,55 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                       child: bigButton("Sign up", () async {
                         UserRole userRole =
                             ref.read(userRoleProvider.notifier).state;
-                        String response = await registerUser(
-                            userType: userRoleText(userRole).toLowerCase(),
-                            firstName:
-                                ref.read(firstNameProvider.notifier).state,
-                            surname: ref.read(surnameProvider.notifier).state,
-                            email: ref.read(emailProvider.notifier).state,
-                            password:
-                                ref.read(passwordProvider.notifier).state);
+                        String firstName =
+                            ref.read(firstNameProvider.notifier).state;
+                        String surname =
+                            ref.read(surnameProvider.notifier).state;
+                        String email = ref.read(emailProvider.notifier).state;
+                        String password =
+                            ref.read(passwordProvider.notifier).state;
 
-                        String idType = "";
-                        if (userRole == UserRole.manager) {
-                          idType = "manager_id";
-                        } else if (userRole == UserRole.player) {
-                          idType = "player_id";
-                        } else if (userRole == UserRole.coach) {
-                          idType = "coach_id";
-                        } else if (userRole == UserRole.physio) {
-                          idType = "physio_id";
-                        } else {
-                          print("error: user type not found");
-                        }
-
-                        int userId = 0;
-                        if (userRole == UserRole.player ||
-                            userRole == UserRole.physio) {
-                          userId = jsonDecode(response)["id"];
-                          print("user id: " + userId.toString());
-                          ref.read(userIdProvider.notifier).state = userId;
-                          ref.read(userRoleProvider.notifier).state = userRole;
-                        } else {
-                          userId = jsonDecode(response)["id"][idType];
-                          ref.read(userIdProvider.notifier).state = userId;
-                          ref.read(userRoleProvider.notifier).state = userRole;
-                        }
-
-                        if (userId != 0) {
-                          if (userRole != UserRole.player) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfileSetUpScreen()),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    PlayerProfileSetUpScreen(),
-                              ),
-                            );
-                          }
-                        }
-
-                        ref.read(firstNameProvider.notifier).state = "";
-                        ref.read(surnameProvider.notifier).state = "";
-                        ref.read(emailProvider.notifier).state = "";
-                        ref.read(passwordProvider.notifier).state = "";
+                        await signUpHandler(
+                          userRole,
+                          firstName,
+                          surname,
+                          email,
+                          password,
+                          (userId) =>
+                              ref.read(userIdProvider.notifier).state = userId,
+                          (userRole) => ref
+                              .read(userRoleProvider.notifier)
+                              .state = userRole,
+                          (value) => ref
+                              .read(firstNameProvider.notifier)
+                              .state = value,
+                          (value) =>
+                              ref.read(surnameProvider.notifier).state = value,
+                          (value) =>
+                              ref.read(emailProvider.notifier).state = value,
+                          (value) =>
+                              ref.read(passwordProvider.notifier).state = value,
+                          (userRole) {
+                            if (userRole != UserRole.player) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileSetUpScreen()),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PlayerProfileSetUpScreen(
+                                          playerId: ref
+                                              .read(userIdProvider.notifier)
+                                              .state),
+                                ),
+                              );
+                            }
+                          },
+                        );
                       }),
                     ),
                   ],
@@ -419,4 +409,61 @@ Widget radioUserTypeOption<T>(
     groupValue: groupValue,
     onChanged: onChanged,
   );
+}
+
+Future<void> signUpHandler(
+  UserRole userRole,
+  String firstName,
+  String surname,
+  String email,
+  String password,
+  Function(int) userIdSetter,
+  Function(UserRole) userRoleSetter,
+  Function(String) firstNameReset,
+  Function(String) surnameReset,
+  Function(String) emailReset,
+  Function(String) passwordReset,
+  Function(dynamic) navigateToProfile,
+) async {
+  String response = await registerUser(
+    userType: userRoleText(userRole).toLowerCase(),
+    firstName: firstName,
+    surname: surname,
+    email: email,
+    password: password,
+  );
+
+  String idType = "";
+  if (userRole == UserRole.manager) {
+    idType = "manager_id";
+  } else if (userRole == UserRole.player) {
+    idType = "player_id";
+  } else if (userRole == UserRole.coach) {
+    idType = "coach_id";
+  } else if (userRole == UserRole.physio) {
+    idType = "physio_id";
+  } else {
+    print("error: user type not found");
+  }
+
+  int userId = 0;
+  if (userRole == UserRole.player || userRole == UserRole.physio) {
+    userId = jsonDecode(response)["id"];
+    print("user id: " + userId.toString());
+    userIdSetter(userId);
+    userRoleSetter(userRole);
+  } else {
+    userId = jsonDecode(response)["id"][idType];
+    userIdSetter(userId);
+    userRoleSetter(userRole);
+  }
+
+  if (userId != 0) {
+    navigateToProfile(userRole);
+  }
+
+  firstNameReset("");
+  surnameReset("");
+  emailReset("");
+  passwordReset("");
 }

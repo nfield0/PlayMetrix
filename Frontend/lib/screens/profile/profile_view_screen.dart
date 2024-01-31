@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -10,17 +6,15 @@ import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
 class ProfileViewScreen extends ConsumerWidget {
   final int userId;
   final UserRole userRole;
 
-  ProfileViewScreen({Key? key, required this.userId, required this.userRole})
-      : super(key: key);
+  const ProfileViewScreen(
+      {super.key, required this.userId, required this.userRole});
 
-  late Profile profile;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder<Profile>(
@@ -31,7 +25,7 @@ class ProfileViewScreen extends ConsumerWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            profile = snapshot.data!;
+            Profile profile = snapshot.data!;
 
             return Scaffold(
               appBar: AppBar(
@@ -138,7 +132,7 @@ class ProfileViewScreen extends ConsumerWidget {
                       ]))),
             );
           } else {
-            return Text('No data available');
+            return const Text('No data available');
           }
         });
   }

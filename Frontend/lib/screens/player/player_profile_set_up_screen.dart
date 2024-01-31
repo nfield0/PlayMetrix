@@ -1,30 +1,20 @@
+import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-final dobProvider = StateProvider<DateTime>((ref) => DateTime.now());
-final genderProvider = StateProvider<String>((ref) => "Male");
 
 class TeamPlayerData {
   final int team_id;
   final int player_id;
-  final String? team_position;
+  final String team_position;
   final int player_team_number;
-  final String? playing_status;
-  final String? lineup_status;
+  final String playing_status;
+  final String lineup_status;
 
   TeamPlayerData({
     required this.team_id,
@@ -58,13 +48,6 @@ Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
       }
 
       if (playerData != null) {
-        print('Team ID: ${playerData['team_id']}');
-        print('Player ID: ${playerData['player_id']}');
-        print('Team Position: ${playerData['team_position']}');
-        print('Player Team Number: ${playerData['player_team_number']}');
-        print('Playing Status: ${playerData['playing_status']}');
-        print('Lineup Status: ${playerData['lineup_status']}');
-
         return TeamPlayerData(
           team_id: playerData['team_id'],
           player_id: playerData['player_id'],
@@ -86,8 +69,9 @@ Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
   throw Exception('Player not found');
 }
 
-Future<void> updateTeamPlayer(TeamPlayerData teamPlayer, int number) async {
-  final apiUrl = '$apiBaseUrl/team_player';
+Future<void> updateTeamPlayerNumber(
+    TeamPlayerData teamPlayer, int number) async {
+  const apiUrl = '$apiBaseUrl/team_player';
 
   try {
     final response = await http.put(
@@ -130,15 +114,6 @@ Future<PlayerData> getPlayerProfile(int id) async {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
-      print('Player ID: $id');
-      print('Player First Name: ${parsed['player_firstname']}');
-      print('Player Surname: ${parsed['player_surname']}');
-      print('Player Contact Number: ${parsed['player_contact_number']}');
-      print('Player Date of Birth: ${parsed['player_dob']}');
-      print('Player Height: ${parsed['player_height']}');
-      print('Player Gender: ${parsed['player_gender']}');
-      print('Player Image: ${parsed['player_image']}');
-
       DateTime playerDob;
       if (parsed['player_dob'] != null && parsed['player_dob'] != "") {
         playerDob = DateTime.parse(parsed['player_dob']);
@@ -150,7 +125,7 @@ Future<PlayerData> getPlayerProfile(int id) async {
       if (parsed['player_image'] != null && parsed['player_image'] != "") {
         playerImage = base64.decode(parsed['player_image']);
       } else {
-        playerImage = null; // Or set it to an empty Uint8List
+        playerImage = Uint8List(0); // Or set it to an empty Uint8List
       }
 
       return PlayerData(
@@ -214,15 +189,28 @@ Future<void> updatePlayerProfile(
   }
 }
 
-class PlayerProfileSetUpScreen extends ConsumerWidget {
+class PlayerProfileSetUpScreen extends StatefulWidget {
+  final int playerId;
+
+  const PlayerProfileSetUpScreen({super.key, required this.playerId});
+
+  @override
+  PlayerProfileSetUpScreenState createState() =>
+      PlayerProfileSetUpScreenState();
+}
+
+class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  Uint8List? _profilePicture;
+  DateTime _selectedDob = DateTime.now();
+  String _selectedGender = 'Male';
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    int teamId = ref.watch(teamIdProvider);
-    int playerId = ref.watch(userIdProvider);
+  Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
 
     Future<void> pickImage() async {
       final picker = ImagePicker();
@@ -231,14 +219,11 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
       if (pickedFile != null) {
         List<int> imageBytes = await pickedFile.readAsBytes();
 
-        ref.read(profilePictureProvider.notifier).state =
-            Uint8List.fromList(imageBytes);
+        setState(() {
+          _profilePicture = Uint8List.fromList(imageBytes);
+        });
       }
     }
-
-    Uint8List? profilePicture = ref.watch(profilePictureProvider);
-    DateTime selectedDob = ref.watch(dobProvider);
-    String selectedGender = ref.watch(genderProvider);
 
     final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
     final heightRegex = RegExp(r'^[1-9]\d{0,2}(\.\d{1,2})?$');
@@ -258,128 +243,105 @@ class PlayerProfileSetUpScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
-          child: Container(
-              padding: const EdgeInsets.all(35),
-              child: Column(
+        child: Container(
+          padding: const EdgeInsets.all(35),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Profile Set Up',
+                style: TextStyle(
+                  color: AppColours.darkBlue,
+                  fontFamily: AppFonts.gabarito,
+                  fontSize: 36.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 10),
+              divider(),
+              const SizedBox(
+                height: 20,
+              ),
+              Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Profile Set Up',
-                        style: TextStyle(
-                          color: AppColours.darkBlue,
-                          fontFamily: AppFonts.gabarito,
-                          fontSize: 36.0,
-                          fontWeight: FontWeight.w700,
-                        )),
-                    const SizedBox(height: 10),
-                    divider(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Form(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.always,
+                    Center(
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                                child: Column(children: [
-                              profilePicture != null
-                                  ? Image.memory(
-                                      profilePicture,
-                                      width: 100,
-                                    )
-                                  : Image.asset(
-                                      "lib/assets/icons/profile_placeholder.png",
-                                      width: 100,
-                                    ),
-                              const SizedBox(height: 10),
-                              underlineButtonTransparent("Upload picture", () {
-                                pickImage();
-                              }),
-                            ])),
-                            datePickerNoDivider(
-                                context, "Date of birth", selectedDob, (value) {
-                              ref.read(dobProvider.notifier).state = value;
-                            }),
-                            formFieldBottomBorderController(
-                                "Height (cm)", _heightController, (value) {
-                              return (value != null &&
-                                      !heightRegex.hasMatch(value))
-                                  ? 'Invalid height.'
-                                  : null;
-                            }),
-                            formFieldBottomBorderController(
-                                "Phone", _phoneController, (value) {
-                              return (value != null &&
-                                      !phoneRegex.hasMatch(value))
-                                  ? 'Invalid phone number.'
-                                  : null;
-                            }),
-                            const SizedBox(height: 5),
-                            dropdownWithDivider("Gender", selectedGender,
-                                ["Male", "Female", "Others"], (value) {
-                              ref.read(genderProvider.notifier).state = value!;
-                            }),
-                            const SizedBox(height: 50),
-                            bigButton("Save Changes", () async {
-                              if (_formKey.currentState!.validate()) {
-                                PlayerData player =
-                                    await getPlayerProfile(playerId);
-                                await updatePlayerProfile(
-                                    playerId,
-                                    player,
-                                    _phoneController.text,
-                                    ref.read(dobProvider.notifier).state,
-                                    _heightController.text,
-                                    ref.read(genderProvider.notifier).state,
-                                    ref
-                                        .read(profilePictureProvider.notifier)
-                                        .state);
+                        children: [
+                          _profilePicture != null
+                              ? Image.memory(
+                                  _profilePicture!,
+                                  width: 100,
+                                )
+                              : Image.asset(
+                                  "lib/assets/icons/profile_placeholder.png",
+                                  width: 100,
+                                ),
+                          const SizedBox(height: 10),
+                          underlineButtonTransparent("Upload picture", () {
+                            pickImage();
+                          }),
+                        ],
+                      ),
+                    ),
+                    datePickerNoDivider(context, "Date of birth", _selectedDob,
+                        (value) {
+                      setState(() {
+                        _selectedDob = value;
+                      });
+                    }),
+                    formFieldBottomBorderController(
+                        "Height (cm)", _heightController, (value) {
+                      return (value != null && !heightRegex.hasMatch(value))
+                          ? 'Invalid height.'
+                          : null;
+                    }),
+                    formFieldBottomBorderController("Phone", _phoneController,
+                        (value) {
+                      return (value != null && !phoneRegex.hasMatch(value))
+                          ? 'Invalid phone number.'
+                          : null;
+                    }),
+                    const SizedBox(height: 5),
+                    dropdownWithDivider(
+                        "Gender", _selectedGender, ["Male", "Female", "Others"],
+                        (value) {
+                      setState(() {
+                        _selectedGender = value!;
+                      });
+                    }),
+                    const SizedBox(height: 50),
+                    bigButton("Save Changes", () async {
+                      if (_formKey.currentState!.validate()) {
+                        PlayerData player =
+                            await getPlayerProfile(widget.playerId);
+                        await updatePlayerProfile(
+                          widget.playerId,
+                          player,
+                          _phoneController.text,
+                          _selectedDob,
+                          _heightController.text,
+                          _selectedGender,
+                          _profilePicture,
+                        );
 
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
-                              }
-                            })
-                          ]),
-                    )
-                  ]))),
+                        navigator.push(
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
+                      }
+                    }),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
-}
-
-Widget _availabilityDropdown() {
-  List<AvailabilityData> availability = [
-    AvailabilityData(AvailabilityStatus.Available, "Available",
-        Icons.check_circle, AppColours.green),
-    AvailabilityData(AvailabilityStatus.Limited, "Limited", Icons.warning,
-        AppColours.yellow),
-    AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable",
-        Icons.cancel, AppColours.red)
-  ];
-
-  return DropdownButton<AvailabilityData>(
-    value: availability[0],
-    items: availability.map((AvailabilityData item) {
-      return DropdownMenuItem<AvailabilityData>(
-        value: item,
-        child: Row(
-          children: [
-            Icon(item.icon, color: item.color),
-            const SizedBox(width: 8),
-            Text(
-              item.message,
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-      );
-    }).toList(),
-    onChanged: (selectedItem) {
-      // Handle the selected item here
-    },
-  );
 }

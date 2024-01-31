@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -9,7 +7,7 @@ import 'package:play_metrix/screens/coach/coaches_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
+import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -66,8 +64,9 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
 
       for (Map<String, dynamic> playerJson in playersJsonList) {
         PlayerData player = await getPlayerById(playerJson['player_id']);
+
         players.add(PlayerProfile(
-            playerJson['player_id'],
+            player.player_id,
             player.player_firstname,
             player.player_surname,
             "${player.player_dob.toLocal()}".split(' ')[0],
@@ -240,56 +239,46 @@ class PlayersScreen extends ConsumerWidget {
                           return Text('Error: ${snapshot.error}');
                         } else if (snapshot.hasData) {
                           List<PlayerProfile> players = snapshot.data!;
+
                           return players.isNotEmpty
-                              ? Column(
-                                  children: [
-                                    for (PlayerProfile player in players)
-                                      playerProfilePill(
+                              ? MediaQuery.of(context).size.longestSide >= 1000
+                                  ? Wrap(
+                                      direction: Axis.horizontal,
+                                      spacing: 20.0,
+                                      runSpacing: 20.0,
+                                      children:
+                                          players.map((PlayerProfile player) {
+                                        return playerProfilePill(
                                           context,
                                           player.imageBytes,
+                                          player.playerId,
                                           player.firstName,
                                           player.surname,
                                           player.teamNumber,
-                                          player.status),
-                                  ],
-                                )
+                                          player.status,
+                                        );
+                                      }).toList(),
+                                    )
+                                  : Column(
+                                      children:
+                                          players.map((PlayerProfile player) {
+                                        return playerProfilePill(
+                                          context,
+                                          player.imageBytes,
+                                          player.playerId,
+                                          player.firstName,
+                                          player.surname,
+                                          player.teamNumber,
+                                          player.status,
+                                        );
+                                      }).toList(),
+                                    )
                               : emptySection(
                                   Icons.person_off, "No players added yet");
                         } else {
                           return emptySection(Icons.group_off, "No team yet");
                         }
                       }),
-                  // if (MediaQuery.of(context).size.longestSide >= 1000)
-                  //   Wrap(
-                  //     direction: Axis.horizontal,
-                  //     spacing: 20.0,
-                  //     runSpacing: 20.0,
-                  //     children: players.map((PlayerData player) {
-                  //       return playerProfilePill(
-                  //           context, // Assuming 'player_image' is an Image object
-                  //           player.player_image.toString(),
-                  //           player.player_firstname,
-                  //           player.player_surname,
-                  //           7,
-                  //           AvailabilityStatus
-                  //               .Available // Call a function to determine availability status
-                  //           );
-                  //     }).toList(),
-                  //   )
-                  // else
-                  //   Column(
-                  //     children: players.map((PlayerData player) {
-                  //       return playerProfilePill(
-                  //           context, // Assuming 'player_image' is an Image object
-                  //           player.player_image.toString(),
-                  //           player.player_firstname,
-                  //           player.player_surname,
-                  //           7,
-                  //           AvailabilityStatus
-                  //               .Available // Call a function to determine availability status
-                  //           );
-                  //     }).toList(),
-                  //   )
                 ]))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 1));
   }
@@ -298,6 +287,7 @@ class PlayersScreen extends ConsumerWidget {
 Widget playerProfilePill(
     BuildContext context,
     Uint8List? imageBytes,
+    int playerId,
     String firstName,
     String surname,
     int playerNum,
@@ -325,10 +315,12 @@ Widget playerProfilePill(
       children: [
         InkWell(
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => PlayerProfileScreen()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        PlayerProfileViewScreen(userId: playerId)),
+              );
             },
             child: Container(
               // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,

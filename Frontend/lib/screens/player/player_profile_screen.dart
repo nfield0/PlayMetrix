@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -38,7 +36,7 @@ class LeagueData {
 }
 
 Future<List<LeagueData>> getLeagues() async {
-  final apiUrl = 'http://127.0.0.1:8000/leagues/';
+  const apiUrl = '$apiBaseUrl/leagues';
 
   try {
     final response = await http.get(
@@ -52,12 +50,6 @@ Future<List<LeagueData>> getLeagues() async {
       final List<dynamic> responseData = jsonDecode(response.body);
       final List<LeagueData> leagues =
           responseData.map((json) => LeagueData.fromJson(json)).toList();
-
-      // Access individual variables
-      for (var league in leagues) {
-        print('League ID: ${league.league_id}');
-        print('League Name: ${league.league_name}');
-      }
 
       return leagues;
     } else {
@@ -121,7 +113,7 @@ class PlayerInjuries {
 
 Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
     int userId) async {
-  final apiUrl =
+  const apiUrl =
       '$apiBaseUrl/player_injuries'; // Replace with your actual backend URL and provide the user ID
 
   try {
@@ -137,11 +129,6 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
       List<dynamic> jsonResponse = jsonDecode(response.body);
       List<PlayerInjuries> allPlayerInjuries =
           jsonResponse.map((json) => PlayerInjuries.fromJson(json)).toList();
-
-      for (var injury in allPlayerInjuries) {
-        print(injury.toString());
-      }
-
       List<PlayerInjuries> playerInjuries = [];
       // loop thourgh all the injuries and get the ones that match the user id passed in
       for (var injury in allPlayerInjuries) {
@@ -155,7 +142,7 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
         injuryIds.add(injury.injury_id); // Corrected property name
       }
 
-      final apiUrlForInjuries =
+      const apiUrlForInjuries =
           '$apiBaseUrl/injuries'; // Replace with your actual backend URL and provide the user ID
 
       try {
@@ -296,26 +283,25 @@ final List<AvailabilityData> availabilityData = [
 ];
 
 class PlayerProfileScreen extends ConsumerWidget {
-  late PlayerData player;
-  late Future<String?> leagueName;
-
-  AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
-      "Available", Icons.check_circle, AppColours.green);
-  AvailabilityData limited = AvailabilityData(
+  final AvailabilityData available = AvailabilityData(
+      AvailabilityStatus.Available,
+      "Available",
+      Icons.check_circle,
+      AppColours.green);
+  final AvailabilityData limited = AvailabilityData(
       AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow);
-  AvailabilityData unavailable = AvailabilityData(
+  final AvailabilityData unavailable = AvailabilityData(
       AvailabilityStatus.Unavailable,
       "Unavailable",
       Icons.cancel,
       AppColours.red);
 
+  PlayerProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
     final userId = ref.watch(userIdProvider.notifier).state;
-    String selectedGender = ref.watch(genderProvider);
-
-    //leagueName = getTeamLeagueName(teamData.league_id.toString());
 
     return Scaffold(
         appBar: AppBar(
@@ -335,7 +321,11 @@ class PlayerProfileScreen extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditPlayerProfileScreen()),
+                          builder: (context) => EditPlayerProfileScreen(
+                                teamId: ref.read(teamIdProvider),
+                                userRole: userRole,
+                                playerId: userId,
+                              )),
                     );
                   })
                 ],
@@ -571,8 +561,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             UserRole.manager;
                         ref.read(userIdProvider.notifier).state = 0;
                         ref.read(profilePictureProvider.notifier).state = null;
-                        ref.read(dobProvider.notifier).state = DateTime.now();
-                        ref.read(genderProvider.notifier).state = "Male";
+                        ref.read(teamIdProvider.notifier).state = -1;
                         Navigator.push(
                           context,
                           MaterialPageRoute(

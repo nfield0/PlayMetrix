@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -51,11 +48,14 @@ Future<StatisticsData> getStatisticsData(int id) async {
 }
 
 class StatisticsScreen extends ConsumerWidget {
-  AvailabilityData available = AvailabilityData(AvailabilityStatus.Available,
-      "Available", Icons.check_circle, AppColours.green);
-  AvailabilityData limited = AvailabilityData(
+  final AvailabilityData available = AvailabilityData(
+      AvailabilityStatus.Available,
+      "Available",
+      Icons.check_circle,
+      AppColours.green);
+  final AvailabilityData limited = AvailabilityData(
       AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow);
-  AvailabilityData unavailable = AvailabilityData(
+  final AvailabilityData unavailable = AvailabilityData(
       AvailabilityStatus.Unavailable,
       "Unavailable",
       Icons.cancel,

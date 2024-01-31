@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -12,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 Future<String> loginUser(BuildContext context, String email, String password,
     String userType) async {
-  final apiUrl = '$apiBaseUrl/login';
+  const apiUrl = '$apiBaseUrl/login';
 
   try {
     final response = await http.post(
@@ -204,6 +203,8 @@ class LogInScreen extends ConsumerWidget {
   final TextEditingController _passwordController = TextEditingController();
   final _emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
 
+  LogInScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool passwordIsObscure = ref.watch(passwordVisibilityNotifier);
@@ -366,6 +367,11 @@ class LogInScreen extends ConsumerWidget {
                             MaterialPageRoute(
                                 builder: (context) => HomeScreen()),
                           );
+
+                          _emailController.clear();
+                          _passwordController.clear();
+                          ref.read(passwordVisibilityNotifier.notifier).state =
+                              true;
                         }
                       }
                     }

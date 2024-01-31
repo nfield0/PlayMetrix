@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
@@ -23,7 +21,7 @@ class PlayerData {
   final String player_surname;
   final DateTime player_dob;
   final String player_contact_number;
-  final Uint8List? player_image;
+  final Uint8List player_image;
   final String player_height;
   final String player_gender;
 
@@ -53,7 +51,6 @@ class PlayerData {
 }
 
 Future<PlayerData> getPlayerById(int id) async {
-  print('Player ID in home page: $id');
   final apiUrl =
       '$apiBaseUrl/players/info/$id'; // Replace with your actual backend URL and provide the user ID
 
@@ -83,24 +80,7 @@ Future<PlayerData> getPlayerById(int id) async {
   throw Exception('Failed to retrieve player data');
 }
 
-Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
-  if (userRole == UserRole.manager) {
-    return await getManagerProfile(userId);
-  } else if (userRole == UserRole.physio) {
-    return await getPhysioProfile(userId);
-  } else if (userRole == UserRole.coach) {
-    return await getCoachProfile(userId);
-  } else if (userRole == UserRole.player) {
-    return await getPlayerProfile(userId);
-  }
-
-  return Profile(
-      -1, "firstName", "surname", "contactNumber", "email", Uint8List(0));
-}
-
 class HomeScreen extends ConsumerWidget {
-  int selectedMenuIndex = 0;
-  late Profile profile;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
@@ -114,7 +94,7 @@ class HomeScreen extends ConsumerWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            profile = snapshot.data!;
+            Profile profile = snapshot.data!;
 
             return Scaffold(
               appBar: AppBar(
@@ -175,8 +155,7 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               )),
-              bottomNavigationBar:
-                  roleBasedBottomNavBar(userRole, context, selectedMenuIndex),
+              bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 0),
             );
           } else {
             return Text('No data available');

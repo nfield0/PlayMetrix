@@ -9,8 +9,6 @@ import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-final appointmentIdProvider = StateProvider<int>((ref) => 0);
-
 class DailyScheduleScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,12 +36,12 @@ class DailyScheduleScreen extends ConsumerWidget {
                     onTap: (CalendarTapDetails details) {
                       if (details.targetElement ==
                           CalendarElement.appointment) {
-                        ref.watch(appointmentIdProvider.notifier).state =
-                            details.appointments![0].id;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ScheduleDetailsScreen(),
+                            builder: (context) => ScheduleDetailsScreen(
+                              scheduleId: details.appointments![0].id,
+                            ),
                           ),
                         );
                       }
