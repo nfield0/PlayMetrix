@@ -2,7 +2,7 @@ import re
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
-
+import os
 from fastapi import Depends, FastAPI, HTTPException
 from models import *
 from schema import *
@@ -41,13 +41,22 @@ def check_is_valid_team_name(name: str):
     else:
         return False
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+fixed_salt = os.environ["SALT"].encode('utf-8')
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__default_rounds=12)
+
+# verifcation fails upon login after a server restart (due to hash changing)
+# as such we salt the password with a fixed salt to ensure the hash is the same after restarts
+# For security this hash is in .env file and preferably will be removed in future to improve security
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
+    salted_password = fixed_salt + plain_password.encode('utf-8')
+    hashed_password_with_salt = bcrypt.hashpw(salted_password, hashed_password.encode('utf-8'))
+    return hashed_password.encode('utf-8') == hashed_password_with_salt
 
 def encrypt_password(password):
+    password = fixed_salt + password.encode('utf-8')
+
     return pwd_context.hash(password)
 
 # def encrypt_password(password : str):
