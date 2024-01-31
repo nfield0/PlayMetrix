@@ -283,31 +283,37 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                         width: 120,
                                       ),
                                 const SizedBox(height: 10),
-                                underlineButtonTransparent("Edit picture", () {
-                                  pickImage();
-                                }),
+                                if (widget.userRole == UserRole.player)
+                                  underlineButtonTransparent("Edit picture",
+                                      () {
+                                    pickImage();
+                                  }),
                               ])),
-                              formFieldBottomBorderController(
-                                  "First Name", _firstNameController, (value) {
-                                return (value != null &&
-                                        !nameRegex.hasMatch(value))
-                                    ? 'Invalid first name.'
-                                    : null;
-                              }),
-                              formFieldBottomBorderController(
-                                  "Surname", _surnameController, (value) {
-                                return (value != null &&
-                                        !nameRegex.hasMatch(value))
-                                    ? 'Invalid surname.'
-                                    : null;
-                              }),
-                              formFieldBottomBorderController(
-                                  "Phone", _contactNumberController, (value) {
-                                return (value != null &&
-                                        !phoneRegex.hasMatch(value))
-                                    ? 'Invalid phone number.'
-                                    : null;
-                              }),
+                              if (widget.userRole == UserRole.player)
+                                formFieldBottomBorderController(
+                                    "First Name", _firstNameController,
+                                    (value) {
+                                  return (value != null &&
+                                          !nameRegex.hasMatch(value))
+                                      ? 'Invalid first name.'
+                                      : null;
+                                }),
+                              if (widget.userRole == UserRole.player)
+                                formFieldBottomBorderController(
+                                    "Surname", _surnameController, (value) {
+                                  return (value != null &&
+                                          !nameRegex.hasMatch(value))
+                                      ? 'Invalid surname.'
+                                      : null;
+                                }),
+                              if (widget.userRole == UserRole.player)
+                                formFieldBottomBorderController(
+                                    "Phone", _contactNumberController, (value) {
+                                  return (value != null &&
+                                          !phoneRegex.hasMatch(value))
+                                      ? 'Invalid phone number.'
+                                      : null;
+                                }),
                               formFieldBottomBorderController(
                                   "Number", _numberController, (value) {
                                 if (value != null &&
@@ -323,24 +329,27 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
 
                                 return "Enter a valid digit.";
                               }),
-                              formFieldBottomBorderController(
-                                  "Height", _heightController, (value) {
-                                return (value != null &&
-                                        !heightRegex.hasMatch(value))
-                                    ? 'Invalid height.'
-                                    : null;
-                              }),
-                              datePickerNoDivider(
-                                  context, "Date of birth", _selectedDob,
-                                  (value) {
-                                setState(() {
-                                  _selectedDob = value;
-                                });
-                              }),
-                              dropdownWithDivider("Gender", _selectedGender,
-                                  ["Male", "Female", "Others"], (value) {
-                                _selectedGender = value!;
-                              }),
+                              if (widget.userRole == UserRole.player)
+                                formFieldBottomBorderController(
+                                    "Height", _heightController, (value) {
+                                  return (value != null &&
+                                          !heightRegex.hasMatch(value))
+                                      ? 'Invalid height.'
+                                      : null;
+                                }),
+                              if (widget.userRole == UserRole.player)
+                                datePickerNoDivider(
+                                    context, "Date of birth", _selectedDob,
+                                    (value) {
+                                  setState(() {
+                                    _selectedDob = value;
+                                  });
+                                }),
+                              if (widget.userRole == UserRole.player)
+                                dropdownWithDivider("Gender", _selectedGender,
+                                    ["Male", "Female", "Others"], (value) {
+                                  _selectedGender = value!;
+                                }),
                               const SizedBox(height: 10),
                               dropdownWithDivider(
                                   "Position", _selectedPosition, [
