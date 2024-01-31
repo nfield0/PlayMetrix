@@ -147,24 +147,6 @@ Future<List<LeagueData>> getAllLeagues() async {
   }
 }
 
-class AddTeamData {
-  final String team_name;
-  final Uint8List? team_logo;
-  final int manager_id;
-  final int league_id;
-  final int sport_id;
-  final String team_location;
-
-  AddTeamData({
-    required this.team_name,
-    required this.team_logo,
-    required this.manager_id,
-    required this.sport_id,
-    required this.league_id,
-    required this.team_location,
-  });
-}
-
 Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
     int sportId, int leagueId, String teamLocation) async {
   const apiUrl = '$apiBaseUrl/teams';
