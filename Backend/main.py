@@ -176,15 +176,15 @@ def delete_team(id: int, db:Session = Depends(get_db)):
 def read_schedules(db:Session = Depends(get_db)):
     return crud.get_schedules(db)
 
-@app.get("/schedules/{team_id}/{type}")
+@app.get("/schedules/{team_id}/type/{type}")
 def read_schedules(team_id: int, type: str, db:Session = Depends(get_db)):
     return crud.get_team_schedules_by_type(db, team_id, type)
 
-@app.get("/schedules/{team_id}/{date}")
+@app.get("/schedules/{team_id}/date/{date}")
 def read_schedules(team_id: int, date: str, db:Session = Depends(get_db)):
     return crud.get_team_schedules_by_date(db, team_id, date)
 
-@app.get("/schedules/{team_id}/{location}")
+@app.get("/schedules/{team_id}/location/{location}")
 def read_schedules(team_id: int, location: str, db:Session = Depends(get_db)):
     return crud.get_team_schedules_by_location(db, team_id, location)
 

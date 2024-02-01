@@ -450,8 +450,11 @@ def get_schedules(db: Session):
     
 def get_team_schedules_by_type(db: Session, id: int, type: str):
     try:
-        result = db.query(schedule).filter_by(team_id=id, schedule_type=type).all()
-        return result
+        result = db.query(team_schedule).filter_by(team_id=id).all()
+        if result:
+            schedules = db.query(schedule).filter_by(schedule_id=result.schedule_id, schedule_type=type).all()
+            return schedules
+        return None
     except Exception as e:
         return(f"Error retrieving schedules: {e}")
     
