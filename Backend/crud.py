@@ -447,6 +447,27 @@ def get_schedules(db: Session):
         return result
     except Exception as e:
         return(f"Error retrieving schedules: {e}")
+    
+def get_team_schedules_by_type(db: Session, id: int, type: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=id, schedule_type=type).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+    
+def get_team_schedules_by_date(db: Session, team_id: int, date: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=team_id, schedule_start_time=date).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+    
+def get_team_schedules_by_location(db: Session, team_id: int, location: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=team_id, schedule_location=location).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
 
 def get_schedule_by_id(db: Session, id: int):
     try:
