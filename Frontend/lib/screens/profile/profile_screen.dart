@@ -19,9 +19,9 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
     return await getPhysioProfile(userId);
   } else if (userRole == UserRole.coach) {
     return await getCoachProfile(userId);
+  } else {
+    return await getPlayerProfile(userId);
   }
-
-  throw Exception("Profile not found");
 }
 
 class ProfileScreen extends ConsumerWidget {
@@ -75,8 +75,10 @@ class ProfileScreen extends ConsumerWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditProfileScreen(userId: userId, userRole: userRole,)),
+                                      builder: (context) => EditProfileScreen(
+                                            userId: userId,
+                                            userRole: userRole,
+                                          )),
                                 );
                               }),
                             ],
