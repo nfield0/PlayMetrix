@@ -5,6 +5,7 @@ def test_add_injury():
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Ankle Sprain",
+        "injury_location": "Left Ankle",
         "expected_recovery_time": "2021-05-01",
         "recovery_method": "Physical Therapy and rest"
     }
@@ -27,6 +28,7 @@ def test_add_injury_incorrect():
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Ankle Sprain123!",
+        "injury_location": "Left Ankle",
         "expected_recovery_time": "2021-05-01",
         "recovery_method": "Physical Therapy and rest"
     }
@@ -54,6 +56,7 @@ def test_get_injury_by_id():
         expected_data = {
             "injury_id": 1,
             "injury_type": "Ankle Sprain",
+            "injury_location": "Left Ankle",
             "expected_recovery_time": "2021-05-01",
             "recovery_method": "Physical Therapy and rest"
         }
@@ -82,6 +85,7 @@ def test_update_injury_by_id():
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Broken Ankle",
+        "injury_location": "Left Ankle",
         "expected_recovery_time": "2022-09-02",
         "recovery_method": "Physical Therapy and rest"
     }

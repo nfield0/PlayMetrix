@@ -17,7 +17,6 @@ def test_add_player():
     }
     response = requests.post(url, headers=headers, json=json)
     
-
     assert response.headers['Content-Type'] == 'application/json'
 
     try:
