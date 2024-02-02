@@ -5,6 +5,7 @@ import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
@@ -13,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
+import 'package:input_quantity/input_quantity.dart';
 
 String availabilityStatusText(AvailabilityStatus status) {
   switch (status) {
@@ -136,6 +138,39 @@ Future<void> updateTeamPlayer(int teamId, int playerId, int number,
   }
 }
 
+Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
+    int matchesStarted, int matchesOffTheBench, int totalMinutesPlayed) async {
+  final apiUrl = '$apiBaseUrl/players/stats/$playerId';
+
+  try {
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "player_id": playerId,
+        "matches_played": matchesPlayed,
+        "matches_started": matchesStarted,
+        "matches_off_the_bench": matchesOffTheBench,
+        "injury_prone": false,
+        "minutes_played": totalMinutesPlayed
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Registration successful!');
+      print('Response: ${response.body}');
+    } else {
+      print('Failed to register. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+}
+
 class EditPlayerProfileScreen extends StatefulWidget {
   final int playerId;
   final UserRole userRole;
@@ -179,6 +214,11 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   AvailabilityStatus _selectedAvailability = AvailabilityStatus.Available;
   String _selectedPosition = teamRoleToText(TeamRole.defense);
 
+  int? _matchesPlayed;
+  int? _matchesStarted;
+  int? _matchesOffTheBench;
+  int? _totalMinutesPlayed;
+
   @override
   void initState() {
     super.initState();
@@ -202,6 +242,15 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
         _selectedAvailability =
             stringToAvailabilityStatus(teamPlayerData.playing_status);
         _selectedPosition = teamPlayerData.team_position;
+      });
+    });
+
+    getStatisticsData(widget.playerId).then((value) {
+      setState(() {
+        _matchesPlayed = value.matchesPlayed;
+        _matchesStarted = value.matchesStarted;
+        _matchesOffTheBench = value.matchesOffTheBench;
+        _totalMinutesPlayed = value.totalMinutesPlayed;
       });
     });
   }
@@ -262,7 +311,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                             children: [
                               if (widget.userRole == UserRole.manager)
                                 Center(
-                                  child: _availabilityDropdown(
+                                  child: availabilityDropdown(
                                       _selectedAvailability, availability,
                                       (value) {
                                     setState(() {
@@ -360,7 +409,39 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                               ], (value) {
                                 _selectedPosition = value!;
                               }),
-                              const SizedBox(height: 30),
+                              const SizedBox(height: 10),
+                              if (widget.userRole == UserRole.manager &&
+                                  _matchesPlayed != null &&
+                                  _matchesStarted != null &&
+                                  _matchesOffTheBench != null &&
+                                  _totalMinutesPlayed != null)
+                                Column(
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    inputQuantity(
+                                        "Matches played", _matchesPlayed!,
+                                        (value) {
+                                      _matchesPlayed = value;
+                                    }),
+                                    const SizedBox(height: 35),
+                                    inputQuantity(
+                                        "Matches started", _matchesStarted!,
+                                        (value) {
+                                      _matchesStarted = value;
+                                    }),
+                                    const SizedBox(height: 35),
+                                    inputQuantity("Matches off the bench",
+                                        _matchesOffTheBench!, (value) {
+                                      _matchesOffTheBench = value;
+                                    }),
+                                    const SizedBox(height: 35),
+                                    inputQuantity("Total minutes played",
+                                        _totalMinutesPlayed!, (value) {
+                                      _totalMinutesPlayed = value;
+                                    }),
+                                  ],
+                                ),
+                              const SizedBox(height: 40),
                               bigButton("Save Changes", () async {
                                 if (_formKey.currentState!.validate()) {
                                   await updatePlayerProfile(
@@ -381,6 +462,13 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           _selectedAvailability),
                                       _selectedPosition);
 
+                                  await updatePlayerStatistics(
+                                      widget.playerId,
+                                      _matchesPlayed!,
+                                      _matchesStarted!,
+                                      _matchesOffTheBench!,
+                                      _totalMinutesPlayed!);
+
                                   navigator.push(
                                     MaterialPageRoute(
                                         builder: (context) =>
@@ -397,7 +485,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   }
 }
 
-Widget _availabilityDropdown(
+Widget availabilityDropdown(
     AvailabilityStatus selectedAvailability,
     List<AvailabilityData> availability,
     void Function(AvailabilityStatus?)? onChanged) {
@@ -421,5 +509,33 @@ Widget _availabilityDropdown(
       );
     }).toList(),
     onChanged: onChanged,
+  );
+}
+
+Widget inputQuantity(
+    String title, int initVal, void Function(dynamic)? onChanged) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          InputQty.int(
+            maxVal: 100,
+            initVal: initVal,
+            minVal: 0,
+            steps: 1,
+            decoration: const QtyDecorationProps(
+                isBordered: false,
+                borderShape: BorderShapeBtn.circle,
+                width: 12,
+                btnColor: AppColours.darkBlue),
+            onQtyChanged: onChanged,
+          )
+        ],
+      )
+    ],
   );
 }

@@ -31,12 +31,16 @@ Future<StatisticsData> getStatisticsData(int id) async {
       print('Response: ${response.body}');
       final parsed = jsonDecode(response.body);
 
-      return StatisticsData(
-          parsed["matches_played"],
-          parsed["matches_started"],
-          parsed["matches_off_the_bench"],
-          parsed["minutes_played"],
-          parsed["injury_prone"]);
+      if (parsed != null) {
+        return StatisticsData(
+            parsed["matches_played"],
+            parsed["matches_started"],
+            parsed["matches_off_the_bench"],
+            parsed["minutes_played"],
+            parsed["injury_prone"]);
+      } else {
+        throw Exception('Failed to load player statistics');
+      }
     } else {
       print('Error message: ${response.body}');
     }
