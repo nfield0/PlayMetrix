@@ -214,6 +214,7 @@ class ScheduleBaseNoID(BaseModel):
     schedule_start_time: str
     schedule_end_time: str
     schedule_alert_time: str
+    team_id: int
 
 
 class TeamScheduleBase(BaseModel):

@@ -214,6 +214,7 @@ def read_team_schedules(team_id: int, db:Session = Depends(get_db)):
 def read_team_schedule(id: int, db:Session = Depends(get_db)):
     return crud.get_team_schedule_by_id(db, id)
 
+# now redundant
 @app.post("/team_schedules")
 def insert_team_schedule(schedule: TeamScheduleBase, db:Session = Depends(get_db)):
     return crud.insert_new_team_schedule(db, schedule)

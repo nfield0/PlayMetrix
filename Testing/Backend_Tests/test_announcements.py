@@ -32,6 +32,73 @@ def test_add_a_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+
+def test_add_league():
+    url = 'http://127.0.0.1:8000/leagues/'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "league_name": "Louth GAA"
+    }
+    response = requests.post(url, headers=headers, json=json)
+
+    # assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "League inserted successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 1
+        assert response.status_code == 200  
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_add_sport():
+    url = 'http://127.0.0.1:8000/sports/'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "sport_name": "Gaelic Rugby"
+    }
+    response = requests.post(url, headers=headers, json=json)
+
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Sport inserted successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 1
+        assert response.status_code == 200  
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_add_team():
+    url = 'http://127.0.0.1:8000/teams/'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "team_name": "Louth Under 21s GAA",
+        "team_logo": "b'url",
+        "manager_id": 1,
+        "league_id": 1,
+        "sport_id": 1,
+        "team_location": "Dundalk, Louth"
+    }
+    response = requests.post(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Team inserted successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 1
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
 def test_add_schedule():
     url = 'http://127.0.0.1:8000/schedules'
     headers = {'Content-Type': 'application/json'}
@@ -41,7 +108,8 @@ def test_add_schedule():
     "schedule_type": "Training",
     "schedule_start_time": "2024-01-21T12:30:00",
     "schedule_end_time": "2024-01-21T14:30:00",
-    "schedule_alert_time": "1 hour before"
+    "schedule_alert_time": "1 hour before",
+    "team_id":1
     }
 
     response = requests.post(url, headers=headers, json=json)

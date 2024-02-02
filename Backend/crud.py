@@ -452,8 +452,19 @@ def get_team_schedules_by_type(db: Session, type: str, id: int):
     try:
         result = db.query(team_schedule).filter_by(team_id=id).all()
         if result:
-            schedules = db.query(schedule).filter_by(schedule_id=result.schedule_id, schedule_type=type).all()
-            return schedules
+            #due to the way db table is structured for schedule, need to extract ids from second table correctly
+            result_schedule_ids = []
+            for item in result:
+                schedule_id = item.schedule_id
+                if schedule_id is not None:
+                    result_schedule_ids.append(schedule_id)
+
+            schedules = db.query(schedule).filter(schedule.schedule_id.in_(result_schedule_ids), schedule.schedule_type == type).all()
+            selected_schedule = []
+            for sch in schedules:
+                if sch.schedule_type == type:
+                    selected_schedule.append(sch)
+            return selected_schedule
         raise HTTPException(status_code=404, detail="No schedules found")
     except HTTPException as http_err:
         raise http_err
@@ -516,6 +527,10 @@ def insert_new_schedule(db:Session, req_schedule: ScheduleBaseNoID):
             db.add(new_schedule)
             db.commit()
             db.refresh(new_schedule)
+            new_team_schedule = team_schedule(schedule_id=new_schedule.schedule_id, team_id=req_schedule.team_id)
+            db.add(new_team_schedule)
+            db.commit()
+            db.refresh(new_team_schedule)
             return {"message": "Schedule inserted successfully", "id": new_schedule.schedule_id}
             
         return {"message": "Schedule is empty or invalid"}
@@ -544,6 +559,10 @@ def update_schedule(db, updated_schedule: ScheduleBase, id):
 def delete_schedule_by_id(db:Session, id: int):
     try:        
         schedule_to_delete = db.query(schedule).filter_by(schedule_id=id).first()
+        team_schedule_to_delete = db.query(team_schedule).filter_by(schedule_id=id).first()
+        if team_schedule_to_delete:
+            db.delete(team_schedule_to_delete)
+            db.commit()
         if schedule_to_delete:
             db.delete(schedule_to_delete)
             db.commit()
