@@ -2,7 +2,7 @@ import re
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
-
+import os
 from fastapi import Depends, FastAPI, HTTPException
 from models import *
 from schema import *
@@ -41,13 +41,22 @@ def check_is_valid_team_name(name: str):
     else:
         return False
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+fixed_salt = os.environ["SALT"].encode('utf-8')
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__default_rounds=12)
+
+# verifcation fails upon login after a server restart (due to hash changing)
+# as such we salt the password with a fixed salt to ensure the hash is the same after restarts
+# For security this hash is in .env file and preferably will be removed in future to improve security
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
+    salted_password = fixed_salt + plain_password.encode('utf-8')
+    hashed_password_with_salt = bcrypt.hashpw(salted_password, hashed_password.encode('utf-8'))
+    return hashed_password.encode('utf-8') == hashed_password_with_salt
 
 def encrypt_password(password):
+    password = fixed_salt + password.encode('utf-8')
+
     return pwd_context.hash(password)
 
 # def encrypt_password(password : str):
@@ -289,6 +298,23 @@ def get_user_details_by_email_password(db:Session, email: str, password: str):
 def get_user_by_type(db:Session, user: UserType):
     return get_user_by_email(db, user.user_type, user.user_email)
 
+def get_user_by_id_type(db:Session, id: int, type: str):
+    try:
+        if type == "manager":
+            login_info = db.query(manager_login).filter_by(manager_id=id).first()
+        elif type == "player":
+            login_info = db.query(player_login).filter_by(player_id=id).first()
+        elif type == "physio":
+            login_info = db.query(physio_login).filter_by(physio_id=id).first()
+        elif type == "coach":
+            login_info = db.query(coach_login).filter_by(coach_id=id).first()
+        else:
+            raise HTTPException(status_code=400, detail="Invalid user type")
+        
+        return login_info
+    except Exception as e:
+        return(f"Error retrieving from {type}s: {e}")
+
 def check_user_exists_by_email(db:Session, email: str):
     try:
         manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
@@ -421,6 +447,30 @@ def get_schedules(db: Session):
         return result
     except Exception as e:
         return(f"Error retrieving schedules: {e}")
+    
+def get_team_schedules_by_type(db: Session, id: int, type: str):
+    try:
+        result = db.query(team_schedule).filter_by(team_id=id).all()
+        if result:
+            schedules = db.query(schedule).filter_by(schedule_id=result.schedule_id, schedule_type=type).all()
+            return schedules
+        return None
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+    
+def get_team_schedules_by_date(db: Session, team_id: int, date: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=team_id, schedule_start_time=date).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
+    
+def get_team_schedules_by_location(db: Session, team_id: int, location: str):
+    try:
+        result = db.query(schedule).filter_by(team_id=team_id, schedule_location=location).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving schedules: {e}")
 
 def get_schedule_by_id(db: Session, id: int):
     try:
@@ -451,14 +501,16 @@ def get_schedule_by_team_id_and_type(db: Session, id: int, type: str):
         return(f"Error retrieving schedules: {e}")
 
 
-def insert_new_schedule(db:Session, new_schedule: ScheduleBaseNoID):
+def insert_new_schedule(db:Session, req_schedule: ScheduleBaseNoID):
     try:
-        if new_schedule is not None:
-            new_schedule = schedule(schedule_title=new_schedule.schedule_title,schedule_location=new_schedule.schedule_location,
-                                    schedule_type=new_schedule.schedule_type,
-                                    schedule_start_time=new_schedule.schedule_start_time,
-                                    schedule_end_time=new_schedule.schedule_end_time,
-                                    schedule_alert_time=new_schedule.schedule_alert_time)
+        if req_schedule is not None:
+            new_schedule = schedule(
+                                    schedule_type=req_schedule.schedule_type,
+                                    schedule_location=req_schedule.schedule_location,
+                                    schedule_title=req_schedule.schedule_title,
+                                    schedule_start_time=req_schedule.schedule_start_time,
+                                    schedule_end_time=req_schedule.schedule_end_time,
+                                    schedule_alert_time=req_schedule.schedule_alert_time)
             db.add(new_schedule)
             db.commit()
             db.refresh(new_schedule)
@@ -638,14 +690,15 @@ def insert_new_announcement(db:Session, new_announcement: AnnouncementBaseNoID):
         if new_announcement is None:
             raise HTTPException(status_code=400, detail="Announcement is empty or invalid")
         
-        if get_manager_by_id(db, new_announcement.manager_id) is None:
-            raise HTTPException(status_code=400, detail="Manager ID Does not Exist")
+        if get_user_by_id_type(db, new_announcement.poster_id, new_announcement.poster_type) is None:
+            raise HTTPException(status_code=400, detail="{new_announcement.poster_type} ID Does not Exist")
 
         announcement = announcements(announcements_title=new_announcement.announcements_title,
                                         announcements_desc=new_announcement.announcements_desc,
                                         announcements_date=new_announcement.announcements_date,
-                                        manager_id=new_announcement.manager_id,
-                                        schedule_id=new_announcement.schedule_id)
+                                        schedule_id=new_announcement.schedule_id,
+                                        poster_id=new_announcement.poster_id,
+                                        poster_type=new_announcement.poster_type)
         db.add(announcement)
         db.commit()
         db.refresh(announcement)
@@ -667,8 +720,9 @@ def update_announcement(db, updated_announcement: AnnouncementBase, id: int):
         announcement_to_update.announcements_title = updated_announcement.announcements_title
         announcement_to_update.announcements_desc = updated_announcement.announcements_desc
         announcement_to_update.announcements_date = updated_announcement.announcements_date
-        announcement_to_update.manager_id = updated_announcement.manager_id
         announcement_to_update.schedule_id = updated_announcement.schedule_id
+        announcement_to_update.poster_id = updated_announcement.poster_id
+        announcement_to_update.poster_type = updated_announcement.poster_type
         
         db.commit()
         return {"message": f"Announcement with ID {id} has been updated"}
@@ -1472,6 +1526,7 @@ def insert_injury(db:Session, new_injury: InjuryBase):
             raise HTTPException(status_code=400, detail="Injury type is incorrect")
         else:
             new_injury = injuries(injury_type=new_injury.injury_type,
+                                  injury_location=new_injury.injury_location,
                                expected_recovery_time=new_injury.expected_recovery_time,
                                recovery_method=new_injury.recovery_method)
             db.add(new_injury)
@@ -1488,6 +1543,7 @@ def update_injury(db, updated_injury: InjuryBase, id):
         injury_to_update = db.query(injuries).filter_by(injury_id= id).first()
         if injury_to_update:
             injury_to_update.injury_type = updated_injury.injury_type
+            injury_to_update.injury_location = updated_injury.injury_location
             injury_to_update.expected_recovery_time = updated_injury.expected_recovery_time
             injury_to_update.recovery_method = updated_injury.recovery_method
             db.commit()

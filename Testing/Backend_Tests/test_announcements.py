@@ -65,8 +65,9 @@ def test_add_announcement():
     "announcements_title": "Test Announcement",
     "announcements_desc": "Test Description",
     "announcements_date": "2024-01-21T00:00:00",
-    "manager_id": 1,
-    "schedule_id": 1
+    "schedule_id": 1,
+    "poster_id": 1,
+    "poster_type": "manager"
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -99,8 +100,9 @@ def test_get_announcement():
             "announcements_title": "Test Announcement",
             "announcements_desc": "Test Description",
             "announcements_date": "2024-01-21T00:00:00",
-            "manager_id": 1,
-            "schedule_id": 1
+            "schedule_id": 1,
+            "poster_id": 1,
+            "poster_type": "manager"
     
     }
         response_json = response.json()
@@ -111,6 +113,7 @@ def test_get_announcement():
 
 
 def test_update_announcement():
+
     url = 'http://127.0.0.1:8000/announcements/1'
     headers = {'Content-Type': 'application/json'}
     json = {
@@ -118,9 +121,9 @@ def test_update_announcement():
             "announcements_title": "Test Announcement Update",
             "announcements_desc": "Test Description Update",
             "announcements_date": "2025-01-21T00:00:00",
-            "manager_id": 1,
-            "schedule_id": 1 
-    
+            "schedule_id": 1,
+            "poster_id": 1,
+            "poster_type": "manager"
     }
     response = requests.put(url, headers=headers, json=json)
     

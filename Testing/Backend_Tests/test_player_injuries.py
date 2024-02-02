@@ -6,6 +6,7 @@ def test_add_injury_for_player_injuries():
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Ankle Sprain",
+        "injury_location": "Left Ankle",
         "expected_recovery_time": "2021-05-01",
         "recovery_method": "Physical Therapy and rest"
     }

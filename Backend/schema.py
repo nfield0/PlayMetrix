@@ -162,6 +162,7 @@ class PlayerStat(BaseModel):
     
 class InjuryBase(BaseModel):
     injury_type: str
+    injury_location: str
     expected_recovery_time: str
     recovery_method: str
 
@@ -225,12 +226,14 @@ class AnnouncementBase(BaseModel):
     announcements_title: str
     announcements_desc: str
     announcements_date: str
-    manager_id: int
     schedule_id: int
+    poster_id: int
+    poster_type: str
 
 class AnnouncementBaseNoID(BaseModel):
     announcements_title: str
     announcements_desc: str
     announcements_date: str
-    manager_id: int
     schedule_id: int
+    poster_id: int
+    poster_type: str
