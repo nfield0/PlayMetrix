@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -34,6 +35,7 @@ Future<void> addInjury({
       }),
     );
 
+    print('Response: ${response.body}');
     if (response.statusCode == 200) {
       const playerInjuriesApiUrl = "$apiBaseUrl/player_injuries/";
 
@@ -82,6 +84,9 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
   String playerName = "";
   Uint8List playerImage = Uint8List(0);
+
+  DateTime selectedDateOfInjury = DateTime.now();
+  DateTime selectedDateOfRecovery = DateTime.now();
 
   @override
   void initState() {
@@ -181,17 +186,39 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                               }),
                               const SizedBox(height: 7),
                               datePickerNoDivider(context, "Date of injury",
-                                  DateTime.now(), (date) {}),
+                                  selectedDateOfInjury, (date) {
+                                setState(() {
+                                  selectedDateOfInjury = date;
+                                });
+                              }),
                               const SizedBox(height: 5),
                               datePickerNoDivider(context, "Date of recovery",
-                                  DateTime.now(), (date) {}),
+                                  selectedDateOfRecovery, (date) {
+                                setState(() {
+                                  selectedDateOfRecovery = date;
+                                });
+                              }),
                               const SizedBox(height: 25),
                               bigButton("Add Injury", () {
                                 if (_formKey.currentState!.validate()) {
+                                  addInjury(
+                                      playerId: widget.playerId,
+                                      injuryType: injuryTypeController.text,
+                                      injuryLocation:
+                                          injuryLocationController.text,
+                                      expectedRecoveryTime:
+                                          expectedRecoveryTimeController.text,
+                                      recoveryMethod:
+                                          recoveryMethodController.text,
+                                      dateOfInjury: selectedDateOfInjury,
+                                      dateOfRecovery: selectedDateOfRecovery);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HomeScreen()));
+                                          builder: (context) =>
+                                              PlayerProfileViewScreen(
+                                                userId: widget.playerId,
+                                              )));
                                 }
                               })
                             ]),

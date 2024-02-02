@@ -175,6 +175,7 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
                 AllPlayerInjuriesData data = AllPlayerInjuriesData(
                     injury.injury_id,
                     injury.injury_type,
+                    injury.injury_location,
                     injury.expected_recovery_time,
                     injury.recovery_method,
                     playerInjury.date_of_injury,
@@ -221,19 +222,25 @@ void printList(List<dynamic> list) {
 class Injury {
   var injury_id;
   var injury_type;
+  String injury_location;
   var expected_recovery_time;
   var recovery_method;
 
   Injury(
     this.injury_id,
     this.injury_type,
+    this.injury_location,
     this.expected_recovery_time,
     this.recovery_method,
   );
 
   factory Injury.fromJson(Map<String, dynamic> json) {
-    return Injury(json['injury_id'], json['injury_type'],
-        json['expected_recovery_time'], json['recovery_method']);
+    return Injury(
+        json['injury_id'],
+        json['injury_type'],
+        json['injury_location'],
+        json['expected_recovery_time'],
+        json['recovery_method']);
   }
 
   @override
@@ -245,6 +252,7 @@ class Injury {
 class AllPlayerInjuriesData {
   final int injury_id;
   final String injury_type;
+  final String injury_location;
   final String expected_recovery_time;
   final String recovery_method;
   final String date_of_injury;
@@ -254,6 +262,7 @@ class AllPlayerInjuriesData {
   AllPlayerInjuriesData(
     this.injury_id,
     this.injury_type,
+    this.injury_location,
     this.expected_recovery_time,
     this.recovery_method,
     this.date_of_injury,
