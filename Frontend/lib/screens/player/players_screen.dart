@@ -332,9 +332,14 @@ Widget playerProfilePill(
               child: Row(
                 children: [
                   imageBytes != null && imageBytes.isNotEmpty
-                      ? Image.memory(
-                          imageBytes,
-                          width: 65,
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(75),
+                          child: Image.memory(
+                            imageBytes,
+                            width: 65,
+                            height: 65,
+                            fit: BoxFit.cover,
+                          ),
                         )
                       : Image.asset(
                           "lib/assets/icons/profile_placeholder.png",

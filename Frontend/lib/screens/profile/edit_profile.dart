@@ -113,9 +113,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                   child: Column(children: [
                                 _profilePicture != null &&
                                         _profilePicture!.isNotEmpty
-                                    ? Image.memory(
-                                        _profilePicture!,
-                                        width: 120,
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(75),
+                                        child: Image.memory(
+                                          _profilePicture!,
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
                                       )
                                     : Image.asset(
                                         "lib/assets/icons/profile_placeholder.png",

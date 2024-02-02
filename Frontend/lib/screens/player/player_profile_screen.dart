@@ -629,7 +629,7 @@ Widget playerProfile(
         ),
         child: profilePicture != null && profilePicture.isNotEmpty
             ? ClipRRect(
-                borderRadius: BorderRadius.circular(75),
+                borderRadius: BorderRadius.circular(15),
                 child: Image.memory(
                   profilePicture,
                   width: 150,
@@ -677,7 +677,7 @@ Widget playerProfileNoTeam(String firstName, String surname, String dob,
       Container(
         child: profilePicture != null && profilePicture.isNotEmpty
             ? ClipRRect(
-                borderRadius: BorderRadius.circular(75),
+                borderRadius: BorderRadius.circular(15),
                 child: Image.memory(
                   profilePicture,
                   width: 150,
