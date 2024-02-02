@@ -118,7 +118,7 @@ def test_update_player_schedule():
         assert False, f"Test failed: {e}"
 
 def test_delete_player_schedule():
-    url = 'http://127.0.0.1:8000/player_schedules/1'
+    url = 'http://127.0.0.1:8000/player_schedules/1/schedule/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200

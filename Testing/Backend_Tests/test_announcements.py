@@ -95,7 +95,7 @@ def test_get_announcement():
     assert response.status_code == 200
 
     try:
-        expected_json = {
+        expected_json = [{
             "announcements_id": 1,
             "announcements_title": "Test Announcement",
             "announcements_desc": "Test Description",
@@ -104,7 +104,7 @@ def test_get_announcement():
             "poster_id": 1,
             "poster_type": "manager"
     
-    }
+    }]
         response_json = response.json()
         assert response_json == expected_json
     

@@ -178,7 +178,7 @@ def read_schedules(db:Session = Depends(get_db)):
 
 @app.get("/schedules/{team_id}/type/{type}")
 def read_schedules(team_id: int, type: str, db:Session = Depends(get_db)):
-    return crud.get_team_schedules_by_type(db, team_id, type)
+    return crud.get_team_schedules_by_type(db, type, team_id)
 
 @app.get("/schedules/{team_id}/date/{date}")
 def read_schedules(team_id: int, date: str, db:Session = Depends(get_db)):
@@ -230,9 +230,9 @@ def delete_team_schedule(id: int, db:Session = Depends(get_db)):
 
 #region player_schedules
 
-@app.get("/player_schedules/{player_id}")
-def read_player_schedules(player_id: int, db:Session = Depends(get_db)):
-    return crud.get_player_schedules(db, player_id)
+@app.get("/player_schedules/{schedule_id}")
+def read_player_schedules(schedule_id: int, db:Session = Depends(get_db)):
+    return crud.get_player_schedules(db, schedule_id)
 
 @app.post("/player_schedules")
 def insert_player_schedule(schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
@@ -242,9 +242,9 @@ def insert_player_schedule(schedule: PlayerScheduleBase, db:Session = Depends(ge
 def update_player_schedule(player_id: int, schedule: PlayerScheduleBase, db:Session = Depends(get_db)):
     return crud.update_player_schedule(db, schedule, player_id)
 
-@app.delete("/player_schedules/{player_id}")
-def delete_player_schedule(player_id: int, db:Session = Depends(get_db)):
-    return crud.delete_player_schedule_by_id(db, player_id)
+@app.delete("/player_schedules/{player_id}/schedule/{schedule_id}")
+def delete_player_schedule(player_id: int, schedule_id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_schedule_by_id(db, player_id, schedule_id)
 
 
 #endregion
@@ -252,6 +252,10 @@ def delete_player_schedule(player_id: int, db:Session = Depends(get_db)):
 #region announcements
 
 @app.get("/announcements/{id}")
+def read_announcement(id: int, db:Session = Depends(get_db)):
+    return crud.get_announcement(db, id)
+
+@app.get("/announcements/schedule/{id}")
 def read_announcement(id: int, db:Session = Depends(get_db)):
     return crud.get_announcement(db, id)
 
