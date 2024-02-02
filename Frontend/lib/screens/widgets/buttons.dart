@@ -37,6 +37,41 @@ Widget smallButton(IconData icon, String text, VoidCallback onPressed) {
   );
 }
 
+Widget smallButtonBlue(IconData icon, String text, VoidCallback onPressed) {
+  return Container(
+    decoration: BoxDecoration(
+      border: Border.all(color: AppColours.darkBlue, width: 2),
+      borderRadius: BorderRadius.circular(50),
+    ),
+    child: CupertinoButton(
+      onPressed: onPressed,
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+      borderRadius: BorderRadius.circular(50),
+      color: AppColours.darkBlue,
+      minSize: 0,
+      pressedOpacity: 0.8, // Adjust the opacity when the button is pressed
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: Colors.white,
+            size: 16,
+          ),
+          SizedBox(width: 10),
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 Widget bigButton(String text, VoidCallback onPressed) {
   return CupertinoButton(
     onPressed: onPressed,

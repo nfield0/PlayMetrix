@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/players_attending_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
@@ -53,8 +54,16 @@ Future<bool> editSchedule(
 
 class EditScheduleScreen extends StatefulWidget {
   final int scheduleId;
+  final UserRole userRole;
+  final int teamId;
+  final int playerId;
 
-  const EditScheduleScreen({super.key, required this.scheduleId});
+  const EditScheduleScreen(
+      {super.key,
+      required this.playerId,
+      required this.scheduleId,
+      required this.userRole,
+      required this.teamId});
 
   @override
   EditScheduleScreenState createState() => EditScheduleScreenState();
@@ -249,6 +258,12 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ScheduleDetailsScreen(
+                                          playerId:
+                                              widget.userRole == UserRole.player
+                                                  ? widget.playerId
+                                                  : -1,
+                                          userRole: widget.userRole,
+                                          teamId: widget.teamId,
                                           scheduleId: widget.scheduleId,
                                         )),
                               );

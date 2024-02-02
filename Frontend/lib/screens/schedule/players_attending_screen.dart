@@ -1,15 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class Schedule {
   int schedule_id;
@@ -63,40 +59,22 @@ Future<Schedule> getScheduleById(int scheduleId) async {
   throw Exception('Failed to players attending data');
 }
 
-class playerAttending {
-  int schedule_id;
-  int player_id;
-  bool player_attending;
+class PlayersAttendingScreen extends StatefulWidget {
+  final int scheduleId;
 
-  playerAttending(
-      {required this.schedule_id,
-      required this.player_id,
-      required this.player_attending});
+  const PlayersAttendingScreen({super.key, required this.scheduleId});
 
-  factory playerAttending.fromJson(Map<String, dynamic> json) {
-    return playerAttending(
-        schedule_id: json['schedule_id'],
-        player_id: json['player_id'],
-        player_attending: json['player_attending']);
-  }
+  @override
+  PlayersAttendingScreenState createState() => PlayersAttendingScreenState();
 }
 
-// class PlayersAttendingScreen extends StatefulWidget {
-//   const PlayersAttendingScreen({Key? key}) : super(key: key);
-
-//   @override
-//   _PlayersAttendingScreenState createState() => _PlayersAttendingScreenState();
-// }
-
-class PlayersAttendingScreen extends ConsumerWidget {
-  final int scheduleId;
+class PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
   late Schedule schedule;
 
-  PlayersAttendingScreen({super.key, required this.scheduleId});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return FutureBuilder<Schedule>(
-        future: getScheduleById(scheduleId),
+        future: getScheduleById(widget.scheduleId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
@@ -104,12 +82,13 @@ class PlayersAttendingScreen extends ConsumerWidget {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             schedule = snapshot.data!;
-            String schedule_title = schedule.schedule_title;
-            String schedule_type = schedule.schedule_type;
-            String schedule_start_time = schedule.schedule_start_time;
+            String scheduleTitle = schedule.schedule_title;
+            String scheduleType = schedule.schedule_type;
+            DateTime scheduleStartTime =
+                DateTime.parse(schedule.schedule_start_time);
             return Scaffold(
                 appBar: AppBar(
-                  title: appBarTitlePreviousPage("${schedule_title}"),
+                  title: appBarTitlePreviousPage(scheduleTitle),
                   iconTheme: const IconThemeData(
                     color: AppColours.darkBlue, //change your color here
                   ),
@@ -128,24 +107,17 @@ class PlayersAttendingScreen extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                             fontFamily: AppFonts.gabarito)),
                     const SizedBox(height: 5),
-                    Text("${schedule_type} | ${schedule_start_time}"),
-
+                    Text("$scheduleType | ${DateFormat('EEEE, d MMMM y').format(
+                      scheduleStartTime,
+                    )}"),
                     const SizedBox(height: 30),
-                    // playerProfilePill(
-                    //     context,
-                    //     "lib/assets/icons/profile_placeholder.png",
-                    //     "Luana",
-                    //     "Kimley",
-                    //     7,
-                    //     AvailabilityStatus.Available),
-                    // const SizedBox(height: 20),
-                    // playerProfilePill(
-                    //     context,
-                    //     "lib/assets/icons/profile_placeholder.png",
-                    //     "Luana",
-                    //     "Kimley",
-                    //     7,
-                    //     AvailabilityStatus.Available),
+                    const Text(
+                      "Attending",
+                      style: TextStyle(
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
                   ])),
                 )),
                 bottomNavigationBar: managerBottomNavBar(context, 2));

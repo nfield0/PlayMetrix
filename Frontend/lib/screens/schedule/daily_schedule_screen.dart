@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
@@ -40,6 +41,9 @@ class DailyScheduleScreen extends ConsumerWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ScheduleDetailsScreen(
+                              playerId: ref.read(userIdProvider),
+                              userRole: userRole,
+                              teamId: ref.read(teamIdProvider),
                               scheduleId: details.appointments![0].id,
                             ),
                           ),

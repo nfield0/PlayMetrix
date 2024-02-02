@@ -9,6 +9,7 @@ import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
+import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -264,7 +265,8 @@ class HomeScreen extends ConsumerWidget {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => PlayersScreen(),
+            pageBuilder: (context, animation1, animation2) =>
+                StatisticsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
