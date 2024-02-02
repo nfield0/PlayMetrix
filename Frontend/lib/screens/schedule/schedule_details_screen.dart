@@ -315,7 +315,8 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                           ),
                           divider(),
                           const SizedBox(height: 15),
-                          _announcementsSection(context, widget.userRole)
+                          _announcementsSection(
+                              context, widget.userRole, widget.scheduleId),
                         ],
                       ),
                     ),
@@ -340,7 +341,8 @@ Future<AppointmentDataSource> getFilteredDataSource(
   return AppointmentDataSource(filteredAppointments);
 }
 
-Widget _announcementsSection(BuildContext context, UserRole userRole) {
+Widget _announcementsSection(
+    BuildContext context, UserRole userRole, int scheduleId) {
   return Column(
     children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -358,7 +360,10 @@ Widget _announcementsSection(BuildContext context, UserRole userRole) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const AddAnnouncementScreen()),
+                  builder: (context) => AddAnnouncementScreen(
+                        scheduleId: scheduleId,
+                        userRole: userRole,
+                      )),
             );
           })
       ]),
