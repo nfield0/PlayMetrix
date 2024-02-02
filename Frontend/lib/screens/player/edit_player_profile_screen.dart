@@ -427,7 +427,9 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                               if (widget.userRole == UserRole.player)
                                 dropdownWithDivider("Gender", _selectedGender,
                                     ["Male", "Female", "Others"], (value) {
-                                  _selectedGender = value!;
+                                  setState(() {
+                                    _selectedGender = value!;
+                                  });
                                 }),
                               const SizedBox(height: 10),
                               if (widget.userRole == UserRole.manager)
@@ -438,7 +440,9 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   teamRoleToText(TeamRole.midfield),
                                   teamRoleToText(TeamRole.goalkeeper),
                                 ], (value) {
-                                  _selectedPosition = value!;
+                                  setState(() {
+                                    _selectedPosition = value!;
+                                  });
                                 }),
                               const SizedBox(height: 10),
                               if (widget.userRole == UserRole.manager &&
