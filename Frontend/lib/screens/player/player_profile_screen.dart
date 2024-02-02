@@ -628,9 +628,14 @@ Widget playerProfile(
           borderRadius: BorderRadius.circular(20), // Set the border radius
         ),
         child: profilePicture != null && profilePicture.isNotEmpty
-            ? Image.memory(
-                profilePicture,
-                width: 150,
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(75),
+                child: Image.memory(
+                  profilePicture,
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
               )
             : Image.asset(
                 "lib/assets/icons/profile_placeholder.png",
@@ -671,9 +676,14 @@ Widget playerProfileNoTeam(String firstName, String surname, String dob,
     child: Column(children: [
       Container(
         child: profilePicture != null && profilePicture.isNotEmpty
-            ? Image.memory(
-                profilePicture,
-                width: 150,
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(75),
+                child: Image.memory(
+                  profilePicture,
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
               )
             : Image.asset(
                 "lib/assets/icons/profile_placeholder.png",

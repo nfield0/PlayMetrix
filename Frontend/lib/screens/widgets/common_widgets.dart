@@ -26,7 +26,7 @@ Widget profilePill(String title, String description, String imagePath,
   return InkWell(
     onTap: onPressed,
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(color: AppColours.darkBlue, width: 3),
@@ -36,9 +36,19 @@ Widget profilePill(String title, String description, String imagePath,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           imageBytes != null && imageBytes.isNotEmpty
-              ? Image.memory(imageBytes, width: 60)
-              : Image.asset(imagePath, width: 60),
-          const SizedBox(width: 15),
+              ? ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(75), // Adjust the radius as needed
+                  child: Image.memory(
+                    imageBytes,
+                    width: 65,
+                    height: 65,
+                    fit: BoxFit
+                        .cover, // Ensure the image fills the rounded rectangle
+                  ),
+                )
+              : Image.asset(imagePath, width: 65),
+          const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

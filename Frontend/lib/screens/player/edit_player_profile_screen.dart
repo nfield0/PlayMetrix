@@ -472,10 +472,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                     }),
                                   ],
                                 ),
-                              if (widget.userRole != UserRole.physio)
-                                const SizedBox(height: 40),
-                              if (widget.userRole == UserRole.physio)
-                                const SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               bigButton("Save Changes", () async {
                                 if (_formKey.currentState!.validate()) {
                                   await updatePlayerProfile(
@@ -488,13 +485,15 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                       _selectedGender,
                                       _profilePicture);
 
-                                  await updateTeamPlayer(
-                                      widget.teamId,
-                                      widget.playerId,
-                                      int.parse(_numberController.text),
-                                      availabilityStatusText(
-                                          _selectedAvailability),
-                                      _selectedPosition);
+                                  if (widget.teamId != -1) {
+                                    await updateTeamPlayer(
+                                        widget.teamId,
+                                        widget.playerId,
+                                        int.parse(_numberController.text),
+                                        availabilityStatusText(
+                                            _selectedAvailability),
+                                        _selectedPosition);
+                                  }
 
                                   await updatePlayerStatistics(
                                       widget.playerId,

@@ -193,6 +193,8 @@ class ManagerData {
 final managerIdProvider = StateProvider<int>((ref) => 0);
 
 class TeamProfileScreen extends ConsumerWidget {
+  const TeamProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -261,7 +263,7 @@ class TeamProfileScreen extends ConsumerWidget {
                                   fontSize: 32,
                                 ),
                               ),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 25),
                               logo.isNotEmpty
                                   ? Image.memory(
                                       logo,

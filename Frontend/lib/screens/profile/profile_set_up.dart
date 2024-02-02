@@ -302,9 +302,14 @@ class ProfileSetUpScreen extends ConsumerWidget {
                     Center(
                         child: Column(children: [
                       profilePicture != null
-                          ? Image.memory(
-                              profilePicture,
-                              width: 100,
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(75),
+                              child: Image.memory(
+                                profilePicture,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             )
                           : Image.asset(
                               "lib/assets/icons/profile_placeholder.png",

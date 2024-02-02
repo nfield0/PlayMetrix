@@ -97,10 +97,16 @@ class ProfileScreen extends ConsumerWidget {
                               const SizedBox(height: 20),
                               profile.imageBytes != null &&
                                       profile.imageBytes!.isNotEmpty
-                                  ? Image.memory(
-                                      profile.imageBytes!,
-                                      width: 150,
-                                      height: 150,
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          75), // Adjust the radius as needed
+                                      child: Image.memory(
+                                        profile.imageBytes!,
+                                        width: 150,
+                                        height: 150,
+                                        fit: BoxFit
+                                            .cover, // Ensure the image fills the rounded rectangle
+                                      ),
                                     )
                                   : Image.asset(
                                       "lib/assets/icons/profile_placeholder.png",
