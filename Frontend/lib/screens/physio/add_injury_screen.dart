@@ -35,7 +35,7 @@ Future<void> addInjury({
     );
 
     if (response.statusCode == 200) {
-      const playerInjuriesApiUrl = "$apiBaseUrl/players_injuries/";
+      const playerInjuriesApiUrl = "$apiBaseUrl/player_injuries/";
 
       final playerInjuriesResponse = await http.post(
         Uri.parse(playerInjuriesApiUrl),
