@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/home_screen.dart';
@@ -8,12 +8,16 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<void> AddInjury({
-  required String injury_type,
-  required String expected_recovery_time,
-  required String recovery_method,
+Future<void> addInjury({
+  required int playerId,
+  required String injuryType,
+  required String injuryLocation,
+  required String expectedRecoveryTime,
+  required String recoveryMethod,
+  required DateTime dateOfInjury,
+  required DateTime dateOfRecovery,
 }) async {
-  final apiUrl =
+  const apiUrl =
       '$apiBaseUrl/injuries/'; // Replace with your actual backend URL
 
   try {
@@ -23,44 +27,73 @@ Future<void> AddInjury({
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        'injury_type': injury_type,
-        'expected_recovery_time': expected_recovery_time,
-        'recovery_method': recovery_method,
+        'injury_type': injuryType,
+        'injury_location': injuryLocation,
+        'expected_recovery_time': expectedRecoveryTime,
+        'recovery_method': recoveryMethod,
       }),
     );
 
     if (response.statusCode == 200) {
-      // Successfully registered, handle the response accordingly
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      // You can parse the response JSON here and perform actions based on it
+      const playerInjuriesApiUrl = "$apiBaseUrl/players_injuries/";
+
+      final playerInjuriesResponse = await http.post(
+        Uri.parse(playerInjuriesApiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'player_id': playerId,
+          'injury_id': jsonDecode(response.body)['id'],
+          'date_of_injury': dateOfInjury.toIso8601String(),
+          'date_of_recovery': dateOfRecovery.toIso8601String(),
+        }),
+      );
+
+      print('Response: ${playerInjuriesResponse.body}');
     } else {
-      // Failed to register, handle the error accordingly
       print('Failed to register. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
     }
   } catch (error) {
-    // Handle any network or other errors
     print('Error: $error');
   }
 }
 
 class AddInjuryScreen extends StatefulWidget {
-  const AddInjuryScreen({Key? key}) : super(key: key);
+  final int playerId;
+  const AddInjuryScreen({super.key, required this.playerId});
 
   @override
-  _AddInjuryScreenState createState() => _AddInjuryScreenState();
+  AddInjuryScreenState createState() => AddInjuryScreenState();
 }
 
-class _AddInjuryScreenState extends State<AddInjuryScreen> {
+class AddInjuryScreenState extends State<AddInjuryScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers for form fields
   final TextEditingController injuryTypeController = TextEditingController();
+  final TextEditingController injuryLocationController =
+      TextEditingController();
   final TextEditingController expectedRecoveryTimeController =
       TextEditingController();
   final TextEditingController recoveryMethodController =
       TextEditingController();
+
+  String playerName = "";
+  Uint8List playerImage = Uint8List(0);
+
+  @override
+  void initState() {
+    super.initState();
+
+    getPlayerById(widget.playerId).then((player) {
+      setState(() {
+        playerName = "${player.player_firstname} ${player.player_surname}";
+        playerImage = player.player_image;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,25 +132,34 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
                             children: [
                               Center(
                                   child: Column(children: [
-                                Image.asset(
-                                  "lib/assets/icons/profile_placeholder.png",
-                                  width: 120,
-                                ),
+                                playerImage.isNotEmpty
+                                    ? Image.memory(
+                                        playerImage,
+                                        width: 120,
+                                      )
+                                    : Image.asset(
+                                        "lib/assets/icons/profile_placeholder.png",
+                                        width: 120,
+                                      ),
                                 const SizedBox(height: 15),
-                                const Text("Player Name",
-                                    style: TextStyle(
+                                Text(playerName,
+                                    style: const TextStyle(
                                         fontSize: 20,
                                         fontFamily: AppFonts.gabarito,
                                         fontWeight: FontWeight.bold)),
                               ])),
-                              // const SizedBox(height: 15),
-                              // formFieldBottomBorder("Date of injury", ""),
-                              // const SizedBox(height: 5),
-                              // formFieldBottomBorder("Date of recovery", ""),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Injury type", injuryTypeController, (value) {
-                                return (value != null)
+                                return (value != null && value.isEmpty)
+                                    ? 'This field is required.'
+                                    : null;
+                              }),
+                              const SizedBox(height: 5),
+                              formFieldBottomBorderController(
+                                  "Injury location", injuryLocationController,
+                                  (value) {
+                                return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
                               }),
@@ -125,30 +167,27 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
                               formFieldBottomBorderController(
                                   "Expected recovery time",
                                   expectedRecoveryTimeController, (value) {
-                                return (value != null)
+                                return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
                               }),
-                              // const SizedBox(height: 5),
-                              // formFieldBottomBorder("Injury location", ""),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Recovery method", recoveryMethodController,
                                   (value) {
-                                return (value != null)
+                                return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
                               }),
-                              const SizedBox(height: 35),
+                              const SizedBox(height: 7),
+                              datePickerNoDivider(context, "Date of injury",
+                                  DateTime.now(), (date) {}),
+                              const SizedBox(height: 5),
+                              datePickerNoDivider(context, "Date of recovery",
+                                  DateTime.now(), (date) {}),
+                              const SizedBox(height: 25),
                               bigButton("Add Injury", () {
                                 if (_formKey.currentState!.validate()) {
-                                  AddInjury(
-                                    injury_type: injuryTypeController.text,
-                                    expected_recovery_time:
-                                        expectedRecoveryTimeController.text,
-                                    recovery_method:
-                                        recoveryMethodController.text,
-                                  );
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -158,6 +197,6 @@ class _AddInjuryScreenState extends State<AddInjuryScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: physioBottomNavBar(context, 1));
   }
 }

@@ -571,7 +571,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 25),
                   ]),
                 ))),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
+        bottomNavigationBar: playerBottomNavBar(context, 3));
   }
 }
 

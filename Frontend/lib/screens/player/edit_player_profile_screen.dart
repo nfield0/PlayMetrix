@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/physio/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
@@ -213,6 +214,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   String _selectedGender = 'Male';
   AvailabilityStatus _selectedAvailability = AvailabilityStatus.Available;
   String _selectedPosition = teamRoleToText(TeamRole.defense);
+  String playerName = "";
 
   int? _matchesPlayed;
   int? _matchesStarted;
@@ -232,6 +234,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
         _selectedDob = playerData.player_dob;
         _profilePicture = playerData.player_image;
         _selectedGender = playerData.player_gender;
+        playerName =
+            "${playerData.player_firstname} ${playerData.player_surname}";
       });
     });
 
@@ -291,13 +295,26 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Edit Player',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Edit Player',
+                                style: TextStyle(
+                                  color: AppColours.darkBlue,
+                                  fontFamily: AppFonts.gabarito,
+                                  fontSize: 36.0,
+                                  fontWeight: FontWeight.w700,
+                                )),
+                            smallButton(Icons.add_circle_outline, "Add Injury",
+                                () {
+                              navigator.push(
+                                MaterialPageRoute(
+                                    builder: (context) => AddInjuryScreen(
+                                          playerId: widget.playerId,
+                                        )),
+                              );
+                            })
+                          ]),
                       const SizedBox(height: 10),
                       divider(),
                       const SizedBox(
@@ -309,7 +326,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (widget.userRole == UserRole.manager)
+                              if (widget.userRole == UserRole.manager ||
+                                  widget.userRole == UserRole.physio)
                                 Center(
                                   child: availabilityDropdown(
                                       _selectedAvailability, availability,
@@ -337,6 +355,16 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                       () {
                                     pickImage();
                                   }),
+                                if (widget.userRole != UserRole.player)
+                                  const SizedBox(height: 15),
+                                if (widget.userRole != UserRole.player)
+                                  Text(playerName,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontFamily: AppFonts.gabarito,
+                                          fontWeight: FontWeight.bold)),
+                                if (widget.userRole != UserRole.player)
+                                  const SizedBox(height: 15),
                               ])),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
@@ -363,21 +391,23 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                       ? 'Invalid phone number.'
                                       : null;
                                 }),
-                              formFieldBottomBorderController(
-                                  "Number", _numberController, (value) {
-                                if (value != null &&
-                                    RegExp(r'^\d+$').hasMatch(value)) {
-                                  int numericValue = int.tryParse(value) ?? 0;
+                              if (widget.userRole == UserRole.manager)
+                                formFieldBottomBorderController(
+                                    "Number", _numberController, (value) {
+                                  if (value != null &&
+                                      RegExp(r'^\d+$').hasMatch(value)) {
+                                    int numericValue = int.tryParse(value) ?? 0;
 
-                                  if (numericValue > 0 && numericValue < 100) {
-                                    return null;
-                                  } else {
-                                    return "Enter a valid number from 1-99.";
+                                    if (numericValue > 0 &&
+                                        numericValue < 100) {
+                                      return null;
+                                    } else {
+                                      return "Enter a valid number from 1-99.";
+                                    }
                                   }
-                                }
 
-                                return "Enter a valid digit.";
-                              }),
+                                  return "Enter a valid digit.";
+                                }),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Height", _heightController, (value) {
@@ -400,15 +430,16 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   _selectedGender = value!;
                                 }),
                               const SizedBox(height: 10),
-                              dropdownWithDivider(
-                                  "Position", _selectedPosition, [
-                                teamRoleToText(TeamRole.defense),
-                                teamRoleToText(TeamRole.attack),
-                                teamRoleToText(TeamRole.midfield),
-                                teamRoleToText(TeamRole.goalkeeper),
-                              ], (value) {
-                                _selectedPosition = value!;
-                              }),
+                              if (widget.userRole == UserRole.manager)
+                                dropdownWithDivider(
+                                    "Position", _selectedPosition, [
+                                  teamRoleToText(TeamRole.defense),
+                                  teamRoleToText(TeamRole.attack),
+                                  teamRoleToText(TeamRole.midfield),
+                                  teamRoleToText(TeamRole.goalkeeper),
+                                ], (value) {
+                                  _selectedPosition = value!;
+                                }),
                               const SizedBox(height: 10),
                               if (widget.userRole == UserRole.manager &&
                                   _matchesPlayed != null &&
@@ -441,7 +472,10 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                     }),
                                   ],
                                 ),
-                              const SizedBox(height: 40),
+                              if (widget.userRole != UserRole.physio)
+                                const SizedBox(height: 40),
+                              if (widget.userRole == UserRole.physio)
+                                const SizedBox(height: 10),
                               bigButton("Save Changes", () async {
                                 if (_formKey.currentState!.validate()) {
                                   await updatePlayerProfile(
@@ -481,7 +515,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar:
+            roleBasedBottomNavBar(widget.userRole, context, 1));
   }
 }
 
