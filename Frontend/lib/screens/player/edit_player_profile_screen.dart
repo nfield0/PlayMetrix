@@ -313,6 +313,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                               navigator.push(
                                 MaterialPageRoute(
                                     builder: (context) => AddInjuryScreen(
+                                          userRole: widget.userRole,
+                                          teamId: widget.teamId,
                                           playerId: widget.playerId,
                                         )),
                               );

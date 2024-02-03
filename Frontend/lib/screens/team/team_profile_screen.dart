@@ -505,8 +505,8 @@ class TeamProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ))),
-      bottomNavigationBar: roleBasedBottomNavBar(ref.read(userRoleProvider),
-          context, ref.read(userRoleProvider) == UserRole.physio ? 2 : 3),
+      bottomNavigationBar:
+          roleBasedBottomNavBar(ref.read(userRoleProvider), context, 0),
     );
   }
 }

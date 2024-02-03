@@ -6,6 +6,7 @@ import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/physio/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/player/statistics_constants.dart';
@@ -741,47 +742,58 @@ Widget availabilityTrafficLightItem(
 
 Widget injuriesSection(
     int numInjuries, List<AllPlayerInjuriesData> playerInjuriesData) {
-  return Container(
-    child: Column(children: [
-      Padding(
-          padding: EdgeInsets.all(20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Number of Injuries",
-                style: TextStyle(fontSize: 16),
-              ),
-              Text(
-                numInjuries.toString(),
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ],
-          )),
-      ExpansionPanelList.radio(
-        elevation: 0,
-        expandedHeaderPadding: EdgeInsets.all(0),
-        children: playerInjuriesData
-            .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
-          return ExpansionPanelRadio(
-            value: injury.date_of_injury,
-            backgroundColor: Colors.transparent,
-            headerBuilder: (BuildContext context, bool isExpanded) {
-              return ListTile(
-                title: Text(injury.date_of_injury,
-                    style: const TextStyle(
-                        color: AppColours.darkBlue,
-                        fontWeight: FontWeight.bold)),
-              );
-            },
-            body: ListTile(
-              title: injuryDetails(injury),
+  return Column(children: [
+    Padding(
+        padding: EdgeInsets.all(20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Number of Injuries",
+              style: TextStyle(fontSize: 16),
             ),
-          );
-        }).toList(),
-      ),
-    ]),
-  );
+            Text(
+              numInjuries.toString(),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        )),
+    ExpansionPanelList.radio(
+      elevation: 0,
+      expandedHeaderPadding: const EdgeInsets.all(0),
+      children: playerInjuriesData
+          .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
+        return ExpansionPanelRadio(
+          value: injury.date_of_injury,
+          backgroundColor: Colors.transparent,
+          headerBuilder: (BuildContext context, bool isExpanded) {
+            return ListTile(
+                title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                  Text(injury.date_of_injury,
+                      style: const TextStyle(
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold)),
+                  smallButton(Icons.edit, "Edit", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditInjuryScreen(
+                                injuryId: injury.injury_id,
+                                playerId: injury.player_id,
+                              )),
+                    );
+                  })
+                ]));
+          },
+          body: ListTile(
+            title: injuryDetails(injury),
+          ),
+        );
+      }).toList(),
+    ),
+  ]);
 }
 
 Widget injuryDetails(AllPlayerInjuriesData injury) {
@@ -799,7 +811,7 @@ Widget injuryDetails(AllPlayerInjuriesData injury) {
           "Expected Recovery Time", injury.expected_recovery_time),
       const SizedBox(height: 10),
       detailWithDivider("Recovery Method", injury.recovery_method),
-      underlineButtonTransparent("View player report", () {})
+      underlineButtonTransparent("View player report", () {}),
     ],
   );
 }

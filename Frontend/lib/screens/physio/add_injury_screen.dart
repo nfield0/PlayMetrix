@@ -1,8 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
+import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -64,7 +65,13 @@ Future<void> addInjury({
 
 class AddInjuryScreen extends StatefulWidget {
   final int playerId;
-  const AddInjuryScreen({super.key, required this.playerId});
+  final UserRole userRole;
+  final int teamId;
+  const AddInjuryScreen(
+      {super.key,
+      required this.playerId,
+      required this.userRole,
+      required this.teamId});
 
   @override
   AddInjuryScreenState createState() => AddInjuryScreenState();
@@ -221,9 +228,10 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              PlayerProfileViewScreen(
-                                                userId: widget.playerId,
-                                              )));
+                                              EditPlayerProfileScreen(
+                                                  playerId: widget.playerId,
+                                                  userRole: widget.userRole,
+                                                  teamId: widget.teamId)));
                                 }
                               })
                             ]),
