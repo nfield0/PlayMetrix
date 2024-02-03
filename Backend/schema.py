@@ -205,7 +205,7 @@ class ScheduleBase(BaseModel):
 class PlayerScheduleBase(BaseModel):
     schedule_id: int
     player_id: int
-    player_attending: bool
+    player_attending: Optional[bool]
 
 class ScheduleBaseNoID(BaseModel):
     schedule_title: str
