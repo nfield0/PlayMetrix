@@ -1611,7 +1611,7 @@ def get_player_injuries(db: Session):
     
 def get_player_injury_by_id(db: Session, id: int):
     try:
-        result = db.query(player_injuries).filter_by(injury_id=id).first()
+        result = db.query(player_injuries).filter_by(player_id=id).all()
         return result
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
