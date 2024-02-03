@@ -830,10 +830,10 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
           : limited;
 
   AvailabilityData totalMinutesPlayed =
-      statistics.totalMinutesPlayed >= totalMinutesPlayesLimit[0] &&
-              statistics.totalMinutesPlayed <= totalMinutesPlayesLimit[1]
+      statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
+              statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
           ? limited
-          : statistics.totalMinutesPlayed > totalMinutesPlayesLimit[1]
+          : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
               ? unavailable
               : available;
 
