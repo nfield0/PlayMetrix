@@ -3,6 +3,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/physio/add_injury_screen.dart';
+import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
@@ -107,7 +108,7 @@ Future<void> updatePlayerProfile(
 }
 
 Future<void> updateTeamPlayer(int teamId, int playerId, int number,
-    String status, String teamPosition) async {
+    String status, String teamPosition, String lineupStatus) async {
   const apiUrl = '$apiBaseUrl/team_player';
 
   try {
@@ -122,7 +123,7 @@ Future<void> updateTeamPlayer(int teamId, int playerId, int number,
         'team_position': teamPosition,
         'player_team_number': number,
         'playing_status': status,
-        'lineup_status': ""
+        'lineup_status': lineupStatus
       }),
     );
 
@@ -214,6 +215,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   String _selectedGender = 'Male';
   AvailabilityStatus _selectedAvailability = AvailabilityStatus.Available;
   String _selectedPosition = teamRoleToText(TeamRole.defense);
+  String _selectedLineupStatus = lineupStatusToText(LineupStatus.starter);
   String playerName = "";
 
   int? _matchesPlayed;
@@ -246,6 +248,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
         _selectedAvailability =
             stringToAvailabilityStatus(teamPlayerData.playing_status);
         _selectedPosition = teamPlayerData.team_position;
+        _selectedLineupStatus = teamPlayerData.lineup_status;
       });
     });
 
@@ -450,6 +453,18 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   });
                                 }),
                               const SizedBox(height: 10),
+                              if (widget.userRole == UserRole.manager)
+                                dropdownWithDivider(
+                                    "Lineup Status", _selectedLineupStatus, [
+                                  lineupStatusToText(LineupStatus.starter),
+                                  lineupStatusToText(LineupStatus.substitute),
+                                  lineupStatusToText(LineupStatus.reserve)
+                                ], (value) {
+                                  setState(() {
+                                    _selectedLineupStatus = value!;
+                                  });
+                                }),
+                              const SizedBox(height: 10),
                               if (widget.userRole == UserRole.manager &&
                                   _matchesPlayed != null &&
                                   _matchesStarted != null &&
@@ -501,7 +516,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                         int.parse(_numberController.text),
                                         availabilityStatusText(
                                             _selectedAvailability),
-                                        _selectedPosition);
+                                        _selectedPosition,
+                                        _selectedLineupStatus);
                                   }
 
                                   await updatePlayerStatistics(

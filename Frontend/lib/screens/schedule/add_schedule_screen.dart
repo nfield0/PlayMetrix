@@ -117,6 +117,7 @@ Future<int> addSchedule(
           "schedule_end_time": endTime.toIso8601String(),
           "schedule_type": scheduleTypeToText(scheduleType),
           "schedule_alert_time": alertTimeToText(alertTime),
+          "team_id": teamId,
         }));
 
     print(response.body);

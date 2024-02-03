@@ -10,10 +10,38 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+enum LineupStatus { starter, substitute, reserve }
+
+String lineupStatusToText(LineupStatus status) {
+  switch (status) {
+    case LineupStatus.starter:
+      return "Starter";
+    case LineupStatus.substitute:
+      return "Substitute";
+    case LineupStatus.reserve:
+      return "Reserve";
+  }
+}
+
+LineupStatus textToLineupStatus(String text) {
+  switch (text) {
+    case "Starter":
+      return LineupStatus.starter;
+    case "Substitute":
+      return LineupStatus.substitute;
+    case "Reserve":
+      return LineupStatus.reserve;
+    default:
+      return LineupStatus.starter;
+  }
+}
+
 final positionProvider =
     StateProvider<String>((ref) => teamRoleToText(TeamRole.defense));
 final availabilityProvider =
     StateProvider<AvailabilityData>((ref) => availabilityData[0]);
+final lineupStatusProvider =
+    StateProvider<String>((ref) => lineupStatusToText(LineupStatus.starter));
 
 Future<int> findPlayerIdByEmail(String email) async {
   const apiUrl = '$apiBaseUrl/users';
@@ -46,7 +74,7 @@ Future<int> findPlayerIdByEmail(String email) async {
 }
 
 Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
-    int number, AvailabilityData playingStatus) async {
+    int number, AvailabilityData playingStatus, String lineupStatus) async {
   const apiUrl = '$apiBaseUrl/team_player';
 
   try {
@@ -61,7 +89,7 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
         "team_position": teamPosition,
         "player_team_number": number,
         "playing_status": playingStatus.message,
-        "lineup_status": ""
+        "lineup_status": lineupStatus
       }),
     );
 
@@ -86,8 +114,10 @@ class AddPlayerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigator = Navigator.of(context);
     String selectedRole = ref.watch(positionProvider);
     AvailabilityData selectedStatus = ref.watch(availabilityProvider);
+    String selectedLineupStatus = ref.watch(lineupStatusProvider);
 
     return Scaffold(
         appBar: AppBar(
@@ -234,6 +264,16 @@ class AddPlayerScreen extends ConsumerWidget {
                                       },
                                     ),
                                   ]),
+                              const SizedBox(height: 10),
+                              dropdownWithDivider(
+                                  "Lineup Status", selectedLineupStatus, [
+                                lineupStatusToText(LineupStatus.starter),
+                                lineupStatusToText(LineupStatus.substitute),
+                                lineupStatusToText(LineupStatus.reserve)
+                              ], (value) {
+                                ref.read(lineupStatusProvider.notifier).state =
+                                    value!;
+                              }),
                               const SizedBox(height: 40),
                               bigButton("Add Player", () async {
                                 if (_formKey.currentState!.validate()) {
@@ -248,43 +288,20 @@ class AddPlayerScreen extends ConsumerWidget {
                                             .read(positionProvider.notifier)
                                             .state,
                                         int.parse(_numberController.text),
-                                        selectedStatus);
+                                        selectedStatus,
+                                        ref.read(lineupStatusProvider));
                                     ref.read(positionProvider.notifier).state =
                                         teamRoleToText(TeamRole.defense);
                                     ref
                                         .read(availabilityProvider.notifier)
                                         .state = availabilityData[0];
-                                    Navigator.push(
-                                      context,
+                                    navigator.push(
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               PlayersScreen()),
                                     );
                                   } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Player Not Found',
-                                              style: TextStyle(
-                                                  color: AppColours.darkBlue,
-                                                  fontFamily: AppFonts.gabarito,
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.bold)),
-                                          content: const Text(
-                                              'Sorry, player with that email does not exist. Please enter a different email address and try again.',
-                                              style: TextStyle(fontSize: 16)),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('OK'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                    showPlayerNotFoundDialog(context);
                                   }
                                 }
                               })
@@ -293,4 +310,31 @@ class AddPlayerScreen extends ConsumerWidget {
                     ]))),
         bottomNavigationBar: managerBottomNavBar(context, 1));
   }
+}
+
+void showPlayerNotFoundDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Player Not Found',
+            style: TextStyle(
+                color: AppColours.darkBlue,
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24,
+                fontWeight: FontWeight.bold)),
+        content: const Text(
+            'Sorry, player with that email does not exist. Please enter a different email address and try again.',
+            style: TextStyle(fontSize: 16)),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }

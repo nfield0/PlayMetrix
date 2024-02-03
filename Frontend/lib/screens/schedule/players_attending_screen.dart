@@ -172,7 +172,9 @@ class PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
                     Text("$scheduleType | ${DateFormat('EEEE, d MMMM y').format(
                       scheduleStartTime,
                     )}"),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
+                    greyDivider(),
+                    const SizedBox(height: 20),
                     const Text(
                       "Attending",
                       style: TextStyle(

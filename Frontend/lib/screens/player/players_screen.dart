@@ -37,10 +37,20 @@ class PlayerProfile {
   final String height;
   final int teamNumber;
   final AvailabilityStatus status;
+  final LineupStatus lineupStatus;
   final Uint8List? imageBytes;
 
-  PlayerProfile(this.playerId, this.firstName, this.surname, this.dob,
-      this.gender, this.height, this.teamNumber, this.status, this.imageBytes);
+  PlayerProfile(
+      this.playerId,
+      this.firstName,
+      this.surname,
+      this.dob,
+      this.gender,
+      this.height,
+      this.teamNumber,
+      this.status,
+      this.lineupStatus,
+      this.imageBytes);
 }
 
 Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
@@ -74,6 +84,7 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
             player.player_height,
             playerJson['player_team_number'],
             stringToAvailabilityStatus(playerJson['playing_status']),
+            textToLineupStatus(playerJson['lineup_status']),
             player.player_image));
       }
 
@@ -120,6 +131,7 @@ Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
               player.player_height,
               playerJson['player_team_number'],
               stringToAvailabilityStatus(playerJson['playing_status']),
+              textToLineupStatus(playerJson['lineup_status']),
               player.player_image);
           return playerProfile;
         }

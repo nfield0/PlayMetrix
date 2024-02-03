@@ -301,7 +301,11 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const MatchLineUpScreen()),
+                                              MatchLineUpScreen(
+                                                userRole: widget.userRole,
+                                                teamId: widget.teamId,
+                                                schedule: sch,
+                                              )),
                                     );
                                   } else {
                                     Navigator.push(
