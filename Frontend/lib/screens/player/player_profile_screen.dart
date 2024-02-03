@@ -315,7 +315,6 @@ class PlayerProfileScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: userRole == UserRole.player ? false : true,
           title: Padding(
               padding: const EdgeInsets.only(right: 25, left: 25),
               child: Row(
@@ -545,7 +544,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 25),
                   ]),
                 ))),
-        bottomNavigationBar: playerBottomNavBar(context, 3));
+        bottomNavigationBar: playerBottomNavBar(context, 0));
   }
 }
 

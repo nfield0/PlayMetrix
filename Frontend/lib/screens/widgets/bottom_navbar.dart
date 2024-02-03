@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
-import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 
 Widget bottomNavBar(List<BottomNavigationBarItem> items, int selectedIndex,
@@ -48,7 +47,7 @@ playerBottomNavBar(BuildContext context, int selectedIndex) {
     bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Statistics", Icons.bar_chart),
     bottomNavBarItem("Schedule", Icons.calendar_month),
-    bottomNavBarItem("My Profile", Icons.person_rounded)
+    bottomNavBarItem("Notifications", Icons.notifications)
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
@@ -88,7 +87,7 @@ playerBottomNavBar(BuildContext context, int selectedIndex) {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                PlayerProfileScreen(),
+                NotificationsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -103,7 +102,7 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
     bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Team", Icons.group),
     bottomNavBarItem("Schedule", Icons.calendar_month),
-    bottomNavBarItem("My Profile", Icons.person_rounded)
+    bottomNavBarItem("Notifications", Icons.notifications)
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
@@ -141,7 +140,8 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            pageBuilder: (context, animation1, animation2) =>
+                NotificationsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -156,7 +156,7 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
     bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Players", Icons.group),
     bottomNavBarItem("Schedule", Icons.calendar_month),
-    bottomNavBarItem("My Profile", Icons.person_rounded)
+    bottomNavBarItem("Notifications", Icons.notifications)
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
@@ -194,7 +194,8 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            pageBuilder: (context, animation1, animation2) =>
+                NotificationsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -208,7 +209,7 @@ physioBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
     bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Players", Icons.group),
-    bottomNavBarItem("My Profile", Icons.person_rounded)
+    bottomNavBarItem("Notifications", Icons.notifications)
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
@@ -235,7 +236,8 @@ physioBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => ProfileScreen(),
+            pageBuilder: (context, animation1, animation2) =>
+                NotificationsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),

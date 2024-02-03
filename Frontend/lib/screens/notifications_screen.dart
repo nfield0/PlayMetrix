@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
-class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({Key? key}) : super(key: key);
-
+class NotificationsScreen extends ConsumerWidget {
   @override
-  _NotificationsScreenState createState() => _NotificationsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.read(userRoleProvider);
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Image.asset(
+            'lib/assets/logo.png',
+            width: 150,
+            fit: BoxFit.contain,
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
-          title: const Text("Notifications",
-              style: TextStyle(
-                  color: AppColours.darkBlue,
-                  fontFamily: AppFonts.gabarito,
-                  fontSize: 32.0,
-                  fontWeight: FontWeight.w700)),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
         ),
         body: Container(
           padding: const EdgeInsets.all(40),
@@ -33,7 +32,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               iconColor: AppColours.darkBlue,
               title: "Matchday tomorrow",
               description: "Date: 13/10/2023\nTime: 19:00-20:30",
-              date: "12/10/2023",
+              date: "2024-02-03T14:27:00Z",
               onDeletePressed: () {},
             ),
             announcementBox(
@@ -42,11 +41,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               title: "Reece James is injured",
               description:
                   "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-              date: "10/10/2023",
+              date: "2024-02-03T14:27:00Z",
               onDeletePressed: () {},
             ),
           ]),
         ),
-        bottomNavigationBar: managerBottomNavBar(context, 0));
+        bottomNavigationBar: roleBasedBottomNavBar(
+          userRole,
+          context,
+          userRole == UserRole.physio ? 2 : 3,
+        ));
   }
 }

@@ -42,7 +42,6 @@ class ProfileScreen extends ConsumerWidget {
 
             return Scaffold(
                 appBar: AppBar(
-                  automaticallyImplyLeading: false,
                   title: Image.asset(
                     'lib/assets/logo.png',
                     width: 150,
@@ -176,11 +175,10 @@ class ProfileScreen extends ConsumerWidget {
                             ]),
                           )
                         ]))),
-                bottomNavigationBar: userRole != UserRole.physio
-                    ? roleBasedBottomNavBar(userRole, context, 3)
-                    : roleBasedBottomNavBar(userRole, context, 2));
+                bottomNavigationBar:
+                    roleBasedBottomNavBar(userRole, context, 0));
           } else {
-            return Text('No data available');
+            return const Text('No data available');
           }
         });
   }

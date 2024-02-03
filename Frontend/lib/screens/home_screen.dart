@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
@@ -122,31 +121,58 @@ class HomeScreen extends ConsumerWidget {
                         children: [
                           smallPill(userRoleText(userRole)),
                           InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation1, animation2) =>
-                                          const NotificationsScreen(),
-                                  transitionDuration: Duration.zero,
-                                  reverseTransitionDuration: Duration.zero,
-                                ),
-                              );
-                            },
-                            child: const Icon(
-                              Icons.notifications,
-                              color: AppColours.darkBlue,
-                              size: 32,
-                            ),
-                          )
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation1, animation2) =>
+                                            userRole == UserRole.player
+                                                ? PlayerProfileScreen()
+                                                : ProfileScreen(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  // padding: const EdgeInsets.all(5),
+                                  // decoration: BoxDecoration(
+                                  //   color: AppColours.lightBlue,
+                                  //   borderRadius: BorderRadius.circular(20),
+                                  // ),
+                                  child: Row(children: [
+                                profile.imageBytes != null &&
+                                        profile.imageBytes!.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(75),
+                                        child: Image.memory(
+                                          profile.imageBytes!,
+                                          width: 35,
+                                          height: 35,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Image.asset(
+                                        "lib/assets/icons/profile_placeholder.png",
+                                        width: 35,
+                                      ),
+                                const SizedBox(width: 10),
+                                const Text("My Profile",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 20,
+                                      color: AppColours.darkBlue,
+                                      fontFamily: AppFonts.gabarito,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ])))
                         ]),
                     const SizedBox(height: 40),
                     Text(
                       "Hey, ${profile.firstName}!",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: AppFonts.gabarito,
-                        color: AppColours.darkBlue,
                         fontWeight: FontWeight.bold,
                         fontSize: 36,
                       ),
@@ -159,7 +185,7 @@ class HomeScreen extends ConsumerWidget {
               bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 0),
             );
           } else {
-            return Text('No data available');
+            return const Text('No data available');
           }
         });
   }
