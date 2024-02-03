@@ -341,9 +341,14 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                               Center(
                                   child: Column(children: [
                                 _profilePicture.isNotEmpty
-                                    ? Image.memory(
-                                        _profilePicture,
-                                        width: 120,
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(75),
+                                        child: Image.memory(
+                                          _profilePicture,
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
                                       )
                                     : Image.asset(
                                         "lib/assets/icons/profile_placeholder.png",
@@ -561,7 +566,7 @@ Widget inputQuantity(
               style:
                   const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           InputQty.int(
-            maxVal: 100,
+            maxVal: 2000,
             initVal: initVal,
             minVal: 0,
             steps: 1,

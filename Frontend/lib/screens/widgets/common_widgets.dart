@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:play_metrix/constants.dart';
 
 Widget smallPill(String text) {
@@ -95,6 +96,7 @@ Widget emptySection(IconData icon, String text) {
           fontSize: 18,
         ),
       ),
+      const SizedBox(height: 10),
     ],
   ));
 }
@@ -483,7 +485,11 @@ Widget announcementBox({
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(date,
+                          Text(
+                              DateFormat('EEEE, d MMMM y').format(
+                                  date.isNotEmpty
+                                      ? DateTime.parse(date)
+                                      : DateTime.now()),
                               style: const TextStyle(
                                   fontSize: 12, color: Colors.black54)),
                           const SizedBox(height: 5),

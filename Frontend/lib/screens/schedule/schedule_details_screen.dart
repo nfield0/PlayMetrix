@@ -43,25 +43,57 @@ PlayerAttendingStatus stringToPlayerAttendingStatus(String status) {
 
 Future<PlayerAttendingStatus> getPlayerAttendingStatus(
     int playerId, int scheduleId) async {
-  final String apiUrl = "$apiBaseUrl/player_schedules/$playerId";
+  final String apiUrl = "$apiBaseUrl/player_schedules/$scheduleId";
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
+
+      bool playerFound = false;
+      PlayerAttendingStatus playerAttendingStatus =
+          PlayerAttendingStatus.undecided;
+
       for (var playerSchedule in data) {
-        if (playerSchedule["schedule_id"] == scheduleId) {
-          return playerSchedule["player_attending"]
-              ? PlayerAttendingStatus.present
-              : PlayerAttendingStatus.absent;
+        if (playerSchedule["player_id"] == playerId) {
+          playerFound = true;
+          playerAttendingStatus = playerSchedule["player_attending"] == null
+              ? PlayerAttendingStatus.undecided
+              : playerSchedule["player_attending"]
+                  ? PlayerAttendingStatus.present
+                  : PlayerAttendingStatus.absent;
         }
       }
-      return PlayerAttendingStatus.undecided;
+
+      if (!playerFound) {
+        addPlayerSchedule(playerId, scheduleId);
+      }
+      return playerAttendingStatus;
     } else {
       throw Exception("Failed to get player attending status");
     }
   } catch (e) {
     throw Exception("Failed to get player attending status");
+  }
+}
+
+Future<void> addPlayerSchedule(int playerId, int scheduleId) async {
+  const String apiUrl = "$apiBaseUrl/player_schedules";
+  try {
+    var response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        "player_id": playerId,
+        "schedule_id": scheduleId,
+        "player_attending": null,
+      }),
+    );
+    print(response.body);
+  } catch (e) {
+    throw Exception("Failed to add player schedule");
   }
 }
 
@@ -77,12 +109,61 @@ Future<void> updatePlayerAttendingStatus(
     body: jsonEncode({
       "player_id": playerId,
       "schedule_id": scheduleId,
-      "player_attending": status == PlayerAttendingStatus.absent ||
-              status == PlayerAttendingStatus.undecided
-          ? false
-          : true,
+      "player_attending": status == PlayerAttendingStatus.present
+          ? true
+          : status == PlayerAttendingStatus.absent
+              ? false
+              : null,
     }),
   );
+}
+
+class Announcement {
+  final int id;
+  final String title;
+  final String description;
+  final String date;
+  final int scheduleId;
+  final int posterId;
+  final UserRole posterRole;
+
+  Announcement(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.date,
+      required this.scheduleId,
+      required this.posterId,
+      required this.posterRole});
+}
+
+Future<List<Announcement>> getAnnouncementsByScheduleId(int scheduleId) {
+  final String apiUrl = "$apiBaseUrl/announcements/schedule/$scheduleId";
+
+  try {
+    return http.get(Uri.parse(apiUrl)).then((response) {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        List<Announcement> announcements = [];
+        for (var announcement in data) {
+          announcements.add(Announcement(
+            id: announcement["announcements_id"],
+            title: announcement["announcements_title"],
+            description: announcement["announcements_desc"],
+            date: announcement["announcements_date"],
+            scheduleId: announcement["schedule_id"],
+            posterId: announcement["poster_id"],
+            posterRole: stringToUserRole(announcement["poster_type"]),
+          ));
+        }
+        return announcements;
+      } else {
+        throw Exception("Failed to get announcements");
+      }
+    });
+  } catch (e) {
+    throw Exception("Failed to get announcements");
+  }
 }
 
 class ScheduleDetailsScreen extends StatefulWidget {
@@ -103,13 +184,20 @@ class ScheduleDetailsScreen extends StatefulWidget {
 
 class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
   late PlayerAttendingStatus playerAttendingStatus;
+  late List<Announcement> announcements;
 
   @override
   void initState() {
     super.initState();
+
     getPlayerAttendingStatus(widget.playerId, widget.scheduleId)
         .then((value) => setState(() {
               playerAttendingStatus = value;
+            }));
+
+    getAnnouncementsByScheduleId(widget.scheduleId)
+        .then((value) => setState(() {
+              announcements = value;
             }));
   }
 
@@ -222,6 +310,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                           builder: (context) =>
                                               PlayersAttendingScreen(
                                                 scheduleId: widget.scheduleId,
+                                                teamId: widget.teamId,
                                               )),
                                     );
                                   }
@@ -315,8 +404,8 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                           ),
                           divider(),
                           const SizedBox(height: 15),
-                          _announcementsSection(
-                              context, widget.userRole, widget.scheduleId),
+                          _announcementsSection(context, widget.userRole,
+                              widget.scheduleId, announcements),
                         ],
                       ),
                     ),
@@ -341,8 +430,8 @@ Future<AppointmentDataSource> getFilteredDataSource(
   return AppointmentDataSource(filteredAppointments);
 }
 
-Widget _announcementsSection(
-    BuildContext context, UserRole userRole, int scheduleId) {
+Widget _announcementsSection(BuildContext context, UserRole userRole,
+    int scheduleId, List<Announcement> announcements) {
   return Column(
     children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -368,15 +457,14 @@ Widget _announcementsSection(
           })
       ]),
       const SizedBox(height: 15),
-      announcementBox(
-        icon: Icons.announcement,
-        iconColor: AppColours.darkBlue,
-        title: "Bring your gym gears",
-        description:
-            "A dedicated session to enhance our fitness levels. Bring your A-game; we're pushing our boundaries.",
-        date: "18/11/2023",
-        onDeletePressed: () {},
-      )
+      for (Announcement announcement in announcements)
+        announcementBox(
+            icon: Icons.announcement,
+            iconColor: AppColours.darkBlue,
+            title: announcement.title,
+            description: announcement.description,
+            date: announcement.date,
+            onDeletePressed: () {})
     ],
   );
 }

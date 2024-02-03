@@ -247,44 +247,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                               } else if (snapshot.hasData) {
                                 // Data has been successfully fetched, use it here
                                 StatisticsData statistics = snapshot.data!;
-                                return Column(
-                                  children: [
-                                    statisticsDetailWithDivider(
-                                        "Matches played",
-                                        statistics.matchesPlayed.toString(),
-                                        available),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Matches started",
-                                        statistics.matchesStarted.toString(),
-                                        limited),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Matches off the bench",
-                                        statistics.matchesOffTheBench
-                                            .toString(),
-                                        unavailable),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Total minutes played",
-                                        statistics.totalMinutesPlayed
-                                            .toString(),
-                                        unavailable),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Injury Prone",
-                                        statistics.injuryProne ? "Yes" : "No",
-                                        null)
-                                  ],
-                                );
+                                return statisticsSection(statistics, available, limited, unavailable);
                               } else {
                                 return Text('No data available');
                               }

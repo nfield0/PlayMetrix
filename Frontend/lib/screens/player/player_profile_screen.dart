@@ -8,6 +8,7 @@ import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.da
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/player/statistics_constants.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -520,45 +521,9 @@ class PlayerProfileScreen extends ConsumerWidget {
                                 return Text('Error: ${snapshot.error}');
                               } else if (snapshot.hasData) {
                                 // Data has been successfully fetched, use it here
-                                StatisticsData statistics = snapshot.data!;
-                                return Column(
-                                  children: [
-                                    statisticsDetailWithDivider(
-                                        "Matches played",
-                                        statistics.matchesPlayed.toString(),
-                                        available),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Matches started",
-                                        statistics.matchesStarted.toString(),
-                                        limited),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Matches off the bench",
-                                        statistics.matchesOffTheBench
-                                            .toString(),
-                                        unavailable),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Total minutes played",
-                                        statistics.totalMinutesPlayed
-                                            .toString(),
-                                        unavailable),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    statisticsDetailWithDivider(
-                                        "Injury Prone",
-                                        statistics.injuryProne ? "Yes" : "No",
-                                        null)
-                                  ],
-                                );
+                                StatisticsData statisticsData = snapshot.data!;
+                                return statisticsSection(statisticsData,
+                                    available, limited, unavailable);
                               } else {
                                 return Text('No data available');
                               }
@@ -856,22 +821,46 @@ class Statistics {
   );
 }
 
-Widget statistics(Statistics statistics) {
+Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
+    AvailabilityData limited, AvailabilityData unavailable) {
+  AvailabilityData matchesPlayed = statistics.matchesPlayed > matchesPlayedLimit
+      ? unavailable
+      : statistics.matchesPlayed < matchesPlayedLimit
+          ? available
+          : limited;
+
+  AvailabilityData totalMinutesPlayed =
+      statistics.totalMinutesPlayed >= totalMinutesPlayesLimit[0] &&
+              statistics.totalMinutesPlayed <= totalMinutesPlayesLimit[1]
+          ? limited
+          : statistics.totalMinutesPlayed > totalMinutesPlayesLimit[1]
+              ? unavailable
+              : available;
+
   return Column(
     children: [
-      detailWithDivider("Matches played", statistics.matchesPlayed.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider(
-          "Matches started", statistics.matchesStarted.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider(
-          "Matches off bench", statistics.matchesOffBench.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider(
-          "Total minutes played", statistics.totalMinutesPlayed.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider(
-          "Number of injuries", statistics.numInjuries.toString()),
+      statisticsDetailWithDivider(
+          "Matches played", statistics.matchesPlayed.toString(), matchesPlayed),
+      const SizedBox(
+        height: 7,
+      ),
+      statisticsDetailWithDivider(
+          "Matches started", statistics.matchesStarted.toString(), null),
+      const SizedBox(
+        height: 7,
+      ),
+      statisticsDetailWithDivider("Matches off the bench",
+          statistics.matchesOffTheBench.toString(), null),
+      const SizedBox(
+        height: 7,
+      ),
+      statisticsDetailWithDivider("Total minutes played",
+          statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
+      const SizedBox(
+        height: 7,
+      ),
+      statisticsDetailWithDivider(
+          "Injury Prone", statistics.injuryProne ? "Yes" : "No", null)
     ],
   );
 }

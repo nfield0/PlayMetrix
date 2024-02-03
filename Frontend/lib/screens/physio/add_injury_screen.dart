@@ -138,9 +138,14 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                               Center(
                                   child: Column(children: [
                                 playerImage.isNotEmpty
-                                    ? Image.memory(
-                                        playerImage,
-                                        width: 120,
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(75),
+                                        child: Image.memory(
+                                          playerImage,
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
                                       )
                                     : Image.asset(
                                         "lib/assets/icons/profile_placeholder.png",
