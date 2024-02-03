@@ -1636,6 +1636,8 @@ def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
         player_injury_to_update = db.query(player_injuries).filter_by(injury_id= id).first()
         if player_injury_to_update:
             player_injury_to_update.player_id = updated_player_injury.player_id
+            player_injury_to_update.date_of_injury = updated_player_injury.date_of_injury
+            player_injury_to_update.date_of_recovery = updated_player_injury.date_of_recovery
             player_injury_to_update.injury_id = updated_player_injury.injury_id
             db.commit()
             return {"message": f"Player Injury with ID {id} has been updated"}
