@@ -160,7 +160,6 @@ CREATE TABLE IF NOT EXISTS player_injuries
 	date_of_injury DATE NOT NULL, 
 	date_of_recovery DATE NOT NULL,
 	player_id INT NOT NULL, 
-	PRIMARY KEY(injury_id, player_id),
 	FOREIGN KEY(injury_id)
 		REFERENCES injuries(injury_id),
 	FOREIGN KEY (player_id)
