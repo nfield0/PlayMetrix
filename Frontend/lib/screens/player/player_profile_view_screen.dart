@@ -34,9 +34,16 @@ class PlayerProfileViewScreen extends ConsumerWidget {
       Icons.cancel,
       AppColours.red);
 
+  final allPlayerInjuriesProvider =
+      FutureProvider.autoDispose<List<AllPlayerInjuriesData>>((ref) async {
+    return await getAllPlayerInjuriesByUserId(ref.read(userIdProvider));
+  });
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;
+    AsyncValue<List<AllPlayerInjuriesData>> allPlayersInjuriesData =
+        ref.watch(allPlayerInjuriesProvider);
 
     return Scaffold(
         appBar: AppBar(
@@ -200,29 +207,13 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                             color: AppColours.darkBlue,
                             fontSize: 30)),
-                    FutureBuilder<List<AllPlayerInjuriesData>>(
-                        future: getAllPlayerInjuriesByUserId(userId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // Display a loading indicator while the data is being fetched
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            // Display an error message if the data fetching fails
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            // Data has been successfully fetched, use it here
-                            List<AllPlayerInjuriesData> playerInjuriesData =
-                                snapshot.data!;
-                            int numPlayerIds = playerInjuriesData.length;
-
-                            return injuriesSection(
-                                numPlayerIds, playerInjuriesData);
-                          } else {
-                            return Text('No data available');
-                          }
-                        }),
-                    //_injuriesSection(3),
+                    allPlayersInjuriesData.when(
+                      loading: () => const CircularProgressIndicator(),
+                      error: (err, stack) => Text('Error: $err'),
+                      data: (data) {
+                        return injuriesSection(data.length, data);
+                      },
+                    ),
                     divider(),
                     const SizedBox(height: 20),
                     const Text("Statistics",
@@ -247,7 +238,8 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                               } else if (snapshot.hasData) {
                                 // Data has been successfully fetched, use it here
                                 StatisticsData statistics = snapshot.data!;
-                                return statisticsSection(statistics, available, limited, unavailable);
+                                return statisticsSection(statistics, available,
+                                    limited, unavailable);
                               } else {
                                 return Text('No data available');
                               }

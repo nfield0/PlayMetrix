@@ -807,6 +807,8 @@ Widget injuryDetails(AllPlayerInjuriesData injury) {
       const SizedBox(height: 10),
       detailWithDivider("Injury Type", injury.injury_type),
       const SizedBox(height: 10),
+      detailWithDivider("Injury Location", injury.injury_location),
+      const SizedBox(height: 10),
       detailWithDivider(
           "Expected Recovery Time", injury.expected_recovery_time),
       const SizedBox(height: 10),
