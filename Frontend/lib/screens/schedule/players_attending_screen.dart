@@ -43,7 +43,7 @@ Future<Schedule> getScheduleById(int scheduleId) async {
   try {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
-      print('Get players attending successful!');
+      print('Get schedule successful!');
 
       Schedule schedule = Schedule.fromJson(jsonDecode(response.body));
       return schedule;
@@ -57,7 +57,7 @@ Future<Schedule> getScheduleById(int scheduleId) async {
     print("user");
     print('Error: $error');
   }
-  throw Exception('Failed to players attending data');
+  throw Exception('Failed to load schedule data');
 }
 
 Future<Map<PlayerAttendingStatus, List<PlayerProfile>>>
@@ -80,7 +80,7 @@ Future<Map<PlayerAttendingStatus, List<PlayerProfile>>>
 
       for (Map<String, dynamic> playerJson in responseData) {
         PlayerProfile player =
-            await getPlayerTeamProfile(playerJson['player_id'], teamId);
+            await getPlayerTeamProfile(teamId, playerJson['player_id']);
         if (playerJson['player_attending'] == true) {
           playersByStatus[PlayerAttendingStatus.present]!.add(player);
         } else if (playerJson['player_attending'] == false) {
