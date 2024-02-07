@@ -88,12 +88,12 @@ def test_get_player_injuries():
 
     try:
         response_json = response.json()
-        expected_data = {
+        expected_data = [{
             "injury_id": 1,
             "date_of_injury": "2021-04-01",
             "date_of_recovery": "2021-05-01",
             "player_id": 1
-        }
+        }]
         assert response_json == expected_data
         assert response.status_code == 200
     except (ValueError, AssertionError) as e:
@@ -112,7 +112,7 @@ def test_update_player_injury():
 
     try:
         response_json = response.json()
-        response_json.get("message") == "Player Injury updated successfully"
+        response_json == "Player Injury updated successfully"
         assert response.status_code == 200
         assert response.headers['Content-Type'] == 'application/json'
     except (ValueError, AssertionError) as e:
