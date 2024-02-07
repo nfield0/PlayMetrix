@@ -299,7 +299,7 @@ class AddScheduleScreen extends ConsumerWidget {
                             navigator
                                 .push(MaterialPageRoute(builder: (context) {
                               return ScheduleDetailsScreen(
-                                playerId: ref.read(userIdProvider),
+                                userId: ref.read(userIdProvider),
                                 userRole: ref.read(userRoleProvider),
                                 teamId: ref.read(teamIdProvider),
                                 scheduleId: scheduleId,

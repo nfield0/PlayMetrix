@@ -764,7 +764,7 @@ Widget injuriesSection(
       children: playerInjuriesData
           .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
         return ExpansionPanelRadio(
-          value: injury.date_of_injury,
+          value: injury.injury_id,
           backgroundColor: Colors.transparent,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(

@@ -168,13 +168,13 @@ Future<List<Announcement>> getAnnouncementsByScheduleId(int scheduleId) {
 
 class ScheduleDetailsScreen extends StatefulWidget {
   final int scheduleId;
-  final int playerId;
+  final int userId;
   final int teamId;
   final UserRole userRole;
   const ScheduleDetailsScreen(
       {super.key,
       required this.scheduleId,
-      required this.playerId,
+      required this.userId,
       required this.userRole,
       required this.teamId});
 
@@ -190,7 +190,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
   void initState() {
     super.initState();
 
-    getPlayerAttendingStatus(widget.playerId, widget.scheduleId)
+    getPlayerAttendingStatus(widget.userId, widget.scheduleId)
         .then((value) => setState(() {
               playerAttendingStatus = value;
             }));
@@ -229,7 +229,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => EditScheduleScreen(
                                     playerId: widget.userRole == UserRole.player
-                                        ? widget.playerId
+                                        ? widget.userId
                                         : -1,
                                     scheduleId: widget.scheduleId,
                                     teamId: widget.teamId,
@@ -345,7 +345,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                               PlayerAttendingStatus.present;
                                         });
                                         updatePlayerAttendingStatus(
-                                            widget.playerId,
+                                            widget.userId,
                                             widget.scheduleId,
                                             PlayerAttendingStatus.present);
                                       }),
@@ -359,7 +359,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                               PlayerAttendingStatus.absent;
                                         });
                                         updatePlayerAttendingStatus(
-                                            widget.playerId,
+                                            widget.userId,
                                             widget.scheduleId,
                                             PlayerAttendingStatus.absent);
                                       }),
@@ -375,7 +375,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                               PlayerAttendingStatus.undecided;
                                         });
                                         updatePlayerAttendingStatus(
-                                            widget.playerId,
+                                            widget.userId,
                                             widget.scheduleId,
                                             PlayerAttendingStatus.undecided);
                                       }),
@@ -409,7 +409,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                           divider(),
                           const SizedBox(height: 15),
                           _announcementsSection(context, widget.userRole,
-                              widget.scheduleId, announcements),
+                              widget.scheduleId, widget.userId, announcements),
                         ],
                       ),
                     ),
@@ -435,7 +435,7 @@ Future<AppointmentDataSource> getFilteredDataSource(
 }
 
 Widget _announcementsSection(BuildContext context, UserRole userRole,
-    int scheduleId, List<Announcement> announcements) {
+    int scheduleId, int userId, List<Announcement> announcements) {
   return Column(
     children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -454,6 +454,7 @@ Widget _announcementsSection(BuildContext context, UserRole userRole,
               context,
               MaterialPageRoute(
                   builder: (context) => AddAnnouncementScreen(
+                        userId: userId,
                         scheduleId: scheduleId,
                         userRole: userRole,
                       )),
