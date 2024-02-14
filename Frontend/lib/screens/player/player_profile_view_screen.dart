@@ -211,7 +211,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                       loading: () => const CircularProgressIndicator(),
                       error: (err, stack) => Text('Error: $err'),
                       data: (data) {
-                        return injuriesSection(data.length, data);
+                        return injuriesSection(data.length, data, userRole);
                       },
                     ),
                     divider(),

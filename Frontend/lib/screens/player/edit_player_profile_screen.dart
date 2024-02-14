@@ -308,17 +308,18 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   fontSize: 36.0,
                                   fontWeight: FontWeight.w700,
                                 )),
-                            smallButton(Icons.add_circle_outline, "Add Injury",
-                                () {
-                              navigator.push(
-                                MaterialPageRoute(
-                                    builder: (context) => AddInjuryScreen(
-                                          userRole: widget.userRole,
-                                          teamId: widget.teamId,
-                                          playerId: widget.playerId,
-                                        )),
-                              );
-                            })
+                            if (widget.userRole == UserRole.physio)
+                              smallButton(
+                                  Icons.add_circle_outline, "Add Injury", () {
+                                navigator.push(
+                                  MaterialPageRoute(
+                                      builder: (context) => AddInjuryScreen(
+                                            userRole: widget.userRole,
+                                            teamId: widget.teamId,
+                                            playerId: widget.playerId,
+                                          )),
+                                );
+                              })
                           ]),
                       const SizedBox(height: 10),
                       divider(),
@@ -498,7 +499,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                     }),
                                   ],
                                 ),
-                              const SizedBox(height: 30),
+                              // const SizedBox(height: 30),
                               bigButton("Save Changes", () async {
                                 if (_formKey.currentState!.validate()) {
                                   await updatePlayerProfile(

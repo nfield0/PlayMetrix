@@ -492,7 +492,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             int numPlayerIds = playerInjuriesData.length;
 
                             return injuriesSection(
-                                numPlayerIds, playerInjuriesData);
+                                numPlayerIds, playerInjuriesData, userRole);
                           } else {
                             return Text('No data available');
                           }
@@ -740,8 +740,8 @@ Widget availabilityTrafficLightItem(
   );
 }
 
-Widget injuriesSection(
-    int numInjuries, List<AllPlayerInjuriesData> playerInjuriesData) {
+Widget injuriesSection(int numInjuries,
+    List<AllPlayerInjuriesData> playerInjuriesData, UserRole userRole) {
   return Column(children: [
     Padding(
         padding: EdgeInsets.all(20),
@@ -775,16 +775,17 @@ Widget injuriesSection(
                       style: const TextStyle(
                           color: AppColours.darkBlue,
                           fontWeight: FontWeight.bold)),
-                  smallButton(Icons.edit, "Edit", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditInjuryScreen(
-                                injuryId: injury.injury_id,
-                                playerId: injury.player_id,
-                              )),
-                    );
-                  })
+                  if (userRole == UserRole.physio)
+                    smallButton(Icons.edit, "Edit", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditInjuryScreen(
+                                  injuryId: injury.injury_id,
+                                  playerId: injury.player_id,
+                                )),
+                      );
+                    })
                 ]));
           },
           body: ListTile(
