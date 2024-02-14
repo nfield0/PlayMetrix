@@ -1,5 +1,3 @@
-// ignore_for_file: dead_code, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
@@ -13,6 +11,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:twilio_flutter/twilio_flutter.dart';
 import 'dart:math';
+import 'package:play_metrix/keys.dart';
+
 
 Future<String> loginUser(BuildContext context, String email, String password,
     String userType) async {
@@ -465,9 +465,9 @@ class LogInScreen extends ConsumerWidget {
     String verificationCode = generateRandomCode();
     TwilioService twilioService = TwilioService(
       twilioFlutter: TwilioFlutter(
-        accountSid: 'ACc5149d2d8f9c7a725763ce95a939d775',
-        authToken: 'f5e7284e527928bf4451344125c05383',
-        twilioNumber: '+447893933634',
+        accountSid: accountSid,
+        authToken: authToken,
+        twilioNumber: twilioNumber,
       ),
     );
 
