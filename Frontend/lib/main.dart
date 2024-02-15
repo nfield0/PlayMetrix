@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/onboarding_screen.dart';
+import 'package:play_metrix/screens/onboarding_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

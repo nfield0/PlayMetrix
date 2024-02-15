@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
+import 'package:play_metrix/api_clients/manager_api_client.dart';
+import 'package:play_metrix/api_clients/physio_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/data_models/profile_class.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';

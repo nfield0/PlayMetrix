@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
+import 'package:play_metrix/api_clients/manager_api_client.dart';
+import 'package:play_metrix/api_clients/physio_api_client.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/data_models/profile_class.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/user_provider.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/profile/edit_profile.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
@@ -27,6 +32,8 @@ Future<Profile> getProfileDetails(int userId, UserRole userRole) async {
 }
 
 class ProfileScreen extends ConsumerWidget {
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;

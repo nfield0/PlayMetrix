@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 
 class NotificationsScreen extends ConsumerWidget {
+  const NotificationsScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.read(userRoleProvider);

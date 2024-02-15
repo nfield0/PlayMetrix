@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_steps/profile_picture_sign_up_screen.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 
 class PasswordSignUpScreen extends ConsumerWidget {
@@ -13,6 +13,8 @@ class PasswordSignUpScreen extends ConsumerWidget {
   final _passwordRegex = RegExp(
     r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
   );
+
+  PasswordSignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

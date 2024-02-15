@@ -1,107 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/data_models/schedule_data_model.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-class Schedule {
-  int schedule_id;
-  String schedule_title;
-  String schedule_location;
-  String schedule_type;
-  String schedule_start_time;
-  String schedule_end_time;
-  String schedule_alert_time;
-
-  Schedule(
-      {required this.schedule_id,
-      required this.schedule_title,
-      required this.schedule_location,
-      required this.schedule_type,
-      required this.schedule_start_time,
-      required this.schedule_end_time,
-      required this.schedule_alert_time});
-
-  factory Schedule.fromJson(Map<String, dynamic> json) {
-    return Schedule(
-        schedule_id: json['schedule_id'],
-        schedule_title: json['schedule_title'],
-        schedule_location: json['schedule_location'],
-        schedule_type: json['schedule_type'],
-        schedule_start_time: json['schedule_start_time'],
-        schedule_end_time: json['schedule_end_time'],
-        schedule_alert_time: json['schedule_alert_time']);
-  }
-}
-
-Future<Schedule> getScheduleById(int scheduleId) async {
-  final apiUrl = '$apiBaseUrl/schedules/$scheduleId';
-  try {
-    final response = await http.get(Uri.parse(apiUrl));
-    if (response.statusCode == 200) {
-      print('Get players attending successful!');
-
-      Schedule schedule = Schedule.fromJson(jsonDecode(response.body));
-      return schedule;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print("user");
-    print('Error: $error');
-  }
-  throw Exception('Failed to players attending data');
-}
-
-Future<Map<PlayerAttendingStatus, List<PlayerProfile>>>
-    getPlayersAttendanceForSchedule(int scheduleId, int teamId) async {
-  final String apiUrl = '$apiBaseUrl/player_schedules/$scheduleId';
-
-  try {
-    final response = await http.get(Uri.parse(apiUrl));
-    if (response.statusCode == 200) {
-      print('Get players attending successful!');
-
-      final List<dynamic> responseData = jsonDecode(response.body);
-
-      // Create a map to store players based on their attending status
-      Map<PlayerAttendingStatus, List<PlayerProfile>> playersByStatus = {
-        PlayerAttendingStatus.present: [],
-        PlayerAttendingStatus.absent: [],
-        PlayerAttendingStatus.undecided: [],
-      };
-
-      for (Map<String, dynamic> playerJson in responseData) {
-        PlayerProfile player =
-            await getPlayerTeamProfile(playerJson['player_id'], teamId);
-        if (playerJson['player_attending'] == true) {
-          playersByStatus[PlayerAttendingStatus.present]!.add(player);
-        } else if (playerJson['player_attending'] == false) {
-          playersByStatus[PlayerAttendingStatus.absent]!.add(player);
-        } else {
-          playersByStatus[PlayerAttendingStatus.undecided]!.add(player);
-        }
-      }
-
-      return playersByStatus;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-  throw Exception('Failed to retrieve players attendance data');
-}
 
 class PlayersAttendingScreen extends StatefulWidget {
   final int scheduleId;

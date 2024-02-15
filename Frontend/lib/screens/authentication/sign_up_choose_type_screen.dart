@@ -2,9 +2,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
@@ -139,6 +139,7 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                               ref.read(passwordProvider.notifier).state = value,
                           (userRole) {
                             if (userRole == UserRole.player) {
+                              clearSignUpForm(ref);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -150,12 +151,14 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                                 ),
                               );
                             } else if (userRole == UserRole.manager) {
+                              clearSignUpForm(ref);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => TeamSetUpScreen()),
                               );
                             } else {
+                              clearSignUpForm(ref);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

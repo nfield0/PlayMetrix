@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/data_models/profile_class.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
@@ -12,40 +11,10 @@ import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future<PlayerData> getPlayerById(int id) async {
-  final apiUrl =
-      '$apiBaseUrl/players/info/$id'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      PlayerData player = PlayerData.fromJson(jsonDecode(response.body));
-
-      return player;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print("user");
-    print('Error: $error');
-  }
-  throw Exception('Failed to retrieve player data');
-}
 
 class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(userRoleProvider.notifier).state;

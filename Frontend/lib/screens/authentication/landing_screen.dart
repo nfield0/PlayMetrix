@@ -10,14 +10,6 @@ class LandingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // int userId = ref.watch(userIdProvider);
-    // String selectedGender = ref.watch(genderProvider);
-    // int teamId = ref.watch(teamIdProvider);
-
-    // userId = 0;
-    // selectedGender = "";
-    // teamId = 0;
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(

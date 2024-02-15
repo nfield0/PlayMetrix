@@ -1,67 +1,12 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future<void> addInjury({
-  required int playerId,
-  required String injuryType,
-  required String injuryLocation,
-  required String expectedRecoveryTime,
-  required String recoveryMethod,
-  required DateTime dateOfInjury,
-  required DateTime dateOfRecovery,
-}) async {
-  const apiUrl =
-      '$apiBaseUrl/injuries/'; // Replace with your actual backend URL
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'injury_type': injuryType,
-        'injury_location': injuryLocation,
-        'expected_recovery_time': expectedRecoveryTime,
-        'recovery_method': recoveryMethod,
-      }),
-    );
-
-    print('Response: ${response.body}');
-    if (response.statusCode == 200) {
-      const playerInjuriesApiUrl = "$apiBaseUrl/player_injuries/";
-
-      final playerInjuriesResponse = await http.post(
-        Uri.parse(playerInjuriesApiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'player_id': playerId,
-          'injury_id': jsonDecode(response.body)['id'],
-          'date_of_injury': dateOfInjury.toIso8601String(),
-          'date_of_recovery': dateOfRecovery.toIso8601String(),
-        }),
-      );
-
-      print('Response: ${playerInjuriesResponse.body}');
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    print('Error: $error');
-  }
-}
 
 class AddInjuryScreen extends StatefulWidget {
   final int playerId;

@@ -1,56 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/schedule_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
-import 'package:play_metrix/screens/schedule/players_attending_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-// create a edit function HTTP request to backend
-Future<bool> editSchedule(
-    int schedule_id,
-    String schedule_title,
-    String schedule_location,
-    String schedule_type,
-    DateTime schedule_start_time,
-    DateTime schedule_end_time,
-    String schedule_alert_time) async {
-  final apiUrl = '$apiBaseUrl/schedules/$schedule_id';
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'schedule_id': schedule_id,
-        'schedule_title': schedule_title,
-        'schedule_location': schedule_location,
-        'schedule_start_time': schedule_start_time.toIso8601String(),
-        'schedule_end_time': schedule_end_time.toIso8601String(),
-        'schedule_type': schedule_type,
-        'schedule_alert_time': schedule_alert_time,
-      }),
-    );
-    if (response.statusCode == 200) {
-      print('Registration successful!');
-      print('Response: ${response.body}');
-      return true;
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      return false;
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    return false;
-  }
-}
 
 class EditScheduleScreen extends StatefulWidget {
   final int scheduleId;

@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:play_metrix/enums.dart';
 
 final firstNameProvider = StateProvider<String>((ref) => "");
 final surnameProvider = StateProvider<String>((ref) => "");
@@ -27,5 +26,3 @@ void clearSignUpForm(WidgetRef ref) {
   ref.read(passwordVisibilityNotifier.notifier).state = true;
   ref.read(confirmPasswordVisibilityNotifier.notifier).state = true;
 }
-
-final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.manager);

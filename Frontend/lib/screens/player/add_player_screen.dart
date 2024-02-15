@@ -1,40 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-enum LineupStatus { starter, substitute, reserve }
-
-String lineupStatusToText(LineupStatus status) {
-  switch (status) {
-    case LineupStatus.starter:
-      return "Starter";
-    case LineupStatus.substitute:
-      return "Substitute";
-    case LineupStatus.reserve:
-      return "Reserve";
-  }
-}
-
-LineupStatus textToLineupStatus(String text) {
-  switch (text) {
-    case "Starter":
-      return LineupStatus.starter;
-    case "Substitute":
-      return LineupStatus.substitute;
-    case "Reserve":
-      return LineupStatus.reserve;
-    default:
-      return LineupStatus.starter;
-  }
-}
 
 final positionProvider =
     StateProvider<String>((ref) => teamRoleToText(TeamRole.defense));
@@ -43,74 +17,12 @@ final availabilityProvider =
 final lineupStatusProvider =
     StateProvider<String>((ref) => lineupStatusToText(LineupStatus.starter));
 
-Future<int> findPlayerIdByEmail(String email) async {
-  const apiUrl = '$apiBaseUrl/users';
-
-  try {
-    final response = await http.post(Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({"user_type": "player", "user_email": email}));
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data
-      final data = jsonDecode(response.body);
-      if (data != null) {
-        return data['player_id'];
-      }
-      return -1;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      return -1;
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    return -1;
-  }
-}
-
-Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
-    int number, AvailabilityData playingStatus, String lineupStatus) async {
-  const apiUrl = '$apiBaseUrl/team_player';
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "team_id": teamId,
-        "player_id": userId,
-        "team_position": teamPosition,
-        "player_team_number": number,
-        "playing_status": playingStatus.message,
-        "lineup_status": lineupStatus
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully added data to the backend
-      print("Successfully added player to team");
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to add data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
 class AddPlayerScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
+  AddPlayerScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

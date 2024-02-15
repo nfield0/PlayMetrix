@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
-import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
@@ -14,109 +14,6 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-
-enum PlayerAttendingStatus { present, absent, undecided }
-
-String playerAttendingStatusToString(PlayerAttendingStatus status) {
-  switch (status) {
-    case PlayerAttendingStatus.present:
-      return "Yes";
-    case PlayerAttendingStatus.absent:
-      return "No";
-    case PlayerAttendingStatus.undecided:
-      return "Unknown";
-  }
-}
-
-PlayerAttendingStatus stringToPlayerAttendingStatus(String status) {
-  switch (status) {
-    case "Yes":
-      return PlayerAttendingStatus.present;
-    case "No":
-      return PlayerAttendingStatus.absent;
-    case "Unknown":
-      return PlayerAttendingStatus.undecided;
-    default:
-      return PlayerAttendingStatus.undecided;
-  }
-}
-
-Future<PlayerAttendingStatus> getPlayerAttendingStatus(
-    int playerId, int scheduleId) async {
-  final String apiUrl = "$apiBaseUrl/player_schedules/$scheduleId";
-
-  try {
-    final response = await http.get(Uri.parse(apiUrl));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-
-      bool playerFound = false;
-      PlayerAttendingStatus playerAttendingStatus =
-          PlayerAttendingStatus.undecided;
-
-      for (var playerSchedule in data) {
-        if (playerSchedule["player_id"] == playerId) {
-          playerFound = true;
-          playerAttendingStatus = playerSchedule["player_attending"] == null
-              ? PlayerAttendingStatus.undecided
-              : playerSchedule["player_attending"]
-                  ? PlayerAttendingStatus.present
-                  : PlayerAttendingStatus.absent;
-        }
-      }
-
-      if (!playerFound) {
-        addPlayerSchedule(playerId, scheduleId);
-      }
-      return playerAttendingStatus;
-    } else {
-      throw Exception("Failed to get player attending status");
-    }
-  } catch (e) {
-    throw Exception("Failed to get player attending status");
-  }
-}
-
-Future<void> addPlayerSchedule(int playerId, int scheduleId) async {
-  const String apiUrl = "$apiBaseUrl/player_schedules";
-  try {
-    var response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        "player_id": playerId,
-        "schedule_id": scheduleId,
-        "player_attending": null,
-      }),
-    );
-    print(response.body);
-  } catch (e) {
-    throw Exception("Failed to add player schedule");
-  }
-}
-
-Future<void> updatePlayerAttendingStatus(
-    int playerId, int scheduleId, PlayerAttendingStatus status) {
-  final String apiUrl = "$apiBaseUrl/player_schedules/$playerId";
-
-  return http.put(
-    Uri.parse(apiUrl),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode({
-      "player_id": playerId,
-      "schedule_id": scheduleId,
-      "player_attending": status == PlayerAttendingStatus.present
-          ? true
-          : status == PlayerAttendingStatus.absent
-              ? false
-              : null,
-    }),
-  );
-}
 
 class Announcement {
   final int id;

@@ -1,198 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/manager_api_client.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/data_models/profile_class.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/profile/profile_view_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
-
-class TeamData {
-  final int team_id;
-  final String team_name;
-  final Uint8List team_logo;
-  final int manager_id;
-  final int league_id;
-  final int sport_id;
-  final String team_location;
-
-  TeamData({
-    required this.team_id,
-    required this.team_name,
-    required this.team_logo,
-    required this.manager_id,
-    required this.sport_id,
-    required this.league_id,
-    required this.team_location,
-  });
-
-  factory TeamData.fromJson(Map<String, dynamic> json) {
-    return TeamData(
-      team_id: json['team_id'],
-      team_name: json['team_name'],
-      team_logo: base64.decode(json['team_logo']),
-      manager_id: json['manager_id'],
-      sport_id: json['sport_id'],
-      league_id: json['league_id'],
-      team_location: json['team_location'],
-    );
-  }
-}
-
-Future<TeamData?> getTeamById(int id) async {
-  if (id != -1) {
-    final apiUrl =
-        '$apiBaseUrl/teams/$id'; // Replace with your actual backend URL and provide the user ID
-
-    try {
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully retrieved data, parse and store it in individual variables
-        TeamData teamData = TeamData.fromJson(jsonDecode(response.body));
-
-        // Access individual variables
-        return teamData;
-      } else {
-        // Failed to retrieve data, handle the error accordingly
-        print('Failed to retrieve data. Status code: ${response.statusCode}');
-        print('Error message: ${response.body}');
-        throw Exception('Failed to retrieve team data');
-      }
-    } catch (error) {
-      // Handle any network or other errors
-      print('Error: $error');
-      throw Exception('Failed to retrieve team data');
-    }
-  }
-  return null;
-}
-
-Future<List<Profile>> getPhysiosForTeam(int teamId) async {
-  final apiUrl = '$apiBaseUrl/team_physio/$teamId';
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      List<dynamic> data = jsonDecode(response.body);
-
-      final List<Map<String, dynamic>> physiosJsonList =
-          List<Map<String, dynamic>>.from(data);
-
-      List<Profile> physios = [];
-
-      for (Map<String, dynamic> physioJson in physiosJsonList) {
-        Profile physio = await getPhysioProfile(physioJson['physio_id']);
-        physios.add(physio);
-      }
-
-      return physios;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve physio data');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to retrieve physio data');
-  }
-}
-
-Future<List<Profile>> getCoachesForTeam(int teamId) async {
-  final apiUrl = '$apiBaseUrl/team_coach/$teamId';
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      List<dynamic> data = jsonDecode(response.body);
-
-      final List<Map<String, dynamic>> coachesJsonList =
-          List<Map<String, dynamic>>.from(data);
-
-      List<Profile> coaches = [];
-
-      for (Map<String, dynamic> coachJson in coachesJsonList) {
-        Profile coach = await getCoachProfile(coachJson['coach_id']);
-        coaches.add(coach);
-      }
-
-      return coaches;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve physio data');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to retrieve physio data');
-  }
-}
-
-class ManagerData {
-  final String manager_email;
-  final String manager_password;
-  final String manager_firstname;
-  final String manager_surname;
-  final String manager_contact_number;
-  final Uint8List? manager_image;
-
-  ManagerData({
-    required this.manager_email,
-    required this.manager_password,
-    required this.manager_firstname,
-    required this.manager_surname,
-    required this.manager_contact_number,
-    required this.manager_image,
-  });
-
-  factory ManagerData.fromJson(Map<String, dynamic> json) {
-    return ManagerData(
-      manager_email: json['manager_email'],
-      manager_password: json['manager_password'],
-      manager_firstname: json['manager_firstname'],
-      manager_surname: json['manager_surname'],
-      manager_contact_number: json['manager_contact_number'],
-      manager_image: json['manager_image'],
-    );
-  }
-}
-
-final managerIdProvider = StateProvider<int>((ref) => 0);
 
 class TeamProfileScreen extends ConsumerWidget {
   const TeamProfileScreen({super.key});
@@ -251,10 +74,7 @@ class TeamProfileScreen extends ConsumerWidget {
                             String teamLocation = team.team_location;
                             int managerId = team.manager_id;
                             Uint8List? logo = team.team_logo;
-                            Future.microtask(() {
-                              ref.read(managerIdProvider.notifier).state =
-                                  managerId;
-                            });
+
                             return Column(children: [
                               Text(
                                 teamName,

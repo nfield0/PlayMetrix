@@ -1,158 +1,25 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/data_models/profile_class.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/coach/coaches_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/add_player_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-AvailabilityStatus stringToAvailabilityStatus(String status) {
-  switch (status) {
-    case "Available":
-      return AvailabilityStatus.Available;
-    case "Unavailable":
-      return AvailabilityStatus.Unavailable;
-    case "Limited":
-      return AvailabilityStatus.Limited;
-  }
-  return AvailabilityStatus.Available;
-}
-
-class PlayerProfile {
-  final int playerId;
-  final String firstName;
-  final String surname;
-  final String dob;
-  final String gender;
-  final String height;
-  final int teamNumber;
-  final AvailabilityStatus status;
-  final LineupStatus lineupStatus;
-  final Uint8List? imageBytes;
-
-  PlayerProfile(
-      this.playerId,
-      this.firstName,
-      this.surname,
-      this.dob,
-      this.gender,
-      this.height,
-      this.teamNumber,
-      this.status,
-      this.lineupStatus,
-      this.imageBytes);
-}
-
-Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
-  final apiUrl = '$apiBaseUrl/team_player/$teamId';
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = jsonDecode(response.body);
-
-      final List<Map<String, dynamic>> playersJsonList =
-          List<Map<String, dynamic>>.from(responseData);
-
-      List<PlayerProfile> players = [];
-
-      for (Map<String, dynamic> playerJson in playersJsonList) {
-        PlayerData player = await getPlayerById(playerJson['player_id']);
-
-        players.add(PlayerProfile(
-            player.player_id,
-            player.player_firstname,
-            player.player_surname,
-            "${player.player_dob.toLocal()}".split(' ')[0],
-            player.player_gender,
-            player.player_height,
-            playerJson['player_team_number'],
-            stringToAvailabilityStatus(playerJson['playing_status']),
-            textToLineupStatus(playerJson['lineup_status']),
-            player.player_image));
-      }
-
-      return players;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to load players');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to load players');
-  }
-}
-
-Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
-  final apiUrl = '$apiBaseUrl/team_player/$teamId';
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = jsonDecode(response.body);
-
-      final List<Map<String, dynamic>> playersJsonList =
-          List<Map<String, dynamic>>.from(responseData);
-
-      for (Map<String, dynamic> playerJson in playersJsonList) {
-        if (playerJson['player_id'] == playerId) {
-          PlayerData player = await getPlayerById(playerJson['player_id']);
-          PlayerProfile playerProfile = PlayerProfile(
-              playerJson['player_id'],
-              player.player_firstname,
-              player.player_surname,
-              "${player.player_dob.toLocal()}".split(' ')[0],
-              player.player_gender,
-              player.player_height,
-              playerJson['player_team_number'],
-              stringToAvailabilityStatus(playerJson['playing_status']),
-              textToLineupStatus(playerJson['lineup_status']),
-              player.player_image);
-          return playerProfile;
-        }
-      }
-      throw Exception('Player not found');
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to load players');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to load players');
-  }
-}
 
 class PlayersScreen extends ConsumerWidget {
+  const PlayersScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     UserRole userRole = ref.watch(userRoleProvider);
@@ -309,15 +176,15 @@ Widget playerProfilePill(
   Color statusColour = AppColours.green;
   IconData statusIcon = Icons.check_circle;
   switch (status) {
-    case AvailabilityStatus.Available:
+    case AvailabilityStatus.available:
       statusColour = AppColours.green;
       statusIcon = Icons.check_circle;
       break;
-    case AvailabilityStatus.Unavailable:
+    case AvailabilityStatus.unavailable:
       statusColour = AppColours.red;
       statusIcon = Icons.cancel;
       break;
-    case AvailabilityStatus.Limited:
+    case AvailabilityStatus.limited:
       statusColour = AppColours.yellow;
       statusIcon = Icons.warning;
       break;

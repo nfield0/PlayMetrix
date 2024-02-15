@@ -1,69 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/physio_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future<void> addTeamPhysio(int teamId, int userId) async {
-  const apiUrl = '$apiBaseUrl/team_physio';
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body:
-          jsonEncode(<String, dynamic>{"team_id": teamId, "physio_id": userId}),
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully added data to the backend
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to add data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
-Future<int> findPhysioIdByEmail(String email) async {
-  const apiUrl = '$apiBaseUrl/users';
-
-  try {
-    final response = await http.post(Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({"user_type": "physio", "user_email": email}));
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data
-      final data = jsonDecode(response.body);
-      if (data != null) {
-        return data['physio_id'];
-      }
-      return -1;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      return -1;
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    return -1;
-  }
-}
 
 class AddPhysioScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();

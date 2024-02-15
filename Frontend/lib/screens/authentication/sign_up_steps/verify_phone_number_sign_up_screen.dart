@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_steps/password_sign_up_screen.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 
 class VerifyPhoneNumberSignUpScreen extends ConsumerWidget {
@@ -10,6 +10,8 @@ class VerifyPhoneNumberSignUpScreen extends ConsumerWidget {
   final TextEditingController _verificationCodeController =
       TextEditingController();
   final _verificationCodeRegex = RegExp(r'^\d{6}$');
+
+  VerifyPhoneNumberSignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

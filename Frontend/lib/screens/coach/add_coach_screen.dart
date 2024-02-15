@@ -1,83 +1,24 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
 import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-final roleProvider =
-    StateProvider<String>((ref) => teamRoleToText(TeamRole.headCoach));
-
-Future<int> findCoachIdByEmail(String email) async {
-  const apiUrl = '$apiBaseUrl/users';
-
-  try {
-    final response = await http.post(Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({"user_type": "coach", "user_email": email}));
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data
-      final data = jsonDecode(response.body);
-      if (data != null) {
-        return data['coach_id'];
-      }
-      return -1;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      return -1;
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    return -1;
-  }
-}
-
-Future<void> addTeamCoach(int teamId, int userId, String role) async {
-  final apiUrl = '$apiBaseUrl/team_coach';
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "team_id": teamId,
-        "coach_id": userId,
-        "team_role": role
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully added data to the backend
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to add data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
 
 class AddCoachScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
 
+  AddCoachScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String selectedRole = ref.watch(roleProvider);
+    String selectedRole = ref.watch(teamRoleProvider);
     final navigator = Navigator.of(context);
 
     return Scaffold(
@@ -165,7 +106,7 @@ class AddCoachScreen extends ConsumerWidget {
                                 teamRoleToText(TeamRole.midfield),
                                 teamRoleToText(TeamRole.goalkeeper),
                               ], (value) {
-                                ref.read(roleProvider.notifier).state = value!;
+                                ref.read(teamRoleProvider.notifier).state = value!;
                               }),
                               const SizedBox(height: 40),
                               bigButton("Add Coach", () async {

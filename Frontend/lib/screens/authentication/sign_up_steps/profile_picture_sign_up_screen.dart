@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/state_providers/authentication_providers.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/widgets/buttons.dart';
 
 class ProfilePictureSignUpScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
+
+  ProfilePictureSignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
