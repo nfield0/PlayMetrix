@@ -9,9 +9,13 @@ import 'package:play_metrix/screens/widgets/common_widgets.dart';
 class AddAnnouncementScreen extends StatefulWidget {
   final int scheduleId;
   final UserRole userRole;
+  final int userId;
 
   const AddAnnouncementScreen(
-      {super.key, required this.scheduleId, required this.userRole});
+      {super.key,
+      required this.scheduleId,
+      required this.userRole,
+      required this.userId});
 
   @override
   AddAnnouncementScreenState createState() => AddAnnouncementScreenState();
@@ -81,9 +85,9 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                               title: titleController.text,
                               details: detailsController.text,
                               scheduleId: widget.scheduleId,
-                              posterId: widget.scheduleId,
+                              posterId: widget.userId,
                               posterType: widget.userRole);
-                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                         }
                       }),
                     ]),

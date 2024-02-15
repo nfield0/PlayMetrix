@@ -214,7 +214,7 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ScheduleDetailsScreen(
-                                          playerId:
+                                          userId:
                                               widget.userRole == UserRole.player
                                                   ? widget.playerId
                                                   : -1,

@@ -42,7 +42,7 @@ class DailyScheduleScreen extends ConsumerWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ScheduleDetailsScreen(
-                              playerId: ref.read(userIdProvider),
+                              userId: ref.read(userIdProvider),
                               userRole: userRole,
                               teamId: ref.read(teamIdProvider),
                               scheduleId: details.appointments![0].id,

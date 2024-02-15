@@ -30,23 +30,26 @@ class NotificationsScreen extends ConsumerWidget {
         body: Container(
           padding: const EdgeInsets.all(40),
           child: Column(children: [
-            announcementBox(
-              icon: Icons.notifications_active,
-              iconColor: AppColours.darkBlue,
-              title: "Matchday tomorrow",
-              description: "Date: 13/10/2023\nTime: 19:00-20:30",
-              date: "2024-02-03T14:27:00Z",
-              onDeletePressed: () {},
-            ),
-            announcementBox(
-              icon: Icons.cancel,
-              iconColor: AppColours.red,
-              title: "Reece James is injured",
-              description:
-                  "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-              date: "2024-02-03T14:27:00Z",
-              onDeletePressed: () {},
-            ),
+            if (userRole == UserRole.physio)
+              Column(children: [
+                // announcementBox(
+                //   icon: Icons.notifications_active,
+                //   iconColor: AppColours.darkBlue,
+                //   title: "Matchday tomorrow",
+                //   description: "Date: 13/10/2023\nTime: 19:00-20:30",
+                //   date: "2024-02-03T14:27:00Z",
+                //   onDeletePressed: () {},
+                // ),
+                announcementBox(
+                  icon: Icons.cancel,
+                  iconColor: AppColours.red,
+                  title: "Lucy Field is injured",
+                  description:
+                      "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
+                  date: "2024-02-03T14:27:00Z",
+                  onDeletePressed: () {},
+                ),
+              ])
           ]),
         ),
         bottomNavigationBar: roleBasedBottomNavBar(
