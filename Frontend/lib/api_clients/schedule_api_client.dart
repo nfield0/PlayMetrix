@@ -174,7 +174,7 @@ Future<Map<PlayerAttendingStatus, List<PlayerProfile>>>
 
       for (Map<String, dynamic> playerJson in responseData) {
         PlayerProfile player =
-            await getPlayerTeamProfile(playerJson['player_id'], teamId);
+            await getPlayerTeamProfile(teamId, playerJson['player_id']);
         if (playerJson['player_attending'] == true) {
           playersByStatus[PlayerAttendingStatus.present]!.add(player);
         } else if (playerJson['player_attending'] == false) {
@@ -189,6 +189,7 @@ Future<Map<PlayerAttendingStatus, List<PlayerProfile>>>
       // Failed to retrieve data, handle the error accordingly
       print('Failed to retrieve data. Status code: ${response.statusCode}');
       print('Error message: ${response.body}');
+      throw Exception('Failed to retrieve players attendance data');
     }
   } catch (error) {
     // Handle any network or other errors
