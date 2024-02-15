@@ -113,3 +113,45 @@ Widget underlineButtonTransparent(String text, VoidCallback onPressed) {
     ),
   );
 }
+
+Widget underlineButtonTransparentBlack(String text, VoidCallback onPressed) {
+  return CupertinoButton(
+    onPressed: onPressed,
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          decoration: TextDecoration.underline,
+          fontSize: 20,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget underlineButtonTransparentRed(String text, VoidCallback onPressed) {
+  return CupertinoButton(
+    onPressed: onPressed,
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+          decoration: TextDecoration.underline,
+          fontSize: 20,
+        ),
+      ),
+    ),
+  );
+}

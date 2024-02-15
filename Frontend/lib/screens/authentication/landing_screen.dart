@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/screens/authentication/sign_up_steps/name_sign_up_screen.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -41,7 +41,7 @@ class LandingScreen extends ConsumerWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
+                    MaterialPageRoute(builder: (context) => NameSignUpScreen()),
                   );
                 },
                 borderRadius: BorderRadius.circular(25),

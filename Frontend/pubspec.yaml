@@ -70,7 +70,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/landing_page_bg.png
+    - lib/assets/signup_page_bg.png
     - lib/assets/logo.png
+    - lib/assets/logo_white.png
     - lib/assets/icons/manager.png
     - lib/assets/icons/physio.png
     - lib/assets/icons/player.png

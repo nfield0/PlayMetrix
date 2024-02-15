@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/state_providers/authentication_providers.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
@@ -314,17 +315,19 @@ String getPhoneNumberPrefix(String phoneNumber) {
   //phoneNumber = phoneNumber.replaceAll(RegExp('^0+'), '');
   String prefix = phoneNumber.substring(0, 3);
   String prefixUk = phoneNumber.substring(0, 5);
-
-  if (irishMobilePrefixes.contains(prefix)) {
-    String formattedPhoneNumberForIreland = '+353' + phoneNumber.substring(1);
-    return formattedPhoneNumberForIreland;
-  } else if (ukMobilePrefixes.contains(prefixUk)) {
-    String formattedPhoneNumberForEngland = '+44' + phoneNumber.substring(1);
-    print(formattedPhoneNumberForEngland);
-    return formattedPhoneNumberForEngland;
-  } else {
-    return '';
+  if (!phoneNumber.startsWith('+353') && !phoneNumber.startsWith('+44')) {
+    if (irishMobilePrefixes.contains(prefix)) {
+      String formattedPhoneNumberForIreland = '+353' + phoneNumber.substring(1);
+      return formattedPhoneNumberForIreland;
+    } else if (ukMobilePrefixes.contains(prefixUk)) {
+      String formattedPhoneNumberForEngland = '+44' + phoneNumber.substring(1);
+      print(formattedPhoneNumberForEngland);
+      return formattedPhoneNumberForEngland;
+    } else {
+      return '';
+    }
   }
+  return phoneNumber;
 }
 
 final userIdProvider = StateProvider<int>((ref) => 0);

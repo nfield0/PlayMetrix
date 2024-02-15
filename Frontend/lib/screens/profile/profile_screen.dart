@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/profile_class.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/state_providers/authentication_providers.dart';
 import 'package:play_metrix/screens/profile/edit_profile.dart';
 import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';

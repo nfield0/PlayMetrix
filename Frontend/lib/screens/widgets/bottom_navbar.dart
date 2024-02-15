@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';

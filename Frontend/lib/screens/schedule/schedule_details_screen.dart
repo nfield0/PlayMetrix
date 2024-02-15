@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
 import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
