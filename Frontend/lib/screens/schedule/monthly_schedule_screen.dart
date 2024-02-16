@@ -110,7 +110,7 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                     );
                   })),
             ])),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }
 

@@ -78,6 +78,6 @@ class DailyScheduleScreen extends ConsumerWidget {
                 return const CircularProgressIndicator();
               }),
         ),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }

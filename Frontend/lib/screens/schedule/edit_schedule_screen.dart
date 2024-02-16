@@ -230,6 +230,6 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                     ]),
               )),
         ),
-        bottomNavigationBar: managerBottomNavBar(context, 2));
+        bottomNavigationBar: managerBottomNavBar(context, 3));
   }
 }

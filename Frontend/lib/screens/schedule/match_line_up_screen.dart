@@ -159,6 +159,6 @@ class MatchLineUpScreenState extends State<MatchLineUpScreen> {
               ]))),
         )),
         bottomNavigationBar:
-            roleBasedBottomNavBar(widget.userRole, context, 2));
+            roleBasedBottomNavBar(widget.userRole, context, 3));
   }
 }

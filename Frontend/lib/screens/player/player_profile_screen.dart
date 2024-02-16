@@ -272,7 +272,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 25),
                   ]),
                 ))),
-        bottomNavigationBar: playerBottomNavBar(context, 0));
+        bottomNavigationBar: playerBottomNavBar(context, 2));
   }
 }
 

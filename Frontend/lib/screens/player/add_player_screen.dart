@@ -220,7 +220,7 @@ class AddPlayerScreen extends ConsumerWidget {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: managerBottomNavBar(context, 2));
   }
 }
 

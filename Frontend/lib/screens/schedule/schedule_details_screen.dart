@@ -312,7 +312,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                     ),
                   ),
                   bottomNavigationBar:
-                      roleBasedBottomNavBar(widget.userRole, context, 2));
+                      roleBasedBottomNavBar(widget.userRole, context, 3));
             }
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");

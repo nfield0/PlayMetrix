@@ -159,7 +159,7 @@ class PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
                         ]),
                   ])),
                 )),
-                bottomNavigationBar: managerBottomNavBar(context, 2));
+                bottomNavigationBar: managerBottomNavBar(context, 3));
           } else {
             return Text('No data available');
           }

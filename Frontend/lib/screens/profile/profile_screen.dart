@@ -185,7 +185,7 @@ class ProfileScreen extends ConsumerWidget {
                           )
                         ]))),
                 bottomNavigationBar:
-                    roleBasedBottomNavBar(userRole, context, 0));
+                    roleBasedBottomNavBar(userRole, context, 2));
           } else {
             return const Text('No data available');
           }

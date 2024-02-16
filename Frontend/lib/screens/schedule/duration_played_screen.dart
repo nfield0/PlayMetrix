@@ -97,7 +97,7 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: managerBottomNavBar(context, 2),
+      bottomNavigationBar: managerBottomNavBar(context, 3),
     );
   }
 }

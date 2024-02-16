@@ -180,7 +180,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: roleBasedBottomNavBar(widget.userRole, context,
-            widget.userRole == UserRole.physio ? 2 : 3));
+        bottomNavigationBar:
+            roleBasedBottomNavBar(widget.userRole, context, 2));
   }
 }

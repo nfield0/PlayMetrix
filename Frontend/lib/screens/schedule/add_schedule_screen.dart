@@ -188,6 +188,6 @@ class AddScheduleScreen extends ConsumerWidget {
                     ]),
               )),
         ),
-        bottomNavigationBar: managerBottomNavBar(context, 2));
+        bottomNavigationBar: managerBottomNavBar(context, 3));
   }
 }

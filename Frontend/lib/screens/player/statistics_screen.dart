@@ -87,7 +87,7 @@ class StatisticsScreen extends ConsumerWidget {
                             }
                           }),
                     ]))),
-        bottomNavigationBar: playerBottomNavBar(context, 1));
+        bottomNavigationBar: playerBottomNavBar(context, 0));
   }
 }
 

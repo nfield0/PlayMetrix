@@ -161,7 +161,7 @@ class PlayersScreen extends ConsumerWidget {
                         }
                       }),
                 ]))),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 1));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 0));
   }
 }
 

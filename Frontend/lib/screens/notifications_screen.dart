@@ -55,7 +55,7 @@ class NotificationsScreen extends ConsumerWidget {
         bottomNavigationBar: roleBasedBottomNavBar(
           userRole,
           context,
-          userRole == UserRole.physio ? 2 : 3,
+          1,
         ));
   }
 }

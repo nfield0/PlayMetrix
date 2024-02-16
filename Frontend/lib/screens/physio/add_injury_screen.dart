@@ -182,6 +182,6 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: physioBottomNavBar(context, 1));
+        bottomNavigationBar: physioBottomNavBar(context, 0));
   }
 }

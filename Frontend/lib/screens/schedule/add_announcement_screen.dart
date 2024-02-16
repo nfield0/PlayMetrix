@@ -94,6 +94,6 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
               )),
         ),
         bottomNavigationBar:
-            roleBasedBottomNavBar(widget.userRole, context, 2));
+            roleBasedBottomNavBar(widget.userRole, context, 3));
   }
 }

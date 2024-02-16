@@ -383,7 +383,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                       )
                     ]))),
         bottomNavigationBar:
-            roleBasedBottomNavBar(widget.userRole, context, 1));
+            roleBasedBottomNavBar(widget.userRole, context, 2));
   }
 }
 

@@ -187,6 +187,6 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: physioBottomNavBar(context, 0));
   }
 }
