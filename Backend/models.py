@@ -169,3 +169,13 @@ class announcements(Base):
 	poster_id = Column(Integer, index = True)
 	poster_type = Column(String(50), index = True)
 
+class notifications(Base):
+	__tablename__ = "notifications"
+	notification_id = Column(Integer, primary_key = True, index = True)
+	notification_title = Column(String(200), index = True)
+	notification_date = Column(String(50), index = True)
+	notification_desc = Column(String(255), index = True)
+	team_id = Column(Integer, index = True)
+	poster_id = Column(Integer, index = True)
+	poster_type = Column(String(50), index = True)
+
