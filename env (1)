@@ -1,7 +1,0 @@
-
-#DB CONFIG
-
-DB_CONNECTION = "postgresql://postgres:Password123!@localhost:5432/playmetrix"
-#DB_CONNECTION = "postgresql://postgres:password@postgres.cabqnmr2wgxl.eu-west-1.rds.amazonaws.com:5432/playmetrix"
-
-SALT = b"$2b$12$1Z8Z8Z8Z8Z8Z8Z8Z8Z8Z8O"
