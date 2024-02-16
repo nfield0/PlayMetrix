@@ -256,6 +256,21 @@ CREATE TABLE IF NOT EXISTS announcements
    REFERENCES schedule (schedule_id)
 );
 
+/*Notifications Table*/
+CREATE TABLE IF NOT EXISTS notifications
+(
+	notification_id serial PRIMARY KEY,
+	notification_title VARCHAR(200) NOT NULL,
+	/*notification_type VARCHAR(50),*/
+	notification_date TIMESTAMP,
+	notification_desc VARCHAR(255),
+	team_id INT NOT NULL,
+	poster_id INT NOT NULL,
+	poster_type VARCHAR(50),
+	FOREIGN KEY (team_id)
+		REFERENCES team(team_id)
+)
+
 
 /*--------------------------DUMMY DATA FOR TESTING QUERIES--------------------------------------------------*/
 /*NEED TO BE ADDED BEFORE TEAM AND PLAYER*/
