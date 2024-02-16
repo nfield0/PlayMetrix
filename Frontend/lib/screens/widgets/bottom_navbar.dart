@@ -6,6 +6,7 @@ import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/settings.dart';
 
 Widget bottomNavBar(List<BottomNavigationBarItem> items, int selectedIndex,
     void Function(int?)? onPressed) {
@@ -117,7 +118,7 @@ playerBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -182,7 +183,7 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -247,8 +248,7 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) =>
-                NotificationsScreen(),
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -302,8 +302,7 @@ physioBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) =>
-                NotificationsScreen(),
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),

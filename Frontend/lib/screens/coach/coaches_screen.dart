@@ -21,7 +21,6 @@ class CoachesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: Image.asset(
             'lib/assets/logo.png',
             width: 150,
