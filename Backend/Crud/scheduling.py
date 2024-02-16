@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from Backend.models import schedule, team_schedule, player_schedule
-from Backend.schema import ScheduleBase, ScheduleBaseNoID, TeamScheduleBase, PlayerScheduleBase
+from models import schedule, team_schedule, player_schedule
+from schema import ScheduleBase, ScheduleBaseNoID, TeamScheduleBase, PlayerScheduleBase
 from Crud.teams import get_team_by_id
 from Crud.player import get_player_by_id
 

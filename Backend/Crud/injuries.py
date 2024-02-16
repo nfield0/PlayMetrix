@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from Backend.models import injuries, player_injuries
+from models import injuries, player_injuries
 from schema import InjuryBase, PlayerInjuryBase
-from Crud import check_is_valid_name
+from Crud.crud import check_is_valid_name
 
 #region injuries
     
