@@ -6,10 +6,10 @@ import 'package:play_metrix/constants.dart';
 
 Widget smallPill(String text) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
     decoration: BoxDecoration(
       color: AppColours.darkBlue,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(50),
     ),
     child: Text(
       text,
@@ -491,17 +491,20 @@ Widget announcementBox({
                                       ? DateTime.parse(date)
                                       : DateTime.now()),
                               style: const TextStyle(
-                                  fontSize: 12, color: Colors.black54)),
+                                  fontSize: 14, color: Colors.black54)),
                           const SizedBox(height: 5),
                           Text(
                             title,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize: 18,
                             ),
                           ),
                           const SizedBox(height: 5),
-                          Text(description),
+                          Text(
+                            description,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ],
                       ),
                       Positioned(
