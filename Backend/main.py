@@ -4,12 +4,13 @@ from database import SessionLocal, Base, engine
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import RedirectResponse
 from schema import *
-import crud as crud
+import Crud.crud as crud
 import pytest
 from sqlalchemy.orm import sessionmaker
 from tavern.core import run
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from schema import NotificationBase
 
 Base.metadata.create_all(bind=engine)
 
@@ -576,6 +577,28 @@ def delete_sports(id: int, db:Session = Depends(get_db)):
 
 
 #endregion
+
+#region 
+@app.get("/notification")
+def get_notifications(db:Session = Depends(get_db)):
+    return crud.get_notifications(db)
+
+@app.get("/notification/{id}")
+def get_notification(id: int, db:Session = Depends(get_db)):
+    return crud.get_notification_by_id(db, id)
+
+
+@app.post("/notification")
+def create_notification(notification: NotificationBase, db:Session = Depends(get_db)):
+    return crud.insert_notification(db, notification)
+
+@app.put("/notification/{id}")
+def update_notification(id: int, notification: NotificationBase, db:Session = Depends(get_db)):
+    return crud.update_notification(db, notification, id)
+
+@app.delete("/notification/{id}")
+def delete_notification(id: int, db:Session = Depends(get_db)):
+    return crud.delete_notification(db, id)
 
 
 #region test_routes
