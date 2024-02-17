@@ -31,7 +31,6 @@ class StatisticsScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: Image.asset(
             'lib/assets/logo.png',
             width: 150,

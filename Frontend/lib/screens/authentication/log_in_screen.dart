@@ -207,9 +207,7 @@ class LogInScreen extends ConsumerWidget {
   Widget _2FAPopUp(BuildContext context) {
     TextEditingController _phoneNumberController = TextEditingController();
     TextEditingController _verificationCodeController = TextEditingController();
-    TextEditingController _codeReceivedController = TextEditingController();
-    bool _showPhoneNumberInput = true;
-    bool _showCodeSentInput = false;
+
     final phoneVerifyRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
     final verificationCodeRegex = RegExp(r'^\d{6}$');
 
@@ -234,177 +232,117 @@ class LogInScreen extends ConsumerWidget {
             width: 800, // Set the desired width
             height: 500, // Set the desired width
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              _showPhoneNumberInput
-                  ? Column(
-                      //mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Divider(
-                          color: AppColours.darkBlue,
-                          thickness: 1.0, // Set the thickness of the line
-                          height: 40.0, // Set the height of the line
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 25.0),
-                          child: TextFormField(
-                            controller: _phoneNumberController,
-                            cursorColor: AppColours.darkBlue,
-                            decoration: const InputDecoration(
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: AppColours.darkBlue),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: AppColours.darkBlue),
-                              ),
-                              labelText: 'Phone Number',
-                              labelStyle: TextStyle(
-                                  color: AppColours.darkBlue,
-                                  fontFamily: AppFonts.openSans),
-                            ),
-                            validator: (String? value) {
-                              return (value != null &&
-                                      !phoneVerifyRegex.hasMatch(value))
-                                  ? 'Invalid phone number.'
-                                  : null;
-                            },
+              Column(
+                //mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Divider(
+                    color: AppColours.darkBlue,
+                    thickness: 1.0, // Set the thickness of the line
+                    height: 40.0, // Set the height of the line
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: TextFormField(
+                      controller: _phoneNumberController,
+                      cursorColor: AppColours.darkBlue,
+                      decoration: const InputDecoration(
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
                           ),
                         ),
-                        //const SizedBox(height: 5, width: 10),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child:
-                                bigButton("Send Verification Code", () async {
-                              String phoneNumber = _phoneNumberController.text;
-                              String formattedPhoneNumber =
-                                  getPhoneNumberPrefix(phoneNumber);
-                              bool sentSuccessfully =
-                                  await twilioService.sendVerificationCode(
-                                      formattedPhoneNumber, verificationCode);
-                              if (sentSuccessfully) {
-                                _showPhoneNumberInput = false;
-                                _showCodeSentInput = true;
-                              } else {
-                                print('Error sending verification code');
-                              }
-                            })),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 25.0),
-                          child: TextFormField(
-                            controller: _verificationCodeController,
-                            cursorColor: AppColours.darkBlue,
-                            decoration: const InputDecoration(
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: AppColours.darkBlue),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: AppColours.darkBlue),
-                              ),
-                              labelText: 'Verification Code',
-                              labelStyle: TextStyle(
-                                  color: AppColours.darkBlue,
-                                  fontFamily: AppFonts.openSans),
-                            ),
-                            validator: (String? value) {
-                              return (value != null &&
-                                      !verificationCodeRegex.hasMatch(value))
-                                  ? 'Incorrect Verification Code.'
-                                  : null;
-                            },
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
                           ),
                         ),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: bigButton("Verify", () async {
-                              String code = _verificationCodeController.text;
-                              if (code == verificationCode) {
-                                _showPhoneNumberInput = false;
-                                _showCodeSentInput = true;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeScreen()),
-                                );
-                                _emailController.clear();
-                                _passwordController.clear();
-                              } else {
-                                // Handle error sending code
-                                print('Error sending verification code');
-                              }
-                            })),
-                      ],
-                    )
-                  : _showCodeSentInput
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              controller: _codeReceivedController,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                  labelText: 'Verification Code (Received)'),
-                            ),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Verify the entered verification code (received)
-                                // Implement verification logic for the code received
-                                // For simplicity, let's assume the code is correct
-                                // TODO: Implement Twilio API call to verify the verification code
-
-                                // Assuming the code is correct, close the dialog
-                                Navigator.of(context).pop(false);
-                              },
-                              child: const Text('Verify Code (Received)'),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              controller: _verificationCodeController,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                  labelText: 'Verification Code (Sent)'),
-                            ),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Verify the entered verification code (sent)
-                                // Implement verification logic for the code sent
-                                // For simplicity, let's assume the code is correct
-                                // TODO: Implement Twilio API call to verify the verification code
-
-                                // Assuming the code is correct, close the dialog
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Verify Code (Sent)'),
-                            ),
-                          ],
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColours.darkBlue),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColours.darkBlue),
+                        ),
+                        labelText: 'Phone Number',
+                        labelStyle: TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: AppFonts.openSans),
+                      ),
+                      validator: (String? value) {
+                        return (value != null &&
+                                !phoneVerifyRegex.hasMatch(value))
+                            ? 'Invalid phone number.'
+                            : null;
+                      },
+                    ),
+                  ),
+                  //const SizedBox(height: 5, width: 10),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: bigButton("Send Verification Code", () async {
+                        String phoneNumber = _phoneNumberController.text;
+                        String formattedPhoneNumber =
+                            getPhoneNumberPrefix(phoneNumber);
+                        bool sentSuccessfully =
+                            await twilioService.sendVerificationCode(
+                                formattedPhoneNumber, verificationCode);
+                        if (!sentSuccessfully) {
+                          print('Error sending verification code');
+                        }
+                      })),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: TextFormField(
+                      controller: _verificationCodeController,
+                      cursorColor: AppColours.darkBlue,
+                      decoration: const InputDecoration(
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColours.darkBlue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColours.darkBlue),
+                        ),
+                        labelText: 'Verification Code',
+                        labelStyle: TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: AppFonts.openSans),
+                      ),
+                      validator: (String? value) {
+                        return (value != null &&
+                                !verificationCodeRegex.hasMatch(value))
+                            ? 'Incorrect Verification Code.'
+                            : null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: bigButton("Verify", () async {
+                        String code = _verificationCodeController.text;
+                        if (code == verificationCode) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                          );
+                          _emailController.clear();
+                          _passwordController.clear();
+                        } else {
+                          // Handle error sending code
+                          print('Error sending verification code');
+                        }
+                      })),
+                ],
+              )
             ])));
   }
 }

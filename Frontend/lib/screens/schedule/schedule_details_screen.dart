@@ -1,7 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/announcement_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/announcement_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
@@ -13,55 +14,6 @@ import 'package:play_metrix/screens/widgets/buttons.dart';
 import 'package:play_metrix/screens/widgets/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-
-class Announcement {
-  final int id;
-  final String title;
-  final String description;
-  final String date;
-  final int scheduleId;
-  final int posterId;
-  final UserRole posterRole;
-
-  Announcement(
-      {required this.id,
-      required this.title,
-      required this.description,
-      required this.date,
-      required this.scheduleId,
-      required this.posterId,
-      required this.posterRole});
-}
-
-Future<List<Announcement>> getAnnouncementsByScheduleId(int scheduleId) {
-  final String apiUrl = "$apiBaseUrl/announcements/schedule/$scheduleId";
-
-  try {
-    return http.get(Uri.parse(apiUrl)).then((response) {
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        List<Announcement> announcements = [];
-        for (var announcement in data) {
-          announcements.add(Announcement(
-            id: announcement["announcements_id"],
-            title: announcement["announcements_title"],
-            description: announcement["announcements_desc"],
-            date: announcement["announcements_date"],
-            scheduleId: announcement["schedule_id"],
-            posterId: announcement["poster_id"],
-            posterRole: stringToUserRole(announcement["poster_type"]),
-          ));
-        }
-        return announcements;
-      } else {
-        throw Exception("Failed to get announcements");
-      }
-    });
-  } catch (e) {
-    throw Exception("Failed to get announcements");
-  }
-}
 
 class ScheduleDetailsScreen extends StatefulWidget {
   final int scheduleId;

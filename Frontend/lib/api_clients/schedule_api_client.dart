@@ -1,46 +1,10 @@
 import 'dart:convert';
-
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/data_models/schedule_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:http/http.dart' as http;
-
-Future<void> addAnnouncement({
-  required String title,
-  required String details,
-  required int scheduleId,
-  required int posterId,
-  required UserRole posterType,
-}) async {
-  const apiUrl = "$apiBaseUrl/announcements";
-
-  try {
-    final response = await http.post(Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          "announcements_title": title,
-          "announcements_desc": details,
-          "announcements_date": DateTime.now().toIso8601String(),
-          "schedule_id": scheduleId,
-          "poster_id": posterId,
-          "poster_type": userRoleText(posterType).toLowerCase()
-        }));
-
-    if (response.statusCode == 200) {
-      print("Announcement added. Response: ${response.body}");
-    } else {
-      print("Announcement not added");
-      throw Exception("Announcement not added");
-    }
-  } catch (e) {
-    print(e);
-    throw Exception("Announcement not added");
-  }
-}
 
 Future<int> addSchedule(
     String title,
