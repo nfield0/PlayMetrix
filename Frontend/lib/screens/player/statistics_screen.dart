@@ -45,8 +45,7 @@ class StatisticsScreen extends ConsumerWidget {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 35, horizontal: 50),
+                padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
