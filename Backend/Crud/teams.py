@@ -6,7 +6,7 @@ from Crud.user import *
 from Crud.manager import *
 from Crud.player import *
 from Crud.physio import *
-
+import base64
 #region team
         
 def get_teams(db: Session):
@@ -98,16 +98,26 @@ def get_team_players(db: Session, player_id: int):
         return(f"Error retrieving team players: {e}")
 
 def get_players_by_team_id(db: Session, id: int):
-    try:
+    try: 
+        results = []
         result = db.query(team_player).filter_by(team_id=id).all()
-        return result
+        for obj in result:
+            if obj.player_injury_reports is not None:
+                #decoded_pdf_content = None
+                print(obj.player_injury_reports)
+                decoded_pdf_content = obj.player_injury_reports
+            else:
+                decoded_pdf_content = None
+            results.append({"player_id": obj.player_id, "team_id": obj.team_id, "team_position": obj.team_position, 
+                            "player_team_number": obj.player_team_number, "playing_status": obj.playing_status, "lineup_status": obj.lineup_status, "player_injury_reports": decoded_pdf_content})
+        return results
     except Exception as e:
         return(f"Error retrieving team players: {e}")
     
 def add_player_to_team(db:Session, team_player_obj: TeamPlayerBase):
     try:
         new_team_player = team_player(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id, team_position=team_player_obj.team_position, player_team_number=team_player_obj.player_team_number,
-                                       playing_status=team_player_obj.playing_status, lineup_status=team_player_obj.lineup_status)
+                                       playing_status=team_player_obj.playing_status, lineup_status=team_player_obj.lineup_status, player_injury_reports=team_player_obj.player_injury_reports)
         db.add(new_team_player)
         db.commit()
         return {"message": f"Player with ID {str(team_player_obj.player_id)} has been added to team with ID {str(team_player_obj.team_id)}"}
@@ -123,6 +133,9 @@ def update_player_on_team(db:Session, team_player_obj: TeamPlayerBase):
         player_to_update.player_team_number = team_player_obj.player_team_number
         player_to_update.playing_status = team_player_obj.playing_status
         player_to_update.lineup_status = team_player_obj.lineup_status
+        if team_player_obj.player_injury_reports:
+            pdf_bytes = base64.b64decode(team_player_obj.player_injury_reports)
+            player_to_update.player_injury_reports = pdf_bytes
         db.commit()
         return {"message": f"Player with ID {str(team_player_obj.player_id)} has been updated"}
     except Exception as e:

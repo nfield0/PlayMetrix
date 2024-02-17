@@ -113,6 +113,7 @@ class team_player(Base):
 	player_team_number = Column(Integer, index = True)
 	playing_status = Column(String(25), index = True)
 	lineup_status = Column(String(30), index = True)
+	player_injury_reports = Column(LargeBinary, index = True)
 
 class team_coach(Base):
 	__tablename__ = "team_coach"
@@ -178,4 +179,5 @@ class notifications(Base):
 	team_id = Column(Integer, index = True)
 	poster_id = Column(Integer, index = True)
 	poster_type = Column(String(50), index = True)
+
 

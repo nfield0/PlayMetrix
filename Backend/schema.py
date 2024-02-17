@@ -179,6 +179,7 @@ class TeamPlayerBase(BaseModel):
     player_team_number: int
     playing_status: str
     lineup_status: str
+    player_injury_reports: Optional[bytes]
 
 class TeamCoachBase(BaseModel):
     team_id: int

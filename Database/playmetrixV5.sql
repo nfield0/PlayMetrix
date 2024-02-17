@@ -186,6 +186,7 @@ CREATE TABLE IF NOT EXISTS player_team
     player_team_number INT,
     playing_status VARCHAR(25),
     lineup_status VARCHAR(30),
+	player_injury_reports bytea,
 	PRIMARY KEY (player_id, team_id),
 	FOREIGN KEY (player_id)
 		REFERENCES player_info(player_id),
