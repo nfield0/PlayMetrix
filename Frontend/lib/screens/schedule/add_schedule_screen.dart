@@ -6,9 +6,9 @@ import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 final startTimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
 final endTimeProvider = StateProvider<DateTime>((ref) => DateTime.now().add(

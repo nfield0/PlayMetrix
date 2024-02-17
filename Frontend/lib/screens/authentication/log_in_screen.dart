@@ -8,7 +8,7 @@ import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/home_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'dart:convert';
 import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:play_metrix/keys.dart';

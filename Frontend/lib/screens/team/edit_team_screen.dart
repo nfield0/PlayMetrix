@@ -5,8 +5,8 @@ import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class EditTeamScreen extends StatefulWidget {
   final int teamId;

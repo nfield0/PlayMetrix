@@ -3,9 +3,9 @@ import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/schedule_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 
 class EditScheduleScreen extends StatefulWidget {

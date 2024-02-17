@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 
 class ProfilePictureSignUpScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();

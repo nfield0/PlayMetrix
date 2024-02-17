@@ -10,9 +10,9 @@ import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/profile/profile_view_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class CoachesScreen extends ConsumerWidget {
   const CoachesScreen({super.key});

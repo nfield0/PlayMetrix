@@ -14,8 +14,8 @@ import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class PlayerProfileViewScreen extends ConsumerWidget {
   final int userId;

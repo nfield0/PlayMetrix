@@ -11,9 +11,9 @@ import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/physio/add_physio_screen.dart';
 import 'package:play_metrix/screens/profile/profile_view_screen.dart';
 import 'package:play_metrix/screens/team/edit_team_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:typed_data';
 

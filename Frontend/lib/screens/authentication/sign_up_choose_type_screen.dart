@@ -8,7 +8,7 @@ import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 

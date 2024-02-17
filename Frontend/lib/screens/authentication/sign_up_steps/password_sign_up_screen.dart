@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/sign_up_steps/profile_picture_sign_up_screen.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 
 class PasswordSignUpScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();

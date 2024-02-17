@@ -5,7 +5,7 @@ import 'package:play_metrix/keys.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/authentication/sign_up_steps/verify_phone_number_sign_up_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
 class ContactDetailsSignUpScreen extends ConsumerWidget {
