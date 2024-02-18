@@ -45,6 +45,8 @@ dependencies:
   introduction_screen: ^3.1.12
   shared_preferences: ^2.2.2
   dots_indicator: ^2.1.1
+  flutter_local_notifications: ^16.3.2
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
