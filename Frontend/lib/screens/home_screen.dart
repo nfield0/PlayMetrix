@@ -75,6 +75,7 @@ class HomeScreen extends ConsumerWidget {
                               horizontal: 25, vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 "Hey, ${profile.firstName}!",
@@ -87,7 +88,9 @@ class HomeScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 25),
                               SizedBox(
-                                  height: 230, child: _menu(userRole, context))
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  child: _menu(userRole, context))
                             ],
                           ))),
                   Positioned(
@@ -121,7 +124,7 @@ class HomeScreen extends ConsumerWidget {
                                       "No notifications"),
 
                                   bigButton("test notif", () async {
-                                    await _showNotification();
+                                    await _showNotificationForTeam(2, ref);
                                   })
                                   // announcementBox(
                                   //   icon: Icons.cancel,
@@ -164,52 +167,66 @@ class HomeScreen extends ConsumerWidget {
         });
   }
 
-  Future<void> _showNotification() async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', notificationDetails,
-        payload: 'item x');
+  Future<void> _showNotificationForTeam(int teamId, WidgetRef ref) async {
+    // Check if the notification should be sent to this user
+    if (shouldSendNotificationToUser(teamId, ref)) {
+      const AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails('your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker');
+      const NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(
+          0, 'plain title', 'plain body', notificationDetails,
+          payload: 'item x');
+    }
   }
 
-  Widget _buildMenuItem(
-      String text, String imagePath, Color colour, VoidCallback onPressed) {
+  bool shouldSendNotificationToUser(int teamId, WidgetRef ref) {
+    if (ref.read(teamIdProvider.notifier).state == teamId) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Widget _buildMenuItem(String text, IconData icon, Color colour,
+      VoidCallback onPressed, BuildContext context) {
     return InkWell(
         onTap: onPressed,
         child: SizedBox(
-            width: 200,
+            width: MediaQuery.of(context).size.width * 0.45,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.white60,
-                border: Border.all(color: colour, width: 5),
+                border: Border.all(color: colour, width: 4),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    imagePath,
-                    width: 100,
-                    height: 100,
+                  Icon(
+                    icon,
+                    color: colour,
+                    size: 30,
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    text,
-                    style: TextStyle(
-                      color: colour,
-                      fontFamily: AppFonts.gabarito,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 26,
+                  const SizedBox(height: 5),
+                  Flexible(
+                    // Use Flexible to prevent overflow by allowing text to wrap
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        color: colour,
+                        fontFamily: AppFonts.gabarito,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -237,8 +254,7 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem('Players', 'lib/assets/icons/players_menu.png',
-            AppColours.mediumDarkBlue, () {
+        _buildMenuItem('Players', Icons.group, AppColours.mediumDarkBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -247,10 +263,10 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
-            AppColours.mediumBlue, () {
+        _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
+            () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -260,10 +276,9 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
-            AppColours.lightBlue, () {
+        _buildMenuItem('My Profile', Icons.person, AppColours.lightBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -272,7 +287,7 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
       ],
     );
   }
@@ -281,8 +296,8 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
-            AppColours.mediumDarkBlue, () {
+        _buildMenuItem(
+            'Players & Coaches', Icons.group, AppColours.mediumDarkBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -291,10 +306,9 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
-            AppColours.lightBlue, () {
+        _buildMenuItem('My Profile', Icons.person, AppColours.lightBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -303,7 +317,7 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
       ],
     );
   }
@@ -312,8 +326,9 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem('Statistics', 'lib/assets/icons/statistics_menu.png',
-            AppColours.mediumDarkBlue, () {
+        _buildMenuItem(
+            'Statistics', Icons.bar_chart_rounded, AppColours.mediumDarkBlue,
+            () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -323,10 +338,10 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
-            AppColours.mediumBlue, () {
+        _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
+            () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -336,10 +351,9 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', 'lib/assets/icons/players_menu.png',
-            AppColours.lightBlue, () {
+        _buildMenuItem('My Profile', Icons.group, AppColours.lightBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -349,7 +363,7 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
       ],
     );
   }
@@ -358,8 +372,8 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem('Players & Coaches', 'lib/assets/icons/players_menu.png',
-            AppColours.mediumDarkBlue, () {
+        _buildMenuItem(
+            'Players & Coaches', Icons.group, AppColours.mediumDarkBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -368,10 +382,10 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('Schedule', 'lib/assets/icons/schedule_menu.png',
-            AppColours.mediumBlue, () {
+        _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
+            () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -381,10 +395,9 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', 'lib/assets/icons/manager_coach_menu.png',
-            AppColours.lightBlue, () {
+        _buildMenuItem('My Profile', Icons.person, AppColours.lightBlue, () {
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -393,7 +406,7 @@ class HomeScreen extends ConsumerWidget {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        }),
+        }, context),
       ],
     );
   }
