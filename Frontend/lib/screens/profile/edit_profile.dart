@@ -141,7 +141,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                         !nameRegex.hasMatch(value))
                                     ? 'Invalid first name.'
                                     : null;
-                              }),
+                              }, context),
                               formFieldBottomBorderController(
                                   "Surname", surnameController,
                                   (String? value) {
@@ -149,14 +149,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                         !nameRegex.hasMatch(value))
                                     ? 'Invalid surname.'
                                     : null;
-                              }),
+                              }, context),
                               formFieldBottomBorderController(
                                   "Phone", phoneController, (String? value) {
                                 return (value != null &&
                                         !phoneRegex.hasMatch(value))
                                     ? 'Invalid phone number.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () {
                                 if (_formKey.currentState!.validate()) {

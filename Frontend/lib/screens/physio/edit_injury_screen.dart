@@ -122,7 +122,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Injury location", injuryLocationController,
@@ -130,7 +130,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Expected recovery time",
@@ -138,7 +138,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Recovery method", recoveryMethodController,
@@ -146,7 +146,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 7),
                               datePickerNoDivider(context, "Date of injury",
                                   selectedDateOfInjury, (date) {

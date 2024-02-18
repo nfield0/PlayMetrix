@@ -110,24 +110,20 @@ class AddPlayerScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 10),
                               formFieldBottomBorderController(
-                                "Number",
-                                _numberController,
-                                (value) {
-                                  if (value != null &&
-                                      RegExp(r'^\d+$').hasMatch(value)) {
-                                    int numericValue = int.tryParse(value) ?? 0;
+                                  "Number", _numberController, (value) {
+                                if (value != null &&
+                                    RegExp(r'^\d+$').hasMatch(value)) {
+                                  int numericValue = int.tryParse(value) ?? 0;
 
-                                    if (numericValue > 0 &&
-                                        numericValue < 100) {
-                                      return null;
-                                    } else {
-                                      return "Enter a valid number from 1-99.";
-                                    }
+                                  if (numericValue > 0 && numericValue < 100) {
+                                    return null;
+                                  } else {
+                                    return "Enter a valid number from 1-99.";
                                   }
+                                }
 
-                                  return "Enter a valid digit.";
-                                },
-                              ),
+                                return "Enter a valid digit.";
+                              }, context),
                               const SizedBox(height: 10),
                               dropdownWithDivider("Position", selectedRole, [
                                 teamRoleToText(TeamRole.defense),

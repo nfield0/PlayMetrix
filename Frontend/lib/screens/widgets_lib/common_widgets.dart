@@ -370,8 +370,11 @@ Widget formFieldBottomBorder(String title, String initialValue) {
   );
 }
 
-Widget formFieldBottomBorderController(String title,
-    TextEditingController controller, String? Function(String?)? validator) {
+Widget formFieldBottomBorderController(
+    String title,
+    TextEditingController controller,
+    String? Function(String?)? validator,
+    BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -383,7 +386,7 @@ Widget formFieldBottomBorderController(String title,
           )),
       const SizedBox(width: 30),
       Container(
-        width: 210, // Set a fixed width for the TextField
+        width: MediaQuery.of(context).size.width * 0.4,
         child: TextFormField(
           controller: controller,
           decoration: const InputDecoration(

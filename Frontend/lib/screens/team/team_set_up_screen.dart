@@ -90,12 +90,12 @@ class TeamSetUpScreen extends ConsumerWidget {
                 formFieldBottomBorderController(
                     "Team name", _teamNameController, (value) {
                   return "";
-                }),
+                }, context),
                 const SizedBox(height: 10),
                 formFieldBottomBorderController(
                     "Location", _teamLocationController, (value) {
                   return "";
-                }),
+                }, context),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -83,7 +83,7 @@ class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
                       return (value != null && !heightRegex.hasMatch(value))
                           ? 'Invalid height.'
                           : null;
-                    }),
+                    }, context),
                     const SizedBox(height: 5),
                     dropdownWithDivider(
                         "Gender", _selectedGender, ["Male", "Female", "Others"],

@@ -131,14 +131,14 @@ class EditTeamScreenState extends State<EditTeamScreen> {
                       return (value != null && value.isEmpty)
                           ? 'This field is required.'
                           : null;
-                    }),
+                    }, context),
                     const SizedBox(height: 10),
                     formFieldBottomBorderController(
                         "Location", _teamLocationController, (String? value) {
                       return (value != null && value.isEmpty)
                           ? 'This field is required.'
                           : null;
-                    }),
+                    }, context),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -225,7 +225,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !nameRegex.hasMatch(value))
                                       ? 'Invalid first name.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Surname", _surnameController, (value) {
@@ -233,7 +233,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !nameRegex.hasMatch(value))
                                       ? 'Invalid surname.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Phone", _contactNumberController, (value) {
@@ -241,7 +241,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !phoneRegex.hasMatch(value))
                                       ? 'Invalid phone number.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.manager)
                                 formFieldBottomBorderController(
                                     "Number", _numberController, (value) {
@@ -258,7 +258,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   }
 
                                   return "Enter a valid digit.";
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Height", _heightController, (value) {
@@ -266,7 +266,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !heightRegex.hasMatch(value))
                                       ? 'Invalid height.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 datePickerNoDivider(
                                     context, "Date of birth", _selectedDob,
