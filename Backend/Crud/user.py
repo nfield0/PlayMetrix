@@ -83,8 +83,8 @@ def register_manager(db, user):
     db.commit()
     db.refresh(new_user)
     new_user_id = get_user_by_email(db,"manager",user.manager_email)
-    new_user_info = manager_info(manager_id=new_user_id.manager_id, manager_firstname=user.manager_firstname,manager_surname=user.manager_surname,
-                                manager_contact_number=user.manager_contact_number,
+    new_user_info = manager_info(manager_id=new_user_id.manager_id, manager_firstname=user.manager_firstname,manager_surname=encrypt(user.manager_surname),
+                                manager_contact_number=encrypt(user.manager_contact_number),
                                 manager_image=user.manager_image)              
                       
     db.add(new_user_info)  
@@ -114,8 +114,8 @@ def register_physio(db, user):
     
     db.commit()
     db.refresh(new_user)
-    new_user_info = physio_info(physio_id=new_user.physio_id, physio_firstname=user.physio_firstname,physio_surname=user.physio_surname,
-                                physio_contact_number=user.physio_contact_number, physio_image=user.physio_image)
+    new_user_info = physio_info(physio_id=new_user.physio_id, physio_firstname=user.physio_firstname,physio_surname=encrypt(user.physio_surname),
+                                physio_contact_number=encrypt(user.physio_contact_number), physio_image=user.physio_image)
                                    
     db.add(new_user_info)  
     db.commit()
@@ -142,8 +142,10 @@ def register_coach(db, user):
         db.commit()
         db.refresh(new_user)
         
+        surname = encrypt(user.coach_surname)
+
         new_user_id = get_user_by_email(db,"coach",user.coach_email)
-        new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=encrypt(user.coach_surname),
+        new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=surname,
                                     coach_contact=encrypt(user.coach_contact), coach_image=user.coach_image)
                                     
         db.add(new_user_info)  

@@ -19,7 +19,7 @@ announcements;
 CREATE TABLE IF NOT EXISTS player_login
 (
 	player_id serial PRIMARY KEY,
-	player_email VARCHAR(80) UNIQUE NOT NULL,
+	player_email VARCHAR(280) UNIQUE NOT NULL,
 	player_password VARCHAR(150) NOT NULL
 );
 
@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS player_info
 (
 	player_id INT NOT NULL PRIMARY KEY,
 	player_firstname VARCHAR(25) NOT NULL, 
-	player_surname VARCHAR(80) NOT NULL,
+	player_surname VARCHAR(280) NOT NULL,
 	player_DOB DATE NOT NULL,
-	player_contact_number VARCHAR(80),
+	player_contact_number VARCHAR(280),
     player_height VARCHAR(10),
-    player_gender VARCHAR(80),
+    player_gender VARCHAR(280),
 	player_image bytea,
 	FOREIGN KEY(player_id)
 		REFERENCES player_login(player_id)
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS player_stats
 CREATE TABLE IF NOT EXISTS manager_login
 (
 	manager_id serial PRIMARY KEY,
-	manager_email VARCHAR (80) NOT NULL, 
+	manager_email VARCHAR (280) NOT NULL, 
 	manager_password VARCHAR (150) NOT NULL
 );
 
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS manager_info
 (
 	manager_id INT NOT NULL PRIMARY KEY,
 	manager_firstname VARCHAR (25) NOT NULL, 
-	manager_surname VARCHAR(80) NOT NULL,
-	manager_contact_number VARCHAR(80),
+	manager_surname VARCHAR(280) NOT NULL,
+	manager_contact_number VARCHAR(280),
 	manager_image bytea,
 	FOREIGN KEY (manager_id)
 		REFERENCES manager_login(manager_id)
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS coach_login
 (
 
 	coach_id serial PRIMARY KEY,
-	coach_email VARCHAR (80) NOT NULL,
+	coach_email VARCHAR (280) NOT NULL,
 	coach_password VARCHAR(150) NOT NULL
 );
 
@@ -102,8 +102,8 @@ CREATE TABLE IF NOT EXISTS coach_info
 (
 	coach_id INT NOT NULL PRIMARY KEY,
 	coach_firstname VARCHAR(25) NOT NULL,
-	coach_surname VARCHAR(80) NOT NULL,
-	coach_contact VARCHAR(80) NOT NULL,
+	coach_surname VARCHAR(280) NOT NULL,
+	coach_contact VARCHAR(280) NOT NULL,
 	coach_image bytea,
 	FOREIGN KEY (coach_id)
 		REFERENCES coach_login(coach_id)
@@ -121,8 +121,8 @@ CREATE TABLE IF NOT EXISTS physio_info
 (
 	physio_id serial PRIMARY KEY,
 	physio_firstname VARCHAR (30) NOT NULL,
-	physio_surname VARCHAR (50) NOT NULL, 
-	physio_contact_number VARCHAR(30) NOT NULL,
+	physio_surname VARCHAR (280) NOT NULL, 
+	physio_contact_number VARCHAR(280) NOT NULL,
 	physio_image bytea,
 	FOREIGN KEY(physio_id)
 		REFERENCES physio_login(physio_id)

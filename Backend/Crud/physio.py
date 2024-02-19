@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import physio_login, physio_info, player_physio, player_info
 from schema import Physio, PhysioInfo, PhysioNoID, PhysioPlayerBase
-from Crud.security import check_email, check_password_regex, encrypt_password, check_is_valid_name
+from Crud.security import check_email, check_password_regex, encrypt_password, check_is_valid_name, encrypt, decrypt_hex
 
 
 #region physio
@@ -28,8 +28,8 @@ def get_physio_with_info_by_id(db: Session, id: int):
 
         if info_result:
             physio = PhysioNoID(physio_email=result.physio_email,physio_password="Hidden",
-                                  physio_firstname=info_result.physio_firstname,physio_surname=info_result.physio_surname,
-                                  physio_contact_number=info_result.physio_contact_number, physio_image=info_result.physio_image)
+                                  physio_firstname=info_result.physio_firstname,physio_surname=decrypt_hex(info_result.physio_surname),
+                                  physio_contact_number=decrypt_hex(info_result.physio_contact_number), physio_image=info_result.physio_image)
             return physio
         else:
             raise HTTPException(status_code=404, detail="Physio Info not found")
@@ -64,14 +64,14 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
         if not physio_info_to_update:
             new_physio_info = physio_info(physio_id=id,
                                         physio_firstname=physio.physio_firstname,
-                                        physio_surname=physio.physio_surname,
-                                        physio_contact_number=physio.physio_contact_number,
+                                        physio_surname=encrypt(physio.physio_surname),
+                                        physio_contact_number=encrypt(physio.physio_contact_number),
                                         physio_image = physio.physio_image)
             db.add(new_physio_info)
         else:
             physio_info_to_update.physio_firstname = physio.physio_firstname
-            physio_info_to_update.physio_surname = physio.physio_surname
-            physio_info_to_update.physio_contact_number = physio.physio_contact_number
+            physio_info_to_update.physio_surname = encrypt(physio.physio_surname)
+            physio_info_to_update.physio_contact_number = encrypt(physio.physio_contact_number)
             physio_info_to_update.physio_image = physio.physio_image
         
         db.commit()
@@ -106,8 +106,8 @@ def update_physio_info_by_id(db:Session, physio: PhysioInfo, id: int):
         if not physio_info_to_update:
             raise HTTPException(status_code=404, detail="Physio Info not found")
         physio_info_to_update.physio_firstname = physio.physio_firstname
-        physio_info_to_update.physio_surname = physio.physio_surname
-        physio_info_to_update.physio_contact_number = physio.physio_contact_number
+        physio_info_to_update.physio_surname = encrypt(physio.physio_surname)
+        physio_info_to_update.physio_contact_number = encrypt(physio.physio_contact_number)
         physio_info_to_update.physio_image = physio.physio_image
         
         db.commit()
