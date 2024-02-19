@@ -297,7 +297,6 @@ CREATE TABLE IF NOT EXISTS notifications
 	notification_date TIMESTAMP,
 	notification_desc VARCHAR(255),
 	team_id INT NOT NULL,
-	is_read BOOLEAN,
 	user_type VARCHAR(50),
 	FOREIGN KEY (team_id)
 		REFERENCES team(team_id)
