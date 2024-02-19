@@ -104,6 +104,12 @@ class team_physio(Base):
 	__tablename__ = "team_physio"
 	physio_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
+
+class player_physio(Base):
+	__tablename__ = "player_physio"
+	physio_id = Column(Integer, primary_key = True, index = True)
+	player_id = Column(Integer, primary_key = True, index = True)
+	player_injury_reports = Column(LargeBinary, index = True)
  
 class team_player(Base):
 	__tablename__ = "player_team"
@@ -113,7 +119,6 @@ class team_player(Base):
 	player_team_number = Column(Integer, index = True)
 	playing_status = Column(String(25), index = True)
 	lineup_status = Column(String(30), index = True)
-	player_injury_reports = Column(LargeBinary, index = True)
 
 class team_coach(Base):
 	__tablename__ = "team_coach"
@@ -177,7 +182,7 @@ class notifications(Base):
 	notification_date = Column(String(50), index = True)
 	notification_desc = Column(String(255), index = True)
 	team_id = Column(Integer, index = True)
-	poster_id = Column(Integer, index = True)
-	poster_type = Column(String(50), index = True)
+	is_read = Column(Boolean, index = True)
+	user_type = Column(String(50))
 
 

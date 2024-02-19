@@ -1,5 +1,11 @@
 import requests
 
+def test_a_cleanup():
+    url = 'http://127.0.0.1:8000/cleanup_tests'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, headers=headers)
+    assert response.status_code == 200
+
 def test_add_physio():
     url = 'http://127.0.0.1:8000/register_physio'
     headers = {'Content-Type': 'application/json'}

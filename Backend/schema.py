@@ -179,7 +179,6 @@ class TeamPlayerBase(BaseModel):
     player_team_number: int
     playing_status: str
     lineup_status: str
-    player_injury_reports: Optional[bytes]
 
 class TeamCoachBase(BaseModel):
     team_id: int
@@ -189,6 +188,11 @@ class TeamCoachBase(BaseModel):
 class TeamPhysioBase(BaseModel):
     team_id: int
     physio_id: int
+    
+class PhysioPlayerBase(BaseModel):
+    physio_id: int
+    player_id: int
+    player_injury_reports: Optional[bytes]
 
 class TeamPlayerDelete(BaseModel):
     team_id: int
@@ -245,8 +249,8 @@ class NotificationBase(BaseModel):
     notification_date: str
     notification_desc: str
     team_id: int
-    poster_id: int
-    poster_type: str
+    is_read : bool
+    user_type: str
     
 
 

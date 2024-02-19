@@ -133,8 +133,7 @@ def test_add_team_player():
             "team_position": "Full Back",
             "player_team_number": 1,
             "playing_status": "Playing",
-            "lineup_status": "Starting 15",
-            "player_injury_reports": None
+            "lineup_status": "Starting 15"
         }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -164,8 +163,7 @@ def test_get_team_player():
             "team_position": "Full Back",
             "player_team_number": 1,
             "playing_status": "Playing",
-            "lineup_status": "Starting 15",
-            "player_injury_reports": None
+            "lineup_status": "Starting 15"
         }]
         assert response_json == expected_data
 
@@ -186,8 +184,7 @@ def test_update_team_player_file():
         "team_position": "Full Back",
         "player_team_number": 1,
         "playing_status": "Unavailable",
-        "lineup_status": "Starting 15",
-        "player_injury_reports": encoded_string
+        "lineup_status": "Starting 15"
     }
     response = requests.put(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -217,9 +214,8 @@ def test_get_team_player_updated():
             "player_id": 1,
             "team_position": "Full Back",
             "player_team_number": 1,
-            "playing_status": "Playing",
-            "lineup_status": "Starting 15",
-            "player_injury_reports": "Sample PDF content"
+            "playing_status": "Unavailable",
+            "lineup_status": "Starting 15"
         }]
         assert response_json == expected_data
 
