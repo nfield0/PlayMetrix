@@ -107,7 +107,6 @@ def test_add_notification():
         "notification_desc": "Test Description",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
-        "is_read": False,
         "user_type": "manager"
     }
     response = requests.post(url, headers=headers, json=json)
@@ -132,7 +131,6 @@ def test_get_notification():
         "notification_desc": "Test Description",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
-        "is_read": False,
         "user_type": "manager"
         
     }
@@ -150,7 +148,6 @@ def test_update_notification():
         "notification_desc": "Test Description Updated",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
-        "is_read": False,
         "user_type": "manager"
     }
     response = requests.put(url, headers=headers, json=json)

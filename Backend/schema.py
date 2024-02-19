@@ -249,7 +249,6 @@ class NotificationBase(BaseModel):
     notification_date: str
     notification_desc: str
     team_id: int
-    is_read : bool
     user_type: str
     
 

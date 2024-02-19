@@ -182,7 +182,6 @@ class notifications(Base):
 	notification_date = Column(String(50), index = True)
 	notification_desc = Column(String(255), index = True)
 	team_id = Column(Integer, index = True)
-	is_read = Column(Boolean, index = True)
 	user_type = Column(String(50))
 
 
