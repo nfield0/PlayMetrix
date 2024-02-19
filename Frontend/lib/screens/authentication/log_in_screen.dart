@@ -27,186 +27,194 @@ class LogInScreen extends ConsumerWidget {
     bool passwordIsObscure = ref.watch(passwordVisibilityNotifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          'lib/assets/logo.png',
-          width: 150,
-          fit: BoxFit.contain,
+        appBar: AppBar(
+          title: Image.asset(
+            'lib/assets/logo.png',
+            width: 150,
+            fit: BoxFit.contain,
+          ),
+          iconTheme: const IconThemeData(
+            color: AppColours.darkBlue, //change your color here
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
         ),
-        iconTheme: const IconThemeData(
-          color: AppColours.darkBlue, //change your color here
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: Form(
-        key: _formKey,
-        autovalidateMode: AutovalidateMode.always, // Enable auto validation
-        child: Container(
-          padding: const EdgeInsets.all(40.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Log In',
-                  style: TextStyle(
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.always, // Enable auto validation
+            child: Container(
+              padding: const EdgeInsets.all(40.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Log In',
+                      style: TextStyle(
+                        color: AppColours.darkBlue,
+                        fontFamily: AppFonts.gabarito,
+                        fontSize: 36.0,
+                        fontWeight: FontWeight.w700,
+                      )),
+                  const Divider(
                     color: AppColours.darkBlue,
-                    fontFamily: AppFonts.gabarito,
-                    fontSize: 36.0,
-                    fontWeight: FontWeight.w700,
-                  )),
-              const Divider(
-                color: AppColours.darkBlue,
-                thickness: 1.0, // Set the thickness of the line
-                height: 40.0, // Set the height of the line
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: TextFormField(
-                  controller: _emailController,
-                  cursorColor: AppColours.darkBlue,
-                  decoration: const InputDecoration(
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColours.darkBlue),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColours.darkBlue),
-                    ),
-                    labelText: 'Email address',
-                    labelStyle: TextStyle(
-                        color: AppColours.darkBlue,
-                        fontFamily: AppFonts.openSans),
+                    thickness: 1.0, // Set the thickness of the line
+                    height: 40.0, // Set the height of the line
                   ),
-                  validator: (String? value) {
-                    return (value != null && !_emailRegex.hasMatch(value))
-                        ? 'Invalid email format.'
-                        : null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: passwordIsObscure,
-                  cursorColor: AppColours.darkBlue,
-                  decoration: InputDecoration(
-                    focusedErrorBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: TextFormField(
+                      controller: _emailController,
+                      cursorColor: AppColours.darkBlue,
+                      decoration: const InputDecoration(
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColours.darkBlue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColours.darkBlue),
+                        ),
+                        labelText: 'Email address',
+                        labelStyle: TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: AppFonts.openSans),
                       ),
-                    ),
-                    errorBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: AppColours.darkBlue), // Set border color
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                              AppColours.darkBlue), // Set focused border color
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        passwordIsObscure
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: AppColours.darkBlue,
-                      ),
-                      onPressed: () {
-                        // Toggle the visibility of the password
-                        ref.read(passwordVisibilityNotifier.notifier).state =
-                            !passwordIsObscure;
+                      validator: (String? value) {
+                        return (value != null && !_emailRegex.hasMatch(value))
+                            ? 'Invalid email format.'
+                            : null;
                       },
                     ),
-                    labelText: 'Password',
-                    labelStyle: const TextStyle(
-                        color: AppColours.darkBlue,
-                        fontFamily: AppFonts.openSans),
                   ),
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
-                  child: bigButton("Log in", () async {
-                    // sign up functionality
-                    if (_formKey.currentState!.validate()) {
-                      // Only execute if all fields are valid
-                      // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE LOGIN FUNCTION AND HOW TO GET THE USER TYPE
-                      String response = await loginUser(
-                          context,
-                          _emailController.text,
-                          _passwordController.text,
-                          _formKey.toString());
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: passwordIsObscure,
+                      cursorColor: AppColours.darkBlue,
+                      decoration: InputDecoration(
+                        focusedErrorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: AppColours.darkBlue), // Set border color
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: AppColours
+                                  .darkBlue), // Set focused border color
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            passwordIsObscure
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: AppColours.darkBlue,
+                          ),
+                          onPressed: () {
+                            // Toggle the visibility of the password
+                            ref
+                                .read(passwordVisibilityNotifier.notifier)
+                                .state = !passwordIsObscure;
+                          },
+                        ),
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: AppFonts.openSans),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: bigButton("Log in", () async {
+                        // sign up functionality
+                        if (_formKey.currentState!.validate()) {
+                          // Only execute if all fields are valid
+                          // NOTE UNSURE IF THIS IS THE CORRECT PLACE TO CALL THE LOGIN FUNCTION AND HOW TO GET THE USER TYPE
+                          String response = await loginUser(
+                              context,
+                              _emailController.text,
+                              _passwordController.text,
+                              _formKey.toString());
 
-                      if (response != "") {
-                        if (const JsonDecoder()
-                                .convert(response)['user_password'] !=
-                            false) {
-                          int userId =
-                              const JsonDecoder().convert(response)['user_id'];
-                          ref.read(userIdProvider.notifier).state = userId;
+                          if (response != "") {
+                            if (const JsonDecoder()
+                                    .convert(response)['user_password'] !=
+                                false) {
+                              int userId = const JsonDecoder()
+                                  .convert(response)['user_id'];
+                              ref.read(userIdProvider.notifier).state = userId;
 
-                          UserRole userRole = stringToUserRole(
-                              const JsonDecoder()
-                                  .convert(response)['user_type']);
+                              UserRole userRole = stringToUserRole(
+                                  const JsonDecoder()
+                                      .convert(response)['user_type']);
 
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) {
-                          //     return _2FAPopUp(context);
-                          //   },
-                          // );
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) {
+                              //     return _2FAPopUp(context);
+                              //   },
+                              // );
 
-                          ref.read(userRoleProvider.notifier).state = userRole;
-                          if (userRole == UserRole.manager) {
-                            int teamId = await getTeamByManagerId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            scheduleNotificationsForTeamSchedules(teamId);
-                          } else if (userRole == UserRole.coach) {
-                            int teamId = await getTeamByCoachId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            scheduleNotificationsForTeamSchedules(teamId);
-                          } else if (userRole == UserRole.physio) {
-                            int teamId = await getTeamByPhysioId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            scheduleNotificationsForTeamSchedules(teamId);
-                          } else if (userRole == UserRole.player) {
-                            int teamId = await getTeamByPlayerId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            scheduleNotificationsForTeamSchedules(teamId);
+                              ref.read(userRoleProvider.notifier).state =
+                                  userRole;
+                              if (userRole == UserRole.manager) {
+                                int teamId = await getTeamByManagerId(userId);
+                                ref.read(teamIdProvider.notifier).state =
+                                    teamId;
+                                scheduleNotificationsForTeamSchedules(teamId);
+                              } else if (userRole == UserRole.coach) {
+                                int teamId = await getTeamByCoachId(userId);
+                                ref.read(teamIdProvider.notifier).state =
+                                    teamId;
+                                scheduleNotificationsForTeamSchedules(teamId);
+                              } else if (userRole == UserRole.physio) {
+                                int teamId = await getTeamByPhysioId(userId);
+                                ref.read(teamIdProvider.notifier).state =
+                                    teamId;
+                                scheduleNotificationsForTeamSchedules(teamId);
+                              } else if (userRole == UserRole.player) {
+                                int teamId = await getTeamByPlayerId(userId);
+                                ref.read(teamIdProvider.notifier).state =
+                                    teamId;
+                                scheduleNotificationsForTeamSchedules(teamId);
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()),
+                              );
+                              _emailController.clear();
+                              _passwordController.clear();
+                              ref
+                                  .read(passwordVisibilityNotifier.notifier)
+                                  .state = true;
+                            }
                           }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()),
-                          );
-                          _emailController.clear();
-                          _passwordController.clear();
-                          ref.read(passwordVisibilityNotifier.notifier).state =
-                              true;
                         }
-                      }
-                    }
-                  })),
-            ],
+                      })),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _2FAPopUp(BuildContext context) {
