@@ -27,8 +27,8 @@ def insert_notification(db: Session, new_notification: NotificationBase):
                 notification_date=new_notification.notification_date,
                 notification_desc=new_notification.notification_desc,
                 team_id=new_notification.team_id,
-                poster_id=new_notification.poster_id,
-                poster_type=new_notification.poster_type
+                is_read=new_notification.is_read,
+                user_type=new_notification.user_type
             )
             db.add(new_notification_obj)
             db.commit()
@@ -46,8 +46,8 @@ def update_notification(db, updated_notification: NotificationBase, id):
             notification_to_update.notification_date = updated_notification.notification_date
             notification_to_update.notification_desc = updated_notification.notification_desc
             notification_to_update.team_id = updated_notification.team_id
-            notification_to_update.poster_id = updated_notification.poster_id
-            notification_to_update.poster_type = updated_notification.poster_type
+            notification_to_update.is_read = updated_notification.is_read
+            notification_to_update.user_type = updated_notification.user_type
             db.commit()
             return {"message": f"Notification with ID {id} has been updated"}
         else:

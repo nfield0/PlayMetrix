@@ -143,8 +143,8 @@ def register_coach(db, user):
         db.refresh(new_user)
         
         new_user_id = get_user_by_email(db,"coach",user.coach_email)
-        new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=user.coach_surname,
-                                    coach_contact=user.coach_contact, coach_image=user.coach_image)
+        new_user_info = coach_info(coach_id=new_user_id.coach_id, coach_firstname=user.coach_firstname,coach_surname=encrypt(user.coach_surname),
+                                    coach_contact=encrypt(user.coach_contact), coach_image=user.coach_image)
                                     
         db.add(new_user_info)  
         db.commit()

@@ -138,8 +138,6 @@ def delete_player(db: Session, id: int):
         player_info_result = db.query(player_info).filter_by(player_id=id).first()
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
         player_injuries_result = db.query(player_injuries).filter_by(player_id=id).first()
-        
-        print(player_stats_result)
 
         if player_injuries_result:
             db.delete(player_injuries_result) 

@@ -4,6 +4,8 @@ from passlib.context import CryptContext
 from fastapi import HTTPException
 import bcrypt
 #region regex_and_encryption
+from cryptography.fernet import Fernet
+import base64
 
 email_regex = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$'
 password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
@@ -52,6 +54,36 @@ def encrypt_password(password):
     password = fixed_salt + password.encode('utf-8')
 
     return pwd_context.hash(password)
+
+def generate_key():
+    return Fernet.generate_key()
+
+def encode_key(key):
+    return base64.urlsafe_b64encode(key)
+
+key = generate_key()
+encoded_key = encode_key(key)
+
+cipher_suite = Fernet(b'Iw0n7Sg6ih3pIoUMPg1CrVGLqby_5KWaqUnldCSJJlc=')
+
+def encrypt(string):
+    encrypted_string = cipher_suite.encrypt(string.encode('utf-8'))
+    print("encrypted length:" + str(len(encrypted_string)))
+    return encrypted_string
+
+def decrypt(encrypted_string):
+    print("post-storage encrypted length:" + str(len(encrypted_string)))
+    decrypted_string = cipher_suite.decrypt(encrypted_string).decode()
+    return decrypted_string
+
+word = "Hello"
+
+encrypted_word = encrypt(word)
+print("Encrypted word:", encrypted_word)
+
+decrypted_word = decrypt(encrypted_word)
+print("Decrypted word:", decrypted_word)
+
 
 # def encrypt_password(password : str):
 #     password = password.encode()
