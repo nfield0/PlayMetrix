@@ -4,6 +4,7 @@ import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/notification_manager.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
@@ -174,15 +175,19 @@ class LogInScreen extends ConsumerWidget {
                           if (userRole == UserRole.manager) {
                             int teamId = await getTeamByManagerId(userId);
                             ref.read(teamIdProvider.notifier).state = teamId;
+                            scheduleNotificationsForTeamSchedules(teamId);
                           } else if (userRole == UserRole.coach) {
                             int teamId = await getTeamByCoachId(userId);
                             ref.read(teamIdProvider.notifier).state = teamId;
+                            scheduleNotificationsForTeamSchedules(teamId);
                           } else if (userRole == UserRole.physio) {
                             int teamId = await getTeamByPhysioId(userId);
                             ref.read(teamIdProvider.notifier).state = teamId;
+                            scheduleNotificationsForTeamSchedules(teamId);
                           } else if (userRole == UserRole.player) {
                             int teamId = await getTeamByPlayerId(userId);
                             ref.read(teamIdProvider.notifier).state = teamId;
+                            scheduleNotificationsForTeamSchedules(teamId);
                           }
                           Navigator.push(
                             context,

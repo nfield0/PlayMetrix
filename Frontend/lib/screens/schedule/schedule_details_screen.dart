@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/announcement_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
+import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/announcement_data_model.dart';
 import 'package:play_metrix/enums.dart';
@@ -276,7 +277,7 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
 
 Future<AppointmentDataSource> getFilteredDataSource(
     int teamId, int appointmentId) async {
-  List<Appointment> allAppointments = await getTeamSchedules(teamId);
+  List<Appointment> allAppointments = await getTeamAppointments(teamId);
   List<Appointment> filteredAppointments = allAppointments
       .where((appointment) => appointment.id == appointmentId)
       .toList();

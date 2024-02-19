@@ -1,5 +1,7 @@
 // UserRole
 
+import 'package:flutter/material.dart';
+
 enum UserRole {
   manager,
   coach,
@@ -174,6 +176,35 @@ String scheduleTypeToText(ScheduleType scheduleType) {
       return "Meeting";
     case ScheduleType.other:
       return "Other";
+  }
+}
+
+Color getColourByScheduleType(ScheduleType scheduleType) {
+  switch (scheduleType) {
+    case ScheduleType.training:
+      return Colors.blue;
+    case ScheduleType.match:
+      return Colors.green;
+    case ScheduleType.meeting:
+      return Colors.red;
+    case ScheduleType.other:
+      return Colors.yellow;
+    default:
+      return Colors.grey;
+  }
+}
+
+ScheduleType getScheduleTypeByColour(Color colour) {
+  if (colour == Colors.blue) {
+    return ScheduleType.training;
+  } else if (colour == Colors.green) {
+    return ScheduleType.match;
+  } else if (colour == Colors.red) {
+    return ScheduleType.meeting;
+  } else if (colour == Colors.yellow) {
+    return ScheduleType.other;
+  } else {
+    return ScheduleType.other;
   }
 }
 

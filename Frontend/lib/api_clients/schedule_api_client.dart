@@ -5,6 +5,86 @@ import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/data_models/schedule_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+Future<Appointment> getAppointmentByScheduleId(int scheduleId) async {
+  final apiUrl = "$apiBaseUrl/schedules/$scheduleId";
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final schedule = jsonDecode(response.body);
+
+      return Appointment(
+        id: schedule["schedule_id"],
+        startTime: DateTime.parse(schedule["schedule_start_time"]),
+        endTime: DateTime.parse(schedule["schedule_end_time"]),
+        subject: schedule["schedule_title"],
+        location: schedule["schedule_location"],
+        color: getColourByScheduleType(
+            textToScheduleType(schedule["schedule_type"])),
+        notes: schedule["schedule_alert_time"],
+      );
+    } else {
+      print("Schedule not found");
+    }
+  } catch (e) {
+    print(e);
+  }
+  throw Exception("Schedule not found");
+}
+
+Future<List<Appointment>> getTeamAppointments(int teamId) async {
+  final apiUrl = "$apiBaseUrl/team_schedules/$teamId";
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final schedules = jsonDecode(response.body);
+
+      List<Appointment> appointments = [];
+
+      for (var schedule in schedules) {
+        appointments
+            .add(await getAppointmentByScheduleId(schedule["schedule_id"]));
+      }
+
+      return appointments;
+    } else {
+      print("Schedules not found");
+    }
+  } catch (e) {
+    print(e);
+  }
+  throw Exception("Schedules not found");
+}
+
+Future<List<Schedule>> getTeamSchedules(int teamId) async {
+  final apiUrl = "$apiBaseUrl/team_schedules/$teamId";
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final schedules = jsonDecode(response.body);
+
+      List<Schedule> appointments = [];
+
+      for (var schedule in schedules) {
+        appointments.add(await getScheduleById(schedule["schedule_id"]));
+      }
+
+      return appointments;
+    } else {
+      print("Schedules not found");
+    }
+  } catch (e) {
+    print(e);
+  }
+  throw Exception("Schedules not found");
+}
 
 Future<int> addSchedule(
     String title,

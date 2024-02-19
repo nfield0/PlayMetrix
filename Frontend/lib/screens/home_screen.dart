@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/main.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
@@ -15,7 +13,6 @@ import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/settings.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -75,7 +72,7 @@ class HomeScreen extends ConsumerWidget {
                               horizontal: 25, vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
                                 "Hey, ${profile.firstName}!",
@@ -123,9 +120,6 @@ class HomeScreen extends ConsumerWidget {
                                   emptySection(Icons.notifications_none,
                                       "No notifications"),
 
-                                  bigButton("test notif", () async {
-                                    await _showNotificationForTeam(2, ref);
-                                  })
                                   // announcementBox(
                                   //   icon: Icons.cancel,
                                   //   iconColor: AppColours.red,
@@ -165,31 +159,6 @@ class HomeScreen extends ConsumerWidget {
             return const Text('No data available');
           }
         });
-  }
-
-  Future<void> _showNotificationForTeam(int teamId, WidgetRef ref) async {
-    // Check if the notification should be sent to this user
-    if (shouldSendNotificationToUser(teamId, ref)) {
-      const AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails('your channel id', 'your channel name',
-              channelDescription: 'your channel description',
-              importance: Importance.max,
-              priority: Priority.high,
-              ticker: 'ticker');
-      const NotificationDetails notificationDetails =
-          NotificationDetails(android: androidNotificationDetails);
-      await flutterLocalNotificationsPlugin.show(
-          0, 'plain title', 'plain body', notificationDetails,
-          payload: 'item x');
-    }
-  }
-
-  bool shouldSendNotificationToUser(int teamId, WidgetRef ref) {
-    if (ref.read(teamIdProvider.notifier).state == teamId) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   Widget _buildMenuItem(String text, IconData icon, Color colour,
