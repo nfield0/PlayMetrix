@@ -94,7 +94,7 @@ Future<void> scheduleNotificationsForTeamSchedules(int teamId) async {
     if (alertTime.isAfter(DateTime.now())) {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         schedule.schedule_id,
-        'Upcoming ${schedule.schedule_type}: ${schedule.schedule_title}',
+        schedule.schedule_title,
         formatDateTimeRange(
             schedule.schedule_start_time, schedule.schedule_end_time),
         tz.TZDateTime.from(alertTime, tz.local),
