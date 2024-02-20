@@ -49,8 +49,8 @@ def register_player(db, user):
     db.commit()
     db.refresh(new_user)
     new_user_id = get_user_by_email(db,"player",user.player_email)
-    new_user_info = player_info(player_id=new_user_id.player_id, player_firstname=user.player_firstname,player_surname=user.player_surname,
-                                player_dob=user.player_dob,player_contact_number=user.player_contact_number,
+    new_user_info = player_info(player_id=new_user_id.player_id, player_firstname=user.player_firstname,player_surname=encrypt(user.player_surname),
+                                player_dob=user.player_dob,player_contact_number=encrypt(user.player_contact_number),
                                 player_image=user.player_image,player_height=user.player_height,player_gender=user.player_gender)
                                    
     db.add(new_user_info)
