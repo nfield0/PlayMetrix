@@ -100,6 +100,7 @@ class PasswordSignUpScreen extends ConsumerWidget {
                               obscureText: passwordIsObscure,
                               cursorColor: AppColours.darkBlue,
                               decoration: InputDecoration(
+                                errorMaxLines: 3,
                                 focusedErrorBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Colors.red,
@@ -143,7 +144,7 @@ class PasswordSignUpScreen extends ConsumerWidget {
                               validator: (String? value) {
                                 return (value != null &&
                                         !_passwordRegex.hasMatch(value))
-                                    ? 'Password must contain at least 8 characters,\na number, and a symbol.'
+                                    ? 'Password must contain at least 8 characters, a number, and a symbol.'
                                     : null;
                               },
                             ),
