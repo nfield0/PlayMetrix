@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
@@ -52,9 +55,30 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
     });
   }
 
+  PlatformFile? injuryReportFile;
+
   @override
   Widget build(BuildContext context) {
-    Future<void> pickInjuryReportPdf() async {}
+    Future<void> pickInjuryReportPdf() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result != null) {
+        if (result.files.isNotEmpty) {
+          PlatformFile file = result.files.single;
+
+          Uint8List bytes = result.files.single.bytes!;
+
+          setState(() {
+            injuryReportFile = file;
+          });
+          // Example: You can send 'bytes' to a function for further processing
+          // processPdfBytes(bytes);
+        }
+      }
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -157,8 +181,28 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                   selectedDateOfRecovery = date;
                                 });
                               }),
-                              const SizedBox(height: 25),
-                              underlineButtonTransparent("Upload injury report", () { }),
+                              const SizedBox(height: 15),
+                              injuryReportFile != null
+                                  ? Column(children: [
+                                      filePill(
+                                          injuryReportFile!.name,
+                                          formatBytes(injuryReportFile!.size),
+                                          Icons.file_open,
+                                          () {}),
+                                      const SizedBox(height: 15),
+                                      underlineButtonTransparentRedGabarito(
+                                          "Remove injury report", () {
+                                        setState(() {
+                                          injuryReportFile = null;
+                                        });
+                                      })
+                                    ])
+                                  : Center(
+                                      child: underlineButtonTransparent(
+                                          "Upload injury report", () {
+                                        pickInjuryReportPdf();
+                                      }),
+                                    ),
                               const SizedBox(height: 25),
                               bigButton("Add Injury", () {
                                 if (_formKey.currentState!.validate()) {

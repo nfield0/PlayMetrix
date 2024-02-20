@@ -34,132 +34,136 @@ class HomeScreen extends ConsumerWidget {
           } else if (snapshot.hasData) {
             Profile profile = snapshot.data!;
 
-            return Scaffold(
-              extendBodyBehindAppBar: true,
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      smallPill(userRoleText(userRole)),
-                      profileDropdown(context, profile, userRole, ref),
-                    ]),
-                iconTheme: const IconThemeData(
-                  color: Colors.white, //change your color here
-                ),
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                foregroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-              ),
-              body: Stack(
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('lib/assets/signup_page_bg.png'),
-                        fit: BoxFit.fill,
-                      ),
+            return PopScope(
+                canPop: false,
+                child: Scaffold(
+                  extendBodyBehindAppBar: true,
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          smallPill(userRoleText(userRole)),
+                          profileDropdown(context, profile, userRole, ref),
+                        ]),
+                    iconTheme: const IconThemeData(
+                      color: Colors.white, //change your color here
                     ),
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    foregroundColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
                   ),
-                  Positioned(
-                      top: kToolbarHeight + 70,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 5),
-                                child: Text(
-                                  "Hey, ${profile.firstName}!",
-                                  style: const TextStyle(
-                                    fontFamily: AppFonts.gabarito,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 36,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 25),
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.2,
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(left: 0),
-                                      child: _menu(userRole, context)))
-                            ],
-                          ))),
-                  Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        child: SingleChildScrollView(
+                  body: Stack(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('lib/assets/signup_page_bg.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                          top: kToolbarHeight + 70,
+                          left: 0,
+                          right: 0,
                           child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 30),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  topRight: Radius.circular(30),
-                                ),
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  const Text("Latest Notifications",
-                                      style: TextStyle(
-                                        color: AppColours.darkBlue,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 5),
+                                    child: Text(
+                                      "Hey, ${profile.firstName}!",
+                                      style: const TextStyle(
                                         fontFamily: AppFonts.gabarito,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 30,
-                                      )),
-                                  const SizedBox(height: 70),
-                                  emptySection(Icons.notifications_none,
-                                      "No notifications"),
-
-                                  // announcementBox(
-                                  //   icon: Icons.cancel,
-                                  //   iconColor: AppColours.red,
-                                  //   title: "Lucy Field is injured",
-                                  //   description:
-                                  //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-                                  //   date: "2024-02-03T14:27:00Z",
-                                  //   onDeletePressed: () {},
-                                  // ),
-                                  // announcementBox(
-                                  //   icon: Icons.cancel,
-                                  //   iconColor: AppColours.red,
-                                  //   title: "Lucy Field is injured",
-                                  //   description:
-                                  //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-                                  //   date: "2024-02-03T14:27:00Z",
-                                  //   onDeletePressed: () {},
-                                  // ),
-                                  // announcementBox(
-                                  //   icon: Icons.cancel,
-                                  //   iconColor: AppColours.red,
-                                  //   title: "Lucy Field is injured",
-                                  //   description:
-                                  //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-                                  //   date: "2024-02-03T14:27:00Z",
-                                  //   onDeletePressed: () {},
-                                  // ),
+                                        color: Colors.white,
+                                        fontSize: 36,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 25),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.2,
+                                      child: Center(
+                                          child: _menu(userRole, context)))
                                 ],
-                              )),
-                        ),
-                      ))
-                ],
-              ),
-              bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2),
-            );
+                              ))),
+                      Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            child: SingleChildScrollView(
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30, vertical: 30),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const Text("Latest Notifications",
+                                          style: TextStyle(
+                                            color: AppColours.darkBlue,
+                                            fontFamily: AppFonts.gabarito,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30,
+                                          )),
+                                      const SizedBox(height: 70),
+                                      emptySection(Icons.notifications_none,
+                                          "No notifications"),
+
+                                      // announcementBox(
+                                      //   icon: Icons.cancel,
+                                      //   iconColor: AppColours.red,
+                                      //   title: "Lucy Field is injured",
+                                      //   description:
+                                      //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
+                                      //   date: "2024-02-03T14:27:00Z",
+                                      //   onDeletePressed: () {},
+                                      // ),
+                                      // announcementBox(
+                                      //   icon: Icons.cancel,
+                                      //   iconColor: AppColours.red,
+                                      //   title: "Lucy Field is injured",
+                                      //   description:
+                                      //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
+                                      //   date: "2024-02-03T14:27:00Z",
+                                      //   onDeletePressed: () {},
+                                      // ),
+                                      // announcementBox(
+                                      //   icon: Icons.cancel,
+                                      //   iconColor: AppColours.red,
+                                      //   title: "Lucy Field is injured",
+                                      //   description:
+                                      //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
+                                      //   date: "2024-02-03T14:27:00Z",
+                                      //   onDeletePressed: () {},
+                                      // ),
+                                    ],
+                                  )),
+                            ),
+                          ))
+                    ],
+                  ),
+                  bottomNavigationBar:
+                      roleBasedBottomNavBar(userRole, context, 2),
+                ));
           } else {
             return const Text('No data available');
           }
@@ -171,7 +175,9 @@ class HomeScreen extends ConsumerWidget {
     return InkWell(
         onTap: onPressed,
         child: SizedBox(
-            width: 190,
+            width: MediaQuery.of(context).size.width * 0.5 > 200
+                ? 300
+                : MediaQuery.of(context).size.width * 0.5,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               decoration: BoxDecoration(

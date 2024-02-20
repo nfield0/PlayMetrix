@@ -190,3 +190,14 @@ class PlayerInjuries {
     return 'PlayerInjuries{injury_id: $injury_id, date_of_injury: $date_of_injury, date_of_recovery: $date_of_recovery, player_id: $player_id}';
   }
 }
+
+String formatBytes(int bytes) {
+  const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  var i = 0;
+  double size = bytes.toDouble();
+  while (size > 1024) {
+    size /= 1024;
+    i++;
+  }
+  return '${size.toStringAsFixed(2)} ${suffixes[i]}';
+}
