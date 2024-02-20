@@ -7,8 +7,7 @@ Future<void> addNotification({
   required String title,
   required String desc,
   required int teamId,
-  required int posterId,
-  required UserRole posterType,
+  required UserRole recieverUserRole
 }) async {
   const apiUrl = "$apiBaseUrl/notification";
 
@@ -22,8 +21,7 @@ Future<void> addNotification({
           "notification_desc": desc,
           "notification_date": DateTime.now().toIso8601String(),
           "team_id": teamId,
-          "poster_id": posterId,
-          "poster_type": userRoleText(posterType).toLowerCase()
+          "user_type": userRoleText(recieverUserRole).toLowerCase()
         }));
 
     if (response.statusCode == 200) {
