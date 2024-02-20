@@ -1,7 +1,11 @@
-
-
 import requests
 
+
+def test_a_cleanup():
+    url = 'http://127.0.0.1:8000/cleanup_tests'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, headers=headers)
+    assert response.status_code == 200   
 
 def test_adc_manager():
     url = 'http://127.0.0.1:8000/register_manager'
@@ -95,106 +99,74 @@ def test_add_team():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-
-def test_add_physio():
-    url = 'http://127.0.0.1:8000/register_physio'
+def test_add_notification():
+    url = 'http://127.0.0.1:8000/notification'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "physio_email": "testphysio@gmail.com",
-        "physio_password": "Testpassword123!",
-        "physio_firstname": "test",
-        "physio_surname": "tester",
-        "physio_contact_number": "012345",
-        "physio_image": ""
+        "notification_title": "Test Notification",
+        "notification_desc": "Test Description",
+        "notification_date": "2024-01-21T00:00:00",
+        "team_id": 1,
+        "user_type": "manager"
     }
     response = requests.post(url, headers=headers, json=json)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-
     try:
         response_json = response.json()
-        assert response_json.get("detail") == "Physio Registered Successfully"
+        assert response_json.get("message") == "Notification inserted successfully"
         assert 'id' in response_json
         assert response_json['id'] == 1
-    
-    except(ValueError, AssertionError) as e:
+        assert response.status_code == 200
+    except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_get_notification():
+    url = 'http://127.0.0.1:8000/notification/1'
+    headers = {'Content-Type': 'application/json'}
+    
+    response = requests.get(url, headers=headers)
+    try:
+        expected_json = {
+        "notification_id": 1,
+        "notification_title": "Test Notification",
+        "notification_desc": "Test Description",
+        "notification_date": "2024-01-21T00:00:00",
+        "team_id": 1,
+        "user_type": "manager"
+        
+    }
+        response_json = response.json()
+        assert response_json == expected_json
+        assert response.status_code == 200
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
-
-def test_add_team_physio():
-    url = 'http://127.0.0.1:8000/team_physio'
+def test_update_notification():
+    url = 'http://127.0.0.1:8000/notification/1'
     headers = {'Content-Type': 'application/json'}
     json = {
+        "notification_title": "Test Notification Updated",
+        "notification_desc": "Test Description Updated",
+        "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
-        "physio_id": 1
+        "user_type": "manager"
     }
-    response = requests.post(url, headers=headers, json=json)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-
+    response = requests.put(url, headers=headers, json=json)
     try:
         response_json = response.json()
-        assert response_json.get("message") == "Physio with ID 1 has been added to team with ID 1"
-
-    except(ValueError, AssertionError) as e:
+        assert response_json.get("message") == "Notification with ID 1 has been updated"
+        assert response.status_code == 200
+    except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-def test_get_team_physio():
-    url = 'http://127.0.0.1:8000/team_physio/1'
-    headers = {'Content-Type': 'application/json'}
 
-    response = requests.get(url, headers=headers)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    expected_data = [{
-        "team_id": 1,
-        "physio_id": 1,
-    }]
-    try:
-        response_json = response.json()
-        assert response_json == expected_data
+def test_delete_notification():
+    url = 'http://127.0.0.1:8000/notification/1'
+    headers = {'Content-Type': 'application/json'}
     
-    except(ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
-
-def test_get_physios_by_team_id():
-    url = 'http://127.0.0.1:8000/physios_team/1'
-    headers = {'Content-Type': 'application/json'}
-
-    response = requests.get(url, headers=headers)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    expected_data = [{
-        "team_id": 1,
-        "physio_id": 1
-    }]
-    try:
-        response_json = response.json()
-        assert response_json == expected_data
-    
-    except(ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
-
-
-
-
-def test_delete_team_physio():
-    url = 'http://127.0.0.1:8000/team_physio/1'
-    headers = {'Content-Type': 'application/json'}
-
     response = requests.delete(url, headers=headers)
-    #assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
     try:
         response_json = response.json()
-        assert response_json.get("message") == "Physio from Team with ID 1 has been deleted"
-    
-    except(ValueError, AssertionError) as e:
+        assert response_json.get("message") == "Notification deleted successfully"
+        assert response.status_code == 200
+    except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
-
-def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
-    headers = {'Content-Type': 'application/json'}
-    response = requests.delete(url, headers=headers)
-    assert response.status_code == 200

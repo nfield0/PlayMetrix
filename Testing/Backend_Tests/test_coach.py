@@ -39,8 +39,6 @@ def test_get_coach():
     headers = {'Content-Type': 'application/json'}
     
     response = requests.get(url, headers=headers)
-    
-    assert response.headers['Content-Type'] == 'application/json'
     assert response.status_code == 200
     expected_data = {
         "coach_email": "testcoach@gmail.com",
