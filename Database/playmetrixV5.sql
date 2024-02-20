@@ -7,10 +7,9 @@ manager_login, manager_info,
 coach_login, coach_info,
 physio_login, physio_info,
 sport, league, team, 
-injuries, player_injuries,
-team_physio, player_team, team_coach, player_physio,
-schedule, player_schedule, team_schedule,
-announcements;
+injuries, team_physio, player_team, team_coach, player_physio,
+player_injuries, schedule, player_schedule, team_schedule,
+announcements, notifications;
 */
 
 
@@ -175,29 +174,36 @@ CREATE TABLE IF NOT EXISTS  injuries
     expected_recovery_time VARCHAR(70)
 );
 
-CREATE TABLE IF NOT EXISTS player_injuries 
-(
-	injury_id INT NOT NULL,
-	date_of_injury DATE NOT NULL, 
-	date_of_recovery DATE NOT NULL,
-	player_id INT NOT NULL, 
-	FOREIGN KEY(injury_id)
-		REFERENCES injuries(injury_id),
-	FOREIGN KEY (player_id)
-		REFERENCES player_info(player_id)
-);
 
 /*TABLES RELATING TO THE TEAM*/
 CREATE TABLE IF NOT EXISTS player_physio
 (
 	player_id INT NOT NULL,
 	physio_id INT NOT NULL, 
+	report_id serial PRIMARY KEY,
 	player_injury_reports bytea,
-	PRIMARY KEY (player_id, physio_id),
 	FOREIGN KEY (player_id) 
 		REFERENCES player_info (player_id),
 	FOREIGN KEY (physio_id)
 		REFERENCES physio_info(physio_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS player_injuries 
+(
+	report_id INT,
+	injury_id INT NOT NULL,
+	date_of_injury DATE NOT NULL, 
+	date_of_recovery DATE NOT NULL,
+	player_id INT NOT NULL,
+	FOREIGN KEY (report_id)
+		REFERENCES player_physio(report_id), 
+	FOREIGN KEY(injury_id)
+		REFERENCES injuries(injury_id),
+	FOREIGN KEY (player_id)
+		REFERENCES player_info(player_id),
+	FOREIGN KEY(report_id)
+		REFERENCES player_physio(report_id)
 );
 
 CREATE TABLE IF NOT EXISTS team_physio
@@ -218,7 +224,6 @@ CREATE TABLE IF NOT EXISTS player_team
     player_team_number INT,
     playing_status VARCHAR(25),
     lineup_status VARCHAR(30),
-	player_injury_reports bytea,
 	PRIMARY KEY (player_id, team_id),
 	FOREIGN KEY (player_id)
 		REFERENCES player_info(player_id),
