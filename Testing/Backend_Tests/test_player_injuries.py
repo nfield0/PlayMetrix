@@ -64,7 +64,8 @@ def test_add_player_injury():
         "injury_id": 1,
         "date_of_injury": "2021-04-01",
         "date_of_recovery": "2021-05-01",
-        "player_id": 1
+        "player_id": 1,
+        "report_id": None
         
     }
     response = requests.post(url, headers=headers, json=json)
@@ -73,7 +74,7 @@ def test_add_player_injury():
 
     try:
         response_json = response.json()
-        assert response_json.get("message") == "Player Injury inserted successfully"
+        assert response_json == "Player Injury inserted successfully"
         assert 'id' in response_json
         assert response_json['id'] == 1
         assert response.status_code == 200  

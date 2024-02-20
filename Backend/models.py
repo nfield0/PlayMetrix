@@ -12,19 +12,19 @@ from database import Base
 class player_login(Base):
 	__tablename__ = "player_login"
 	player_id = Column(Integer, primary_key = True, index = True)
-	player_email = Column(String(80), index = True, unique = True)
+	player_email = Column(String(280), index = True, unique = True)
 	player_password = Column(String(150), index = True)
 
 class player_info(Base): 
 	__tablename__ = "player_info"
 	player_id = Column(Integer, primary_key = True, index = True)
 	player_firstname = Column(String(25), index= True) 
-	player_surname = Column(String(80), index= True) 
+	player_surname = Column(String(280), index= True) 
 	player_dob = Column(Date, index= True) 
-	player_contact_number = Column(String(80), index= True)
+	player_contact_number = Column(String(280), index= True)
 	player_image = Column(LargeBinary, index= True)
 	player_height = Column(String(10))
-	player_gender = Column(String(80))   
+	player_gender = Column(String(280))   
 
 class player_injuries(Base): 
     __tablename__ = "player_injuries"
@@ -32,6 +32,7 @@ class player_injuries(Base):
     date_of_injury = Column(Date, index = True)
     date_of_recovery = Column(Date, index = True)
     player_id = Column(Integer, index = True)
+    report_id = Column(Integer, index = True)
 
 class injuries(Base): 
 	__tablename__ = "injuries"
@@ -60,8 +61,8 @@ class manager_info(Base):
     __tablename__ = "manager_info"
     manager_id = Column(Integer, primary_key = True, index = True)
     manager_firstname = Column(String(25), index= True)
-    manager_surname = Column(String(80), index= True)
-    manager_contact_number = Column(String(80), index= True)
+    manager_surname = Column(String(280), index= True)
+    manager_contact_number = Column(String(280), index= True)
     manager_image = Column(LargeBinary, index= True)
 
 class sport(Base):
@@ -89,21 +90,28 @@ class team(Base):
 class physio_login(Base):
 	__tablename__ = "physio_login"
 	physio_id = Column(Integer, primary_key = True, index = True)
-	physio_email = Column(String(80), index = True, unique = True)
+	physio_email = Column(String(280), index = True, unique = True)
 	physio_password = Column(String(150), index = True)
  
 class physio_info(Base):
 	__tablename__ = "physio_info"
 	physio_id = Column(Integer, primary_key = True, index = True)
 	physio_firstname = Column(String(25), index = True)
-	physio_surname = Column(String(80), index = True)
-	physio_contact_number = Column(String(80), index = True)
+	physio_surname = Column(String(280), index = True)
+	physio_contact_number = Column(String(280), index = True)
 	physio_image = Column(LargeBinary, index = True)
 
 class team_physio(Base):
 	__tablename__ = "team_physio"
 	physio_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
+
+class player_physio(Base):
+	__tablename__ = "player_physio"
+	report_id = Column(Integer, primary_key = True, index = True)
+	physio_id = Column(Integer, index = True)
+	player_id = Column(Integer, index = True)
+	player_injury_reports = Column(LargeBinary, index = True)
  
 class team_player(Base):
 	__tablename__ = "player_team"
@@ -123,15 +131,15 @@ class team_coach(Base):
 class coach_login(Base):
 	__tablename__ = "coach_login"
 	coach_id = Column(Integer, primary_key = True, index = True)
-	coach_email = Column(String(80), index = True, unique = True)
+	coach_email = Column(String(280), index = True, unique = True)
 	coach_password = Column(String(150), index = True)
 
 class coach_info(Base):
 	__tablename__ = "coach_info"
 	coach_id = Column(Integer, primary_key = True, index = True)
 	coach_firstname = Column(String(25), index = True)
-	coach_surname = Column(String(80), index = True)
-	coach_contact = Column(String(80), index = True)
+	coach_surname = Column(String(280), index = True)
+	coach_contact = Column(String(280), index = True)
 	coach_image = Column(LargeBinary, index = True)
 
 
@@ -176,6 +184,6 @@ class notifications(Base):
 	notification_date = Column(String(50), index = True)
 	notification_desc = Column(String(255), index = True)
 	team_id = Column(Integer, index = True)
-	poster_id = Column(Integer, index = True)
-	poster_type = Column(String(50), index = True)
+	user_type = Column(String(50))
+
 

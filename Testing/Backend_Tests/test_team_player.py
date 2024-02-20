@@ -1,6 +1,6 @@
 
 import requests
-
+import base64
 
 def test_adc_manager():
     url = 'http://127.0.0.1:8000/register_manager'
@@ -170,18 +170,22 @@ def test_get_team_player():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-
-def test_update_team_player():
+def test_update_team_player_file():
     url = 'http://127.0.0.1:8000/team_player'
     headers = {'Content-Type': 'application/json'}
+    
+    with open("Backend\Sample.pdf", "rb") as pdf_file:
+        encoded_string = base64.b64encode(pdf_file.read())
+        encoded_string = encoded_string.decode()     
+    #file_encoded = base64.b64encode(file.read())
     json = {
-            "team_id": 1,
-            "player_id": 1,
-            "team_position": "Full Back",
-            "player_team_number": 1,
-            "playing_status": "Unavailable",
-            "lineup_status": "Starting 15"
-        }
+        "team_id": 1,
+        "player_id": 1,
+        "team_position": "Full Back",
+        "player_team_number": 1,
+        "playing_status": "Unavailable",
+        "lineup_status": "Starting 15"
+    }
     response = requests.put(url, headers=headers, json=json)
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
@@ -196,6 +200,27 @@ def test_update_team_player():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_get_team_player_updated():
+    url = 'http://127.0.0.1:8000/team_player/1'
+    headers = {'Content-Type': 'application/json'}  
+    response = requests.get(url, headers=headers)
+    
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = [{
+            "team_id": 1,
+            "player_id": 1,
+            "team_position": "Full Back",
+            "player_team_number": 1,
+            "playing_status": "Unavailable",
+            "lineup_status": "Starting 15"
+        }]
+        assert response_json == expected_data
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 def test_get_players_by_team_id():
     url = 'http://127.0.0.1:8000/players_team/1'

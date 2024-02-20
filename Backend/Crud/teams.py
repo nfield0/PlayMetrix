@@ -6,7 +6,7 @@ from Crud.user import *
 from Crud.manager import *
 from Crud.player import *
 from Crud.physio import *
-
+import base64
 #region team
         
 def get_teams(db: Session):
@@ -103,6 +103,7 @@ def get_players_by_team_id(db: Session, id: int):
         return result
     except Exception as e:
         return(f"Error retrieving team players: {e}")
+    
     
 def add_player_to_team(db:Session, team_player_obj: TeamPlayerBase):
     try:

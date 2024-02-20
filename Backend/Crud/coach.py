@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from models import coach_login, coach_info, team_coach
 from schema import Coach, CoachCreate, CoachInfo, TeamCoachBase
 from Crud.crud import check_email, check_password_regex, check_is_valid_name, encrypt_password
-
+from Crud.security import decrypt_hex, encrypt
 #region coaches
     
 def get_all_coaches(db: Session):
@@ -26,15 +26,19 @@ def get_coach_with_info_by_id(db: Session, id: int):
         info_result = db.query(coach_info).filter_by(coach_id=id).first()
 
         if info_result:
+            print(type(info_result.coach_surname))
             coach = CoachCreate(coach_email=result.coach_email,coach_password="Hidden",
-                                  coach_firstname=info_result.coach_firstname,coach_surname=info_result.coach_surname,
-                                  coach_contact=info_result.coach_contact, coach_image=info_result.coach_image)
+                                  coach_firstname=info_result.coach_firstname,coach_surname=decrypt_hex(info_result.coach_surname),
+                                  coach_contact=decrypt_hex(info_result.coach_contact), coach_image=info_result.coach_image)
             return coach
         else:
             raise HTTPException(status_code=404, detail="Coach Info not found")
-            
+    except HTTPException as http_err:
+        raise http_err        
     except Exception as e:
-        return(f"Error retrieving coach: {e}")
+        print(f"Error retrieving coach: {e}")  
+        raise
+    
 
 def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
     try:        
@@ -59,7 +63,7 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
         if not coach_info_to_update:
             new_coach_info = coach_info(coach_id=id,
                                         coach_firstname=coach.coach_firstname,
-                                        coach_surname=coach.coach_surname,
+                                        coach_surname=encrypt(coach.coach_surname),
                                         coach_contact=coach.coach_contact)
             db.add(new_coach_info)
         else:
@@ -101,7 +105,7 @@ def update_coach_info_by_id(db:Session, coach: CoachInfo, id: int):
         if not coach_info_to_update:
             raise HTTPException(status_code=404, detail="Coach Info not found")
         coach_info_to_update.coach_firstname = coach.coach_firstname
-        coach_info_to_update.coach_surname = coach.coach_surname
+        coach_info_to_update.coach_surname = encrypt(coach.coach_surname)
         coach_info_to_update.coach_contact = coach.coach_contact
         if coach.coach_image is not None:
             coach_info_to_update.coach_image = coach.coach_image

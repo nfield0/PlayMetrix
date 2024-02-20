@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import player_login, player_info, player_stats, player_injuries
 from schema import PlayerBase, PlayerInfo, PlayerStat
-from Crud.security import check_email, check_password_regex, encrypt_password
+from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt
 
 #region players
 
@@ -36,7 +36,11 @@ def get_player_by_id(db: Session, id: int):
 def get_player_info_by_id(db:Session, id: int):
     try:
         player = db.query(player_info).filter_by(player_id=id).first()
-        return player
+        player_decrypted = PlayerInfo(player_id=player.player_id, player_firstname=player.player_firstname,
+                                        player_surname=decrypt_hex(player.player_surname), player_dob=str(player.player_dob),
+                                        player_contact_number=decrypt_hex(player.player_contact_number), player_image=player.player_image,
+                                        player_height=player.player_height, player_gender=player.player_gender)
+        return player_decrypted
     except Exception as e:
         return(f"Error retrieving player info: {e}")
     
@@ -60,9 +64,9 @@ def update_player_info_by_id(db:Session, player: PlayerInfo, id: int):
         player_info_to_update = db.query(player_info).filter_by(player_id=id).first()
         new_player_info = player_info(player_id=player.player_id,
                                       player_firstname=player.player_firstname,
-                                      player_surname=player.player_surname,
+                                      player_surname=encrypt(player.player_surname),
                                       player_dob=player.player_dob,
-                                      player_contact_number=player.player_contact_number,
+                                      player_contact_number=encrypt(player.player_contact_number),
                                       player_image=player.player_image,
                                       player_height=player.player_height,
                                       player_gender=player.player_gender
@@ -73,9 +77,9 @@ def update_player_info_by_id(db:Session, player: PlayerInfo, id: int):
         else:
         
             player_info_to_update.player_firstname = player.player_firstname
-            player_info_to_update.player_surname = player.player_surname
+            player_info_to_update.player_surname = encrypt(player.player_surname)
             player_info_to_update.player_dob = player.player_dob
-            player_info_to_update.player_contact_number = player.player_contact_number
+            player_info_to_update.player_contact_number = encrypt(player.player_contact_number)
             player_info_to_update.player_image = player.player_image
             player_info_to_update.player_height = player.player_height
             player_info_to_update.player_gender = player.player_gender
@@ -138,8 +142,6 @@ def delete_player(db: Session, id: int):
         player_info_result = db.query(player_info).filter_by(player_id=id).first()
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
         player_injuries_result = db.query(player_injuries).filter_by(player_id=id).first()
-        
-        print(player_stats_result)
 
         if player_injuries_result:
             db.delete(player_injuries_result) 

@@ -22,6 +22,7 @@ from Crud.notification import *
     
 def cleanup(db: Session):
     try:       
+        db.query(player_physio).delete()
         db.query(notifications).delete()
         db.query(team_schedule).delete()
         db.query(player_schedule).delete()

@@ -149,7 +149,7 @@ def test_get_team_physio():
     assert response.headers['Content-Type'] == 'application/json'
     expected_data = [{
         "team_id": 1,
-        "physio_id": 1
+        "physio_id": 1,
     }]
     try:
         response_json = response.json()

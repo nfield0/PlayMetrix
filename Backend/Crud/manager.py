@@ -3,8 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import manager_login, manager_info
 from schema import Manager, ManagerInfo, ManagerNoID
-from Crud.security import check_email, check_password_regex, encrypt_password
-
+from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt
 
 #region managers
 
@@ -24,8 +23,8 @@ def get_all_manager_info_by_id(db:Session, id: int):
 
         if manager_info_result:
             manager = ManagerNoID(manager_email=login_info.manager_email,manager_password="Hidden",
-                                  manager_firstname=manager_info_result.manager_firstname,manager_surname=manager_info_result.manager_surname,
-                                  manager_contact_number=manager_info_result.manager_contact_number,manager_image=manager_info_result.manager_image)
+                                  manager_firstname=manager_info_result.manager_firstname,manager_surname=decrypt_hex(manager_info_result.manager_surname),
+                                  manager_contact_number=decrypt_hex(manager_info_result.manager_contact_number),manager_image=manager_info_result.manager_image)
             
         else:
             manager = Manager(manager_id=login_info.manager_id,manager_email=login_info.manager_email,manager_password="Hidden")
@@ -65,14 +64,14 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
         if not manager_info_to_update:
             new_manager_info = manager_info(manager_id=id,
                                         manager_firstname=manager.manager_firstname,
-                                        manager_surname=manager.manager_surname,
-                                        manager_contact_number=manager.manager_contact_number,
+                                        manager_surname=encrypt(manager.manager_surname),
+                                        manager_contact_number=encrypt(manager.manager_contact_number),
                                         manager_image = manager.manager_image)
             db.add(new_manager_info)
         else:
             manager_info_to_update.manager_firstname = manager.manager_firstname
-            manager_info_to_update.manager_surname = manager.manager_surname
-            manager_info_to_update.manager_contact_number = manager.manager_contact_number
+            manager_info_to_update.manager_surname = encrypt(manager.manager_surname)
+            manager_info_to_update.manager_contact_number = encrypt(manager.manager_contact_number)
             manager_info_to_update.manager_image = manager.manager_image
 
             # raise HTTPException(status_code=404, detail="Manager Info not found")
@@ -112,8 +111,8 @@ def update_manager_info_by_id(db:Session, manager: ManagerInfo, id: int):
             raise HTTPException(status_code=404, detail="Manager Info not found")
         
         manager_info_to_update.manager_firstname = manager.manager_firstname
-        manager_info_to_update.manager_surname = manager.manager_surname
-        manager_info_to_update.manager_contact_number = manager.manager_contact_number
+        manager_info_to_update.manager_surname = encrypt(manager.manager_surname)
+        manager_info_to_update.manager_contact_number = encrypt(manager.manager_contact_number)
         manager_info_to_update.manager_image = manager.manager_image
         
         db.commit()
