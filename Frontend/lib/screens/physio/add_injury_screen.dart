@@ -54,6 +54,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> pickInjuryReportPdf() async {}
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Player Profile"),
@@ -155,6 +157,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                   selectedDateOfRecovery = date;
                                 });
                               }),
+                              const SizedBox(height: 25),
+                              underlineButtonTransparent("Upload injury report", () { }),
                               const SizedBox(height: 25),
                               bigButton("Add Injury", () {
                                 if (_formKey.currentState!.validate()) {
