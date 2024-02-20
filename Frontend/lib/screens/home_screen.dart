@@ -68,26 +68,31 @@ class HomeScreen extends ConsumerWidget {
                       left: 0,
                       right: 0,
                       child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(
-                                "Hey, ${profile.firstName}!",
-                                style: const TextStyle(
-                                  fontFamily: AppFonts.gabarito,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 36,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 5),
+                                child: Text(
+                                  "Hey, ${profile.firstName}!",
+                                  style: const TextStyle(
+                                    fontFamily: AppFonts.gabarito,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 36,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 25),
                               SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height * 0.2,
-                                  child: _menu(userRole, context))
+                                  child: Padding(
+                                      padding: const EdgeInsets.only(left: 0),
+                                      child: _menu(userRole, context)))
                             ],
                           ))),
                   Positioned(
@@ -166,7 +171,7 @@ class HomeScreen extends ConsumerWidget {
     return InkWell(
         onTap: onPressed,
         child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.45,
+            width: 190,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               decoration: BoxDecoration(
@@ -185,7 +190,6 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 5),
                   Flexible(
-                    // Use Flexible to prevent overflow by allowing text to wrap
                     child: Text(
                       text,
                       style: TextStyle(
@@ -223,17 +227,21 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem('Players', Icons.group, AppColours.mediumDarkBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
-        _gapBetweenMenuItems(),
+        Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: _buildMenuItem(
+                'Players', Icons.group, AppColours.mediumDarkBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      PlayersScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
+        // _gapBetweenMenuItems(),
         _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
             () {
           Navigator.push(
@@ -246,17 +254,21 @@ class HomeScreen extends ConsumerWidget {
             ),
           );
         }, context),
-        _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', Icons.person, AppColours.lightBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => ProfileScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        // _gapBetweenMenuItems(),
+        Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: _buildMenuItem(
+                'My Profile', Icons.person, AppColours.lightBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      ProfileScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
       ],
     );
   }
@@ -265,28 +277,36 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem(
-            'Players & Coaches', Icons.group, AppColours.mediumDarkBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: _buildMenuItem(
+                'Players & Coaches', Icons.group, AppColours.mediumDarkBlue,
+                () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      PlayersScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', Icons.person, AppColours.lightBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => ProfileScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: _buildMenuItem(
+                'My Profile', Icons.person, AppColours.lightBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      ProfileScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
       ],
     );
   }
@@ -295,19 +315,20 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem(
-            'Statistics', Icons.bar_chart_rounded, AppColours.mediumDarkBlue,
-            () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) =>
-                  StatisticsScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: _buildMenuItem('Statistics', Icons.bar_chart_rounded,
+                AppColours.mediumDarkBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      StatisticsScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
         _gapBetweenMenuItems(),
         _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
             () {
@@ -322,17 +343,20 @@ class HomeScreen extends ConsumerWidget {
           );
         }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', Icons.group, AppColours.lightBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) =>
-                  PlayerProfileScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: _buildMenuItem(
+                'My Profile', Icons.group, AppColours.lightBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      PlayerProfileScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
       ],
     );
   }
@@ -341,17 +365,21 @@ class HomeScreen extends ConsumerWidget {
     return ListView(
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        _buildMenuItem(
-            'Players & Coaches', Icons.group, AppColours.mediumDarkBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => PlayersScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: _buildMenuItem(
+                'Players & Coaches', Icons.group, AppColours.mediumDarkBlue,
+                () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      PlayersScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
         _gapBetweenMenuItems(),
         _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
             () {
@@ -366,16 +394,20 @@ class HomeScreen extends ConsumerWidget {
           );
         }, context),
         _gapBetweenMenuItems(),
-        _buildMenuItem('My Profile', Icons.person, AppColours.lightBlue, () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation1, animation2) => ProfileScreen(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }, context),
+        Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: _buildMenuItem(
+                'My Profile', Icons.person, AppColours.lightBlue, () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      ProfileScreen(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            }, context)),
       ],
     );
   }

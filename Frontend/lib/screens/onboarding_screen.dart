@@ -26,7 +26,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const bodyStyle = TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500);
+    const bodyStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500);
 
     const pageDecoration = PageDecoration(
       pageMargin: EdgeInsets.only(top: 120),
