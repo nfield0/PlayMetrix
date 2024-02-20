@@ -95,7 +95,8 @@ def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
             new_player_injury = player_injuries(player_id=new_player_injury.player_id,
                                                 date_of_injury=new_player_injury.date_of_injury,
                                                 date_of_recovery=new_player_injury.date_of_recovery,
-                                                injury_id=new_player_injury.injury_id)
+                                                injury_id=new_player_injury.injury_id,
+                                                report_id = new_player_injury.report_id)
             db.add(new_player_injury)
             db.commit()
             db.refresh(new_player_injury)

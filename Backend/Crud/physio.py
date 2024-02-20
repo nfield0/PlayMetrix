@@ -149,7 +149,7 @@ def insert_player_physio(db:Session, player_physio_obj: PhysioPlayerBase):
         if not get_player_by_id(db, player_physio_obj.player_id):
             raise HTTPException(status_code=400, detail="Player ID Does not Exist")
         
-        new_player_physio = player_physio(player_id= player_physio_obj.player_id, physio_id= player_physio_obj.physio_id, player_injury_reports= player_physio_obj.player_injury_reports)
+        new_player_physio = player_physio(report_id = player_physio_obj.report_id, player_id= player_physio_obj.player_id, physio_id= player_physio_obj.physio_id, player_injury_reports= player_physio_obj.player_injury_reports)
         db.add(new_player_physio)
         db.commit()
         return {"message": f"Physio with ID {player_physio_obj.physio_id} has been added to player with ID { player_physio_obj.player_id}"}
