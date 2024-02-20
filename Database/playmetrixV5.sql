@@ -8,7 +8,7 @@ coach_login, coach_info,
 physio_login, physio_info,
 sport, league, team, 
 injuries, player_injuries,
-team_physio, player_team, team_coach,
+team_physio, player_team, team_coach, player_physio,
 schedule, player_schedule, team_schedule,
 announcements;
 */
@@ -48,6 +48,27 @@ CREATE TABLE IF NOT EXISTS player_stats
 	FOREIGN KEY(player_id)
 		REFERENCES player_info(player_id)
 );
+
+
+
+/*CREATE TABLE IF NOT EXISTS player_stats 
+(
+	player_id INT NOT NULL PRIMARY KEY,
+	matches_played INT NOT NULL, 
+	matches_started INT NOT NULL,
+	matches_off_the_bench INT NOT NULL, 
+	total_attempts INT ,
+	total_points_scored INT,
+	total_goals_scored INT ,
+	total_misses INT, 
+	toal_passes INT,
+	total_kick_passes INT,
+	total_hand_passes INT,
+	injury_prone BOOLEAN NOT NULL,
+	minutes_played INT NOT NULL,
+	FOREIGN KEY(player_id)
+		REFERENCES player_info(player_id)
+);*/
 
 /*MANAGER TABLES*/
 CREATE TABLE IF NOT EXISTS manager_login
@@ -167,11 +188,22 @@ CREATE TABLE IF NOT EXISTS player_injuries
 );
 
 /*TABLES RELATING TO THE TEAM*/
+CREATE TABLE IF NOT EXISTS player_physio
+(
+	player_id INT NOT NULL,
+	physio_id INT NOT NULL, 
+	player_injury_reports bytea,
+	PRIMARY KEY (player_id, physio_id),
+	FOREIGN KEY (player_id) 
+		REFERENCES player_info (player_id),
+	FOREIGN KEY (physio_id)
+		REFERENCES physio_info(physio_id)
+);
+
 CREATE TABLE IF NOT EXISTS team_physio
 (
 	team_id INT NOT NULL,
 	physio_id INT NOT NULL, 
-	PRIMARY KEY (team_id, physio_id),
 	FOREIGN KEY (team_id) 
 		REFERENCES team (team_id),
 	FOREIGN KEY (physio_id)
@@ -265,11 +297,10 @@ CREATE TABLE IF NOT EXISTS notifications
 	notification_date TIMESTAMP,
 	notification_desc VARCHAR(255),
 	team_id INT NOT NULL,
-	poster_id INT NOT NULL,
-	poster_type VARCHAR(50),
+	user_type VARCHAR(50),
 	FOREIGN KEY (team_id)
 		REFERENCES team(team_id)
-)
+);
 
 
 /*--------------------------DUMMY DATA FOR TESTING QUERIES--------------------------------------------------*/
