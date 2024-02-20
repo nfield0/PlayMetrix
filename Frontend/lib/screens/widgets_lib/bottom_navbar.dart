@@ -271,23 +271,13 @@ physioBottomNavBar(BuildContext context, int selectedIndex) {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) => PlayersScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
         );
         break;
-      case 2:
+      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -298,7 +288,28 @@ physioBottomNavBar(BuildContext context, int selectedIndex) {
           ),
         );
         break;
+      case 2:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
       case 3:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 4:
         Navigator.push(
           context,
           PageRouteBuilder(
