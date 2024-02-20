@@ -286,8 +286,7 @@ class HomeScreen extends ConsumerWidget {
         Padding(
             padding: const EdgeInsets.only(left: 20),
             child: _buildMenuItem(
-                'Players & Coaches', Icons.group, AppColours.mediumDarkBlue,
-                () {
+                'Players', Icons.group, AppColours.mediumDarkBlue, () {
               Navigator.push(
                 context,
                 PageRouteBuilder(
