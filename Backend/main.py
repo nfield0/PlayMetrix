@@ -599,6 +599,10 @@ def get_notifications(db:Session = Depends(get_db)):
 def get_notification(id: int, db:Session = Depends(get_db)):
     return crud.get_notification_by_id(db, id)
 
+@app.get("/notification/{team_id}/{user_type}")
+def get_notification_by_team_type(team_id: int, user_type: str, db:Session = Depends(get_db)):
+    return crud.get_notification_by_team_id_type(db, team_id, user_type)
+
 
 @app.post("/notification")
 def create_notification(notification: NotificationBase, db:Session = Depends(get_db)):
