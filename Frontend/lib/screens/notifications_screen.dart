@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/api_clients/notification_api_client.dart';
@@ -45,18 +47,24 @@ class NotificationsScreen extends ConsumerWidget {
                     return Text('Error: ${snapshot.error}');
                   } else if (snapshot.hasData) {
                     return Column(
-                        children: snapshot.data!.map((notification) {
-                      return announcementBox(
-                        icon: Icons.abc,
-                        iconColor: AppColours.darkBlue,
-                        title: notification.title,
-                        description: notification.desc,
-                        date: notification.date.toIso8601String(),
-                        onDeletePressed: () {},
-                      );
-                    }).toList());
+                        children: snapshot.data!.length > 0
+                            ? snapshot.data!.map((notification) {
+                                return announcementBox(
+                                  icon: Icons.abc,
+                                  iconColor: AppColours.darkBlue,
+                                  title: notification.title,
+                                  description: notification.desc,
+                                  date: notification.date.toIso8601String(),
+                                  onDeletePressed: () {},
+                                );
+                              }).toList()
+                            : [
+                                emptySection(Icons.notifications_off,
+                                    "No notifications yet")
+                              ]);
                   } else {
-                    return emptySection(Icons.group_off, "No team yet");
+                    return emptySection(
+                        Icons.notifications_off, "No notifications yet");
                   }
                 }),
             const SizedBox(height: 20),

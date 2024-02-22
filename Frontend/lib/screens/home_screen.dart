@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
@@ -124,37 +125,57 @@ class HomeScreen extends ConsumerWidget {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 30,
                                           )),
-                                      const SizedBox(height: 70),
-                                      emptySection(Icons.notifications_none,
-                                          "No notifications"),
-
-                                      // announcementBox(
-                                      //   icon: Icons.cancel,
-                                      //   iconColor: AppColours.red,
-                                      //   title: "Lucy Field is injured",
-                                      //   description:
-                                      //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-                                      //   date: "2024-02-03T14:27:00Z",
-                                      //   onDeletePressed: () {},
-                                      // ),
-                                      // announcementBox(
-                                      //   icon: Icons.cancel,
-                                      //   iconColor: AppColours.red,
-                                      //   title: "Lucy Field is injured",
-                                      //   description:
-                                      //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-                                      //   date: "2024-02-03T14:27:00Z",
-                                      //   onDeletePressed: () {},
-                                      // ),
-                                      // announcementBox(
-                                      //   icon: Icons.cancel,
-                                      //   iconColor: AppColours.red,
-                                      //   title: "Lucy Field is injured",
-                                      //   description:
-                                      //       "Date of injury: 26/10/2023\nInjury type: Sprained ankle",
-                                      //   date: "2024-02-03T14:27:00Z",
-                                      //   onDeletePressed: () {},
-                                      // ),
+                                      const SizedBox(height: 20),
+                                      FutureBuilder(
+                                          future: getNotifications(
+                                              teamId: ref.read(teamIdProvider),
+                                              userType: userRoleText(ref
+                                                      .read(userRoleProvider))
+                                                  .toLowerCase()),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return CircularProgressIndicator();
+                                            } else if (snapshot.hasError) {
+                                              return Text(
+                                                  'Error: ${snapshot.error}');
+                                            } else if (snapshot.hasData) {
+                                              return Column(
+                                                  children: snapshot
+                                                          .data!.isNotEmpty
+                                                      ? snapshot.data!
+                                                          .map((notification) {
+                                                          return announcementBox(
+                                                            icon: Icons.abc,
+                                                            iconColor:
+                                                                AppColours
+                                                                    .darkBlue,
+                                                            title: notification
+                                                                .title,
+                                                            description:
+                                                                notification
+                                                                    .desc,
+                                                            date: notification
+                                                                .date
+                                                                .toIso8601String(),
+                                                            onDeletePressed:
+                                                                () {},
+                                                          );
+                                                        }).toList()
+                                                      : [
+                                                          const SizedBox(
+                                                              height: 50),
+                                                          emptySection(
+                                                              Icons
+                                                                  .notifications_off,
+                                                              "No notifications yet")
+                                                        ]);
+                                            } else {
+                                              return emptySection(
+                                                  Icons.notifications_off,
+                                                  "No notifications yet");
+                                            }
+                                          }),
                                     ],
                                   )),
                             ),

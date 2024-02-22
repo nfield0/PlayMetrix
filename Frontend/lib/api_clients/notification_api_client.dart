@@ -43,7 +43,6 @@ Future<List<NotificationData>> getNotifications(
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
-    print(response.body);
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
 
