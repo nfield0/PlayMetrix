@@ -34,7 +34,7 @@ class MonthlyScheduleScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: Padding(
-            padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
+            padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
             child: Column(children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +58,7 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                     })
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               FutureBuilder(
                   future: getTeamAppointments(
                       ref.read(teamIdProvider.notifier).state),

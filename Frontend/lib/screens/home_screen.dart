@@ -11,7 +11,7 @@ import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
-import 'package:play_metrix/screens/settings.dart';
+import 'package:play_metrix/screens/settings_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,11 +66,11 @@ class HomeScreen extends ConsumerWidget {
                         ),
                       ),
                       Positioned(
-                          top: kToolbarHeight + 70,
+                          top: kToolbarHeight + 60,
                           left: 0,
                           right: 0,
                           child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 5),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
@@ -78,7 +78,7 @@ class HomeScreen extends ConsumerWidget {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 5),
+                                        horizontal: 25, vertical: 5),
                                     child: Text(
                                       "Hey, ${profile.firstName}!",
                                       style: const TextStyle(
@@ -89,7 +89,7 @@ class HomeScreen extends ConsumerWidget {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 25),
+                                  const SizedBox(height: 20),
                                   SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *

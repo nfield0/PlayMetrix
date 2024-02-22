@@ -20,7 +20,6 @@ class PlayerProfileSetUpScreen extends StatefulWidget {
 class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
 
   Uint8List? _profilePicture;
   DateTime _selectedDob = DateTime.now();
@@ -100,7 +99,7 @@ class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
                         await updatePlayerProfile(
                           widget.playerId,
                           player,
-                          _phoneController.text,
+                          player.player_contact_number,
                           _selectedDob,
                           _heightController.text,
                           _selectedGender,

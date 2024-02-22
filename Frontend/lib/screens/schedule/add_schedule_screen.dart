@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
@@ -161,6 +162,36 @@ class AddScheduleScreen extends ConsumerWidget {
                                 textToScheduleType(selectedType),
                                 textToAlertTime(selectedAlertTime),
                                 ref.read(teamIdProvider));
+
+                            await addNotification(
+                                title:
+                                    "New event scheduled: ${titleController.text}",
+                                desc: "Location: ${locationController.text},\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)},\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: DateTime.now(),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.coach);
+
+                            await addNotification(
+                                title:
+                                    "New event scheduled: ${titleController.text}",
+                                desc: "Location: ${locationController.text},\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)},\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: DateTime.now(),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.physio);
+
+                            await addNotification(
+                                title:
+                                    "New event scheduled: ${titleController.text}",
+                                desc: "Location: ${locationController.text},\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)},\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: DateTime.now(),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.player);
 
                             navigator
                                 .push(MaterialPageRoute(builder: (context) {

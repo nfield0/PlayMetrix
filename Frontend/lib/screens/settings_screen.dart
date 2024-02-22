@@ -27,7 +27,7 @@ class SettingsScreen extends ConsumerWidget {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
+                padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

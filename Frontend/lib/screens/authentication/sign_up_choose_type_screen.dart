@@ -112,6 +112,7 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                             ref.read(passwordProvider.notifier).state;
                         String contactNumber =
                             ref.read(phoneProvider.notifier).state;
+                        print(contactNumber);
                         Uint8List? image =
                             ref.read(profilePictureProvider.notifier).state;
 
