@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/notification_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
@@ -140,10 +141,21 @@ class HomeScreen extends ConsumerWidget {
                                               return Text(
                                                   'Error: ${snapshot.error}');
                                             } else if (snapshot.hasData) {
+                                              List<NotificationData>
+                                                  notifications =
+                                                  snapshot.data!;
                                               return Column(
-                                                  children: snapshot
-                                                          .data!.isNotEmpty
-                                                      ? snapshot.data!
+                                                  children: notifications
+                                                          .isNotEmpty
+                                                      ? notifications
+                                                          .where((notification) =>
+                                                              notification.date
+                                                                  .isBefore(DateTime
+                                                                      .now()) ||
+                                                              notification.date
+                                                                  .isAtSameMomentAs(
+                                                                      DateTime
+                                                                          .now()))
                                                           .map((notification) {
                                                           return announcementBox(
                                                             icon: Icons.abc,
@@ -158,13 +170,9 @@ class HomeScreen extends ConsumerWidget {
                                                             date: notification
                                                                 .date
                                                                 .toIso8601String(),
-                                                            onDeletePressed:
-                                                                () {},
                                                           );
                                                         }).toList()
                                                       : [
-                                                          const SizedBox(
-                                                              height: 50),
                                                           emptySection(
                                                               Icons
                                                                   .notifications_off,

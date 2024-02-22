@@ -506,7 +506,6 @@ Widget announcementBox({
   required String title,
   required String description,
   required String date,
-  required VoidCallback onDeletePressed,
 }) {
   return InkWell(
       child: Container(
@@ -537,7 +536,7 @@ Widget announcementBox({
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              DateFormat('EEEE, d MMMM y').format(
+                              DateFormat('d MMMM y HH:mm').format(
                                   date.isNotEmpty
                                       ? DateTime.parse(date)
                                       : DateTime.now()),
@@ -548,27 +547,15 @@ Widget announcementBox({
                             title,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: 16,
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          // const SizedBox(height: 5),
                           Text(
                             description,
-                            style: const TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 15),
                           ),
                         ],
-                      ),
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: onDeletePressed,
-                          child: const Icon(
-                            Icons.delete,
-                            size: 20,
-                            color: AppColours.red,
-                          ),
-                        ),
                       ),
                     ],
                   ),

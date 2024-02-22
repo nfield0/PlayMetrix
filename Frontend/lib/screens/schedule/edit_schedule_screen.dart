@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/schedule_data_model.dart';
@@ -54,6 +55,8 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Schedule"),
@@ -210,8 +213,37 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                 selectedEndDate,
                                 selectedScheduleAlert);
                             if (editSuccess) {
-                              Navigator.push(
-                                context,
+                              await addNotification(
+                                  title:
+                                      "Event update: ${titleController.text}",
+                                  desc: "Location: ${locationController.text}\n"
+                                      "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                      "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                  date: DateTime.now(),
+                                  teamId: widget.teamId,
+                                  recieverUserRole: UserRole.coach);
+
+                              await addNotification(
+                                  title:
+                                      "Event update: ${titleController.text}",
+                                  desc: "Location: ${locationController.text}\n"
+                                      "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                      "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                  date: DateTime.now(),
+                                  teamId: widget.teamId,
+                                  recieverUserRole: UserRole.physio);
+
+                              await addNotification(
+                                  title:
+                                      "Event update: ${titleController.text}",
+                                  desc: "Location: ${locationController.text}\n"
+                                      "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                      "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                  date: DateTime.now(),
+                                  teamId: widget.teamId,
+                                  recieverUserRole: UserRole.player);
+
+                              navigator.push(
                                 MaterialPageRoute(
                                     builder: (context) => ScheduleDetailsScreen(
                                           userId:

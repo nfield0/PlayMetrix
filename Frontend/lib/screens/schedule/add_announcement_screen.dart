@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/announcement_api_client.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
+import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
@@ -10,12 +12,14 @@ class AddAnnouncementScreen extends StatefulWidget {
   final int scheduleId;
   final UserRole userRole;
   final int userId;
+  final int teamId;
 
   const AddAnnouncementScreen(
       {super.key,
       required this.scheduleId,
       required this.userRole,
-      required this.userId});
+      required this.userId,
+      required this.teamId});
 
   @override
   AddAnnouncementScreenState createState() => AddAnnouncementScreenState();
@@ -29,6 +33,8 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Schedule"),
@@ -79,15 +85,43 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                         ]),
                       ),
                       const SizedBox(height: 30),
-                      bigButton("Send Announcement", () {
+                      bigButton("Send Announcement", () async {
                         if (formKey.currentState!.validate()) {
+                          String scheduleTitle =
+                              await getScheduleById(widget.scheduleId)
+                                  .then((value) => value.schedule_title);
+
+                          addNotification(
+                              title: "$scheduleTitle: ${titleController.text}",
+                              desc: detailsController.text,
+                              date: DateTime.now(),
+                              teamId: widget.teamId,
+                              recieverUserRole:
+                                  widget.userRole == UserRole.manager
+                                      ? UserRole.coach
+                                      : UserRole.manager);
+
+                          addNotification(
+                              title: "$scheduleTitle: ${titleController.text}",
+                              desc: detailsController.text,
+                              date: DateTime.now(),
+                              teamId: widget.teamId,
+                              recieverUserRole: UserRole.physio);
+
+                          addNotification(
+                              title: "$scheduleTitle: ${titleController.text}",
+                              desc: detailsController.text,
+                              date: DateTime.now(),
+                              teamId: widget.teamId,
+                              recieverUserRole: UserRole.player);
+
                           addAnnouncement(
                               title: titleController.text,
                               details: detailsController.text,
                               scheduleId: widget.scheduleId,
                               posterId: widget.userId,
                               posterType: widget.userRole);
-                          Navigator.pop(context, true);
+                          navigator.pop(true);
                         }
                       }),
                     ]),

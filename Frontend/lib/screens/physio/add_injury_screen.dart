@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
@@ -206,6 +207,46 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                               const SizedBox(height: 25),
                               bigButton("Add Injury", () {
                                 if (_formKey.currentState!.validate()) {
+                                  bool isSameDay = selectedDateOfInjury.year ==
+                                          selectedDateOfInjury.year &&
+                                      selectedDateOfInjury.month ==
+                                          selectedDateOfInjury.month &&
+                                      selectedDateOfInjury.day ==
+                                          selectedDateOfInjury.day;
+                                  if (selectedDateOfInjury
+                                          .isAfter(DateTime.now()) ||
+                                      isSameDay) {
+                                    addNotification(
+                                        title:
+                                            "$playerName has been injured: ${injuryTypeController.text}",
+                                        desc:
+                                            "Injury location: ${injuryLocationController.text}\n"
+                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                        date: DateTime.now(),
+                                        teamId: widget.teamId,
+                                        recieverUserRole: UserRole.manager);
+
+                                    addNotification(
+                                        title:
+                                            "$playerName has been injured: ${injuryTypeController.text}",
+                                        desc:
+                                            "Injury location: ${injuryLocationController.text}\n"
+                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                        date: DateTime.now(),
+                                        teamId: widget.teamId,
+                                        recieverUserRole: UserRole.coach);
+
+                                    addNotification(
+                                        title:
+                                            "$playerName has been injured: ${injuryTypeController.text}",
+                                        desc:
+                                            "Injury location: ${injuryLocationController.text}\n"
+                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                        date: DateTime.now(),
+                                        teamId: widget.teamId,
+                                        recieverUserRole: UserRole.player);
+                                  }
+
                                   addInjury(
                                       playerId: widget.playerId,
                                       injuryType: injuryTypeController.text,

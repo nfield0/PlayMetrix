@@ -164,34 +164,79 @@ class AddScheduleScreen extends ConsumerWidget {
                                 ref.read(teamIdProvider));
 
                             await addNotification(
-                                title:
-                                    "New event scheduled: ${titleController.text}",
-                                desc: "Location: ${locationController.text},\n"
-                                    "Starts: ${selectedStartDate.toString().substring(0, 16)},\n"
+                                title: "New event: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
                                     "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                 date: DateTime.now(),
                                 teamId: ref.read(teamIdProvider),
                                 recieverUserRole: UserRole.coach);
 
                             await addNotification(
-                                title:
-                                    "New event scheduled: ${titleController.text}",
-                                desc: "Location: ${locationController.text},\n"
-                                    "Starts: ${selectedStartDate.toString().substring(0, 16)},\n"
+                                title: "New event: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
                                     "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                 date: DateTime.now(),
                                 teamId: ref.read(teamIdProvider),
                                 recieverUserRole: UserRole.physio);
 
                             await addNotification(
-                                title:
-                                    "New event scheduled: ${titleController.text}",
-                                desc: "Location: ${locationController.text},\n"
-                                    "Starts: ${selectedStartDate.toString().substring(0, 16)},\n"
+                                title: "New event: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
                                     "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                 date: DateTime.now(),
                                 teamId: ref.read(teamIdProvider),
                                 recieverUserRole: UserRole.player);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.coach);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.physio);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.player);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.manager);
 
                             navigator
                                 .push(MaterialPageRoute(builder: (context) {

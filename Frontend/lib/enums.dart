@@ -123,6 +123,25 @@ String alertTimeToText(AlertTime alertTime) {
   }
 }
 
+Duration alertTimeToDuration(AlertTime alertTime) {
+  switch (alertTime) {
+    case AlertTime.none:
+      return const Duration();
+    case AlertTime.fifteenMinutes:
+      return const Duration(minutes: 15);
+    case AlertTime.thirtyMinutes:
+      return const Duration(minutes: 30);
+    case AlertTime.oneHour:
+      return const Duration(hours: 1);
+    case AlertTime.twoHours:
+      return const Duration(hours: 2);
+    case AlertTime.oneDay:
+      return const Duration(days: 1);
+    case AlertTime.twoDays:
+      return const Duration(days: 2);
+  }
+}
+
 AlertTime textToAlertTime(String text) {
   switch (text) {
     case "None":

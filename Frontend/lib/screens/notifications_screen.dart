@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/notification_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
@@ -46,16 +45,22 @@ class NotificationsScreen extends ConsumerWidget {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else if (snapshot.hasData) {
+                    List<NotificationData> notifications = snapshot.data!;
                     return Column(
-                        children: snapshot.data!.length > 0
-                            ? snapshot.data!.map((notification) {
+                        children: notifications.isNotEmpty
+                            ? notifications
+                                .where((notification) =>
+                                    notification.date
+                                        .isBefore(DateTime.now()) ||
+                                    notification.date
+                                        .isAtSameMomentAs(DateTime.now()))
+                                .map((notification) {
                                 return announcementBox(
                                   icon: Icons.abc,
                                   iconColor: AppColours.darkBlue,
                                   title: notification.title,
                                   description: notification.desc,
                                   date: notification.date.toIso8601String(),
-                                  onDeletePressed: () {},
                                 );
                               }).toList()
                             : [

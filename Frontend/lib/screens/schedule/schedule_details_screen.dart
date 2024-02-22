@@ -258,8 +258,13 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                           ),
                           divider(),
                           const SizedBox(height: 15),
-                          _announcementsSection(context, widget.userRole,
-                              widget.scheduleId, widget.userId, announcements),
+                          _announcementsSection(
+                              context,
+                              widget.userRole,
+                              widget.scheduleId,
+                              widget.userId,
+                              announcements,
+                              widget.teamId),
                         ],
                       ),
                     ),
@@ -285,7 +290,7 @@ Future<AppointmentDataSource> getFilteredDataSource(
 }
 
 Widget _announcementsSection(BuildContext context, UserRole userRole,
-    int scheduleId, int userId, List<Announcement> announcements) {
+    int scheduleId, int userId, List<Announcement> announcements, int teamId) {
   return Column(
     children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -307,6 +312,7 @@ Widget _announcementsSection(BuildContext context, UserRole userRole,
                         userId: userId,
                         scheduleId: scheduleId,
                         userRole: userRole,
+                        teamId: teamId,
                       )),
             );
           })
@@ -318,8 +324,7 @@ Widget _announcementsSection(BuildContext context, UserRole userRole,
             iconColor: AppColours.darkBlue,
             title: announcement.title,
             description: announcement.description,
-            date: announcement.date,
-            onDeletePressed: () {})
+            date: announcement.date)
     ],
   );
 }
