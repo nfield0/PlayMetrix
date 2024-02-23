@@ -451,13 +451,13 @@ def delete_physio_team_id(team_id: int, db:Session = Depends(get_db)):
 
 #endregion
 
-@app.get("/player_physio/{player_id}")
-def read_player_physio(player_id: int, db:Session = Depends(get_db)):
-    return crud.get_physio_by_player_id(db, player_id)
+# @app.get("/player_physio/{player_id}")
+# def read_player_physio(player_id: int, db:Session = Depends(get_db)):
+#     return crud.get_physio_by_player_id(db, player_id)
 
-@app.post("/player_physio")
-def insert_player_physio(player_physio: PhysioPlayerBase, db:Session = Depends(get_db)):
-    return crud.insert_player_physio(db, player_physio)
+# @app.post("/player_physio")
+# def insert_player_physio(player_physio: PhysioPlayerBase, db:Session = Depends(get_db)):
+#     return crud.insert_player_physio(db, player_physio)
 
 
 

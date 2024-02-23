@@ -93,10 +93,11 @@ def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
     try:
         if new_player_injury is not None:
             new_player_injury = player_injuries(player_id=new_player_injury.player_id,
+                                                physio_id=new_player_injury.physio_id,
                                                 date_of_injury=new_player_injury.date_of_injury,
                                                 date_of_recovery=new_player_injury.date_of_recovery,
                                                 injury_id=new_player_injury.injury_id,
-                                                report_id = new_player_injury.report_id)
+                                                player_injury_report = new_player_injury.player_injury_report)
             db.add(new_player_injury)
             db.commit()
             db.refresh(new_player_injury)
@@ -110,9 +111,11 @@ def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
         player_injury_to_update = db.query(player_injuries).filter_by(injury_id= id).first()
         if player_injury_to_update:
             player_injury_to_update.player_id = updated_player_injury.player_id
+            player_injury_to_update.physio_id = updated_player_injury.physio_id
             player_injury_to_update.date_of_injury = updated_player_injury.date_of_injury
             player_injury_to_update.date_of_recovery = updated_player_injury.date_of_recovery
             player_injury_to_update.injury_id = updated_player_injury.injury_id
+            player_injury_to_update.player_injury_report = updated_player_injury.player_injury_report
             db.commit()
             return {"message": f"Player Injury with ID {id} has been updated"}
         else:
