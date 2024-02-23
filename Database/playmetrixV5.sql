@@ -7,7 +7,7 @@ manager_login, manager_info,
 coach_login, coach_info,
 physio_login, physio_info,
 sport, league, team, 
-injuries, team_physio, player_team, team_coach, player_physio,
+injuries, team_physio, player_team, team_coach,
 player_injuries, schedule, player_schedule, team_schedule,
 announcements, notifications;
 */
@@ -175,35 +175,20 @@ CREATE TABLE IF NOT EXISTS  injuries
 );
 
 
-/*TABLES RELATING TO THE TEAM*/
-CREATE TABLE IF NOT EXISTS player_physio
-(
-	player_id INT NOT NULL,
-	physio_id INT NOT NULL, 
-	report_id serial PRIMARY KEY,
-	player_injury_reports bytea,
-	FOREIGN KEY (player_id) 
-		REFERENCES player_info (player_id),
-	FOREIGN KEY (physio_id)
-		REFERENCES physio_info(physio_id)
-);
-
-
 CREATE TABLE IF NOT EXISTS player_injuries 
 (
-	report_id INT,
+	player_id INT NOT NULL,
+	physio_id INT NOT NULL,
 	injury_id INT NOT NULL,
 	date_of_injury DATE NOT NULL, 
 	date_of_recovery DATE NOT NULL,
-	player_id INT NOT NULL,
-	FOREIGN KEY (report_id)
-		REFERENCES player_physio(report_id), 
+	player_injury_report bytea,
+	FOREIGN KEY (physio_id)
+		REFERENCES physio_info(physio_id), 
 	FOREIGN KEY(injury_id)
 		REFERENCES injuries(injury_id),
 	FOREIGN KEY (player_id)
-		REFERENCES player_info(player_id),
-	FOREIGN KEY(report_id)
-		REFERENCES player_physio(report_id)
+		REFERENCES player_info(player_id)
 );
 
 CREATE TABLE IF NOT EXISTS team_physio
@@ -303,7 +288,6 @@ CREATE TABLE IF NOT EXISTS notifications
 	notification_date TIMESTAMP,
 	notification_desc VARCHAR(255),
 	team_id INT NOT NULL,
-	is_read BOOLEAN,
 	user_type VARCHAR(50),
 	FOREIGN KEY (team_id)
 		REFERENCES team(team_id)
