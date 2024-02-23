@@ -169,3 +169,9 @@ def test_get_team_schedule():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
  
+
+def test_z_cleanup():
+    url = 'http://127.0.0.1:8000/cleanup_tests'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, headers=headers)
+    assert response.status_code == 200
