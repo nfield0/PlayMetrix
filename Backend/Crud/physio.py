@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from models import physio_login, physio_info, player_physio, player_info
-from schema import Physio, PhysioInfo, PhysioNoID, PhysioPlayerBase
+from models import physio_login, physio_info, player_info
+from schema import Physio, PhysioInfo, PhysioNoID
 from Crud.security import check_email, check_password_regex, encrypt_password, check_is_valid_name, encrypt, decrypt_hex
 
 
@@ -135,35 +135,35 @@ def delete_physio_by_id(db:Session, id: int):
 
 
 
-def get_physio_by_player_id(db: Session, id: int):
-    try:
-        result = db.query(player_physio).filter_by(player_id=id).all()
-        return result
-    except Exception as e:
-        return(f"Error retrieving physio: {e}")
+# def get_physio_by_player_id(db: Session, id: int):
+#     try:
+#         result = db.query(player_physio).filter_by(player_id=id).all()
+#         return result
+#     except Exception as e:
+#         return(f"Error retrieving physio: {e}")
     
-def insert_player_physio(db:Session, player_physio_obj: PhysioPlayerBase):
-    try:
-        if not get_physio_login_by_id(db, player_physio_obj.physio_id):
-            raise HTTPException(status_code=400, detail="Physio ID Does not Exist")
-        if not get_player_by_id(db, player_physio_obj.player_id):
-            raise HTTPException(status_code=400, detail="Player ID Does not Exist")
+# def insert_player_physio(db:Session, player_physio_obj: PhysioPlayerBase):
+#     try:
+#         if not get_physio_login_by_id(db, player_physio_obj.physio_id):
+#             raise HTTPException(status_code=400, detail="Physio ID Does not Exist")
+#         if not get_player_by_id(db, player_physio_obj.player_id):
+#             raise HTTPException(status_code=400, detail="Player ID Does not Exist")
         
-        new_player_physio = player_physio(report_id = player_physio_obj.report_id, player_id= player_physio_obj.player_id, physio_id= player_physio_obj.physio_id, player_injury_reports= player_physio_obj.player_injury_reports)
-        db.add(new_player_physio)
-        db.commit()
-        return {"message": f"Physio with ID {player_physio_obj.physio_id} has been added to player with ID { player_physio_obj.player_id}"}
-    except HTTPException as http_err:
-        raise http_err
-    except Exception as e:
-        return(f"Error adding physio to player: {e}")
+#         new_player_physio = player_physio(report_id = player_physio_obj.report_id, player_id= player_physio_obj.player_id, physio_id= player_physio_obj.physio_id, player_injury_reports= player_physio_obj.player_injury_reports)
+#         db.add(new_player_physio)
+#         db.commit()
+#         return {"message": f"Physio with ID {player_physio_obj.physio_id} has been added to player with ID { player_physio_obj.player_id}"}
+#     except HTTPException as http_err:
+#         raise http_err
+#     except Exception as e:
+#         return(f"Error adding physio to player: {e}")
 
-def get_player_by_id(db: Session, id: int):
-    try:
-        result = db.query(player_info).filter_by(player_id=id).first()
-        return result
-    except Exception as e:
-        return(f"Error retrieving player: {e}")
+# def get_player_by_id(db: Session, id: int):
+#     try:
+#         result = db.query(player_info).filter_by(player_id=id).first()
+#         return result
+#     except Exception as e:
+#         return(f"Error retrieving player: {e}")
     
 #endregion
     

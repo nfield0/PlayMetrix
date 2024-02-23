@@ -262,8 +262,18 @@ GROUP BY manager_firstname, manager_surname, coach_firstname, coach_surname, tea
 SELECT encode(player_injury_reports::bytea, 'escape') FROM player_physio as o where o.player_injury_reports != ''
 
 
-
-
+SELECT playerInfo.player_id AS PlayerID,
+	   playerInfo.player_firstname, playerInfo.player_surname, playerInfo.player_dob,
+	   playerInfo.player_contact_number, playerInfo.player_height, playerInfo.player_gender,
+	   playerStats.matches_played, playerStats.matches_started, playerStats.matches_off_the_bench,
+	   playerStats.minutes_played, team.team_name, playerTeam.team_position, playerTeam.player_team_number,
+	   playerTeam.playing_status, playerTeam.lineup_status, physioInfo.physio_id,
+	   injuries.injury_type, playerInjury.date_of_injury, playerInjury.date_of_recovery, playerInjury.player_injury_report
+FROM player_info playerInfo, player_stats playerStats, player_team playerTeam, physio_info physioInfo,
+	 team team, injuries injuries, player_injuries playerInjury
+WHERE playerInfo.player_id = playerStats.player_id 
+AND playerTeam.team_id = team.team_id
+AND injuries.injury_id = playerInjury.injury_id 
 
 
 

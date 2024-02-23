@@ -167,11 +167,12 @@ class InjuryBase(BaseModel):
     recovery_method: str
 
 class PlayerInjuryBase(BaseModel):
+    player_id: int
+    physio_id: int
     injury_id: int
     date_of_injury: str
     date_of_recovery: str
-    player_id: int
-    report_id: int
+    player_injury_report: Optional[bytes] = None
     
 
 class TeamPlayerBase(BaseModel):
@@ -191,10 +192,10 @@ class TeamPhysioBase(BaseModel):
     team_id: int
     physio_id: int
     
-class PhysioPlayerBase(BaseModel):
-    physio_id: int
-    player_id: int
-    player_injury_reports: Optional[bytes]
+# class PhysioPlayerBase(BaseModel):
+#     physio_id: int
+#     player_id: int
+#     player_injury_reports: Optional[bytes]
 
 class TeamPlayerDelete(BaseModel):
     team_id: int

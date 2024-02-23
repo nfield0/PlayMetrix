@@ -28,11 +28,12 @@ class player_info(Base):
 
 class player_injuries(Base): 
     __tablename__ = "player_injuries"
+    player_id = Column(Integer, index = True)
+    physio_id = Column(Integer, index = True)
     injury_id = Column(Integer, primary_key = True, index = True)
     date_of_injury = Column(Date, index = True)
     date_of_recovery = Column(Date, index = True)
-    player_id = Column(Integer, index = True)
-    report_id = Column(Integer, index = True)
+    player_injury_report = Column(LargeBinary, index = True)
 
 class injuries(Base): 
 	__tablename__ = "injuries"
@@ -106,12 +107,12 @@ class team_physio(Base):
 	physio_id = Column(Integer, primary_key = True, index = True)
 	team_id = Column(Integer, primary_key = True, index = True)
 
-class player_physio(Base):
-	__tablename__ = "player_physio"
-	report_id = Column(Integer, primary_key = True, index = True)
-	physio_id = Column(Integer, index = True)
-	player_id = Column(Integer, index = True)
-	player_injury_reports = Column(LargeBinary, index = True)
+# class player_physio(Base):
+# 	__tablename__ = "player_physio"
+# 	report_id = Column(Integer, primary_key = True, index = True)
+# 	physio_id = Column(Integer, index = True)
+# 	player_id = Column(Integer, index = True)
+# 	player_injury_reports = Column(LargeBinary, index = True)
  
 class team_player(Base):
 	__tablename__ = "player_team"

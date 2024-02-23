@@ -146,7 +146,7 @@ def test_get_notification_by_team_type():
     
     response = requests.get(url, headers=headers)
     try:
-        expected_json = {
+        expected_json = [{
         "notification_id": 1,
         "notification_title": "Test Notification",
         "notification_desc": "Test Description",
@@ -154,7 +154,7 @@ def test_get_notification_by_team_type():
         "team_id": 1,
         "user_type": "manager"
         
-    }
+    }]
         response_json = response.json()
         assert response_json == expected_json
         assert response.status_code == 200

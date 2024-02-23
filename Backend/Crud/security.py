@@ -66,11 +66,12 @@ def encode_key(key):
 key = generate_key()
 encoded_key = encode_key(key)
 
-cipher_suite = Fernet(b'Iw0n7Sg6ih3pIoUMPg1CrVGLqby_5KWaqUnldCSJJlc=')
+cipher_suite = Fernet(bytes(os.getenv("KEY").encode('utf-8')))
+
+#b'Iw0n7Sg6ih3pIoUMPg1CrVGLqby_5KWaqUnldCSJJlc='
 
 def encrypt(string):
     encrypted_string = cipher_suite.encrypt(string.encode('utf-8'))
-    print("encrypted length:" + str(len(encrypted_string)))
     return encrypted_string
 
 def decrypt(encrypted_string):
@@ -89,20 +90,20 @@ def decrypt_hex(encrypted_string):
     decrypted_string = cipher_suite.decrypt(byte_data).decode()
     return decrypted_string
 
-word = "tester"
+# word = "tester"
 
-encrypted_word = encrypt(word)
-print("Encrypted word:", encrypted_word)
+# encrypted_word = encrypt(word)
+# print("Encrypted word:", encrypted_word)
 
-decrypted_word = decrypt(encrypted_word)
-print("Decrypted word:", decrypted_word)
+# decrypted_word = decrypt(encrypted_word)
+# print("Decrypted word:", decrypted_word)
 
 
 
-db_word = '674141414141426c3034346f6e57496d347833687571363730396b367841616f735448654d4c79615142594c4579766e79707739796c453751754837594a515379343166617a765a624b4230364352454f76565339626f6555464747616978435a413d3d'
-decoded_bytes = codecs.decode(db_word, 'hex_codec')
-decrypted_word = decrypt(decoded_bytes)
-print("Decrypted word:", decrypted_word)
+# db_word = '674141414141426c3034346f6e57496d347833687571363730396b367841616f735448654d4c79615142594c4579766e79707739796c453751754837594a515379343166617a765a624b4230364352454f76565339626f6555464747616978435a413d3d'
+# decoded_bytes = codecs.decode(db_word, 'hex_codec')
+# decrypted_word = decrypt(decoded_bytes)
+# print("Decrypted word:", decrypted_word)
 
 
 # def encrypt_password(password : str):

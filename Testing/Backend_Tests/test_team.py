@@ -82,7 +82,7 @@ def test_add_team():
     headers = {'Content-Type': 'application/json'}
     json = {
         "team_name": "Louth Under 21s GAA",
-        "team_logo": "b'url",
+        "team_logo": None,
         "manager_id": 1,
         "league_id": 1,
         "sport_id": 1,
@@ -111,7 +111,7 @@ def test_get_team():
     expected_json = {
         "team_id": 1,
         "team_name": "Louth Under 21s GAA",
-        "team_logo": "b'url",
+        "team_logo": None,
         "manager_id": 1,
         "league_id": 1,
         "sport_id": 1,
