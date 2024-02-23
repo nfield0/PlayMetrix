@@ -24,6 +24,8 @@ class LogInScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigator = Navigator.of(context);
+
     bool passwordIsObscure = ref.watch(passwordVisibilityNotifier);
 
     return Scaffold(
@@ -196,8 +198,7 @@ class LogInScreen extends ConsumerWidget {
                                     teamId;
                                 scheduleNotificationsForTeamSchedules(teamId);
                               }
-                              Navigator.push(
-                                context,
+                              navigator.push(
                                 MaterialPageRoute(
                                     builder: (context) => HomeScreen()),
                               );

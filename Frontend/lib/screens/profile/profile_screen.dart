@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/manager_api_client.dart';
 import 'package:play_metrix/api_clients/physio_api_client.dart';
@@ -10,9 +11,7 @@ import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
-import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/profile/edit_profile.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
@@ -165,20 +164,8 @@ class ProfileScreen extends ConsumerWidget {
                               const SizedBox(height: 10),
                               detailWithDivider("Email", profile.email),
                               const SizedBox(height: 25),
-                              bigButton("Log Out", () {
-                                ref.read(userRoleProvider.notifier).state =
-                                    UserRole.manager;
-                                ref.read(userIdProvider.notifier).state = 0;
-                                ref
-                                    .read(profilePictureProvider.notifier)
-                                    .state = null;
-                                ref.read(teamIdProvider.notifier).state = -1;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LandingScreen()),
-                                );
+                              bigButton("Log Out", () async {
+                                logOut(ref, context);
                               }),
                               const SizedBox(height: 25),
                             ]),

@@ -2,9 +2,32 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/authentication_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
+import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
+
+void logOut(WidgetRef ref, BuildContext context) async {
+  final navigator = Navigator.of(context);
+
+  ref.read(userRoleProvider.notifier).state = UserRole.manager;
+  ref.read(userIdProvider.notifier).state = 0;
+  ref.read(profilePictureProvider.notifier).state = null;
+  ref.read(teamIdProvider.notifier).state = -1;
+
+  await AuthStorage.saveLoginStatus(false);
+  await AuthStorage.resetUserId();
+
+  navigator.push(
+    MaterialPageRoute(builder: (context) => const LandingScreen()),
+  );
+}
 
 Future<String> registerUser({
   required String userType,

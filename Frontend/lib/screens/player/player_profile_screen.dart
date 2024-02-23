@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
@@ -9,8 +10,6 @@ import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/authentication/landing_screen.dart';
-import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/physio/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/player/statistics_constants.dart';
@@ -257,17 +256,8 @@ class PlayerProfileScreen extends ConsumerWidget {
                             })),
                     const SizedBox(height: 20),
                     if (userRole == UserRole.player)
-                      bigButton("Log Out", () {
-                        ref.read(userRoleProvider.notifier).state =
-                            UserRole.manager;
-                        ref.read(userIdProvider.notifier).state = 0;
-                        ref.read(profilePictureProvider.notifier).state = null;
-                        ref.read(teamIdProvider.notifier).state = -1;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LandingScreen()),
-                        );
+                      bigButton("Log Out", () async {
+                        logOut(ref, context);
                       }),
                     const SizedBox(height: 25),
                   ]),
