@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/notifications_screen.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/settings_screen.dart';
 
 Widget bottomNavBar(List<BottomNavigationBarItem> items, int selectedIndex,
     void Function(int?)? onPressed) {
@@ -18,13 +19,32 @@ Widget bottomNavBar(List<BottomNavigationBarItem> items, int selectedIndex,
     unselectedItemColor: Colors.white.withOpacity(.60),
     onTap: onPressed,
     items: items,
+    selectedFontSize: 0,
+    showSelectedLabels: false,
   );
 }
 
 BottomNavigationBarItem bottomNavBarItem(String label, IconData icon) {
   return BottomNavigationBarItem(
-    icon: Icon(icon),
+    icon: Padding(padding: const EdgeInsets.only(top: 12), child: Icon(icon)),
     label: label,
+  );
+}
+
+BottomNavigationBarItem bottomNavBarItemCircle(String label, IconData icon) {
+  return BottomNavigationBarItem(
+    icon: Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            decoration: const BoxDecoration(
+                color: Colors.white, shape: BoxShape.circle),
+            padding: const EdgeInsets.all(12),
+            child: Icon(icon, color: AppColours.darkBlue),
+          ),
+        )),
+    label: "",
   );
 }
 
@@ -44,23 +64,14 @@ Widget roleBasedBottomNavBar(
 
 playerBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
-    bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Statistics", Icons.bar_chart),
+    bottomNavBarItem("Notifications", Icons.notifications),
+    bottomNavBarItemCircle("Home", Icons.home),
     bottomNavBarItem("Schedule", Icons.calendar_month),
-    bottomNavBarItem("Notifications", Icons.notifications)
+    bottomNavBarItem("Settings", Icons.settings),
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
-        break;
-      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -71,12 +82,22 @@ playerBottomNavBar(BuildContext context, int selectedIndex) {
           ),
         );
         break;
-      case 2:
+      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                MonthlyScheduleScreen(),
+                NotificationsScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -87,7 +108,17 @@ playerBottomNavBar(BuildContext context, int selectedIndex) {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                NotificationsScreen(),
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -99,23 +130,14 @@ playerBottomNavBar(BuildContext context, int selectedIndex) {
 
 managerBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
-    bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Team", Icons.group),
+    bottomNavBarItem("Notifications", Icons.notifications),
+    bottomNavBarItemCircle("Home", Icons.home),
     bottomNavBarItem("Schedule", Icons.calendar_month),
-    bottomNavBarItem("Notifications", Icons.notifications)
+    bottomNavBarItem("Settings", Icons.settings)
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
-        break;
-      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -125,12 +147,22 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
           ),
         );
         break;
-      case 2:
+      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                MonthlyScheduleScreen(),
+                NotificationsScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -141,7 +173,17 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                NotificationsScreen(),
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -153,23 +195,14 @@ managerBottomNavBar(BuildContext context, int selectedIndex) {
 
 coachBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
-    bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Players", Icons.group),
+    bottomNavBarItem("Notifications", Icons.notifications),
+    bottomNavBarItemCircle("Home", Icons.home),
     bottomNavBarItem("Schedule", Icons.calendar_month),
-    bottomNavBarItem("Notifications", Icons.notifications)
+    bottomNavBarItem("Settings", Icons.settings)
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
-        break;
-      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -179,12 +212,22 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
           ),
         );
         break;
-      case 2:
+      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                MonthlyScheduleScreen(),
+                NotificationsScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -195,7 +238,17 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
-                NotificationsScreen(),
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
@@ -207,22 +260,14 @@ coachBottomNavBar(BuildContext context, int selectedIndex) {
 
 physioBottomNavBar(BuildContext context, int selectedIndex) {
   return bottomNavBar([
-    bottomNavBarItem("Home", Icons.home),
     bottomNavBarItem("Players", Icons.group),
-    bottomNavBarItem("Notifications", Icons.notifications)
+    bottomNavBarItem("Notifications", Icons.notifications),
+    bottomNavBarItemCircle("Home", Icons.home),
+    bottomNavBarItem("Schedule", Icons.calendar_month),
+    bottomNavBarItem("Settings", Icons.settings),
   ], selectedIndex, (index) {
     switch (index) {
       case 0:
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => HomeScreen(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
-        break;
-      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
@@ -232,12 +277,43 @@ physioBottomNavBar(BuildContext context, int selectedIndex) {
           ),
         );
         break;
-      case 2:
+      case 1:
         Navigator.push(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation1, animation2) =>
                 NotificationsScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => HomeScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                MonthlyScheduleScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => SettingsScreen(),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),

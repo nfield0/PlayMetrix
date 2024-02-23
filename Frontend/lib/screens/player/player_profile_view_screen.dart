@@ -1,20 +1,21 @@
 import 'dart:typed_data';
+import 'package:play_metrix/api_clients/player_api_client.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
-import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/player/statistics_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class PlayerProfileViewScreen extends ConsumerWidget {
   final int userId;
@@ -22,14 +23,14 @@ class PlayerProfileViewScreen extends ConsumerWidget {
   PlayerProfileViewScreen({super.key, required this.userId});
 
   final AvailabilityData available = AvailabilityData(
-      AvailabilityStatus.Available,
+      AvailabilityStatus.available,
       "Available",
       Icons.check_circle,
       AppColours.green);
   final AvailabilityData limited = AvailabilityData(
-      AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow);
+      AvailabilityStatus.limited, "Limited", Icons.warning, AppColours.yellow);
   final AvailabilityData unavailable = AvailabilityData(
-      AvailabilityStatus.Unavailable,
+      AvailabilityStatus.unavailable,
       "Unavailable",
       Icons.cancel,
       AppColours.red);
@@ -142,10 +143,10 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                               int playerNumber = player.teamNumber;
                               AvailabilityStatus availability = player.status;
                               AvailabilityData availabilityData =
-                                  availability == AvailabilityStatus.Available
+                                  availability == AvailabilityStatus.available
                                       ? available
                                       : availability ==
-                                              AvailabilityStatus.Limited
+                                              AvailabilityStatus.limited
                                           ? limited
                                           : unavailable;
 
@@ -211,7 +212,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                       loading: () => const CircularProgressIndicator(),
                       error: (err, stack) => Text('Error: $err'),
                       data: (data) {
-                        return injuriesSection(data.length, data);
+                        return injuriesSection(data.length, data, userRole);
                       },
                     ),
                     divider(),

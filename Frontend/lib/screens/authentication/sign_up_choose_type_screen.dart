@@ -1,233 +1,23 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_screen.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/user_provider.dart';
+import 'package:play_metrix/api_clients/authentication_api_client.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
+import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
+import 'package:play_metrix/screens/team/team_set_up_screen.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-// create a fucntion to check the user type and then send the data to the backend
-String checkUserType(String userType) {
-  String type = "";
-  if (userType == "UserRole.manager") {
-    type = "manager";
-    return type;
-  } else if (userType == "UserRole.player") {
-    type = "player";
-    return type;
-  } else if (userType == "UserRole.coach") {
-    type = "coach";
-    return type;
-  } else if (userType == "UserRole.physio") {
-    type = "physio";
-    return type;
-  } else {
-    return "error";
-  }
-}
-
-Future<String> registerUser({
-  required String userType,
-  required String firstName,
-  required String surname,
-  required String email,
-  required String password,
-}) async {
-  if (userType == "manager") {
-    const apiUrl =
-        '$apiBaseUrl/register_manager'; // Replace with your actual backend URL
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'manager_firstname': firstName,
-          'manager_surname': surname,
-          'manager_email': email,
-          'manager_password': password,
-          'manager_contact_number': "",
-          'manager_image': "",
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully registered, handle the response accordingly
-        print('Registration successful!');
-
-        return response.body;
-      } else {
-        // Failed to register, handle the error accordingly
-        print('Failed to register. Status code: ${response.statusCode}');
-        print('Error message: ${response.body}');
-      }
-    } catch (error) {
-      // Handle any network or other errors
-      print('Error: $error');
-    }
-  }
-  if (userType == "player") {
-    const apiUrl =
-        '$apiBaseUrl/register_player'; // Replace with your actual backend URL
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'player_email': email,
-          'player_password': password,
-          'player_firstname': firstName,
-          'player_surname': surname,
-          'player_dob': DateTime.now().toString(),
-          'player_height': "",
-          'player_gender': "",
-          'player_contact_number': "",
-          'player_image': "",
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully registered, handle the response accordingly
-        print('Registration successful!');
-        return response.body;
-        // You can parse the response JSON here and perform actions based on it
-      } else {
-        // Failed to register, handle the error accordingly
-        print('Failed to register. Status code: ${response.statusCode}');
-        print('Error message: ${response.body}');
-      }
-    } catch (error) {
-      // Handle any network or other errors
-      print('Error: $error');
-    }
-  }
-
-  if (userType == "coach") {
-    const apiUrl =
-        '$apiBaseUrl/register_coach'; // Replace with your actual backend URL
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'coach_email': email,
-          'coach_password': password,
-          'coach_firstname': firstName,
-          'coach_surname': surname,
-          'coach_contact': "",
-          'coach_image': ""
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully registered, handle the response accordingly
-        print('Registration successful!');
-        return response.body;
-        // You can parse the response JSON here and perform actions based on it
-      } else {
-        // Failed to register, handle the error accordingly
-        print('Failed to register. Status code: ${response.statusCode}');
-        print('Error message: ${response.body}');
-      }
-    } catch (error) {
-      // Handle any network or other errors
-      print('Error: $error');
-    }
-  }
-
-  if (userType == "physio") {
-    const apiUrl =
-        '$apiBaseUrl/register_physio'; // Replace with your actual backend URL
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'physio_email': email,
-          'physio_password': password,
-          'physio_firstname': firstName,
-          'physio_surname': surname,
-          'physio_contact_number': '',
-          'physio_image': '',
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully registered, handle the response accordingly
-        print('Registration successful!');
-        return response.body;
-        // You can parse the response JSON here and perform actions based on it
-      } else {
-        // Failed to register, handle the error accordingly
-        print('Failed to register. Status code: ${response.statusCode}');
-        print('Error message: ${response.body}');
-      }
-    } catch (error) {
-      // Handle any network or other errors
-      print('Error: $error');
-    }
-  } else {
-    print("error: user type not found");
-  }
-
-  return "";
-}
-
-enum UserRole {
-  manager,
-  coach,
-  player,
-  physio,
-}
-
-final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.manager);
-
-String userRoleText(UserRole userRole) {
-  switch (userRole) {
-    case UserRole.manager:
-      return "Manager";
-    case UserRole.player:
-      return "Player";
-    case UserRole.coach:
-      return "Coach";
-    case UserRole.physio:
-      return "Physio";
-  }
-}
-
-UserRole stringToUserRole(String userRole) {
-  switch (userRole) {
-    case "manager":
-      return UserRole.manager;
-    case "player":
-      return UserRole.player;
-    case "coach":
-      return UserRole.coach;
-    case "physio":
-      return UserRole.physio;
-    default:
-      return UserRole.manager;
-  }
-}
 
 class SignUpChooseTypeScreen extends ConsumerWidget {
+  const SignUpChooseTypeScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -244,7 +34,7 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Form(
-          key: _formKey,
+          key: formKey,
           autovalidateMode: AutovalidateMode.always,
           child: Container(
             padding: const EdgeInsets.all(40.0),
@@ -320,6 +110,11 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                         String email = ref.read(emailProvider.notifier).state;
                         String password =
                             ref.read(passwordProvider.notifier).state;
+                        String contactNumber =
+                            ref.read(phoneProvider.notifier).state;
+                        print(contactNumber);
+                        Uint8List? image =
+                            ref.read(profilePictureProvider.notifier).state;
 
                         await signUpHandler(
                           userRole,
@@ -327,6 +122,8 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                           surname,
                           email,
                           password,
+                          contactNumber,
+                          image,
                           (userId) =>
                               ref.read(userIdProvider.notifier).state = userId,
                           (userRole) => ref
@@ -342,13 +139,8 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                           (value) =>
                               ref.read(passwordProvider.notifier).state = value,
                           (userRole) {
-                            if (userRole != UserRole.player) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfileSetUpScreen()),
-                              );
-                            } else {
+                            if (userRole == UserRole.player) {
+                              clearSignUpForm(ref);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -358,6 +150,20 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                                               .read(userIdProvider.notifier)
                                               .state),
                                 ),
+                              );
+                            } else if (userRole == UserRole.manager) {
+                              clearSignUpForm(ref);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TeamSetUpScreen()),
+                              );
+                            } else {
+                              clearSignUpForm(ref);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()),
                               );
                             }
                           },
@@ -417,6 +223,8 @@ Future<void> signUpHandler(
   String surname,
   String email,
   String password,
+  String contactNumber,
+  Uint8List? image,
   Function(int) userIdSetter,
   Function(UserRole) userRoleSetter,
   Function(String) firstNameReset,
@@ -431,6 +239,8 @@ Future<void> signUpHandler(
     surname: surname,
     email: email,
     password: password,
+    contactNumber: contactNumber,
+    image: image,
   );
 
   String idType = "";

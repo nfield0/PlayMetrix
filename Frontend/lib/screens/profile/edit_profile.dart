@@ -1,13 +1,16 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
+import 'package:play_metrix/api_clients/manager_api_client.dart';
+import 'package:play_metrix/api_clients/physio_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 Future<void> updateProfile(UserRole userRole, int id, String firstName,
     String surname, String contactNumber, Uint8List image) async {
@@ -138,7 +141,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                         !nameRegex.hasMatch(value))
                                     ? 'Invalid first name.'
                                     : null;
-                              }),
+                              }, context),
                               formFieldBottomBorderController(
                                   "Surname", surnameController,
                                   (String? value) {
@@ -146,14 +149,14 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                         !nameRegex.hasMatch(value))
                                     ? 'Invalid surname.'
                                     : null;
-                              }),
+                              }, context),
                               formFieldBottomBorderController(
                                   "Phone", phoneController, (String? value) {
                                 return (value != null &&
                                         !phoneRegex.hasMatch(value))
                                     ? 'Invalid phone number.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 30),
                               bigButton("Save Changes", () {
                                 if (_formKey.currentState!.validate()) {
@@ -177,7 +180,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: roleBasedBottomNavBar(widget.userRole, context,
-            widget.userRole == UserRole.physio ? 2 : 3));
+        bottomNavigationBar:
+            roleBasedBottomNavBar(widget.userRole, context, 2));
   }
 }

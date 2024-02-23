@@ -6,10 +6,10 @@ import 'package:play_metrix/constants.dart';
 
 Widget smallPill(String text) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
     decoration: BoxDecoration(
       color: AppColours.darkBlue,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(50),
     ),
     child: Text(
       text,
@@ -17,6 +17,54 @@ Widget smallPill(String text) {
         color: Colors.white,
         fontWeight: FontWeight.bold,
         fontSize: 16,
+      ),
+    ),
+  );
+}
+
+Widget filePill(
+    String title, String description, IconData icon, VoidCallback onPressed) {
+  return InkWell(
+    onTap: onPressed,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border.all(color: Colors.black26, width: 2),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 45),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFonts.gabarito,
+                          fontSize: 20,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Text(description),
+              ],
+            ),
+          )
+        ],
       ),
     ),
   );
@@ -370,8 +418,11 @@ Widget formFieldBottomBorder(String title, String initialValue) {
   );
 }
 
-Widget formFieldBottomBorderController(String title,
-    TextEditingController controller, String? Function(String?)? validator) {
+Widget formFieldBottomBorderController(
+    String title,
+    TextEditingController controller,
+    String? Function(String?)? validator,
+    BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -383,7 +434,7 @@ Widget formFieldBottomBorderController(String title,
           )),
       const SizedBox(width: 30),
       Container(
-        width: 210, // Set a fixed width for the TextField
+        width: MediaQuery.of(context).size.width * 0.4,
         child: TextFormField(
           controller: controller,
           decoration: const InputDecoration(
@@ -455,7 +506,6 @@ Widget announcementBox({
   required String title,
   required String description,
   required String date,
-  required VoidCallback onDeletePressed,
 }) {
   return InkWell(
       child: Container(
@@ -486,35 +536,26 @@ Widget announcementBox({
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              DateFormat('EEEE, d MMMM y').format(
+                              DateFormat('d MMMM y HH:mm').format(
                                   date.isNotEmpty
                                       ? DateTime.parse(date)
                                       : DateTime.now()),
                               style: const TextStyle(
-                                  fontSize: 12, color: Colors.black54)),
+                                  fontSize: 14, color: Colors.black54)),
                           const SizedBox(height: 5),
                           Text(
                             title,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize: 16,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(description),
-                        ],
-                      ),
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: onDeletePressed,
-                          child: const Icon(
-                            Icons.delete,
-                            size: 20,
-                            color: AppColours.red,
+                          // const SizedBox(height: 5),
+                          Text(
+                            description,
+                            style: const TextStyle(fontSize: 15),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

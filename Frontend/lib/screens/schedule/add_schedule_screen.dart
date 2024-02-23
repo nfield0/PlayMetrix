@@ -1,148 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
+import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'package:http/http.dart' as http;
-
-enum AlertTime {
-  none,
-  fifteenMinutes,
-  thirtyMinutes,
-  oneHour,
-  twoHours,
-  oneDay,
-  twoDays,
-}
-
-enum ScheduleType {
-  training,
-  match,
-  meeting,
-  other,
-}
-
-String alertTimeToText(AlertTime alertTime) {
-  switch (alertTime) {
-    case AlertTime.none:
-      return "None";
-    case AlertTime.fifteenMinutes:
-      return "15 minutes before";
-    case AlertTime.thirtyMinutes:
-      return "30 minutes before";
-    case AlertTime.oneHour:
-      return "1 hour before";
-    case AlertTime.twoHours:
-      return "2 hours before";
-    case AlertTime.oneDay:
-      return "1 day before";
-    case AlertTime.twoDays:
-      return "2 days before";
-  }
-}
-
-ScheduleType textToScheduleType(String text) {
-  switch (text) {
-    case "Training":
-      return ScheduleType.training;
-    case "Match":
-      return ScheduleType.match;
-    case "Meeting":
-      return ScheduleType.meeting;
-    case "Other":
-      return ScheduleType.other;
-  }
-  return ScheduleType.other;
-}
-
-AlertTime textToAlertTime(String text) {
-  switch (text) {
-    case "None":
-      return AlertTime.none;
-    case "15 minutes before":
-      return AlertTime.fifteenMinutes;
-    case "30 minutes before":
-      return AlertTime.thirtyMinutes;
-    case "1 hour before":
-      return AlertTime.oneHour;
-    case "2 hours before":
-      return AlertTime.twoHours;
-    case "1 day before":
-      return AlertTime.oneDay;
-    case "2 days before":
-      return AlertTime.twoDays;
-  }
-  return AlertTime.none;
-}
-
-String scheduleTypeToText(ScheduleType scheduleType) {
-  switch (scheduleType) {
-    case ScheduleType.training:
-      return "Training";
-    case ScheduleType.match:
-      return "Match";
-    case ScheduleType.meeting:
-      return "Meeting";
-    case ScheduleType.other:
-      return "Other";
-  }
-}
-
-Future<int> addSchedule(
-    String title,
-    String location,
-    DateTime startTime,
-    DateTime endTime,
-    ScheduleType scheduleType,
-    AlertTime alertTime,
-    int teamId) async {
-  const apiUrl = "$apiBaseUrl/schedules";
-
-  try {
-    final response = await http.post(Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          "schedule_title": title,
-          "schedule_location": location,
-          "schedule_start_time": startTime.toIso8601String(),
-          "schedule_end_time": endTime.toIso8601String(),
-          "schedule_type": scheduleTypeToText(scheduleType),
-          "schedule_alert_time": alertTimeToText(alertTime),
-          "team_id": teamId,
-        }));
-
-    print(response.body);
-    if (response.statusCode == 200) {
-      int scheduleId = jsonDecode(response.body)["id"];
-
-      const teamScheduleApiUrl = "$apiBaseUrl/team_schedules";
-
-      await http.post(Uri.parse(teamScheduleApiUrl),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(
-              <String, int>{"schedule_id": scheduleId, "team_id": teamId}));
-
-      print("Schedule added");
-      return scheduleId;
-    } else {
-      print("Schedule not added");
-    }
-  } catch (e) {
-    print(e);
-  }
-  throw Exception("Schedule not added");
-}
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 final startTimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
 final endTimeProvider = StateProvider<DateTime>((ref) => DateTime.now().add(
@@ -296,6 +163,81 @@ class AddScheduleScreen extends ConsumerWidget {
                                 textToAlertTime(selectedAlertTime),
                                 ref.read(teamIdProvider));
 
+                            await addNotification(
+                                title: "New event: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: DateTime.now(),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.coach);
+
+                            await addNotification(
+                                title: "New event: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: DateTime.now(),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.physio);
+
+                            await addNotification(
+                                title: "New event: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: DateTime.now(),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.player);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.coach);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.physio);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.player);
+
+                            await addNotification(
+                                title:
+                                    "Event reminder: ${titleController.text}",
+                                desc: "Location: ${locationController.text}\n"
+                                    "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                    "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                date: selectedStartDate.subtract(
+                                    alertTimeToDuration(
+                                        textToAlertTime(selectedAlertTime))),
+                                teamId: ref.read(teamIdProvider),
+                                recieverUserRole: UserRole.manager);
+
                             navigator
                                 .push(MaterialPageRoute(builder: (context) {
                               return ScheduleDetailsScreen(
@@ -322,6 +264,6 @@ class AddScheduleScreen extends ConsumerWidget {
                     ]),
               )),
         ),
-        bottomNavigationBar: managerBottomNavBar(context, 2));
+        bottomNavigationBar: managerBottomNavBar(context, 3));
   }
 }

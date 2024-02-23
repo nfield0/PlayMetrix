@@ -1,108 +1,11 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/home_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future<void> updateInjury({
-  required int injuryId,
-  required String injuryType,
-  required String injuryLocation,
-  required String expectedRecoveryTime,
-  required String recoveryMethod,
-  required DateTime dateOfInjury,
-  required DateTime dateOfRecovery,
-  required int playerId,
-}) async {
-  final apiUrl = '$apiBaseUrl/injuries/$injuryId';
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'injury_type': injuryType,
-        'injury_location': injuryLocation,
-        'expected_recovery_time': expectedRecoveryTime,
-        'recovery_method': recoveryMethod,
-      }),
-    );
-
-    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$playerId";
-    final playerInjuryResponse = await http.put(
-      Uri.parse(playerInjuryApiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "injury_id": injuryId,
-        "date_of_injury": dateOfInjury.toIso8601String(),
-        "date_of_recovery": dateOfRecovery.toIso8601String(),
-        "player_id": playerId
-      }),
-    );
-
-    if (response.statusCode == 200 && playerInjuryResponse.statusCode == 200) {
-      // Successfully updated, handle the response accordingly
-      print('Update successful!');
-      print('Response: ${playerInjuryResponse.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to update, handle the error accordingly
-      print(
-          'Failed to update. Status code: ${playerInjuryResponse.statusCode}');
-      print('Error message: ${playerInjuryResponse.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
-Future<AllPlayerInjuriesData> getPlayerInjuryById(
-    int injuryId, int playerId) async {
-  final apiUrl = "$apiBaseUrl/injuries/$injuryId";
-
-  final response = await http.get(Uri.parse(apiUrl));
-
-  final injuryData = jsonDecode(response.body);
-
-  if (response.statusCode == 200) {
-    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$playerId";
-
-    final playerInjuryResponse = await http.get(Uri.parse(playerInjuryApiUrl));
-
-    if (playerInjuryResponse.statusCode == 200) {
-      List<dynamic> playerInjuriesJson = jsonDecode(playerInjuryResponse.body);
-
-      for (var injury in playerInjuriesJson) {
-        if (injury['injury_id'] == injuryId) {
-          return AllPlayerInjuriesData(
-              injuryId,
-              injuryData['injury_type'],
-              injuryData['injury_location'],
-              injuryData['expected_recovery_time'],
-              injuryData['recovery_method'],
-              injury['date_of_injury'],
-              injury['date_of_recovery'],
-              playerId);
-        }
-      }
-    } else {
-      throw Exception('Failed to load player injuries');
-    }
-  } else {
-    throw Exception('Failed to load player injuries');
-  }
-  throw Exception('Failed to load player injuries');
-}
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class EditInjuryScreen extends StatefulWidget {
   final int playerId;
@@ -219,7 +122,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Injury location", injuryLocationController,
@@ -227,7 +130,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Expected recovery time",
@@ -235,7 +138,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Recovery method", recoveryMethodController,
@@ -243,7 +146,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 7),
                               datePickerNoDivider(context, "Date of injury",
                                   selectedDateOfInjury, (date) {
@@ -284,6 +187,6 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: physioBottomNavBar(context, 0));
   }
 }

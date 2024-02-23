@@ -1,192 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/home_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'dart:convert';
+import 'package:play_metrix/providers/user_provider.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
-
-final teamIdProvider = StateProvider<int>((ref) => -1);
-
-class SportData {
-  final int sport_id;
-  final String sport_name;
-
-  SportData({
-    required this.sport_id,
-    required this.sport_name,
-  });
-
-  factory SportData.fromJson(Map<String, dynamic> json) {
-    return SportData(
-      sport_id: json['sport_id'],
-      sport_name: json['sport_name'],
-    );
-  }
-}
-
-Future<int> getFirstSportId() async {
-  const apiUrl = '$apiBaseUrl/sports';
-  try {
-    final response =
-        await http.get(Uri.parse(apiUrl), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data from the backend
-      final List<dynamic> data = jsonDecode(response.body);
-
-      // Convert List<dynamic> to List<Map<String, dynamic>>
-      final List<Map<String, dynamic>> sportJsonList =
-          List<Map<String, dynamic>>.from(data);
-
-      final List<SportData> sports =
-          sportJsonList.map((json) => SportData.fromJson(json)).toList();
-
-      return sports[0].sport_id;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to get data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to load sports');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to load sports');
-  }
-}
-
-Future<List<TeamData>> getAllTeams() async {
-  const apiUrl = '$apiBaseUrl/teams';
-  try {
-    final response =
-        await http.get(Uri.parse(apiUrl), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data from the backend
-      final List<dynamic> data = jsonDecode(response.body);
-
-      // Convert List<dynamic> to List<Map<String, dynamic>>
-      final List<Map<String, dynamic>> teamJsonList =
-          List<Map<String, dynamic>>.from(data);
-
-      final List<TeamData> teams =
-          teamJsonList.map((json) => TeamData.fromJson(json)).toList();
-
-      return teams;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to get data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to load teams');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to load teams');
-  }
-}
-
-enum TeamRole { defense, attack, midfield, goalkeeper, headCoach }
-
-String teamRoleToText(TeamRole role) {
-  switch (role) {
-    case TeamRole.defense:
-      return 'Defense';
-    case TeamRole.attack:
-      return 'Attack';
-    case TeamRole.midfield:
-      return 'Midfield';
-    case TeamRole.goalkeeper:
-      return 'Goalkeeper';
-    case TeamRole.headCoach:
-      return 'Head Coach';
-  }
-}
-
-Future<List<LeagueData>> getAllLeagues() async {
-  const apiUrl = '$apiBaseUrl/leagues/';
-  try {
-    final response =
-        await http.get(Uri.parse(apiUrl), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data from the backend
-      final List<dynamic> data = jsonDecode(response.body);
-
-      // Convert List<dynamic> to List<Map<String, dynamic>>
-      final List<Map<String, dynamic>> teamJsonList =
-          List<Map<String, dynamic>>.from(data);
-
-      final List<LeagueData> leagues =
-          teamJsonList.map((json) => LeagueData.fromJson(json)).toList();
-
-      return leagues;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to get data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to load leagues.');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to load leagues');
-  }
-}
-
-Future<int> addTeam(String teamName, Uint8List? imageBytes, int managerId,
-    int sportId, int leagueId, String teamLocation) async {
-  const apiUrl = '$apiBaseUrl/teams';
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'team_name': teamName,
-        'team_logo': imageBytes != null ? base64Encode(imageBytes) : "",
-        'manager_id': managerId,
-        'sport_id': sportId,
-        'league_id': leagueId,
-        'team_location': teamLocation,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      print("Team added successfully");
-      print(response.body);
-      return jsonDecode(response.body)["id"];
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to retrieve team data');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to retrieve team data');
-  }
-}
-
-final leagueProvider = StateProvider<int>((ref) => 0);
-final teamLogoProvider = StateProvider<Uint8List?>((ref) => null);
 
 class TeamSetUpScreen extends ConsumerWidget {
   final TextEditingController _teamNameController = TextEditingController();
@@ -267,12 +90,12 @@ class TeamSetUpScreen extends ConsumerWidget {
                 formFieldBottomBorderController(
                     "Team name", _teamNameController, (value) {
                   return "";
-                }),
+                }, context),
                 const SizedBox(height: 10),
                 formFieldBottomBorderController(
                     "Location", _teamLocationController, (value) {
                   return "";
-                }),
+                }, context),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

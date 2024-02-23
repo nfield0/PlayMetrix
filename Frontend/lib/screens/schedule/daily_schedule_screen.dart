@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class DailyScheduleScreen extends ConsumerWidget {
+  const DailyScheduleScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = ref.watch(selectedDateProvider);
@@ -28,7 +30,8 @@ class DailyScheduleScreen extends ConsumerWidget {
         body: Container(
           padding: const EdgeInsets.all(30),
           child: FutureBuilder(
-              future: getTeamSchedules(ref.read(teamIdProvider.notifier).state),
+              future:
+                  getTeamAppointments(ref.read(teamIdProvider.notifier).state),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final dataSource = snapshot.data;
@@ -77,6 +80,6 @@ class DailyScheduleScreen extends ConsumerWidget {
                 return const CircularProgressIndicator();
               }),
         ),
-        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 2));
+        bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }

@@ -1,308 +1,35 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/screens/physio/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
-import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/player/statistics_constants.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-class LeagueData {
-  final int league_id;
-  final String league_name;
-
-  LeagueData({
-    required this.league_id,
-    required this.league_name,
-  });
-
-  factory LeagueData.fromJson(Map<String, dynamic> json) {
-    return LeagueData(
-      league_id: json['league_id'],
-      league_name: json['league_name'],
-    );
-  }
-}
-
-Future<List<LeagueData>> getLeagues() async {
-  const apiUrl = '$apiBaseUrl/leagues';
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = jsonDecode(response.body);
-      final List<LeagueData> leagues =
-          responseData.map((json) => LeagueData.fromJson(json)).toList();
-
-      return leagues;
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print('Failed to retrieve data. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      throw Exception('Failed to load leagues');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-    throw Exception('Failed to load leagues');
-  }
-}
-
-Future<String?> getTeamLeagueName(int teamId) async {
-  try {
-    final TeamData? teamData = await getTeamById(teamId);
-    final List<LeagueData> leagues = await getLeagues();
-
-    for (var league in leagues) {
-      if (teamData?.league_id == league.league_id) {
-        return league.league_name;
-      }
-    }
-
-    return null; // If league not found
-  } catch (error) {
-    print('Error: $error');
-    return null;
-  }
-}
-
-class PlayerInjuries {
-  final int injury_id;
-  final String date_of_injury;
-  final String date_of_recovery;
-  final int player_id;
-
-  PlayerInjuries({
-    required this.injury_id,
-    required this.date_of_injury,
-    required this.date_of_recovery,
-    required this.player_id,
-  });
-
-  factory PlayerInjuries.fromJson(Map<String, dynamic> json) {
-    return PlayerInjuries(
-      injury_id: json['injury_id'],
-      date_of_injury: json['date_of_injury'],
-      date_of_recovery: json['date_of_recovery'],
-      player_id: json['player_id'],
-    );
-  }
-
-  @override
-  String toString() {
-    return 'PlayerInjuries{injury_id: $injury_id, date_of_injury: $date_of_injury, date_of_recovery: $date_of_recovery, player_id: $player_id}';
-  }
-}
-
-Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
-    int userId) async {
-  const apiUrl =
-      '$apiBaseUrl/player_injuries'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      List<dynamic> jsonResponse = jsonDecode(response.body);
-      List<PlayerInjuries> allPlayerInjuries =
-          jsonResponse.map((json) => PlayerInjuries.fromJson(json)).toList();
-      List<PlayerInjuries> playerInjuries = [];
-      // loop thourgh all the injuries and get the ones that match the user id passed in
-      for (var injury in allPlayerInjuries) {
-        if (injury.player_id == userId) {
-          playerInjuries.add(injury);
-        }
-      }
-
-      List<int> injuryIds = [];
-      for (var injury in playerInjuries) {
-        injuryIds.add(injury.injury_id); // Corrected property name
-      }
-
-      const apiUrlForInjuries =
-          '$apiBaseUrl/injuries'; // Replace with your actual backend URL and provide the user ID
-
-      try {
-        final response = await http.get(
-          Uri.parse(apiUrlForInjuries),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-        );
-
-        if (response.statusCode == 200) {
-          // Successfully retrieved data, parse and store it in individual variables
-          List<dynamic> jsonResponse = jsonDecode(response.body);
-          List<Injury> allInjuries =
-              jsonResponse.map((json) => Injury.fromJson(json)).toList();
-
-          List<Injury> injuriesInIdsList = [];
-
-          for (var injury in allInjuries) {
-            if (injuryIds.contains(injury.injury_id)) {
-              injuriesInIdsList.add(injury);
-            }
-          }
-
-          List<AllPlayerInjuriesData> allPlayerInjuriesData = [];
-          for (var injury in injuriesInIdsList) {
-            for (var playerInjury in playerInjuries) {
-              if (injury.injury_id == playerInjury.injury_id) {
-                // create a AllPlayerInjuriesData object
-                AllPlayerInjuriesData data = AllPlayerInjuriesData(
-                    injury.injury_id,
-                    injury.injury_type,
-                    injury.injury_location,
-                    injury.expected_recovery_time,
-                    injury.recovery_method,
-                    playerInjury.date_of_injury,
-                    playerInjury.date_of_recovery,
-                    playerInjury.player_id);
-                allPlayerInjuriesData.add(data);
-              }
-            }
-          }
-          return allPlayerInjuriesData;
-        } else {
-          // Failed to retrieve data, handle the error accordingly
-          print(
-              'Failed to retrieve data for injuries request. Status code: ${response.statusCode}');
-          print('Error message for injuries request: ${response.body}');
-        }
-      } catch (error) {
-        // Handle any network or other errors
-        print("injuries");
-        print('Error in injuries request: $error');
-      }
-      throw Exception('Failed to retrieve Injury Data');
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print(
-          'Failed to retrieve data for player injuries request. Status code: ${response.statusCode}');
-      print(
-          'Error message for player injuries request. Status code: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print("Player Injuries by user id");
-    print('Error: $error');
-  }
-  throw Exception('Failed to retrieve All Player Injuries By User Id data');
-}
-
-void printList(List<dynamic> list) {
-  for (var item in list) {
-    print(item);
-  }
-}
-
-class Injury {
-  var injury_id;
-  var injury_type;
-  String injury_location;
-  var expected_recovery_time;
-  var recovery_method;
-
-  Injury(
-    this.injury_id,
-    this.injury_type,
-    this.injury_location,
-    this.expected_recovery_time,
-    this.recovery_method,
-  );
-
-  factory Injury.fromJson(Map<String, dynamic> json) {
-    return Injury(
-        json['injury_id'],
-        json['injury_type'],
-        json['injury_location'],
-        json['expected_recovery_time'],
-        json['recovery_method']);
-  }
-
-  @override
-  String toString() {
-    return 'Injury{injury_id: $injury_id, injury_type: $injury_type, expected_recovery_time: $expected_recovery_time, recovery_method: $recovery_method}';
-  }
-}
-
-class AllPlayerInjuriesData {
-  final int injury_id;
-  final String injury_type;
-  final String injury_location;
-  final String expected_recovery_time;
-  final String recovery_method;
-  final String date_of_injury;
-  final String date_of_recovery;
-  final int player_id;
-
-  AllPlayerInjuriesData(
-    this.injury_id,
-    this.injury_type,
-    this.injury_location,
-    this.expected_recovery_time,
-    this.recovery_method,
-    this.date_of_injury,
-    this.date_of_recovery,
-    this.player_id,
-  );
-}
-
-enum AvailabilityStatus { Available, Limited, Unavailable }
-
-class AvailabilityData {
-  final AvailabilityStatus status;
-  final String message;
-  final IconData icon;
-  final Color color;
-
-  AvailabilityData(this.status, this.message, this.icon, this.color);
-}
-
-final List<AvailabilityData> availabilityData = [
-  AvailabilityData(AvailabilityStatus.Available, "Available",
-      Icons.check_circle, AppColours.green),
-  AvailabilityData(
-      AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow),
-  AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable", Icons.cancel,
-      AppColours.red)
-];
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class PlayerProfileScreen extends ConsumerWidget {
   final AvailabilityData available = AvailabilityData(
-      AvailabilityStatus.Available,
+      AvailabilityStatus.available,
       "Available",
       Icons.check_circle,
       AppColours.green);
   final AvailabilityData limited = AvailabilityData(
-      AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow);
+      AvailabilityStatus.limited, "Limited", Icons.warning, AppColours.yellow);
   final AvailabilityData unavailable = AvailabilityData(
-      AvailabilityStatus.Unavailable,
+      AvailabilityStatus.unavailable,
       "Unavailable",
       Icons.cancel,
       AppColours.red);
@@ -410,10 +137,10 @@ class PlayerProfileScreen extends ConsumerWidget {
                               int playerNumber = player.teamNumber;
                               AvailabilityStatus availability = player.status;
                               AvailabilityData availabilityData =
-                                  availability == AvailabilityStatus.Available
+                                  availability == AvailabilityStatus.available
                                       ? available
                                       : availability ==
-                                              AvailabilityStatus.Limited
+                                              AvailabilityStatus.limited
                                           ? limited
                                           : unavailable;
 
@@ -492,7 +219,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                             int numPlayerIds = playerInjuriesData.length;
 
                             return injuriesSection(
-                                numPlayerIds, playerInjuriesData);
+                                numPlayerIds, playerInjuriesData, userRole);
                           } else {
                             return Text('No data available');
                           }
@@ -545,7 +272,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 25),
                   ]),
                 ))),
-        bottomNavigationBar: playerBottomNavBar(context, 0));
+        bottomNavigationBar: playerBottomNavBar(context, 2));
   }
 }
 
@@ -700,11 +427,11 @@ Widget profileDetails(String title, String desc) {
 
 Widget availabilityTrafficLight(AvailabilityStatus playerStatus) {
   List<AvailabilityData> availability = [
-    AvailabilityData(AvailabilityStatus.Available, "Available",
+    AvailabilityData(AvailabilityStatus.available, "Available",
         Icons.check_circle, AppColours.green),
-    AvailabilityData(AvailabilityStatus.Limited, "Limited", Icons.warning,
+    AvailabilityData(AvailabilityStatus.limited, "Limited", Icons.warning,
         AppColours.yellow),
-    AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable",
+    AvailabilityData(AvailabilityStatus.unavailable, "Unavailable",
         Icons.cancel, AppColours.red)
   ];
   return Row(
@@ -740,8 +467,8 @@ Widget availabilityTrafficLightItem(
   );
 }
 
-Widget injuriesSection(
-    int numInjuries, List<AllPlayerInjuriesData> playerInjuriesData) {
+Widget injuriesSection(int numInjuries,
+    List<AllPlayerInjuriesData> playerInjuriesData, UserRole userRole) {
   return Column(children: [
     Padding(
         padding: EdgeInsets.all(20),
@@ -775,16 +502,17 @@ Widget injuriesSection(
                       style: const TextStyle(
                           color: AppColours.darkBlue,
                           fontWeight: FontWeight.bold)),
-                  smallButton(Icons.edit, "Edit", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditInjuryScreen(
-                                injuryId: injury.injury_id,
-                                playerId: injury.player_id,
-                              )),
-                    );
-                  })
+                  if (userRole == UserRole.physio)
+                    smallButton(Icons.edit, "Edit", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditInjuryScreen(
+                                  injuryId: injury.injury_id,
+                                  playerId: injury.player_id,
+                                )),
+                      );
+                    })
                 ]));
           },
           body: ListTile(

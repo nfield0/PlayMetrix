@@ -1,177 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/physio/add_injury_screen.dart';
-import 'package:play_metrix/screens/player/add_player_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/player/statistics_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:input_quantity/input_quantity.dart';
-
-String availabilityStatusText(AvailabilityStatus status) {
-  switch (status) {
-    case AvailabilityStatus.Available:
-      return "Available";
-    case AvailabilityStatus.Limited:
-      return "Limited";
-    case AvailabilityStatus.Unavailable:
-      return "Unavailable";
-  }
-}
-
-Future<PlayerData> getPlayerProfile(int id) async {
-  final apiUrl = '$apiBaseUrl/players/info/$id';
-  try {
-    final response =
-        await http.get(Uri.parse(apiUrl), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-
-    if (response.statusCode == 200) {
-      final parsed = jsonDecode(response.body);
-
-      return PlayerData(
-        player_id: id,
-        player_firstname: parsed['player_firstname'],
-        player_surname: parsed['player_surname'],
-        player_contact_number: parsed['player_contact_number'],
-        player_dob: parsed['player_dob'] != null && parsed['player_dob'] != ""
-            ? DateTime.parse(parsed['player_dob'])
-            : DateTime.now(),
-        player_height: parsed['player_height'],
-        player_gender: parsed['player_gender'],
-        player_image:
-            parsed['player_image'] != null && parsed['player_image'] != ""
-                ? base64.decode(parsed['player_image'])
-                : Uint8List(0),
-      );
-    } else {
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    print('Error: $error');
-  }
-
-  throw Exception('Player not found');
-}
-
-Future<void> updatePlayerProfile(
-    int id,
-    String firstName,
-    String surname,
-    String contactNumber,
-    DateTime dob,
-    String height,
-    String gender,
-    Uint8List image) async {
-  final apiUrl = '$apiBaseUrl/players/info/$id';
-
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'player_id': id,
-        'player_firstname': firstName,
-        'player_surname': surname,
-        'player_contact_number': contactNumber,
-        'player_dob': dob.toIso8601String(),
-        'player_height': height,
-        'player_gender': gender,
-        'player_image': image.isNotEmpty ? base64Encode(image) : "",
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      print('Registration successful!');
-      print('Response: ${response.body}');
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
-Future<void> updateTeamPlayer(int teamId, int playerId, int number,
-    String status, String teamPosition, String lineupStatus) async {
-  const apiUrl = '$apiBaseUrl/team_player';
-
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'team_id': teamId,
-        'player_id': playerId,
-        'team_position': teamPosition,
-        'player_team_number': number,
-        'playing_status': status,
-        'lineup_status': lineupStatus
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      print('Registration successful!');
-      print('Response: ${response.body}');
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
-Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
-    int matchesStarted, int matchesOffTheBench, int totalMinutesPlayed) async {
-  final apiUrl = '$apiBaseUrl/players/stats/$playerId';
-
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "player_id": playerId,
-        "matches_played": matchesPlayed,
-        "matches_started": matchesStarted,
-        "matches_off_the_bench": matchesOffTheBench,
-        "injury_prone": false,
-        "minutes_played": totalMinutesPlayed
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      print('Registration successful!');
-      print('Response: ${response.body}');
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
 
 class EditPlayerProfileScreen extends StatefulWidget {
   final int playerId;
@@ -202,18 +42,18 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   final TextEditingController _heightController = TextEditingController();
 
   final List<AvailabilityData> availability = [
-    AvailabilityData(AvailabilityStatus.Available, "Available",
+    AvailabilityData(AvailabilityStatus.available, "Available",
         Icons.check_circle, AppColours.green),
-    AvailabilityData(AvailabilityStatus.Limited, "Limited", Icons.warning,
+    AvailabilityData(AvailabilityStatus.limited, "Limited", Icons.warning,
         AppColours.yellow),
-    AvailabilityData(AvailabilityStatus.Unavailable, "Unavailable",
+    AvailabilityData(AvailabilityStatus.unavailable, "Unavailable",
         Icons.cancel, AppColours.red)
   ];
 
   DateTime _selectedDob = DateTime.now();
   Uint8List _profilePicture = Uint8List(0);
   String _selectedGender = 'Male';
-  AvailabilityStatus _selectedAvailability = AvailabilityStatus.Available;
+  AvailabilityStatus _selectedAvailability = AvailabilityStatus.available;
   String _selectedPosition = teamRoleToText(TeamRole.defense);
   String _selectedLineupStatus = lineupStatusToText(LineupStatus.starter);
   String playerName = "";
@@ -226,7 +66,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   @override
   void initState() {
     super.initState();
-    getPlayerProfile(widget.playerId).then((value) {
+    getPlayerData(widget.playerId).then((value) {
       setState(() {
         playerData = value;
         _firstNameController.text = playerData.player_firstname;
@@ -308,17 +148,18 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   fontSize: 36.0,
                                   fontWeight: FontWeight.w700,
                                 )),
-                            smallButton(Icons.add_circle_outline, "Add Injury",
-                                () {
-                              navigator.push(
-                                MaterialPageRoute(
-                                    builder: (context) => AddInjuryScreen(
-                                          userRole: widget.userRole,
-                                          teamId: widget.teamId,
-                                          playerId: widget.playerId,
-                                        )),
-                              );
-                            })
+                            if (widget.userRole == UserRole.physio)
+                              smallButton(
+                                  Icons.add_circle_outline, "Add Injury", () {
+                                navigator.push(
+                                  MaterialPageRoute(
+                                      builder: (context) => AddInjuryScreen(
+                                            userRole: widget.userRole,
+                                            teamId: widget.teamId,
+                                            playerId: widget.playerId,
+                                          )),
+                                );
+                              })
                           ]),
                       const SizedBox(height: 10),
                       divider(),
@@ -384,7 +225,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !nameRegex.hasMatch(value))
                                       ? 'Invalid first name.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Surname", _surnameController, (value) {
@@ -392,7 +233,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !nameRegex.hasMatch(value))
                                       ? 'Invalid surname.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Phone", _contactNumberController, (value) {
@@ -400,7 +241,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !phoneRegex.hasMatch(value))
                                       ? 'Invalid phone number.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.manager)
                                 formFieldBottomBorderController(
                                     "Number", _numberController, (value) {
@@ -417,7 +258,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                   }
 
                                   return "Enter a valid digit.";
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 formFieldBottomBorderController(
                                     "Height", _heightController, (value) {
@@ -425,7 +266,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           !heightRegex.hasMatch(value))
                                       ? 'Invalid height.'
                                       : null;
-                                }),
+                                }, context),
                               if (widget.userRole == UserRole.player)
                                 datePickerNoDivider(
                                     context, "Date of birth", _selectedDob,
@@ -498,10 +339,10 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                     }),
                                   ],
                                 ),
-                              const SizedBox(height: 30),
+                              // const SizedBox(height: 30),
                               bigButton("Save Changes", () async {
                                 if (_formKey.currentState!.validate()) {
-                                  await updatePlayerProfile(
+                                  await editPlayerProfile(
                                       widget.playerId,
                                       _firstNameController.text,
                                       _surnameController.text,
@@ -542,7 +383,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                       )
                     ]))),
         bottomNavigationBar:
-            roleBasedBottomNavBar(widget.userRole, context, 1));
+            roleBasedBottomNavBar(widget.userRole, context, 2));
   }
 }
 

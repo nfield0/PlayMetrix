@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'screens/authentication/landing_screen.dart';
+import 'package:play_metrix/notification_manager.dart';
+import 'package:play_metrix/screens/onboarding_screen.dart';
 
-void main() {
+void main() async {
+  initialiseNotifications();
+  await configureLocalTimeZone();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
               fontFamily: AppFonts.gabarito),
         ),
       ),
-      home: const LandingScreen(), // Set your landing page here
+      home: const OnBoardingScreen(), // Set your landing page here
     );
   }
 }

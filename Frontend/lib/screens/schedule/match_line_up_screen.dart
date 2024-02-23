@@ -1,43 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/player/add_player_screen.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/schedule/duration_played_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
-Future<Map<LineupStatus, List<PlayerProfile>>> getPlayersLineupStatus(
-    int teamId) async {
-  try {
-    // Create a map to store players based on their attending status
-    Map<LineupStatus, List<PlayerProfile>> playersByStatus = {
-      LineupStatus.starter: [],
-      LineupStatus.substitute: [],
-      LineupStatus.reserve: [],
-    };
-
-    List<PlayerProfile> players = await getAllPlayersForTeam(teamId);
-
-    for (PlayerProfile player in players) {
-      if (player.lineupStatus == LineupStatus.starter) {
-        playersByStatus[LineupStatus.starter]!.add(player);
-      } else if (player.lineupStatus == LineupStatus.substitute) {
-        playersByStatus[LineupStatus.substitute]!.add(player);
-      } else {
-        playersByStatus[LineupStatus.reserve]!.add(player);
-      }
-    }
-
-    return playersByStatus;
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-  throw Exception('Failed to retrieve players attendance data');
-}
 
 class MatchLineUpScreen extends StatefulWidget {
   final Appointment schedule;
@@ -188,6 +159,6 @@ class MatchLineUpScreenState extends State<MatchLineUpScreen> {
               ]))),
         )),
         bottomNavigationBar:
-            roleBasedBottomNavBar(widget.userRole, context, 2));
+            roleBasedBottomNavBar(widget.userRole, context, 3));
   }
 }

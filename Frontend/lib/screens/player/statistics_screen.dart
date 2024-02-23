@@ -1,69 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-class StatisticsData {
-  final int matchesPlayed;
-  final int matchesStarted;
-  final int matchesOffTheBench;
-  final int totalMinutesPlayed;
-  final bool injuryProne;
-
-  StatisticsData(this.matchesPlayed, this.matchesStarted,
-      this.matchesOffTheBench, this.totalMinutesPlayed, this.injuryProne);
-}
-
-Future<StatisticsData> getStatisticsData(int id) async {
-  final apiUrl = '$apiBaseUrl/players/stats/$id';
-  try {
-    final response =
-        await http.get(Uri.parse(apiUrl), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-
-    if (response.statusCode == 200) {
-      print('Response: ${response.body}');
-      final parsed = jsonDecode(response.body);
-
-      if (parsed != null) {
-        return StatisticsData(
-            parsed["matches_played"],
-            parsed["matches_started"],
-            parsed["matches_off_the_bench"],
-            parsed["minutes_played"],
-            parsed["injury_prone"]);
-      } else {
-        throw Exception('Failed to load player statistics');
-      }
-    } else {
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    print('Error: $error');
-  }
-
-  throw Exception('Failed to load player statistics');
-}
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class StatisticsScreen extends ConsumerWidget {
   final AvailabilityData available = AvailabilityData(
-      AvailabilityStatus.Available,
+      AvailabilityStatus.available,
       "Available",
       Icons.check_circle,
       AppColours.green);
   final AvailabilityData limited = AvailabilityData(
-      AvailabilityStatus.Limited, "Limited", Icons.warning, AppColours.yellow);
+      AvailabilityStatus.limited, "Limited", Icons.warning, AppColours.yellow);
   final AvailabilityData unavailable = AvailabilityData(
-      AvailabilityStatus.Unavailable,
+      AvailabilityStatus.unavailable,
       "Unavailable",
       Icons.cancel,
       AppColours.red);
+
+  StatisticsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,7 +31,6 @@ class StatisticsScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: Image.asset(
             'lib/assets/logo.png',
             width: 150,
@@ -85,8 +44,7 @@ class StatisticsScreen extends ConsumerWidget {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 35, horizontal: 50),
+                padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -127,7 +85,7 @@ class StatisticsScreen extends ConsumerWidget {
                             }
                           }),
                     ]))),
-        bottomNavigationBar: playerBottomNavBar(context, 1));
+        bottomNavigationBar: playerBottomNavBar(context, 0));
   }
 }
 

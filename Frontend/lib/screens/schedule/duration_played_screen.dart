@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class DurationPlayedScreen extends StatefulWidget {
-  const DurationPlayedScreen({Key? key}) : super(key: key);
+  const DurationPlayedScreen({super.key});
 
   @override
-  _DurationPlayedScreenState createState() => _DurationPlayedScreenState();
+  DurationPlayedScreenState createState() => DurationPlayedScreenState();
 }
 
-class _DurationPlayedScreenState extends State<DurationPlayedScreen> {
+class DurationPlayedScreenState extends State<DurationPlayedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +97,7 @@ class _DurationPlayedScreenState extends State<DurationPlayedScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: managerBottomNavBar(context, 2),
+      bottomNavigationBar: managerBottomNavBar(context, 3),
     );
   }
 }

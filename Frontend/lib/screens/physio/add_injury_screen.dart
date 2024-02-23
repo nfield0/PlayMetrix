@@ -1,67 +1,16 @@
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
+import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
-import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future<void> addInjury({
-  required int playerId,
-  required String injuryType,
-  required String injuryLocation,
-  required String expectedRecoveryTime,
-  required String recoveryMethod,
-  required DateTime dateOfInjury,
-  required DateTime dateOfRecovery,
-}) async {
-  const apiUrl =
-      '$apiBaseUrl/injuries/'; // Replace with your actual backend URL
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'injury_type': injuryType,
-        'injury_location': injuryLocation,
-        'expected_recovery_time': expectedRecoveryTime,
-        'recovery_method': recoveryMethod,
-      }),
-    );
-
-    print('Response: ${response.body}');
-    if (response.statusCode == 200) {
-      const playerInjuriesApiUrl = "$apiBaseUrl/player_injuries/";
-
-      final playerInjuriesResponse = await http.post(
-        Uri.parse(playerInjuriesApiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'player_id': playerId,
-          'injury_id': jsonDecode(response.body)['id'],
-          'date_of_injury': dateOfInjury.toIso8601String(),
-          'date_of_recovery': dateOfRecovery.toIso8601String(),
-        }),
-      );
-
-      print('Response: ${playerInjuriesResponse.body}');
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    print('Error: $error');
-  }
-}
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class AddInjuryScreen extends StatefulWidget {
   final int playerId;
@@ -107,8 +56,31 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
     });
   }
 
+  PlatformFile? injuryReportFile;
+
   @override
   Widget build(BuildContext context) {
+    Future<void> pickInjuryReportPdf() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result != null) {
+        if (result.files.isNotEmpty) {
+          PlatformFile file = result.files.single;
+
+          Uint8List bytes = result.files.single.bytes!;
+
+          setState(() {
+            injuryReportFile = file;
+          });
+          // Example: You can send 'bytes' to a function for further processing
+          // processPdfBytes(bytes);
+        }
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Player Profile"),
@@ -171,7 +143,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Injury location", injuryLocationController,
@@ -179,7 +151,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Expected recovery time",
@@ -187,7 +159,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 5),
                               formFieldBottomBorderController(
                                   "Recovery method", recoveryMethodController,
@@ -195,7 +167,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                 return (value != null && value.isEmpty)
                                     ? 'This field is required.'
                                     : null;
-                              }),
+                              }, context),
                               const SizedBox(height: 7),
                               datePickerNoDivider(context, "Date of injury",
                                   selectedDateOfInjury, (date) {
@@ -210,9 +182,71 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                   selectedDateOfRecovery = date;
                                 });
                               }),
+                              const SizedBox(height: 15),
+                              injuryReportFile != null
+                                  ? Column(children: [
+                                      filePill(
+                                          injuryReportFile!.name,
+                                          formatBytes(injuryReportFile!.size),
+                                          Icons.file_open,
+                                          () {}),
+                                      const SizedBox(height: 15),
+                                      underlineButtonTransparentRedGabarito(
+                                          "Remove injury report", () {
+                                        setState(() {
+                                          injuryReportFile = null;
+                                        });
+                                      })
+                                    ])
+                                  : Center(
+                                      child: underlineButtonTransparent(
+                                          "Upload injury report", () {
+                                        pickInjuryReportPdf();
+                                      }),
+                                    ),
                               const SizedBox(height: 25),
                               bigButton("Add Injury", () {
                                 if (_formKey.currentState!.validate()) {
+                                  bool isSameDay = selectedDateOfInjury.year ==
+                                          selectedDateOfInjury.year &&
+                                      selectedDateOfInjury.month ==
+                                          selectedDateOfInjury.month &&
+                                      selectedDateOfInjury.day ==
+                                          selectedDateOfInjury.day;
+                                  if (selectedDateOfInjury
+                                          .isAfter(DateTime.now()) ||
+                                      isSameDay) {
+                                    addNotification(
+                                        title:
+                                            "$playerName has been injured: ${injuryTypeController.text}",
+                                        desc:
+                                            "Injury location: ${injuryLocationController.text}\n"
+                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                        date: DateTime.now(),
+                                        teamId: widget.teamId,
+                                        recieverUserRole: UserRole.manager);
+
+                                    addNotification(
+                                        title:
+                                            "$playerName has been injured: ${injuryTypeController.text}",
+                                        desc:
+                                            "Injury location: ${injuryLocationController.text}\n"
+                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                        date: DateTime.now(),
+                                        teamId: widget.teamId,
+                                        recieverUserRole: UserRole.coach);
+
+                                    addNotification(
+                                        title:
+                                            "$playerName has been injured: ${injuryTypeController.text}",
+                                        desc:
+                                            "Injury location: ${injuryLocationController.text}\n"
+                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                        date: DateTime.now(),
+                                        teamId: widget.teamId,
+                                        recieverUserRole: UserRole.player);
+                                  }
+
                                   addInjury(
                                       playerId: widget.playerId,
                                       injuryType: injuryTypeController.text,
@@ -237,6 +271,6 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                             ]),
                       )
                     ]))),
-        bottomNavigationBar: physioBottomNavBar(context, 1));
+        bottomNavigationBar: physioBottomNavBar(context, 0));
   }
 }

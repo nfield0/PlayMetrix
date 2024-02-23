@@ -1,63 +1,12 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
-import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-Future<TeamData> editTeam(
-  int teamId,
-  String teamName,
-  Uint8List? teamLogo,
-  int managerId,
-  int leagueId,
-  int sportId,
-  String teamLocation,
-) async {
-  final apiUrl = '$apiBaseUrl/teams/$teamId';
-
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "team_name": teamName,
-        "team_logo": teamLogo != null ? base64Encode(teamLogo) : "",
-        "manager_id": managerId,
-        "league_id": leagueId,
-        "sport_id": sportId,
-        "team_location": teamLocation
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // Team updated successfully
-      print('Team updated successfully');
-      return TeamData(
-          team_id: teamId,
-          team_name: teamLocation,
-          team_logo: teamLogo!,
-          manager_id: managerId,
-          sport_id: sportId,
-          league_id: leagueId,
-          team_location: teamLocation);
-    } else {
-      // Handle errors
-      print('Failed to update team. Status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error updating team: $e');
-  }
-  throw Exception('Error updating team');
-}
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class EditTeamScreen extends StatefulWidget {
   final int teamId;
@@ -182,14 +131,14 @@ class EditTeamScreenState extends State<EditTeamScreen> {
                       return (value != null && value.isEmpty)
                           ? 'This field is required.'
                           : null;
-                    }),
+                    }, context),
                     const SizedBox(height: 10),
                     formFieldBottomBorderController(
                         "Location", _teamLocationController, (String? value) {
                       return (value != null && value.isEmpty)
                           ? 'This field is required.'
                           : null;
-                    }),
+                    }, context),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

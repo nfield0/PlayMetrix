@@ -1,24 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/screens/authentication/sign_up_choose_type_screen.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
+import 'package:play_metrix/data_models/team_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/coach/add_coach_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/profile/profile_set_up.dart';
 import 'package:play_metrix/screens/profile/profile_view_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
-import 'package:play_metrix/screens/widgets/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets/buttons.dart';
-import 'package:play_metrix/screens/widgets/common_widgets.dart';
+import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class CoachesScreen extends ConsumerWidget {
+  const CoachesScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: Image.asset(
             'lib/assets/logo.png',
             width: 150,
@@ -139,6 +141,6 @@ class CoachesScreen extends ConsumerWidget {
                         }
                       }),
                 ]))),
-        bottomNavigationBar: managerBottomNavBar(context, 1));
+        bottomNavigationBar: managerBottomNavBar(context, 0));
   }
 }
