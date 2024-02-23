@@ -184,52 +184,64 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                           if (widget.userRole == UserRole.player)
                             const SizedBox(height: 15),
                           if (widget.userRole == UserRole.player)
-                            Row(
-                              children: [
-                                playerAttendingStatus ==
-                                        PlayerAttendingStatus.present
-                                    ? smallButtonBlue(Icons.check, "Yes", () {})
-                                    : smallButton(Icons.check, "Yes", () {
-                                        setState(() {
-                                          playerAttendingStatus =
-                                              PlayerAttendingStatus.present;
-                                        });
-                                        updatePlayerAttendingStatus(
-                                            widget.userId,
-                                            widget.scheduleId,
-                                            PlayerAttendingStatus.present);
-                                      }),
-                                const SizedBox(width: 10),
-                                playerAttendingStatus ==
-                                        PlayerAttendingStatus.absent
-                                    ? smallButtonBlue(Icons.close, "No", () {})
-                                    : smallButton(Icons.close, "No", () {
-                                        setState(() {
-                                          playerAttendingStatus =
-                                              PlayerAttendingStatus.absent;
-                                        });
-                                        updatePlayerAttendingStatus(
-                                            widget.userId,
-                                            widget.scheduleId,
-                                            PlayerAttendingStatus.absent);
-                                      }),
-                                const SizedBox(width: 10),
-                                playerAttendingStatus ==
-                                        PlayerAttendingStatus.undecided
-                                    ? smallButtonBlue(
-                                        Icons.question_mark, "Unknown", () {})
-                                    : smallButton(
-                                        Icons.question_mark, "Unknown", () {
-                                        setState(() {
-                                          playerAttendingStatus =
-                                              PlayerAttendingStatus.undecided;
-                                        });
-                                        updatePlayerAttendingStatus(
-                                            widget.userId,
-                                            widget.scheduleId,
-                                            PlayerAttendingStatus.undecided);
-                                      }),
-                              ],
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Wrap(
+                                children: [
+                                  if (playerAttendingStatus ==
+                                      PlayerAttendingStatus.present)
+                                    smallButtonBlue(Icons.check, "Yes", () {}),
+                                  if (playerAttendingStatus !=
+                                      PlayerAttendingStatus.present)
+                                    smallButton(Icons.check, "Yes", () {
+                                      setState(() {
+                                        playerAttendingStatus =
+                                            PlayerAttendingStatus.present;
+                                      });
+                                      updatePlayerAttendingStatus(
+                                        widget.userId,
+                                        widget.scheduleId,
+                                        PlayerAttendingStatus.present,
+                                      );
+                                    }),
+                                  const SizedBox(width: 10),
+                                  if (playerAttendingStatus ==
+                                      PlayerAttendingStatus.absent)
+                                    smallButtonBlue(Icons.close, "No", () {}),
+                                  if (playerAttendingStatus !=
+                                      PlayerAttendingStatus.absent)
+                                    smallButton(Icons.close, "No", () {
+                                      setState(() {
+                                        playerAttendingStatus =
+                                            PlayerAttendingStatus.absent;
+                                      });
+                                      updatePlayerAttendingStatus(
+                                        widget.userId,
+                                        widget.scheduleId,
+                                        PlayerAttendingStatus.absent,
+                                      );
+                                    }),
+                                  const SizedBox(width: 10),
+                                  if (playerAttendingStatus ==
+                                      PlayerAttendingStatus.undecided)
+                                    smallButtonBlue(
+                                        Icons.question_mark, "Unknown", () {}),
+                                  if (playerAttendingStatus !=
+                                      PlayerAttendingStatus.undecided)
+                                    smallButton(Icons.question_mark, "Unknown",
+                                        () {
+                                      setState(() {
+                                        playerAttendingStatus =
+                                            PlayerAttendingStatus.undecided;
+                                      });
+                                      updatePlayerAttendingStatus(
+                                        widget.userId,
+                                        widget.scheduleId,
+                                        PlayerAttendingStatus.undecided,
+                                      );
+                                    }),
+                                ],
+                              ),
                             ),
                           const SizedBox(height: 15),
                           greyDivider(),
