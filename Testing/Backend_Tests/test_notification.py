@@ -104,6 +104,7 @@ def test_add_notification():
     headers = {'Content-Type': 'application/json'}
     json = {
         "notification_title": "Test Notification",
+        "notification_type": "Test Type",
         "notification_desc": "Test Description",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
@@ -128,6 +129,7 @@ def test_get_notification():
         expected_json = {
         "notification_id": 1,
         "notification_title": "Test Notification",
+        "notification_type": "Test Type",
         "notification_desc": "Test Description",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
@@ -149,6 +151,7 @@ def test_get_notification_by_team_type():
         expected_json = [{
         "notification_id": 1,
         "notification_title": "Test Notification",
+        "notification_type": "Test Type",
         "notification_desc": "Test Description",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,
@@ -166,6 +169,7 @@ def test_update_notification():
     headers = {'Content-Type': 'application/json'}
     json = {
         "notification_title": "Test Notification Updated",
+        "notification_type": "Test Type Updated",
         "notification_desc": "Test Description Updated",
         "notification_date": "2024-01-21T00:00:00",
         "team_id": 1,

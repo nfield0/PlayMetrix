@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS notifications
 (
 	notification_id serial PRIMARY KEY,
 	notification_title VARCHAR(200) NOT NULL,
-	/*notification_type VARCHAR(50),*/
+	notification_type VARCHAR(50),
 	notification_date TIMESTAMP,
 	notification_desc VARCHAR(255),
 	team_id INT NOT NULL,

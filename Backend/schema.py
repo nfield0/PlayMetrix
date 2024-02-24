@@ -249,6 +249,7 @@ class AnnouncementBaseNoID(BaseModel):
 
 class NotificationBase(BaseModel):
     notification_title: str
+    notification_type: str
     notification_date: str
     notification_desc: str
     team_id: int

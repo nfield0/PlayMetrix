@@ -31,6 +31,7 @@ def insert_notification(db: Session, new_notification: NotificationBase):
         if new_notification is not None:
             new_notification_obj = notifications(
                 notification_title=new_notification.notification_title,
+                notification_type=new_notification.notification_type,
                 notification_date=new_notification.notification_date,
                 notification_desc=new_notification.notification_desc,
                 team_id=new_notification.team_id,
@@ -49,6 +50,7 @@ def update_notification(db, updated_notification: NotificationBase, id):
         notification_to_update = db.query(notifications).filter_by(notification_id = id).first()
         if notification_to_update:
             notification_to_update.notification_title = updated_notification.notification_title
+            notification_to_update.notification_type = updated_notification.notification_type
             notification_to_update.notification_date = updated_notification.notification_date
             notification_to_update.notification_desc = updated_notification.notification_desc
             notification_to_update.team_id = updated_notification.team_id
