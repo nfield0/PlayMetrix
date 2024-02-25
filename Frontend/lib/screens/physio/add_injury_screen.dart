@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +13,13 @@ import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class AddInjuryScreen extends StatefulWidget {
   final int playerId;
+  final int physioId;
   final UserRole userRole;
   final int teamId;
   const AddInjuryScreen(
       {super.key,
       required this.playerId,
+      required this.physioId,
       required this.userRole,
       required this.teamId});
 
@@ -70,13 +71,9 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
         if (result.files.isNotEmpty) {
           PlatformFile file = result.files.single;
 
-          Uint8List bytes = result.files.single.bytes!;
-
           setState(() {
             injuryReportFile = file;
           });
-          // Example: You can send 'bytes' to a function for further processing
-          // processPdfBytes(bytes);
         }
       }
     }
@@ -252,6 +249,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
                                   addInjury(
                                       playerId: widget.playerId,
+                                      physioId: widget.physioId,
                                       injuryType: injuryTypeController.text,
                                       injuryLocation:
                                           injuryLocationController.text,
@@ -260,12 +258,14 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                       recoveryMethod:
                                           recoveryMethodController.text,
                                       dateOfInjury: selectedDateOfInjury,
-                                      dateOfRecovery: selectedDateOfRecovery);
+                                      dateOfRecovery: selectedDateOfRecovery,
+                                      injuryReport: injuryReportFile!.bytes);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               EditPlayerProfileScreen(
+                                                  physioId: widget.physioId,
                                                   playerId: widget.playerId,
                                                   userRole: widget.userRole,
                                                   teamId: widget.teamId)));

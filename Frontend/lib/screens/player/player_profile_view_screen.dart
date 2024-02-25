@@ -64,6 +64,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => EditPlayerProfileScreen(
+                                physioId: ref.read(userIdProvider),
                                 userRole: userRole,
                                 playerId: userId,
                                 teamId: ref.read(teamIdProvider),

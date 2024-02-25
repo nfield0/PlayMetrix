@@ -17,9 +17,11 @@ class EditPlayerProfileScreen extends StatefulWidget {
   final int playerId;
   final UserRole userRole;
   final int teamId;
+  final int physioId;
 
   const EditPlayerProfileScreen(
       {super.key,
+      required this.physioId,
       required this.playerId,
       required this.userRole,
       required this.teamId});
@@ -154,6 +156,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                 navigator.push(
                                   MaterialPageRoute(
                                       builder: (context) => AddInjuryScreen(
+                                            physioId: widget.physioId,
                                             userRole: widget.userRole,
                                             teamId: widget.teamId,
                                             playerId: widget.playerId,

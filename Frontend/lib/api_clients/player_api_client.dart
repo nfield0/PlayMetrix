@@ -371,12 +371,14 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
 
 Future<void> addInjury({
   required int playerId,
+  required int physioId,
   required String injuryType,
   required String injuryLocation,
   required String expectedRecoveryTime,
   required String recoveryMethod,
   required DateTime dateOfInjury,
   required DateTime dateOfRecovery,
+  required Uint8List? injuryReport,
 }) async {
   const apiUrl =
       '$apiBaseUrl/injuries/'; // Replace with your actual backend URL
@@ -407,8 +409,11 @@ Future<void> addInjury({
         body: jsonEncode(<String, dynamic>{
           'player_id': playerId,
           'injury_id': jsonDecode(response.body)['id'],
+          'physio_id': physioId,
           'date_of_injury': dateOfInjury.toIso8601String(),
           'date_of_recovery': dateOfRecovery.toIso8601String(),
+          "player_injury_report":
+              injuryReport != null ? base64Encode(injuryReport) : null,
         }),
       );
 
