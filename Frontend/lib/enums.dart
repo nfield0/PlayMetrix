@@ -24,13 +24,13 @@ String userRoleText(UserRole userRole) {
 
 UserRole stringToUserRole(String userRole) {
   switch (userRole) {
-    case "manager":
+    case "manager" || "Manager":
       return UserRole.manager;
-    case "player":
+    case "player" || "Player":
       return UserRole.player;
-    case "coach":
+    case "coach" || "Coach":
       return UserRole.coach;
-    case "physio":
+    case "physio" || "Physio":
       return UserRole.physio;
     default:
       return UserRole.manager;

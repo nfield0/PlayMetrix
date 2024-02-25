@@ -5,8 +5,6 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/notification_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/providers/team_set_up_provider.dart';
-import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
@@ -17,14 +15,19 @@ import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class HomeScreenInitial extends ConsumerWidget {
+  final int userId;
+  final UserRole userRole;
+  final int teamId;
+
+  const HomeScreenInitial(
+      {super.key,
+      required this.userId,
+      required this.userRole,
+      required this.teamId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRole = ref.watch(userRoleProvider.notifier).state;
-    final userId = ref.watch(userIdProvider.notifier).state;
-
     return FutureBuilder<Profile>(
         future: getProfileDetails(userId, userRole),
         builder: (context, snapshot) {
@@ -128,9 +131,8 @@ class HomeScreen extends ConsumerWidget {
                                       const SizedBox(height: 20),
                                       FutureBuilder(
                                           future: getNotifications(
-                                              teamId: ref.read(teamIdProvider),
-                                              userType: userRoleText(ref
-                                                      .read(userRoleProvider))
+                                              teamId: teamId,
+                                              userType: userRoleText(userRole)
                                                   .toLowerCase()),
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==

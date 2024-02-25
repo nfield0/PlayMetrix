@@ -23,6 +23,8 @@ void logOut(WidgetRef ref, BuildContext context) async {
 
   await AuthStorage.saveLoginStatus(false);
   await AuthStorage.resetUserId();
+  await AuthStorage.resetUserRole();
+  await AuthStorage.resetTeamId();
 
   navigator.push(
     MaterialPageRoute(builder: (context) => const LandingScreen()),
