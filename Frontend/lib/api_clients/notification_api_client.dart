@@ -9,6 +9,7 @@ Future<void> addNotification(
     required String desc,
     required DateTime date,
     required int teamId,
+    required NotificationType type,
     required UserRole recieverUserRole}) async {
   const apiUrl = "$apiBaseUrl/notification";
 
@@ -21,6 +22,7 @@ Future<void> addNotification(
           "notification_title": title,
           "notification_desc": desc,
           "notification_date": date.toIso8601String(),
+          "notification_type": notificationTypeToText(type),
           "team_id": teamId,
           "user_type": userRoleText(recieverUserRole).toLowerCase()
         }));

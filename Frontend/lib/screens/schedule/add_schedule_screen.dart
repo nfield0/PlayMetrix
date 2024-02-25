@@ -170,7 +170,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                 date: DateTime.now(),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.coach);
+                                recieverUserRole: UserRole.coach,
+                                type: NotificationType.event);
 
                             await addNotification(
                                 title: "New event: ${titleController.text}",
@@ -179,7 +180,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                 date: DateTime.now(),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.physio);
+                                recieverUserRole: UserRole.physio,
+                                type: NotificationType.event);
 
                             await addNotification(
                                 title: "New event: ${titleController.text}",
@@ -188,7 +190,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                 date: DateTime.now(),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.player);
+                                recieverUserRole: UserRole.player,
+                                type: NotificationType.event);
 
                             await addNotification(
                                 title:
@@ -200,7 +203,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     alertTimeToDuration(
                                         textToAlertTime(selectedAlertTime))),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.coach);
+                                recieverUserRole: UserRole.coach,
+                                type: NotificationType.event);
 
                             await addNotification(
                                 title:
@@ -212,7 +216,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     alertTimeToDuration(
                                         textToAlertTime(selectedAlertTime))),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.physio);
+                                recieverUserRole: UserRole.physio,
+                                type: NotificationType.event);
 
                             await addNotification(
                                 title:
@@ -224,7 +229,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     alertTimeToDuration(
                                         textToAlertTime(selectedAlertTime))),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.player);
+                                recieverUserRole: UserRole.player,
+                                type: NotificationType.event);
 
                             await addNotification(
                                 title:
@@ -236,7 +242,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                     alertTimeToDuration(
                                         textToAlertTime(selectedAlertTime))),
                                 teamId: ref.read(teamIdProvider),
-                                recieverUserRole: UserRole.manager);
+                                recieverUserRole: UserRole.manager,
+                                type: NotificationType.event);
 
                             navigator
                                 .push(MaterialPageRoute(builder: (context) {

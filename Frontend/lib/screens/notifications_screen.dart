@@ -56,8 +56,12 @@ class NotificationsScreen extends ConsumerWidget {
                                         .isAtSameMomentAs(DateTime.now()))
                                 .map((notification) {
                                 return announcementBox(
-                                  icon: Icons.abc,
-                                  iconColor: AppColours.darkBlue,
+                                  icon:
+                                      notificationTypeToIcon(notification.type),
+                                  iconColor: notification.type ==
+                                          NotificationType.event
+                                      ? AppColours.darkBlue
+                                      : AppColours.red,
                                   title: notification.title,
                                   description: notification.desc,
                                   date: notification.date.toIso8601String(),

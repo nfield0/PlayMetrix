@@ -273,3 +273,36 @@ String teamRoleToText(TeamRole role) {
       return 'Head Coach';
   }
 }
+
+// Notification Type
+
+enum NotificationType { injury, event }
+
+String notificationTypeToText(NotificationType type) {
+  switch (type) {
+    case NotificationType.injury:
+      return 'injury';
+    case NotificationType.event:
+      return 'event';
+  }
+}
+
+NotificationType stringToNotificationType(String? type) {
+  switch (type) {
+    case 'injury':
+      return NotificationType.injury;
+    case 'event':
+      return NotificationType.event;
+    default:
+      return NotificationType.event;
+  }
+}
+
+IconData notificationTypeToIcon(NotificationType type) {
+  switch (type) {
+    case NotificationType.injury:
+      return Icons.healing;
+    case NotificationType.event:
+      return Icons.event;
+  }
+}

@@ -158,10 +158,18 @@ class HomeScreen extends ConsumerWidget {
                                                                           .now()))
                                                           .map((notification) {
                                                           return announcementBox(
-                                                            icon: Icons.abc,
-                                                            iconColor:
-                                                                AppColours
-                                                                    .darkBlue,
+                                                            icon:
+                                                                notificationTypeToIcon(
+                                                                    notification
+                                                                        .type),
+                                                            iconColor: notification
+                                                                        .type ==
+                                                                    NotificationType
+                                                                        .event
+                                                                ? AppColours
+                                                                    .darkBlue
+                                                                : AppColours
+                                                                    .red,
                                                             title: notification
                                                                 .title,
                                                             description:

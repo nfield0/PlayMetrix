@@ -224,7 +224,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                             "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
                                         date: DateTime.now(),
                                         teamId: widget.teamId,
-                                        recieverUserRole: UserRole.manager);
+                                        recieverUserRole: UserRole.manager,
+                                        type: NotificationType.injury);
 
                                     addNotification(
                                         title:
@@ -234,7 +235,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                             "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
                                         date: DateTime.now(),
                                         teamId: widget.teamId,
-                                        recieverUserRole: UserRole.coach);
+                                        recieverUserRole: UserRole.coach,
+                                        type: NotificationType.injury);
 
                                     addNotification(
                                         title:
@@ -244,7 +246,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                             "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
                                         date: DateTime.now(),
                                         teamId: widget.teamId,
-                                        recieverUserRole: UserRole.player);
+                                        recieverUserRole: UserRole.player,
+                                        type: NotificationType.injury);
                                   }
 
                                   addInjury(

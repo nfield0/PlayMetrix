@@ -221,7 +221,8 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                       "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                   date: DateTime.now(),
                                   teamId: widget.teamId,
-                                  recieverUserRole: UserRole.coach);
+                                  recieverUserRole: UserRole.coach,
+                                  type: NotificationType.event);
 
                               await addNotification(
                                   title:
@@ -231,7 +232,8 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                       "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                   date: DateTime.now(),
                                   teamId: widget.teamId,
-                                  recieverUserRole: UserRole.physio);
+                                  recieverUserRole: UserRole.physio,
+                                  type: NotificationType.event);
 
                               await addNotification(
                                   title:
@@ -241,7 +243,8 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                       "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                   date: DateTime.now(),
                                   teamId: widget.teamId,
-                                  recieverUserRole: UserRole.player);
+                                  recieverUserRole: UserRole.player,
+                                  type: NotificationType.event);
 
                               navigator.push(
                                 MaterialPageRoute(
