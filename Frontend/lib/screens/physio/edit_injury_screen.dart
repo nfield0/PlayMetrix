@@ -1,8 +1,10 @@
 import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/injury_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
@@ -11,8 +13,12 @@ import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 class EditInjuryScreen extends StatefulWidget {
   final int playerId;
   final int injuryId;
+  final int physioId;
   const EditInjuryScreen(
-      {super.key, required this.playerId, required this.injuryId});
+      {super.key,
+      required this.playerId,
+      required this.injuryId,
+      required this.physioId});
 
   @override
   EditInjuryScreenState createState() => EditInjuryScreenState();
@@ -36,6 +42,8 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
   DateTime selectedDateOfInjury = DateTime.now();
   DateTime selectedDateOfRecovery = DateTime.now();
 
+  PlatformFile? injuryReportFile;
+
   @override
   void initState() {
     super.initState();
@@ -55,12 +63,35 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
         recoveryMethodController.text = injury.recovery_method;
         selectedDateOfInjury = DateTime.parse(injury.date_of_injury);
         selectedDateOfRecovery = DateTime.parse(injury.date_of_recovery);
+        injuryReportFile = injury.player_injury_report != null
+            ? PlatformFile(
+                name: "Injury Report",
+                size: injury.player_injury_report!.length,
+                bytes: injury.player_injury_report)
+            : null;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Future<void> pickInjuryReportPdf() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result != null) {
+        if (result.files.isNotEmpty) {
+          PlatformFile file = result.files.single;
+
+          setState(() {
+            injuryReportFile = file;
+          });
+        }
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: appBarTitlePreviousPage("Player Profile"),
@@ -162,11 +193,34 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                   selectedDateOfRecovery = date;
                                 });
                               }),
+                              const SizedBox(height: 15),
+                              injuryReportFile != null
+                                  ? Column(children: [
+                                      filePill(
+                                          injuryReportFile!.name,
+                                          formatBytes(injuryReportFile!.size),
+                                          Icons.file_open,
+                                          () {}),
+                                      const SizedBox(height: 15),
+                                      underlineButtonTransparentRedGabarito(
+                                          "Remove injury report", () {
+                                        setState(() {
+                                          injuryReportFile = null;
+                                        });
+                                      })
+                                    ])
+                                  : Center(
+                                      child: underlineButtonTransparent(
+                                          "Upload injury report", () {
+                                        pickInjuryReportPdf();
+                                      }),
+                                    ),
                               const SizedBox(height: 25),
                               bigButton("Edit Injury", () {
                                 if (_formKey.currentState!.validate()) {
                                   updateInjury(
                                       injuryId: widget.injuryId,
+                                      physioId: widget.physioId,
                                       injuryType: injuryTypeController.text,
                                       injuryLocation:
                                           injuryLocationController.text,
@@ -176,7 +230,10 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                           recoveryMethodController.text,
                                       dateOfInjury: selectedDateOfInjury,
                                       dateOfRecovery: selectedDateOfRecovery,
-                                      playerId: widget.playerId);
+                                      playerId: widget.playerId,
+                                      injuryReport: injuryReportFile != null
+                                          ? injuryReportFile!.bytes
+                                          : Uint8List(0));
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

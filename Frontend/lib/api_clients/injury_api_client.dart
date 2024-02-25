@@ -64,6 +64,7 @@ Future<void> addInjury({
 
 Future<void> updateInjury({
   required int injuryId,
+  required int physioId,
   required String injuryType,
   required String injuryLocation,
   required String expectedRecoveryTime,
@@ -71,6 +72,7 @@ Future<void> updateInjury({
   required DateTime dateOfInjury,
   required DateTime dateOfRecovery,
   required int playerId,
+  required Uint8List? injuryReport,
 }) async {
   final apiUrl = '$apiBaseUrl/injuries/$injuryId';
   try {
@@ -97,7 +99,11 @@ Future<void> updateInjury({
         "injury_id": injuryId,
         "date_of_injury": dateOfInjury.toIso8601String(),
         "date_of_recovery": dateOfRecovery.toIso8601String(),
-        "player_id": playerId
+        "player_id": playerId,
+        "physio_id": physioId,
+        "player_injury_report": injuryReport != null || injuryReport!.isEmpty
+            ? base64Encode(injuryReport)
+            : null,
       }),
     );
 
@@ -144,7 +150,10 @@ Future<AllPlayerInjuriesData> getPlayerInjuryById(
               injuryData['recovery_method'],
               injury['date_of_injury'],
               injury['date_of_recovery'],
-              playerId);
+              playerId,
+              injury['player_injury_report'] != null
+                  ? base64Decode(injury['player_injury_report'])
+                  : null);
         }
       }
     } else {
@@ -225,7 +234,8 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
                     injury.recovery_method,
                     playerInjury.date_of_injury,
                     playerInjury.date_of_recovery,
-                    playerInjury.player_id);
+                    playerInjury.player_id,
+                    playerInjury.player_injury_report);
                 allPlayerInjuriesData.add(data);
               }
             }

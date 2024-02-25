@@ -150,6 +150,7 @@ class AllPlayerInjuriesData {
   final String date_of_injury;
   final String date_of_recovery;
   final int player_id;
+  final Uint8List? player_injury_report;
 
   AllPlayerInjuriesData(
     this.injury_id,
@@ -160,6 +161,7 @@ class AllPlayerInjuriesData {
     this.date_of_injury,
     this.date_of_recovery,
     this.player_id,
+    this.player_injury_report,
   );
 }
 
@@ -168,12 +170,14 @@ class PlayerInjuries {
   final String date_of_injury;
   final String date_of_recovery;
   final int player_id;
+  final Uint8List? player_injury_report;
 
   PlayerInjuries({
     required this.injury_id,
     required this.date_of_injury,
     required this.date_of_recovery,
     required this.player_id,
+    this.player_injury_report,
   });
 
   factory PlayerInjuries.fromJson(Map<String, dynamic> json) {
@@ -182,6 +186,9 @@ class PlayerInjuries {
       date_of_injury: json['date_of_injury'],
       date_of_recovery: json['date_of_recovery'],
       player_id: json['player_id'],
+      player_injury_report: json['player_injury_report'] != null
+          ? base64.decode(json['player_injury_report'])
+          : null,
     );
   }
 

@@ -13,6 +13,7 @@ import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/physio/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/player/injury_report_view.dart';
 import 'package:play_metrix/screens/player/statistics_constants.dart';
 import 'package:play_metrix/screens/player/statistics_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -219,8 +220,8 @@ class PlayerProfileScreen extends ConsumerWidget {
                                 snapshot.data!;
                             int numPlayerIds = playerInjuriesData.length;
 
-                            return injuriesSection(
-                                numPlayerIds, playerInjuriesData, userRole);
+                            return injuriesSection(numPlayerIds,
+                                playerInjuriesData, userRole, context, ref);
                           } else {
                             return Text('No data available');
                           }
@@ -459,8 +460,12 @@ Widget availabilityTrafficLightItem(
   );
 }
 
-Widget injuriesSection(int numInjuries,
-    List<AllPlayerInjuriesData> playerInjuriesData, UserRole userRole) {
+Widget injuriesSection(
+    int numInjuries,
+    List<AllPlayerInjuriesData> playerInjuriesData,
+    UserRole userRole,
+    BuildContext context,
+    WidgetRef ref) {
   return Column(children: [
     Padding(
         padding: EdgeInsets.all(20),
@@ -500,6 +505,7 @@ Widget injuriesSection(int numInjuries,
                         context,
                         MaterialPageRoute(
                             builder: (context) => EditInjuryScreen(
+                                  physioId: ref.read(userIdProvider),
                                   injuryId: injury.injury_id,
                                   playerId: injury.player_id,
                                 )),
@@ -508,7 +514,7 @@ Widget injuriesSection(int numInjuries,
                 ]));
           },
           body: ListTile(
-            title: injuryDetails(injury),
+            title: injuryDetails(injury, context),
           ),
         );
       }).toList(),
@@ -516,7 +522,7 @@ Widget injuriesSection(int numInjuries,
   ]);
 }
 
-Widget injuryDetails(AllPlayerInjuriesData injury) {
+Widget injuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
   return Column(
     children: [
       greyDivider(),
@@ -533,7 +539,18 @@ Widget injuryDetails(AllPlayerInjuriesData injury) {
           "Expected Recovery Time", injury.expected_recovery_time),
       const SizedBox(height: 10),
       detailWithDivider("Recovery Method", injury.recovery_method),
-      underlineButtonTransparent("View player report", () {}),
+      injury.player_injury_report != null
+          ? underlineButtonTransparent("View player report", () {
+              injury.player_injury_report != null
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InjuryReportView(
+                              data: injury.player_injury_report)),
+                    )
+                  : null;
+            })
+          : const SizedBox(),
     ],
   );
 }
