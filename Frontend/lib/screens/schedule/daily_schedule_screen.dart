@@ -53,7 +53,7 @@ class DailyScheduleScreen extends ConsumerWidget {
                         );
                       }
                     },
-                    view: CalendarView.day,
+                    view: CalendarView.schedule,
                     headerStyle: const CalendarHeaderStyle(
                       textStyle: TextStyle(
                         color: Colors.black,
