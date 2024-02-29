@@ -275,7 +275,10 @@ WHERE playerInfo.player_id = playerStats.player_id
 AND playerTeam.team_id = team.team_id
 AND injuries.injury_id = playerInjury.injury_id 
 
-
+SELECT injury_id, injury_type, injury_name_and_grade, injury_location, 
+	   potential_recovery_method_1, potential_recovery_method_2, potential_recovery_method_3, 
+	   expected_minimum_recovery_time AS MinWeeks, expected_maximum_recovery_time AS MaxWeeks 
+FROM injuries;
 
 
 

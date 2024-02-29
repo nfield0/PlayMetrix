@@ -342,3 +342,31 @@ INSERT INTO player_injuries(injury_id,date_of_injury, date_of_recovery, player_i
 SELECT * FROM player_info
 JOIN player_login USING (player_id)
 JOIN player_stats USING (player_id);
+
+
+INSERT INTO injuries (injury_type, injury_location, recovery_method, expected_recovery_time) 
+VALUES
+('Rotar Cuff','Shoulder','Rest, Physiotherapy, Surgery Depedning on Severity', '6 Weeks - 9 Months'),
+('Shoulder Impingement','Shoulder','Physiotherapy', '3- 6 Months'),
+('Instability','Shoulder','Physiotherapy', '3-6 Months Should not lift heavy weight between 6 weeks - 3 Months'),
+('Shoulder Dislocation','Shoulder','Closed Reduction & Rest', '12-16 Weeks'),
+('Runners Knee','Knee','Rest & Icing Your Knee', '4-6 Weeks'),
+('Kneecap Fractures','Knee','Physiotherapy, Occupational Therapy Surgery', '3-6 Months for a Full Recovery'),
+('Knee Dislocation','Knee','Rest, Knee Exercises', '6-8 Weeks'),
+('Torn ligament','Knee','Knee Exercises, Rest', 'Grade 1: 4-6 Weeks Grade 2: 6-10 Weeks Grade 3: Surgery'),
+('Meniscal Tear','Knee','Rest, Ice, Compression & Elevation', '4-12 Weeks'),
+('Tendon Tear','Knee','Knee Brace for 6-12 Weeks, Physiotherapy', '5-8 Months'),
+('Groin Pull','Leg','Rest, Light Exercise', '4-8 Weeks'),
+('Hamstring Strain','Leg','Rest, Ice, Compression & Elevation', '3-8 Weeks Grade 3: 3 Months'),
+('Shin Splints','Leg','Rest, Ice, Compression & Elevation', '2-4 Weeks'),
+('Ankle Sprain','Ankle','Rest, Ice, Compression & Elevation', '8-12 Weeks'),
+('Achilles Tendinitis','Ankle','Rest, Ice, Compression & Elevation', '12 Weeks'),
+('Anterior Cruicate Ligament','Knee','Surgery, Rehab', 'Up to a Year'),
+('Concussion','Head','Rest', '2 Weeks'),
+('Overuse Injuries','Anywhere','Rest, Physiotherapy', 'Weeks to Months (Depending on Serverity)'),
+('Broken Foot','Foot','Rest, Physiotherapy', '3-6 Months'),
+('Broken Arm','Arm','Rest, Immobilisation', '6 -8 Weeks'),
+('Broken Leg','Leg','Rest, Immobilisation, Potential for Surgery if Serere', '6-8 Weeks More serious fracture 3-6 Months'),
+('Torn Quad Muscle','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '3-6 Months for a Full Recovery 10-12 Weeks before healing begins'),
+('Torn Calf Muscle','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '2-4 Weeks'),
+('Torn Abbuctor ','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '12-16 Weeks');

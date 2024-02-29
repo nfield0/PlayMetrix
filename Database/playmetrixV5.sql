@@ -164,14 +164,19 @@ CREATE TABLE IF NOT EXISTS team
 /*These Tables can be added at anytime after the main tables above are added in the database*/
 
 
+
 /*Tables Relating to Injuries*/
 CREATE TABLE IF NOT EXISTS  injuries
 (
 	injury_id serial PRIMARY KEY,
 	injury_type VARCHAR(50),
+	injury_name_and_grade VARCHAR(80),
     injury_location VARCHAR(20),
-	recovery_method VARCHAR(255),
-    expected_recovery_time VARCHAR(70)
+	potential_recovery_method_1 VARCHAR(50),
+	potential_recovery_method_2 VARCHAR(50),
+	potential_recovery_method_3 VARCHAR(50),
+    expected_minimum_recovery_time INT,
+	expected_maximum_recovery_time INT
 );
 
 
@@ -181,7 +186,8 @@ CREATE TABLE IF NOT EXISTS player_injuries
 	physio_id INT NOT NULL,
 	injury_id INT NOT NULL,
 	date_of_injury DATE NOT NULL, 
-	date_of_recovery DATE NOT NULL,
+	expected_date_of_recovery DATE NOT NULL,
+	player_cleared BOOLEAN NOT NULL,
 	player_injury_report bytea,
 	FOREIGN KEY (physio_id)
 		REFERENCES physio_info(physio_id), 
@@ -310,32 +316,66 @@ INSERT INTO sport(sport_name) VALUES
 ('Rugby'),
 ('Camogie'); 
 
-INSERT INTO injuries (injury_type, injury_location, recovery_method, expected_recovery_time) 
+INSERT INTO injuries(injury_type, injury_name_and_grade, injury_location, potential_recovery_method_1, potential_recovery_method_2, potential_recovery_method_3, expected_minimum_recovery_time, expected_maximum_recovery_time)
 VALUES
-('Rotar Cuff','Shoulder','Rest, Physiotherapy, Surgery Depedning on Severity', '6 Weeks - 9 Months'),
-('Shoulder Impingement','Shoulder','Physiotherapy', '3- 6 Months'),
-('Instability','Shoulder','Physiotherapy', '3-6 Months Should not lift heavy weight between 6 weeks - 3 Months'),
-('Shoulder Dislocation','Shoulder','Closed Reduction & Rest', '12-16 Weeks'),
-('Runners Knee','Knee','Rest & Icing Your Knee', '4-6 Weeks'),
-('Kneecap Fractures','Knee','Physiotherapy, Occupational Therapy Surgery', '3-6 Months for a Full Recovery'),
-('Knee Dislocation','Knee','Rest, Knee Exercises', '6-8 Weeks'),
-('Torn ligament','Knee','Knee Exercises, Rest', 'Grade 1: 4-6 Weeks Grade 2: 6-10 Weeks Grade 3: Surgery'),
-('Meniscal Tear','Knee','Rest, Ice, Compression & Elevation', '4-12 Weeks'),
-('Tendon Tear','Knee','Knee Brace for 6-12 Weeks, Physiotherapy', '5-8 Months'),
-('Groin Pull','Leg','Rest, Light Exercise', '4-8 Weeks'),
-('Hamstring Strain','Leg','Rest, Ice, Compression & Elevation', '3-8 Weeks Grade 3: 3 Months'),
-('Shin Splints','Leg','Rest, Ice, Compression & Elevation', '2-4 Weeks'),
-('Ankle Sprain','Ankle','Rest, Ice, Compression & Elevation', '8-12 Weeks'),
-('Achilles Tendinitis','Ankle','Rest, Ice, Compression & Elevation', '12 Weeks'),
-('Anterior Cruicate Ligament','Knee','Surgery, Rehab', 'Up to a Year'),
-('Concussion','Head','Rest', '2 Weeks'),
-('Overuse Injuries','Anywhere','Rest, Physiotherapy', 'Weeks to Months (Depending on Serverity)'),
-('Broken Foot','Foot','Rest, Physiotherapy', '3-6 Months'),
-('Broken Arm','Arm','Rest, Immobilisation', '6 -8 Weeks'),
-('Broken Leg','Leg','Rest, Immobilisation, Potential for Surgery if Serere', '6-8 Weeks More serious fracture 3-6 Months'),
-('Torn Quad Muscle','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '3-6 Months for a Full Recovery 10-12 Weeks before healing begins'),
-('Torn Calf Muscle','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '2-4 Weeks'),
-('Torn Abbuctor ','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '12-16 Weeks');
+('Acute/Chronic', 'Rotar Cuff', 'Shoulder', 'Rest', 'Physiotherapy', 'Surgery Depedning on Severity', 6, 9),
+('Acute','Meniscal Tear','Knee','Rest', 'Ice', 'Compression & Elevation', 4,12),
+('Acute/Chronic', 'Hamstring Strain Grade 1/2','Leg','Rest', 'Ice', 'Compression & Elevation', 3,8),
+('Acute/Chronic', 'Hamstring Strain Grade 3','Leg','Rest', 'Ice', 'Compression & Elevation', 3,12),
+('Acute','Shin Splints','Leg','Rest', 'Ice', 'Compression & Elevation', 2,4),
+('Acute', 'Ankle Sprain','Ankle','Rest', 'Ice', 'Compression & Elevation', 8, 12),
+('Chronic', 'Achilles Tendinitis','Ankle','Rest', 'Ice', 'Compression & Elevation', 12,12),
+('Acute', 'Broken Leg Grade 3' ,'Leg', 'Surgery', 'Rest', 'Immobilisation', 12,24),
+('Acute', 'Torn Quad Muscle','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 12,24),
+('Acute', 'Torn Calf Muscle','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 2, 4),
+('Acute','Torn Abbuctor ','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 12,16);
+
+
+INSERT INTO injuries(injury_type, injury_name_and_grade, injury_location, potential_recovery_method_1, potential_recovery_method_2,  expected_minimum_recovery_time, expected_maximum_recovery_time)
+VALUES
+('Acute', 'Shoulder Dislocation','Shoulder','Closed Reduction', 'Rest', 12,16 ),
+('Acute', 'Runners Knee','Knee','Rest', 'Icing Your Knee', 4,6),
+('Acute', 'Kneecap Fractures','Knee','Physiotherapy', 'Occupational Therapy Surgery', 12,24),
+('Acute', 'Knee Dislocation','Knee','Rest', 'Knee Exercises', 6,8),
+('Acute/Chronic', 'Torn Ligament Grade 1', 'Knee', 'Knee Exercises', 'Rest', 4,6),
+('Acute/Chronic', 'Torn Ligament Grade 2', 'Knee', 'Knee Exercises' ,'Rest', 6,10),
+('Acute/Chronic', 'Tendon Tear','Knee','Knee Brace for 6-12 Weeks', 'Physiotherapy', 20,32),
+('Acute','Groin Pull','Leg','Rest', 'Light Exercise', 4,8),
+('Acute','Broken Foot','Foot','Rest', 'Physiotherapy', 12,24),
+('Acute', 'Broken Arm','Arm','Rest', 'Immobilisation', 6,8),
+('Acute/Chronic','Anterior Cruicate Ligament (ACL)','Knee','Surgery', 'Rehab', 40,48),
+('Acute', 'Broken Leg Grade 1/2','Leg','Rest', 'Immobilisation', 6,8);
+
+
+
+INSERT INTO injuries(injury_type, injury_name_and_grade, injury_location, potential_recovery_method_1,  expected_minimum_recovery_time, expected_maximum_recovery_time)
+VALUES
+('Chronic', 'Shoulder Impingement', 'Shoulder', 'Physiotherapy', 12, 24),
+('Chronic','Instability','Shoulder','Physiotherapy', 12,24),
+('Acute/Chronic', 'Torn Ligament Grade 3', 'Knee', 'Surgery', 12,24),
+('Acute','Concussion','Head','Rest', 1,2);
+
+
+
+
+SELECT injury_id, injury_type, injury_name_and_grade, injury_location, 
+	   potential_recovery_method_1, potential_recovery_method_2, potential_recovery_method_3, 
+	   expected_minimum_recovery_time AS Min Weeks, expected_maximum_recovery_time AS Max Weeks 
+FROM injuries;
+
+
+
+
+
+
+
+
+/*('Overuse Injuries','Anywhere','Rest, Physiotherapy', 'Weeks to Months (Depending on Serverity)'),*/
+
+
+
+
+
 
 
 
