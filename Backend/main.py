@@ -325,6 +325,11 @@ def delete_player_email(email: str, db:Session = Depends(get_db)):
     return crud.delete_player_by_email(db, email)
 
 
+@app.put("/players/stats/{id}/minutes_played/{minutes_played}")
+def update_minutes_played(id: int, minutes_played: int, db:Session = Depends(get_db)):
+    return crud.update_minutes_played(db, minutes_played, id)
+
+
 
 #endregion
 
