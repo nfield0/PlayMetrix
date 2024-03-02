@@ -55,22 +55,22 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
       });
     });
 
-    getPlayerInjuryById(widget.injuryId, widget.playerId).then((injury) {
-      setState(() {
-        injuryTypeController.text = injury.injury_type;
-        injuryLocationController.text = injury.injury_location;
-        expectedRecoveryTimeController.text = injury.expected_recovery_time;
-        recoveryMethodController.text = injury.recovery_method;
-        selectedDateOfInjury = DateTime.parse(injury.date_of_injury);
-        selectedDateOfRecovery = DateTime.parse(injury.date_of_recovery);
-        injuryReportFile = injury.player_injury_report != null
-            ? PlatformFile(
-                name: "Injury Report",
-                size: injury.player_injury_report!.length,
-                bytes: injury.player_injury_report)
-            : null;
-      });
-    });
+    // getPlayerInjuryById(widget.injuryId, widget.playerId).then((injury) {
+    //   setState(() {
+    //     injuryTypeController.text = injury.type;
+    //     injuryLocationController.text = injury.location;
+    //     expectedRecoveryTimeController.text = injury.expected_recovery_time;
+    //     recoveryMethodController.text = injury.recovery_method;
+    //     selectedDateOfInjury = DateTime.parse(injury.date_of_injury);
+    //     selectedDateOfRecovery = DateTime.parse(injury.date_of_recovery);
+    //     injuryReportFile = injury.player_injury_report != null
+    //         ? PlatformFile(
+    //             name: "Injury Report",
+    //             size: injury.player_injury_report!.length,
+    //             bytes: injury.player_injury_report)
+    //         : null;
+    //   });
+    // });
   }
 
   @override

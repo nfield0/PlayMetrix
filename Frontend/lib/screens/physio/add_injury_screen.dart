@@ -43,6 +43,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
   String playerName = "";
   Uint8List playerImage = Uint8List(0);
 
+  String? selectedInjury;
   DateTime selectedDateOfInjury = DateTime.now();
   DateTime selectedDateOfRecovery = DateTime.now();
 
@@ -136,36 +137,37 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                         fontWeight: FontWeight.bold)),
                               ])),
                               const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Injury type", injuryTypeController, (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Injury location", injuryLocationController,
-                                  (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Expected recovery time",
-                                  expectedRecoveryTimeController, (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Recovery method", recoveryMethodController,
-                                  (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
+                              Center(
+                                child: DropdownButton<String>(
+                                    hint: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.healing_outlined,
+                                          color: Colors.black45,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text("Choose an injury")
+                                      ],
+                                    ),
+                                    value: selectedInjury,
+                                    items: ["Injury 1", "Injury 2", "Injury 3"]
+                                        .map((String item) {
+                                      return DropdownMenuItem<String>(
+                                        value: item,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (p0) {}),
+                              ),
                               const SizedBox(height: 7),
                               datePickerNoDivider(context, "Date of injury",
                                   selectedDateOfInjury, (date) {

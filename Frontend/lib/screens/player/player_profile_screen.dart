@@ -488,14 +488,14 @@ Widget injuriesSection(
       children: playerInjuriesData
           .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
         return ExpansionPanelRadio(
-          value: injury.injury_id,
+          value: injury.id,
           backgroundColor: Colors.transparent,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
                 title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                  Text(injury.date_of_injury,
+                  Text(injury.dateOfInjury.toString(),
                       style: const TextStyle(
                           color: AppColours.darkBlue,
                           fontWeight: FontWeight.bold)),
@@ -505,9 +505,9 @@ Widget injuriesSection(
                         context,
                         MaterialPageRoute(
                             builder: (context) => EditInjuryScreen(
-                                  physioId: ref.read(userIdProvider),
-                                  injuryId: injury.injury_id,
-                                  playerId: injury.player_id,
+                                  physioId: injury.physioId,
+                                  injuryId: injury.id,
+                                  playerId: injury.playerId,
                                 )),
                       );
                     })
@@ -527,26 +527,35 @@ Widget injuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
     children: [
       greyDivider(),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Injury", injury.date_of_injury.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider("Date of Recovery", injury.date_of_recovery.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.injury_type),
-      const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.injury_location),
+      detailWithDivider("Date of Injury", injury.dateOfInjury.toString()),
       const SizedBox(height: 10),
       detailWithDivider(
-          "Expected Recovery Time", injury.expected_recovery_time),
+          "Date of Recovery", injury.expectedDateOfRecovery.toString()),
       const SizedBox(height: 10),
-      detailWithDivider("Recovery Method", injury.recovery_method),
-      injury.player_injury_report != null
+      detailWithDivider("Injury Type", injury.type),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Name", injury.nameAndGrade),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Location", injury.location),
+      const SizedBox(height: 10),
+      detailWithDivider(
+          "Expected Recovery Time",
+          "${injury.expectedMinRecoveryTime}-"
+              "${injury.expectedMaxRecoveryTime} weeks"),
+      const SizedBox(height: 10),
+      detailWithDivider("Recovery Method", injury.potentialRecoveryMethods[0]),
+      const SizedBox(height: 10),
+      detailWithDivider("Recovery Method", injury.potentialRecoveryMethods[1]),
+      const SizedBox(height: 10),
+      detailWithDivider("Recovery Method", injury.potentialRecoveryMethods[2]),
+      injury.playerInjuryReport != null
           ? underlineButtonTransparent("View player report", () {
-              injury.player_injury_report != null
+              injury.playerInjuryReport != null
                   ? Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => InjuryReportView(
-                              data: injury.player_injury_report)),
+                              data: injury.playerInjuryReport)),
                     )
                   : null;
             })

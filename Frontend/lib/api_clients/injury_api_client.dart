@@ -143,15 +143,25 @@ Future<AllPlayerInjuriesData> getPlayerInjuryById(
       for (var injury in playerInjuriesJson) {
         if (injury['injury_id'] == injuryId) {
           return AllPlayerInjuriesData(
-              injuryId,
-              injuryData['injury_type'],
-              injuryData['injury_location'],
-              injuryData['expected_recovery_time'],
-              injuryData['recovery_method'],
-              injury['date_of_injury'],
-              injury['date_of_recovery'],
-              playerId,
-              injury['player_injury_report'] != null
+              id: injuryId,
+              type: injuryData['injury_type'],
+              nameAndGrade: injuryData['injury_name_and_grade'],
+              location: injuryData['injury_location'],
+              expectedMinRecoveryTime:
+                  injuryData['expected_minimum_recovery_time'],
+              expectedMaxRecoveryTime:
+                  injuryData['expected_maximum_recovery_time'],
+              potentialRecoveryMethods: [
+                injuryData['recovery_method_1'],
+                injuryData['recovery_method_2'],
+                injuryData['recovery_method_3']
+              ],
+              physioId: injury['physio_id'],
+              playerId: injury['player_id'],
+              dateOfInjury: injury['date_of_injury'],
+              expectedDateOfRecovery: injury['expected_date_of_recovery'],
+              playerCleared: injury['player_cleared'],
+              playerInjuryReport: injury['player_injury_report'] != null
                   ? base64Decode(injury['player_injury_report'])
                   : null);
         }
@@ -186,14 +196,14 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
       List<PlayerInjuries> playerInjuries = [];
       // loop thourgh all the injuries and get the ones that match the user id passed in
       for (var injury in allPlayerInjuries) {
-        if (injury.player_id == userId) {
+        if (injury.playerId == userId) {
           playerInjuries.add(injury);
         }
       }
 
       List<int> injuryIds = [];
       for (var injury in playerInjuries) {
-        injuryIds.add(injury.injury_id); // Corrected property name
+        injuryIds.add(injury.injuryId);
       }
 
       const apiUrlForInjuries =
@@ -216,7 +226,7 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
           List<Injury> injuriesInIdsList = [];
 
           for (var injury in allInjuries) {
-            if (injuryIds.contains(injury.injury_id)) {
+            if (injuryIds.contains(injury.id)) {
               injuriesInIdsList.add(injury);
             }
           }
@@ -224,18 +234,22 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
           List<AllPlayerInjuriesData> allPlayerInjuriesData = [];
           for (var injury in injuriesInIdsList) {
             for (var playerInjury in playerInjuries) {
-              if (injury.injury_id == playerInjury.injury_id) {
+              if (injury.id == playerInjury.injuryId) {
                 // create a AllPlayerInjuriesData object
                 AllPlayerInjuriesData data = AllPlayerInjuriesData(
-                    injury.injury_id,
-                    injury.injury_type,
-                    injury.injury_location,
-                    injury.expected_recovery_time,
-                    injury.recovery_method,
-                    playerInjury.date_of_injury,
-                    playerInjury.date_of_recovery,
-                    playerInjury.player_id,
-                    playerInjury.player_injury_report);
+                    id: injury.id,
+                    type: injury.type,
+                    nameAndGrade: injury.nameAndGrade,
+                    location: injury.location,
+                    expectedMinRecoveryTime: injury.expectedMinRecoveryTime,
+                    expectedMaxRecoveryTime: injury.expectedMaxRecoveryTime,
+                    potentialRecoveryMethods: injury.potentialRecoveryMethods,
+                    dateOfInjury: playerInjury.dateOfInjury,
+                    expectedDateOfRecovery: playerInjury.dateOfRecovery,
+                    physioId: playerInjury.physioId,
+                    playerId: playerInjury.playerId,
+                    playerCleared: playerInjury.playerCleared,
+                    playerInjuryReport: playerInjury.playerInjuryReport);
                 allPlayerInjuriesData.add(data);
               }
             }

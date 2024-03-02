@@ -112,89 +112,103 @@ class StatisticsData {
 }
 
 class Injury {
-  var injury_id;
-  var injury_type;
-  String injury_location;
-  var expected_recovery_time;
-  var recovery_method;
+  final int id;
+  final String type;
+  final String nameAndGrade;
+  final String location;
+  final List<String> potentialRecoveryMethods;
+  final int expectedMinRecoveryTime;
+  final int expectedMaxRecoveryTime;
 
-  Injury(
-    this.injury_id,
-    this.injury_type,
-    this.injury_location,
-    this.expected_recovery_time,
-    this.recovery_method,
-  );
+  Injury({
+    required this.id,
+    required this.type,
+    required this.nameAndGrade,
+    required this.location,
+    required this.potentialRecoveryMethods,
+    required this.expectedMinRecoveryTime,
+    required this.expectedMaxRecoveryTime,
+  });
 
   factory Injury.fromJson(Map<String, dynamic> json) {
     return Injury(
-        json['injury_id'],
-        json['injury_type'],
-        json['injury_location'],
-        json['expected_recovery_time'],
-        json['recovery_method']);
-  }
-
-  @override
-  String toString() {
-    return 'Injury{injury_id: $injury_id, injury_type: $injury_type, expected_recovery_time: $expected_recovery_time, recovery_method: $recovery_method}';
+        id: json['injury_id'],
+        type: json['injury_type'],
+        nameAndGrade: json['injury_name_and_grade'],
+        location: json['injury_location'],
+        potentialRecoveryMethods: [
+          json['potential_recovery_method_1'],
+          json['potential_recovery_method_2'],
+          json['potential_recovery_method_3']
+        ],
+        expectedMinRecoveryTime: json['expected_minimum_recovery_time'],
+        expectedMaxRecoveryTime: json['expected_maximum_recovery_time']);
   }
 }
 
 class AllPlayerInjuriesData {
-  final int injury_id;
-  final String injury_type;
-  final String injury_location;
-  final String expected_recovery_time;
-  final String recovery_method;
-  final String date_of_injury;
-  final String date_of_recovery;
-  final int player_id;
-  final Uint8List? player_injury_report;
+  final int id;
+  final String type;
+  final String nameAndGrade;
+  final String location;
+  final List<String> potentialRecoveryMethods;
+  final int expectedMinRecoveryTime;
+  final int expectedMaxRecoveryTime;
+  final DateTime dateOfInjury;
+  final DateTime expectedDateOfRecovery;
+  final bool playerCleared;
+  final int playerId;
+  final int physioId;
+  final Uint8List? playerInjuryReport;
 
-  AllPlayerInjuriesData(
-    this.injury_id,
-    this.injury_type,
-    this.injury_location,
-    this.expected_recovery_time,
-    this.recovery_method,
-    this.date_of_injury,
-    this.date_of_recovery,
-    this.player_id,
-    this.player_injury_report,
-  );
+  AllPlayerInjuriesData({
+    required this.id,
+    required this.type,
+    required this.nameAndGrade,
+    required this.location,
+    required this.potentialRecoveryMethods,
+    required this.expectedMinRecoveryTime,
+    required this.expectedMaxRecoveryTime,
+    required this.dateOfInjury,
+    required this.expectedDateOfRecovery,
+    required this.playerCleared,
+    required this.playerId,
+    required this.physioId,
+    this.playerInjuryReport,
+  });
 }
 
 class PlayerInjuries {
-  final int injury_id;
-  final String date_of_injury;
-  final String date_of_recovery;
-  final int player_id;
-  final Uint8List? player_injury_report;
+  final int injuryId;
+  final int playerId;
+  final int physioId;
+  final DateTime dateOfInjury;
+  final DateTime dateOfRecovery;
+  final bool playerCleared;
+  final Uint8List? playerInjuryReport;
 
   PlayerInjuries({
-    required this.injury_id,
-    required this.date_of_injury,
-    required this.date_of_recovery,
-    required this.player_id,
-    this.player_injury_report,
+    required this.injuryId,
+    required this.playerId,
+    required this.physioId,
+    required this.dateOfInjury,
+    required this.dateOfRecovery,
+    required this.playerCleared,
+    this.playerInjuryReport,
   });
 
   factory PlayerInjuries.fromJson(Map<String, dynamic> json) {
     return PlayerInjuries(
-      injury_id: json['injury_id'],
-      date_of_injury: json['date_of_injury'],
-      date_of_recovery: json['date_of_recovery'],
-      player_id: json['player_id'],
-      player_injury_report: json['player_injury_report'] != null
+      injuryId: json['injury_id'],
+      playerId: json['player_id'],
+      physioId: json['physio_id'],
+      dateOfInjury: json['date_of_injury'],
+      dateOfRecovery: json['expected_date_of_recovery'],
+      playerCleared: json['player_cleared'],
+      playerInjuryReport: json['player_injury_report'] != null
           ? base64.decode(json['player_injury_report'])
           : null,
     );
-  }
-
-  @override
-  String toString() {
-    return 'PlayerInjuries{injury_id: $injury_id, date_of_injury: $date_of_injury, date_of_recovery: $date_of_recovery, player_id: $player_id}';
   }
 }
 
