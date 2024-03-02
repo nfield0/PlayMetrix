@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/notification_manager.dart';
+import 'package:play_metrix/push_notification_manager.dart';
 import 'package:play_metrix/screens/onboarding_screen.dart';
 
 void main() async {

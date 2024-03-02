@@ -11,7 +11,7 @@ import 'package:play_metrix/data_models/authentication_data_model.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/notification_manager.dart';
+import 'package:play_metrix/push_notification_manager.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';

@@ -151,15 +151,22 @@ Widget emptySection(IconData icon, String text) {
 
 Widget divider() {
   return const Divider(
-    color: AppColours.darkBlue, // You can set the color of the divider
-    thickness: 1, // You can set the thickness of the divider
+    color: AppColours.darkBlue,
+    thickness: 1, 
   );
 }
 
 Widget greyDivider() {
   return const Divider(
-    color: AppColours.grey, // You can set the color of the divider
-    thickness: 1, // You can set the thickness of the divider
+    color: AppColours.grey, 
+    thickness: 1, 
+  );
+}
+
+Widget greyDividerThick() {
+  return const Divider(
+    color: Colors.black12, 
+    thickness: 2.5,
   );
 }
 
