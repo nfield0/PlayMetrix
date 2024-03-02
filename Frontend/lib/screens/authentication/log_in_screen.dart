@@ -331,15 +331,17 @@ class LogInScreen extends ConsumerWidget {
                 children: [
                   const Divider(
                     color: AppColours.darkBlue,
-                    thickness: 1.0, // Set the thickness of the line
-                    height: 40.0, // Set the height of the line
+                    thickness: 1.0,
+                    height: 25.0,
                   ),
+                  const SizedBox(height: 10),
                   Text("A verification code has been sent to $phoneNumber",
                       style: const TextStyle(
                         color: Colors.black,
                         fontFamily: AppFonts.openSans,
                         fontSize: 18.0,
                       )),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0),
                     child: TextFormField(
@@ -376,7 +378,7 @@ class LogInScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 25,
                   ),
                   Padding(
                       padding: const EdgeInsets.only(top: 15.0),
