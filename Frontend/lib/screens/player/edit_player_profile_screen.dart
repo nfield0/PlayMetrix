@@ -342,7 +342,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                     }),
                                   ],
                                 ),
-                              // const SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               bigButton("Save Changes", () async {
                                 if (_formKey.currentState!.validate()) {
                                   await editPlayerProfile(
