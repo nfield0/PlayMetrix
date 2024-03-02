@@ -81,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 25, vertical: 5),
                                     child: Text(
-                                      "Hey, ${profile.firstName}!",
+                                      "Hello, ${profile.firstName}!",
                                       style: const TextStyle(
                                         fontFamily: AppFonts.gabarito,
                                         fontWeight: FontWeight.bold,
@@ -533,8 +533,8 @@ Widget profileDropdown(
             value: 'settings',
             child: Row(
               children: [
-                Icon(Icons.settings),
-                SizedBox(width: 5),
+                Icon(Icons.settings, color: AppColours.darkBlue),
+                SizedBox(width: 10),
                 Text("Settings"),
               ],
             ),
@@ -543,8 +543,8 @@ Widget profileDropdown(
             value: 'logout',
             child: Row(
               children: [
-                Icon(Icons.logout),
-                SizedBox(width: 5),
+                Icon(Icons.logout, color: AppColours.darkBlue),
+                SizedBox(width: 10),
                 Text("Log Out"),
               ],
             ),

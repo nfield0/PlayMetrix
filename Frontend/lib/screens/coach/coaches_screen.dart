@@ -21,20 +21,19 @@ class CoachesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
-          ),
-          iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
-          ),
+          title: const Text("Your Team",
+              style: TextStyle(
+                color: AppColours.darkBlue,
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w700,
+              )),
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
             child: Padding(
-                padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
+                padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
                 child: Column(children: [
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     const Icon(Icons.sync_alt,

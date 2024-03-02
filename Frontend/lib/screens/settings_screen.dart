@@ -14,10 +14,14 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
+          title: const Text(
+            "Settings",
+            style: TextStyle(
+              fontFamily: AppFonts.gabarito,
+              color: AppColours.darkBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
           ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
@@ -28,17 +32,40 @@ class SettingsScreen extends ConsumerWidget {
         body: SingleChildScrollView(
             child: Container(
                 padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
-                child: Column(
+                child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Settings',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      const SizedBox(height: 20),
+                      Text(
+                        "Your account",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColours.darkBlue),
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.person_2_outlined,
+                                size: 28,
+                              ),
+                              SizedBox(width: 15),
+                              Text(
+                                "Edit Profile",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                          Icon(
+                            Icons.chevron_right,
+                            size: 28,
+                          )
+                        ],
+                      )
                     ]))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 4));
   }

@@ -22,10 +22,27 @@ class MonthlyScheduleScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Schedule",
+                style: TextStyle(
+                  fontFamily: AppFonts.gabarito,
+                  color: AppColours.darkBlue,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+              if (userRole == UserRole.manager)
+                smallButton(Icons.add_task, "Add", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddScheduleScreen()),
+                  );
+                })
+            ],
           ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
@@ -36,28 +53,6 @@ class MonthlyScheduleScreen extends ConsumerWidget {
         body: Padding(
             padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
             child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Schedule",
-                    style: TextStyle(
-                      fontFamily: AppFonts.gabarito,
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 36,
-                    ),
-                  ),
-                  if (userRole == UserRole.manager)
-                    smallButton(Icons.add_task, "Add", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddScheduleScreen()),
-                      );
-                    })
-                ],
-              ),
               const SizedBox(height: 20),
               FutureBuilder(
                   future: getTeamAppointments(

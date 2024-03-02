@@ -18,11 +18,13 @@ class NotificationsScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
-          ),
+          title: const Text("Notifications",
+              style: TextStyle(
+                color: AppColours.darkBlue,
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w700,
+              )),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),

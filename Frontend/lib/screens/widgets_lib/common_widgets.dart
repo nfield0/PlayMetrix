@@ -495,7 +495,8 @@ Widget appBarTitlePreviousPage(String text) {
         style: const TextStyle(
           color: AppColours.darkBlue,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 24,
+          fontFamily: AppFonts.gabarito,
         ))
   ]);
 }
