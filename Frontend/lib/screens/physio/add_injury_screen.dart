@@ -82,7 +82,15 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Player Profile"),
+          title: const Text(
+            "Add Injury",
+            style: TextStyle(
+              color: AppColours.darkBlue,
+              fontFamily: AppFonts.gabarito,
+              fontSize: 24.0,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -95,18 +103,6 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Add Injury',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      const SizedBox(height: 10),
-                      divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
                       Form(
                         key: _formKey,
                         autovalidateMode: AutovalidateMode.always,

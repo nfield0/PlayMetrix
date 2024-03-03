@@ -45,16 +45,16 @@ class PlayerProfileScreen extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: Padding(
-              padding: const EdgeInsets.only(right: 25, left: 25),
+              padding: const EdgeInsets.only(right: 10, left: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text("Player Profile",
                       style: TextStyle(
-                        color: AppColours.darkBlue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          fontFamily: AppFonts.gabarito)),
                   smallButton(Icons.edit, "Edit", () {
                     Navigator.push(
                       context,
@@ -77,7 +77,7 @@ class PlayerProfileScreen extends ConsumerWidget {
         ),
         body: SingleChildScrollView(
             child: Padding(
-                padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
+                padding: const EdgeInsets.only(top: 10, right: 35, left: 35),
                 child: Center(
                   child: Column(children: [
                     if (ref.read(teamIdProvider.notifier).state == -1)

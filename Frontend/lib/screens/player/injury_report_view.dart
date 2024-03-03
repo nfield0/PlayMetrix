@@ -14,10 +14,10 @@ class InjuryReportView extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Injury Report",
               style: TextStyle(
-                color: AppColours.darkBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              )),
+                  color: AppColours.darkBlue,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  fontFamily: AppFonts.gabarito)),
         ),
         body: SfPdfViewer.memory(data!));
   }

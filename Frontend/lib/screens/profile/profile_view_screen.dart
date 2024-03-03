@@ -31,10 +31,14 @@ class ProfileViewScreen extends ConsumerWidget {
 
             return Scaffold(
               appBar: AppBar(
-                title: Image.asset(
-                  'lib/assets/logo.png',
-                  width: 150,
-                  fit: BoxFit.contain,
+                title: const Text(
+                  "Profile",
+                  style: TextStyle(
+                    fontFamily: AppFonts.gabarito,
+                    color: AppColours.darkBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
                 iconTheme: const IconThemeData(
                   color: AppColours.darkBlue, //change your color here
@@ -45,22 +49,8 @@ class ProfileViewScreen extends ConsumerWidget {
               body: SingleChildScrollView(
                   child: Padding(
                       padding:
-                          const EdgeInsets.only(top: 30, right: 35, left: 35),
+                          const EdgeInsets.only(right: 35, left: 35),
                       child: Column(children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Profile",
-                              style: TextStyle(
-                                fontFamily: AppFonts.gabarito,
-                                color: AppColours.darkBlue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 36,
-                              ),
-                            ),
-                          ],
-                        ),
                         Center(
                           child: Column(children: [
                             const SizedBox(height: 20),

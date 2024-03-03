@@ -7,7 +7,6 @@ import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
-import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class DailyScheduleScreen extends ConsumerWidget {
@@ -20,7 +19,15 @@ class DailyScheduleScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Schedule"),
+          title: const Text(
+            "Schedule",
+            style: TextStyle(
+              fontFamily: AppFonts.gabarito,
+              color: AppColours.darkBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),

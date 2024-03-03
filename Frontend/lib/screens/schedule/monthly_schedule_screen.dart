@@ -22,28 +22,37 @@ class MonthlyScheduleScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Schedule",
-                style: TextStyle(
-                  fontFamily: AppFonts.gabarito,
-                  color: AppColours.darkBlue,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+          title: userRole == UserRole.manager
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Schedule",
+                      style: TextStyle(
+                        fontFamily: AppFonts.gabarito,
+                        color: AppColours.darkBlue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                    smallButton(Icons.add_task, "Add", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddScheduleScreen()),
+                      );
+                    })
+                  ],
+                )
+              : const Text(
+                  "Schedule",
+                  style: TextStyle(
+                    fontFamily: AppFonts.gabarito,
+                    color: AppColours.darkBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
-              ),
-              if (userRole == UserRole.manager)
-                smallButton(Icons.add_task, "Add", () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddScheduleScreen()),
-                  );
-                })
-            ],
-          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),

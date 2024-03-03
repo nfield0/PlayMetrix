@@ -50,10 +50,29 @@ class ProfileScreen extends ConsumerWidget {
 
             return Scaffold(
                 appBar: AppBar(
-                  title: Image.asset(
-                    'lib/assets/logo.png',
-                    width: 150,
-                    fit: BoxFit.contain,
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Profile",
+                        style: TextStyle(
+                          fontFamily: AppFonts.gabarito,
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                      smallButton(Icons.edit, "Edit", () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProfileScreen(
+                                    userId: userId,
+                                    userRole: userRole,
+                                  )),
+                        );
+                      }),
+                    ],
                   ),
                   iconTheme: const IconThemeData(
                     color: AppColours.darkBlue, //change your color here
@@ -64,35 +83,10 @@ class ProfileScreen extends ConsumerWidget {
                 body: SingleChildScrollView(
                     child: Padding(
                         padding:
-                            const EdgeInsets.only(top: 30, right: 35, left: 35),
+                            const EdgeInsets.only(top: 20, right: 35, left: 35),
                         child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "Profile",
-                                style: TextStyle(
-                                  fontFamily: AppFonts.gabarito,
-                                  color: AppColours.darkBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 36,
-                                ),
-                              ),
-                              smallButton(Icons.edit, "Edit", () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditProfileScreen(
-                                            userId: userId,
-                                            userRole: userRole,
-                                          )),
-                                );
-                              }),
-                            ],
-                          ),
                           Center(
                             child: Column(children: [
-                              const SizedBox(height: 20),
                               Text(
                                 "${profile.firstName} ${profile.surname}",
                                 style: const TextStyle(

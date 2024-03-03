@@ -127,7 +127,36 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Players"),
+          title: widget.userRole == UserRole.physio
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                      const Text('Edit Player',
+                          style: TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: AppFonts.gabarito,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w700,
+                          )),
+                      smallButton(Icons.add_circle_outline, "Add Injury", () {
+                        navigator.push(
+                          MaterialPageRoute(
+                              builder: (context) => AddInjuryScreen(
+                                    physioId: widget.physioId,
+                                    userRole: widget.userRole,
+                                    teamId: widget.teamId,
+                                    playerId: widget.playerId,
+                                  )),
+                        );
+                      })
+                    ])
+              : const Text('Edit Player',
+                  style: TextStyle(
+                    color: AppColours.darkBlue,
+                    fontFamily: AppFonts.gabarito,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w700,
+                  )),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -136,36 +165,10 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding: const EdgeInsets.all(35),
+                padding: const EdgeInsets.only(bottom: 35, left: 35, right: 35),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Edit Player',
-                                style: TextStyle(
-                                  color: AppColours.darkBlue,
-                                  fontFamily: AppFonts.gabarito,
-                                  fontSize: 36.0,
-                                  fontWeight: FontWeight.w700,
-                                )),
-                            if (widget.userRole == UserRole.physio)
-                              smallButton(
-                                  Icons.add_circle_outline, "Add Injury", () {
-                                navigator.push(
-                                  MaterialPageRoute(
-                                      builder: (context) => AddInjuryScreen(
-                                            physioId: widget.physioId,
-                                            userRole: widget.userRole,
-                                            teamId: widget.teamId,
-                                            playerId: widget.playerId,
-                                          )),
-                                );
-                              })
-                          ]),
-                      const SizedBox(height: 10),
-                      divider(),
                       const SizedBox(
                         height: 20,
                       ),

@@ -25,25 +25,34 @@ class TeamProfileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Padding(
-            padding: const EdgeInsets.only(right: 25, left: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                appBarTitlePreviousPage("Team Profile"),
-                if (ref.read(userRoleProvider.notifier).state ==
-                    UserRole.manager)
-                  smallButton(Icons.edit, "Edit", () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditTeamScreen(
-                              teamId: ref.read(teamIdProvider.notifier).state,
-                              managerId:
-                                  ref.read(userIdProvider.notifier).state),
-                        ));
-                  })
-              ],
-            )),
+          padding: const EdgeInsets.only(right: 25, left: 25),
+          child: ref.read(userRoleProvider.notifier).state == UserRole.manager
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    appBarTitlePreviousPage("Team Profile"),
+                    smallButton(Icons.edit, "Edit", () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditTeamScreen(
+                                teamId: ref.read(teamIdProvider.notifier).state,
+                                managerId:
+                                    ref.read(userIdProvider.notifier).state),
+                          ));
+                    })
+                  ],
+                )
+              : const Text(
+                  "Team Profile",
+                  style: TextStyle(
+                    fontFamily: AppFonts.gabarito,
+                    color: AppColours.darkBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
+        ),
         iconTheme: const IconThemeData(
           color: AppColours.darkBlue, //change your color here
         ),

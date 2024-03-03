@@ -80,7 +80,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("My Profile"),
+          title: const Text(
+            "Edit Profile",
+            style: TextStyle(
+              fontFamily: AppFonts.gabarito,
+              color: AppColours.darkBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -89,22 +97,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding: const EdgeInsets.all(35),
+                padding: const EdgeInsets.only(top: 15, bottom: 35, right: 35, left: 35),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Edit Profile',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      const SizedBox(height: 10),
-                      divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
                       Form(
                         key: _formKey,
                         autovalidateMode: AutovalidateMode.always,
@@ -134,6 +130,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                   pickImage();
                                 }),
                               ])),
+                              const SizedBox(height: 30),
                               formFieldBottomBorderController(
                                   "First name", firstNameController,
                                   (String? value) {
@@ -157,7 +154,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                     ? 'Invalid phone number.'
                                     : null;
                               }, context),
-                              const SizedBox(height: 30),
+                              const SizedBox(height: 40),
                               bigButton("Save Changes", () {
                                 if (_formKey.currentState!.validate()) {
                                   updateProfile(

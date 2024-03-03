@@ -324,7 +324,7 @@ class LogInScreen extends ConsumerWidget {
             )),
         content: SizedBox(
             width: 800,
-            height: 275,
+            height: 300,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Column(
                 //mainAxisSize: MainAxisSize.min,
