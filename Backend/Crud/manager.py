@@ -49,13 +49,11 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
         if check_email(str(manager.manager_email)):
             manager_to_update.manager_email = manager.manager_email
         else:
-            print("Invalid email format")
-            raise HTTPException(status_code=400, detail="Email format invalid")
+                raise HTTPException(status_code=400, detail="Email format invalid")
 
         if check_password_regex(str(manager.manager_password)):
             manager_to_update.manager_password = encrypt_password(manager.manager_password)
         else:
-            print("Invalid password format")
             raise HTTPException(status_code=400, detail="Password format invalid")
 
 

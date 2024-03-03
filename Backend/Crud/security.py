@@ -13,6 +13,9 @@ email_regex = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$'
 password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
 name_regex = r'^[A-Za-z]+(?:\s+[A-Za-z]+)*$'
 team_name_regex = r'^[A-Za-z0-9\s]*$'
+phone_regex = r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+#https://ihateregex.io/expr/phone/
+
 
 def check_email(email : str):
     if re.fullmatch(email_regex, email):
@@ -38,6 +41,12 @@ def check_is_valid_team_name(name: str):
         return True
     else:
         return False
+
+def check_is_valid_contact_number(contact_number: str):
+    if re.fullmatch(phone_regex, contact_number):
+        return True
+    else:    
+        raise HTTPException(status_code=400, detail="Contact number format is invalid")
 
 fixed_salt = os.environ["SALT"].encode('utf-8')
 
