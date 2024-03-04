@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:play_metrix/api_clients/injury_api_client.dart';
 import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
@@ -162,41 +164,41 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                               ])),
                               const SizedBox(height: 10),
                               Center(
-                                child: DropdownButton<Injury>(
-                                  hint: const Row(
-                                    children: [
-                                      Icon(
-                                        Icons.healing_outlined,
-                                        color: Colors.black45,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text("Choose an injury")
-                                    ],
+                                child: DropdownSearch<Injury>(
+                                  popupProps: const PopupProps.menu(
+                                      searchDelay: Duration(milliseconds: 0),
+                                      searchFieldProps: TextFieldProps(
+                                          decoration: InputDecoration(
+                                              labelText: "Search for injury",
+                                              labelStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily: AppFonts.gabarito,
+                                                  color: Colors.black45),
+                                              icon: Icon(Icons.search)),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: AppFonts.gabarito)),
+                                      showSearchBox: true),
+                                  items: injuries,
+                                  itemAsString: (Injury i) => i.nameAndGrade,
+                                  dropdownDecoratorProps:
+                                      const DropDownDecoratorProps(
+                                    dropdownSearchDecoration: InputDecoration(
+                                        icon: Icon(
+                                          Icons.healing,
+                                        ),
+                                        labelText: "Choose Injury"),
                                   ),
-                                  value: selectedInjury,
-                                  items: injuries.map((Injury item) {
-                                    return DropdownMenuItem<Injury>(
-                                      value: item,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            item.nameAndGrade,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (Injury? newValue) {
+                                  onChanged: (value) {
                                     setState(() {
-                                      selectedInjury = newValue;
+                                      selectedInjury =
+                                          value; // Assuming selectedInjury is of type dynamic
                                     });
                                   },
+                                  selectedItem: selectedInjury,
                                 ),
                               ),
-                              const SizedBox(height: 7),
+                              const SizedBox(height: 25),
                               if (selectedInjury != null)
                                 injuryDetails(selectedInjury!),
                               greyDivider(),

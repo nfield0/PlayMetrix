@@ -51,6 +51,7 @@ dependencies:
   flutter_timezone: ^1.0.8
   file_picker: ^6.1.1
   syncfusion_flutter_pdfviewer: ^24.2.7
+  dropdown_search: ^5.0.6
 
 dev_dependencies:
   flutter_test:
