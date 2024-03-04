@@ -47,7 +47,7 @@ Future<void> updatePlayerInjury({
   required Uint8List? injuryReport,
 }) async {
   try {
-    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$injuryId";
+    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$playerId";
     final playerInjuryResponse = await http.put(
       Uri.parse(playerInjuryApiUrl),
       headers: <String, String>{

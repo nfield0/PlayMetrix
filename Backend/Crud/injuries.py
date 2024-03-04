@@ -124,7 +124,7 @@ def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
 
 def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
     try:
-        player_injury_to_update = db.query(player_injuries).filter_by(injury_id= id).first()
+        player_injury_to_update = db.query(player_injuries).filter_by(player_id= id).first()
         if player_injury_to_update:
             player_injury_to_update.player_id = updated_player_injury.player_id
             player_injury_to_update.physio_id = updated_player_injury.physio_id
