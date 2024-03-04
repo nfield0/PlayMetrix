@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/api_clients/injury_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
@@ -513,7 +514,7 @@ Widget injuriesSection(
                 title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                  Text(injury.dateOfInjury.toString(),
+                  Text(DateFormat('yyyy-MM-dd').format(injury.dateOfInjury),
                       style: const TextStyle(
                           color: AppColours.darkBlue,
                           fontWeight: FontWeight.bold)),
@@ -545,10 +546,11 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
     children: [
       greyDivider(),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Injury", injury.dateOfInjury.toString()),
+      detailWithDivider("Date of Injury",
+          DateFormat('yyyy-MM-dd').format(injury.dateOfInjury)),
       const SizedBox(height: 10),
-      detailWithDivider(
-          "Date of Recovery", injury.expectedDateOfRecovery.toString()),
+      detailWithDivider("Date of Recovery",
+          DateFormat('yyyy-MM-dd').format(injury.expectedDateOfRecovery)),
       const SizedBox(height: 10),
       detailWithDivider("Injury Type", injury.type),
       const SizedBox(height: 10),
@@ -557,7 +559,7 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
       detailWithDivider("Injury Location", injury.location),
       const SizedBox(height: 10),
       detailWithDivider(
-          "Expected Recovery Time",
+          "Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
               "${injury.expectedMaxRecoveryTime} weeks"),
       ExpansionPanelList.radio(

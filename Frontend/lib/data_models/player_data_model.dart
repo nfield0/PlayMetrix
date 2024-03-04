@@ -198,8 +198,8 @@ class PlayerInjuries {
       injuryId: json['injury_id'],
       playerId: json['player_id'],
       physioId: json['physio_id'],
-      dateOfInjury: json['date_of_injury'],
-      dateOfRecovery: json['expected_date_of_recovery'],
+      dateOfInjury: DateTime.parse(json['date_of_injury']),
+      dateOfRecovery: DateTime.parse(json['expected_date_of_recovery']),
       playerInjuryReport: json['player_injury_report'] != null
           ? base64.decode(json['player_injury_report'])
           : null,
