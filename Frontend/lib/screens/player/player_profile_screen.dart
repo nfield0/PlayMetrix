@@ -514,7 +514,7 @@ Widget injuriesSection(
                 ]));
           },
           body: ListTile(
-            title: injuryDetails(injury, context),
+            title: playerInjuryDetails(injury, context),
           ),
         );
       }).toList(),
@@ -522,7 +522,7 @@ Widget injuriesSection(
   ]);
 }
 
-Widget injuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
+Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
   return Column(
     children: [
       greyDivider(),
@@ -542,12 +542,41 @@ Widget injuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
           "Expected Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
               "${injury.expectedMaxRecoveryTime} weeks"),
-      const SizedBox(height: 10),
-      detailWithDivider("Recovery Method", injury.potentialRecoveryMethods[0]),
-      const SizedBox(height: 10),
-      detailWithDivider("Recovery Method", injury.potentialRecoveryMethods[1]),
-      const SizedBox(height: 10),
-      detailWithDivider("Recovery Method", injury.potentialRecoveryMethods[2]),
+      ExpansionPanelList.radio(
+        elevation: 0,
+        expandedHeaderPadding: const EdgeInsets.all(0),
+        children: [
+          ExpansionPanelRadio(
+            value: injury.id,
+            backgroundColor: Colors.transparent,
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return const ListTile(
+                contentPadding: EdgeInsets.all(0),
+                title: Text("Potential Recovery Methods",
+                    style: TextStyle(fontSize: 16)),
+              );
+            },
+            body: ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int i = 0;
+                      i < injury.potentialRecoveryMethods.length;
+                      i++)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                          '${i + 1}. ${injury.potentialRecoveryMethods[i]}',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
       injury.playerInjuryReport != null
           ? underlineButtonTransparent("View player report", () {
               injury.playerInjuryReport != null

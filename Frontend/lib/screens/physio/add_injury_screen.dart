@@ -12,6 +12,34 @@ import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
+// SAMPLE DATA
+List<Map<String, dynamic>> jsonData = [
+  {
+    'injury_id': 1,
+    'injury_type': 'Acute/Chronic',
+    'injury_name_and_grade': 'Rotar Cuff',
+    'injury_location': 'Shoulder',
+    'potential_recovery_method_1': 'Rest',
+    'potential_recovery_method_2': 'Physiotherapy',
+    'potential_recovery_method_3': 'Surgery Depending on Severity',
+    'expected_minimum_recovery_time': 6,
+    'expected_maximum_recovery_time': 9,
+  },
+  {
+    'injury_id': 2,
+    'injury_type': 'Acute',
+    'injury_name_and_grade': 'Meniscal Tear',
+    'injury_location': 'Knee',
+    'potential_recovery_method_1': 'Rest',
+    'potential_recovery_method_2': 'Ice',
+    'potential_recovery_method_3': 'Compression & Elevation',
+    'expected_minimum_recovery_time': 4,
+    'expected_maximum_recovery_time': 12,
+  },
+];
+
+List<Injury> injuries = jsonData.map((json) => Injury.fromJson(json)).toList();
+
 class AddInjuryScreen extends StatefulWidget {
   final int playerId;
   final int physioId;
@@ -43,7 +71,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
   String playerName = "";
   Uint8List playerImage = Uint8List(0);
 
-  String? selectedInjury;
+  Injury? selectedInjury;
   DateTime selectedDateOfInjury = DateTime.now();
   DateTime selectedDateOfRecovery = DateTime.now();
 
@@ -92,7 +120,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
             ),
           ),
           iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
+            color: AppColours.darkBlue,
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -132,38 +160,46 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                         fontFamily: AppFonts.gabarito,
                                         fontWeight: FontWeight.bold)),
                               ])),
-                              const SizedBox(height: 5),
+                              const SizedBox(height: 10),
                               Center(
-                                child: DropdownButton<String>(
-                                    hint: const Row(
-                                      children: [
-                                        Icon(
-                                          Icons.healing_outlined,
-                                          color: Colors.black45,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text("Choose an injury")
-                                      ],
-                                    ),
-                                    value: selectedInjury,
-                                    items: ["Injury 1", "Injury 2", "Injury 3"]
-                                        .map((String item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              item,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                              ),
+                                child: DropdownButton<Injury>(
+                                  hint: const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.healing_outlined,
+                                        color: Colors.black45,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text("Choose an injury")
+                                    ],
+                                  ),
+                                  value: selectedInjury,
+                                  items: injuries.map((Injury item) {
+                                    return DropdownMenuItem<Injury>(
+                                      value: item,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            item.nameAndGrade,
+                                            style: const TextStyle(
+                                              fontSize: 18,
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                    onChanged: (p0) {}),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (Injury? newValue) {
+                                    setState(() {
+                                      selectedInjury = newValue;
+                                    });
+                                  },
+                                ),
                               ),
+                              const SizedBox(height: 7),
+                              if (selectedInjury != null)
+                                injuryDetails(selectedInjury!),
+                              greyDivider(),
                               const SizedBox(height: 7),
                               datePickerNoDivider(context, "Date of injury",
                                   selectedDateOfInjury, (date) {
@@ -275,4 +311,57 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                     ]))),
         bottomNavigationBar: physioBottomNavBar(context, 0));
   }
+}
+
+Widget injuryDetails(Injury injury) {
+  return Column(
+    children: [
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Type", injury.type),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Name", injury.nameAndGrade),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Location", injury.location),
+      const SizedBox(height: 10),
+      detailWithDivider(
+          "Expected Recovery Time",
+          "${injury.expectedMinRecoveryTime}-"
+              "${injury.expectedMaxRecoveryTime} weeks"),
+      ExpansionPanelList.radio(
+        elevation: 0,
+        expandedHeaderPadding: const EdgeInsets.all(0),
+        children: [
+          ExpansionPanelRadio(
+            value: injury.id,
+            backgroundColor: Colors.transparent,
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return const ListTile(
+                contentPadding: EdgeInsets.all(0),
+                title: Text("Potential Recovery Methods",
+                    style: TextStyle(fontSize: 16)),
+              );
+            },
+            body: ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int i = 0;
+                      i < injury.potentialRecoveryMethods.length;
+                      i++)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                          '${i + 1}. ${injury.potentialRecoveryMethods[i]}',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    ],
+  );
 }
