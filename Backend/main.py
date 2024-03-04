@@ -575,6 +575,10 @@ def read_player_injuries(db:Session = Depends(get_db)):
 def read_player_injury(id: int, db:Session = Depends(get_db)):
     return crud.get_player_injury_by_id(db, id)
 
+@app.get("/player_injuries/date/{date}")
+def read_player_injury(date, db:Session = Depends(get_db)):
+    return crud.get_player_injury_by_date(db, date)
+
 @app.post("/player_injuries/")
 def insert_player_injury(player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
     return crud.insert_new_player_injury(db, player_injury)
