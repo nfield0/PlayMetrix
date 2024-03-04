@@ -16,7 +16,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-
 void logOut(WidgetRef ref, BuildContext context) async {
   final navigator = Navigator.of(context);
 
@@ -447,42 +446,26 @@ String getPhoneNumberPrefix(String phoneNumber) {
   return phoneNumber;
 }
 
-
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SignInButton(
-      Buttons.Google,
-      onPressed: _handleGoogleSignIn
-    );
+    return SignInButton(Buttons.Google, onPressed: _handleGoogleSignIn);
   }
 }
 
 Future<void> _handleGoogleSignIn() async {
-  try { 
-    const apiUrl =
-        '$apiBaseUrl/login/google';
+  try {
+    const apiUrl = '$apiBaseUrl/login/google';
 
     await http.get(Uri.parse(apiUrl)).then((response) {
       var resp = json.decode(response.body)['url'];
       print(resp);
       launchUrl(resp);
-
-
-      
-
     });
-
-
-    
-    
-      
-    
   } catch (error) {
     // Handle sign-in errors
-    //print('Error signing in with Google: $error');
+    print('Error signing in with Google: $error');
   }
-  
 }

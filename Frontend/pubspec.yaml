@@ -93,6 +93,7 @@ flutter:
     - lib/assets/icons/schedule_menu.png
     - lib/assets/icons/statistics_menu.png
     - lib/assets/icons/logo_placeholder.png
+    - lib/assets/icons/google_icon.png
     - lib/assets/icons/profile_placeholder.png
     - lib/assets/intro/intro_1.png
     - lib/assets/intro/intro_2.png

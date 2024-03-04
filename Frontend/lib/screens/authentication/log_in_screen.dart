@@ -35,7 +35,6 @@ class LogInScreen extends ConsumerWidget {
   );
 
   LogInScreen({super.key});
-  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,262 +54,274 @@ class LogInScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.always, // Enable auto validation
-            child: Container(
-              padding: const EdgeInsets.all(40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Log In',
-                      style: TextStyle(
-                        color: AppColours.darkBlue,
-                        fontFamily: AppFonts.gabarito,
-                        fontSize: 36.0,
-                        fontWeight: FontWeight.w700,
-                      )),
-                  const Divider(
-                    color: AppColours.darkBlue,
-                    thickness: 1.0, // Set the thickness of the line
-                    height: 40.0, // Set the height of the line
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: TextFormField(
-                      controller: _emailController,
-                      cursorColor: AppColours.darkBlue,
-                      decoration: const InputDecoration(
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColours.darkBlue),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColours.darkBlue),
-                        ),
-                        labelText: 'Email address',
-                        labelStyle: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.openSans),
-                      ),
-                      validator: (String? value) {
-                        return (value != null && !_emailRegex.hasMatch(value))
-                            ? 'Invalid email format.'
-                            : null;
-                      },
+            child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 650),
+            child: Form(
+              key: _formKey,
+              autovalidateMode:
+                  AutovalidateMode.always, // Enable auto validation
+              child: Container(
+                padding: const EdgeInsets.all(40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Log In',
+                        style: TextStyle(
+                          color: AppColours.darkBlue,
+                          fontFamily: AppFonts.gabarito,
+                          fontSize: 36.0,
+                          fontWeight: FontWeight.w700,
+                        )),
+                    const Divider(
+                      color: AppColours.darkBlue,
+                      thickness: 1.0, // Set the thickness of the line
+                      height: 40.0, // Set the height of the line
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      obscureText: passwordIsObscure,
-                      cursorColor: AppColours.darkBlue,
-                      decoration: InputDecoration(
-                        focusedErrorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 25.0),
+                      child: TextFormField(
+                        controller: _emailController,
+                        cursorColor: AppColours.darkBlue,
+                        decoration: const InputDecoration(
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                            ),
                           ),
-                        ),
-                        errorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                            ),
                           ),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: AppColours.darkBlue), // Set border color
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: AppColours
-                                  .darkBlue), // Set focused border color
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            passwordIsObscure
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColours.darkBlue,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: AppColours.darkBlue),
                           ),
-                          onPressed: () {
-                            // Toggle the visibility of the password
-                            ref
-                                .read(passwordVisibilityNotifier.notifier)
-                                .state = !passwordIsObscure;
-                          },
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: AppColours.darkBlue),
+                          ),
+                          labelText: 'Email address',
+                          labelStyle: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontFamily: AppFonts.openSans),
                         ),
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.openSans),
+                        validator: (String? value) {
+                          return (value != null && !_emailRegex.hasMatch(value))
+                              ? 'Invalid email format.'
+                              : null;
+                        },
                       ),
                     ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(top: 40.0),
-                      child: bigButton("Log in", () async {
-                        if (_formKey.currentState!.validate()) {
-                          String response = await loginUser(
-                              context,
-                              _emailController.text,
-                              _passwordController.text,
-                              _formKey.toString());
+                    Padding(
+                      padding: const EdgeInsets.only(top: 25.0),
+                      child: TextFormField(
+                        controller: _passwordController,
+                        obscureText: passwordIsObscure,
+                        cursorColor: AppColours.darkBlue,
+                        decoration: InputDecoration(
+                          focusedErrorBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                            ),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppColours.darkBlue), // Set border color
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppColours
+                                    .darkBlue), // Set focused border color
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              passwordIsObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: AppColours.darkBlue,
+                            ),
+                            onPressed: () {
+                              // Toggle the visibility of the password
+                              ref
+                                  .read(passwordVisibilityNotifier.notifier)
+                                  .state = !passwordIsObscure;
+                            },
+                          ),
+                          labelText: 'Password',
+                          labelStyle: const TextStyle(
+                              color: AppColours.darkBlue,
+                              fontFamily: AppFonts.openSans),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: bigButton("Log in", () async {
+                          if (_formKey.currentState!.validate()) {
+                            String response = await loginUser(
+                                context,
+                                _emailController.text,
+                                _passwordController.text,
+                                _formKey.toString());
 
-                          if (response != "") {
-                            if (const JsonDecoder()
-                                    .convert(response)['user_password'] !=
-                                false) {
-                              int userId = const JsonDecoder()
-                                  .convert(response)['user_id'];
-                              ref.read(userIdProvider.notifier).state = userId;
+                            if (response != "") {
+                              if (const JsonDecoder()
+                                      .convert(response)['user_password'] !=
+                                  false) {
+                                int userId = const JsonDecoder()
+                                    .convert(response)['user_id'];
+                                ref.read(userIdProvider.notifier).state =
+                                    userId;
 
-                              UserRole userRole = stringToUserRole(
-                                  const JsonDecoder()
-                                      .convert(response)['user_type']);
+                                UserRole userRole = stringToUserRole(
+                                    const JsonDecoder()
+                                        .convert(response)['user_type']);
 
-                              if (userRole == UserRole.manager) {
-                                Profile managerProfile =
-                                    await getManagerProfile(userId);
-                                String formattedPhoneNumber =
-                                    getPhoneNumberPrefix(
-                                        managerProfile.contactNumber);
-                                String verificationCode = generateRandomCode();
-                                ref
-                                    .read(verificationCodeProvider.notifier)
-                                    .state = verificationCode;
-                                bool sentSuccessfully =
-                                    await twilioService.sendVerificationCode(
-                                        formattedPhoneNumber, verificationCode);
+                                if (userRole == UserRole.manager) {
+                                  Profile managerProfile =
+                                      await getManagerProfile(userId);
+                                  String formattedPhoneNumber =
+                                      getPhoneNumberPrefix(
+                                          managerProfile.contactNumber);
+                                  String verificationCode =
+                                      generateRandomCode();
+                                  ref
+                                      .read(verificationCodeProvider.notifier)
+                                      .state = verificationCode;
+                                  bool sentSuccessfully =
+                                      await twilioService.sendVerificationCode(
+                                          formattedPhoneNumber,
+                                          verificationCode);
 
-                                if (!sentSuccessfully) {
-                                  print("SMS not sent");
+                                  if (!sentSuccessfully) {
+                                    print("SMS not sent");
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return twoFactorAuthPopUp(
+                                          context,
+                                          formattedPhoneNumber,
+                                          ref,
+                                          userRole,
+                                          userId,
+                                          verificationCode);
+                                    },
+                                  );
+                                } else if (userRole == UserRole.physio) {
+                                  Profile physioProfile =
+                                      await getPhysioProfile(userId);
+                                  String formattedPhoneNumber =
+                                      getPhoneNumberPrefix(
+                                          physioProfile.contactNumber);
+                                  String verificationCode =
+                                      generateRandomCode();
+                                  ref
+                                      .read(verificationCodeProvider.notifier)
+                                      .state = verificationCode;
+                                  bool sentSuccessfully =
+                                      await twilioService.sendVerificationCode(
+                                          formattedPhoneNumber,
+                                          verificationCode);
+
+                                  if (!sentSuccessfully) {
+                                    print("SMS not sent");
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return twoFactorAuthPopUp(
+                                          context,
+                                          formattedPhoneNumber,
+                                          ref,
+                                          userRole,
+                                          userId,
+                                          verificationCode);
+                                    },
+                                  );
+                                } else if (userRole == UserRole.player) {
+                                  PlayerData playerProfile =
+                                      await getPlayerById(userId);
+                                  String formattedPhoneNumber =
+                                      getPhoneNumberPrefix(
+                                          playerProfile.player_contact_number);
+                                  String verificationCode =
+                                      generateRandomCode();
+                                  ref
+                                      .read(verificationCodeProvider.notifier)
+                                      .state = verificationCode;
+                                  bool sentSuccessfully =
+                                      await twilioService.sendVerificationCode(
+                                          formattedPhoneNumber,
+                                          verificationCode);
+
+                                  if (!sentSuccessfully) {
+                                    print("SMS not sent");
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return twoFactorAuthPopUp(
+                                          context,
+                                          formattedPhoneNumber,
+                                          ref,
+                                          userRole,
+                                          userId,
+                                          verificationCode);
+                                    },
+                                  );
+                                } else {
+                                  Profile coachProfile =
+                                      await getCoachProfile(userId);
+                                  String formattedPhoneNumber =
+                                      getPhoneNumberPrefix(
+                                          coachProfile.contactNumber);
+                                  String verificationCode =
+                                      generateRandomCode();
+                                  ref
+                                      .read(verificationCodeProvider.notifier)
+                                      .state = verificationCode;
+                                  bool sentSuccessfully =
+                                      await twilioService.sendVerificationCode(
+                                          formattedPhoneNumber,
+                                          verificationCode);
+
+                                  if (!sentSuccessfully) {
+                                    print("SMS not sent");
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return twoFactorAuthPopUp(
+                                          context,
+                                          formattedPhoneNumber,
+                                          ref,
+                                          userRole,
+                                          userId,
+                                          verificationCode);
+                                    },
+                                  );
                                 }
-
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return twoFactorAuthPopUp(
-                                        context,
-                                        formattedPhoneNumber,
-                                        ref,
-                                        userRole,
-                                        userId,
-                                        verificationCode);
-                                  },
-                                );
-                              } else if (userRole == UserRole.physio) {
-                                Profile physioProfile =
-                                    await getPhysioProfile(userId);
-                                String formattedPhoneNumber =
-                                    getPhoneNumberPrefix(
-                                        physioProfile.contactNumber);
-                                String verificationCode = generateRandomCode();
-                                ref
-                                    .read(verificationCodeProvider.notifier)
-                                    .state = verificationCode;
-                                bool sentSuccessfully =
-                                    await twilioService.sendVerificationCode(
-                                        formattedPhoneNumber, verificationCode);
-
-                                if (!sentSuccessfully) {
-                                  print("SMS not sent");
-                                }
-
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return twoFactorAuthPopUp(
-                                        context,
-                                        formattedPhoneNumber,
-                                        ref,
-                                        userRole,
-                                        userId,
-                                        verificationCode);
-                                  },
-                                );
-                              } else if (userRole == UserRole.player) {
-                                PlayerData playerProfile =
-                                    await getPlayerById(userId);
-                                String formattedPhoneNumber =
-                                    getPhoneNumberPrefix(
-                                        playerProfile.player_contact_number);
-                                String verificationCode = generateRandomCode();
-                                ref
-                                    .read(verificationCodeProvider.notifier)
-                                    .state = verificationCode;
-                                bool sentSuccessfully =
-                                    await twilioService.sendVerificationCode(
-                                        formattedPhoneNumber, verificationCode);
-
-                                if (!sentSuccessfully) {
-                                  print("SMS not sent");
-                                }
-
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return twoFactorAuthPopUp(
-                                        context,
-                                        formattedPhoneNumber,
-                                        ref,
-                                        userRole,
-                                        userId,
-                                        verificationCode);
-                                  },
-                                );
-                              } else {
-                                Profile coachProfile =
-                                    await getCoachProfile(userId);
-                                String formattedPhoneNumber =
-                                    getPhoneNumberPrefix(
-                                        coachProfile.contactNumber);
-                                String verificationCode = generateRandomCode();
-                                ref
-                                    .read(verificationCodeProvider.notifier)
-                                    .state = verificationCode;
-                                bool sentSuccessfully =
-                                    await twilioService.sendVerificationCode(
-                                        formattedPhoneNumber, verificationCode);
-
-                                if (!sentSuccessfully) {
-                                  print("SMS not sent");
-                                }
-
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return twoFactorAuthPopUp(
-                                        context,
-                                        formattedPhoneNumber,
-                                        ref,
-                                        userRole,
-                                        userId,
-                                        verificationCode);
-                                  },
-                                );
                               }
                             }
                           }
-                        }
-                      })),
-                      const GoogleSignInButton(),
-                ],
+                        }))
+                  ],
+                ),
               ),
             ),
           ),
-        ));
+        )));
   }
-  
 
   Widget twoFactorAuthPopUp(BuildContext context, String phoneNumber,
       WidgetRef ref, UserRole userRole, int userId, String verificationCode) {
