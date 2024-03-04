@@ -98,9 +98,9 @@ def get_player_injury_by_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
     
-def get_player_injury_by_date(db: Session, date: str):
+def get_player_injury_by_date(db: Session, date: str, injury:int, id:int):
     try:
-        result = db.query(player_injuries).filter_by(date_of_injury=date).all()
+        result = db.query(player_injuries).filter_by(date_of_injury=date, injury_id=injury, player_id=id).first()
         return result
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
