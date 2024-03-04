@@ -125,6 +125,7 @@ class team_player(Base):
 	team_position = Column(String(30), index = True)
 	player_team_number = Column(Integer, index = True)
 	playing_status = Column(String(25), index = True)
+	reason_for_status = Column(String(255), index = True)
 	lineup_status = Column(String(30), index = True)
 
 class team_coach(Base):
