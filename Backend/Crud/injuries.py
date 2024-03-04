@@ -28,9 +28,14 @@ def insert_injury(db:Session, new_injury: InjuryBase):
             raise HTTPException(status_code=400, detail="Injury type is incorrect")
         else:
             new_injury = injuries(injury_type=new_injury.injury_type,
+                                  injury_name_and_grade=new_injury.injury_name_and_grade,
                                   injury_location=new_injury.injury_location,
-                               expected_recovery_time=new_injury.expected_recovery_time,
-                               recovery_method=new_injury.recovery_method)
+                                    potential_recovery_method_1=new_injury.potential_recovery_method_1,
+                                    potential_recovery_method_2=new_injury.potential_recovery_method_2,
+                                    potential_recovery_method_3=new_injury.potential_recovery_method_3,
+                                    expected_minimum_recovery_time=new_injury.expected_minimum_recovery_time,
+                                    expected_maximum_recovery_time=new_injury.expected_maximum_recovery_time)
+
             db.add(new_injury)
             db.commit()
             db.refresh(new_injury)
@@ -45,9 +50,13 @@ def update_injury(db, updated_injury: InjuryBase, id):
         injury_to_update = db.query(injuries).filter_by(injury_id= id).first()
         if injury_to_update:
             injury_to_update.injury_type = updated_injury.injury_type
+            injury_to_update.injury_name_and_grade = updated_injury.injury_name_and_grade
             injury_to_update.injury_location = updated_injury.injury_location
-            injury_to_update.expected_recovery_time = updated_injury.expected_recovery_time
-            injury_to_update.recovery_method = updated_injury.recovery_method
+            injury_to_update.potential_recovery_method_1 = updated_injury.potential_recovery_method_1
+            injury_to_update.potential_recovery_method_2 = updated_injury.potential_recovery_method_2
+            injury_to_update.potential_recovery_method_3 = updated_injury.potential_recovery_method_3
+            injury_to_update.expected_minimum_recovery_time = updated_injury.expected_minimum_recovery_time
+            injury_to_update.expected_maximum_recovery_time = updated_injury.expected_maximum_recovery_time
             db.commit()
             return {"message": f"Injury with ID {id} has been updated"}
         else:
@@ -95,7 +104,7 @@ def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
             new_player_injury = player_injuries(player_id=new_player_injury.player_id,
                                                 physio_id=new_player_injury.physio_id,
                                                 date_of_injury=new_player_injury.date_of_injury,
-                                                date_of_recovery=new_player_injury.date_of_recovery,
+                                                expected_date_of_recovery=new_player_injury.expected_date_of_recovery,
                                                 injury_id=new_player_injury.injury_id,
                                                 player_injury_report = new_player_injury.player_injury_report)
             db.add(new_player_injury)
@@ -113,7 +122,7 @@ def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
             player_injury_to_update.player_id = updated_player_injury.player_id
             player_injury_to_update.physio_id = updated_player_injury.physio_id
             player_injury_to_update.date_of_injury = updated_player_injury.date_of_injury
-            player_injury_to_update.date_of_recovery = updated_player_injury.date_of_recovery
+            player_injury_to_update.expected_date_of_recovery = updated_player_injury.expected_date_of_recovery
             player_injury_to_update.injury_id = updated_player_injury.injury_id
             player_injury_to_update.player_injury_report = updated_player_injury.player_injury_report
             db.commit()

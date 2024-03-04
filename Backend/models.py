@@ -32,16 +32,20 @@ class player_injuries(Base):
     physio_id = Column(Integer, index = True)
     injury_id = Column(Integer, primary_key = True, index = True)
     date_of_injury = Column(Date, index = True)
-    date_of_recovery = Column(Date, index = True)
+    expected_date_of_recovery = Column(Date, index = True)
     player_injury_report = Column(LargeBinary, index = True)
 
 class injuries(Base): 
 	__tablename__ = "injuries"
 	injury_id = Column(Integer, primary_key = True, index = True)
 	injury_type = Column(String(50), index = True)
+	injury_name_and_grade = Column(String(80), index = True)
 	injury_location = Column(String(20), index = True)
-	expected_recovery_time = Column(String(70), index = True)
-	recovery_method = Column(String(255), index = True)
+	potential_recovery_method_1 = Column(String(50), index = True)
+	potential_recovery_method_2 = Column(String(50), index = True)
+	potential_recovery_method_3 = Column(String(50), index = True)
+	expected_minimum_recovery_time = Column(String(70), index = True)
+	expected_maximum_recovery_time = Column(String(70), index = True)
 
 class player_stats(Base):
 	__tablename__ = "player_stats"
@@ -121,6 +125,7 @@ class team_player(Base):
 	team_position = Column(String(30), index = True)
 	player_team_number = Column(Integer, index = True)
 	playing_status = Column(String(25), index = True)
+	reason_for_status = Column(String(255), index = True)
 	lineup_status = Column(String(30), index = True)
 
 class team_coach(Base):

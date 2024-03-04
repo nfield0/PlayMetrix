@@ -133,6 +133,7 @@ def test_add_team_player():
             "team_position": "Full Back",
             "player_team_number": 1,
             "playing_status": "Playing",
+            "reason_for_status": "Fit to play",
             "lineup_status": "Starting 15"
         }
     response = requests.post(url, headers=headers, json=json)
@@ -163,6 +164,7 @@ def test_get_team_player():
             "team_position": "Full Back",
             "player_team_number": 1,
             "playing_status": "Playing",
+            "reason_for_status": "Fit to play",
             "lineup_status": "Starting 15"
         }]
         assert response_json == expected_data
@@ -184,6 +186,7 @@ def test_update_team_player_file():
         "team_position": "Full Back",
         "player_team_number": 1,
         "playing_status": "Unavailable",
+        "reason_for_status": "Broken Leg",
         "lineup_status": "Starting 15"
     }
     response = requests.put(url, headers=headers, json=json)
@@ -215,6 +218,7 @@ def test_get_team_player_updated():
             "team_position": "Full Back",
             "player_team_number": 1,
             "playing_status": "Unavailable",
+            "reason_for_status": "Broken Leg",
             "lineup_status": "Starting 15"
         }]
         assert response_json == expected_data
@@ -235,6 +239,7 @@ def test_get_players_by_team_id():
             "team_position": "Full Back",
             "player_team_number": 1,
             "playing_status": "Unavailable",
+            "reason_for_status": "Broken Leg",
             "lineup_status": "Starting 15"
         }]
     try:
