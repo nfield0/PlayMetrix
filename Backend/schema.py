@@ -162,16 +162,21 @@ class PlayerStat(BaseModel):
     
 class InjuryBase(BaseModel):
     injury_type: str
+    injury_name_and_grade: str
     injury_location: str
-    expected_recovery_time: str
-    recovery_method: str
+    potential_recovery_method_1: str
+    potential_recovery_method_2: str
+    potential_recovery_method_3: str
+    expected_minimum_recovery_time: int
+    expected_maximum_recovery_time: int
+
 
 class PlayerInjuryBase(BaseModel):
     player_id: int
     physio_id: int
     injury_id: int
     date_of_injury: str
-    date_of_recovery: str
+    expected_date_of_recovery: str
     player_injury_report: Optional[bytes] = None
     
 
