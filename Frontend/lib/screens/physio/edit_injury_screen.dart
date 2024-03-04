@@ -94,7 +94,13 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Player Profile"),
+          title: const Text(
+            'Edit Injury',
+            style: TextStyle(
+                fontSize: 24,
+                fontFamily: AppFonts.gabarito,
+                fontWeight: FontWeight.bold),
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -102,149 +108,155 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.all(35),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Edit Injury',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      const SizedBox(height: 10),
-                      divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Form(
-                        key: _formKey,
-                        autovalidateMode: AutovalidateMode.always,
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                        padding: const EdgeInsets.all(35),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                  child: Column(children: [
-                                playerImage.isNotEmpty
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(75),
-                                        child: Image.memory(
-                                          playerImage,
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : Image.asset(
-                                        "lib/assets/icons/profile_placeholder.png",
-                                        width: 120,
-                                      ),
-                                const SizedBox(height: 15),
-                                Text(playerName,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontFamily: AppFonts.gabarito,
-                                        fontWeight: FontWeight.bold)),
-                              ])),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Injury type", injuryTypeController, (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Injury location", injuryLocationController,
-                                  (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Expected recovery time",
-                                  expectedRecoveryTimeController, (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 5),
-                              formFieldBottomBorderController(
-                                  "Recovery method", recoveryMethodController,
-                                  (value) {
-                                return (value != null && value.isEmpty)
-                                    ? 'This field is required.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 7),
-                              datePickerNoDivider(context, "Date of injury",
-                                  selectedDateOfInjury, (date) {
-                                setState(() {
-                                  selectedDateOfInjury = date;
-                                });
-                              }),
-                              const SizedBox(height: 5),
-                              datePickerNoDivider(context, "Date of recovery",
-                                  selectedDateOfRecovery, (date) {
-                                setState(() {
-                                  selectedDateOfRecovery = date;
-                                });
-                              }),
-                              const SizedBox(height: 15),
-                              injuryReportFile != null
-                                  ? Column(children: [
-                                      filePill(
-                                          injuryReportFile!.name,
-                                          formatBytes(injuryReportFile!.size),
-                                          Icons.file_open,
-                                          () {}),
-                                      const SizedBox(height: 15),
-                                      underlineButtonTransparentRedGabarito(
-                                          "Remove injury report", () {
+                              Form(
+                                key: _formKey,
+                                autovalidateMode: AutovalidateMode.always,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                          child: Column(children: [
+                                        playerImage.isNotEmpty
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(75),
+                                                child: Image.memory(
+                                                  playerImage,
+                                                  width: 120,
+                                                  height: 120,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : Image.asset(
+                                                "lib/assets/icons/profile_placeholder.png",
+                                                width: 120,
+                                              ),
+                                        const SizedBox(height: 15),
+                                        Text(playerName,
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontFamily: AppFonts.gabarito,
+                                                fontWeight: FontWeight.bold)),
+                                      ])),
+                                      const SizedBox(height: 5),
+                                      formFieldBottomBorderController(
+                                          "Injury type", injuryTypeController,
+                                          (value) {
+                                        return (value != null && value.isEmpty)
+                                            ? 'This field is required.'
+                                            : null;
+                                      }, context),
+                                      const SizedBox(height: 5),
+                                      formFieldBottomBorderController(
+                                          "Injury location",
+                                          injuryLocationController, (value) {
+                                        return (value != null && value.isEmpty)
+                                            ? 'This field is required.'
+                                            : null;
+                                      }, context),
+                                      const SizedBox(height: 5),
+                                      formFieldBottomBorderController(
+                                          "Expected recovery time",
+                                          expectedRecoveryTimeController,
+                                          (value) {
+                                        return (value != null && value.isEmpty)
+                                            ? 'This field is required.'
+                                            : null;
+                                      }, context),
+                                      const SizedBox(height: 5),
+                                      formFieldBottomBorderController(
+                                          "Recovery method",
+                                          recoveryMethodController, (value) {
+                                        return (value != null && value.isEmpty)
+                                            ? 'This field is required.'
+                                            : null;
+                                      }, context),
+                                      const SizedBox(height: 7),
+                                      datePickerNoDivider(
+                                          context,
+                                          "Date of injury",
+                                          selectedDateOfInjury, (date) {
                                         setState(() {
-                                          injuryReportFile = null;
+                                          selectedDateOfInjury = date;
                                         });
-                                      })
-                                    ])
-                                  : Center(
-                                      child: underlineButtonTransparent(
-                                          "Upload injury report", () {
-                                        pickInjuryReportPdf();
                                       }),
-                                    ),
-                              const SizedBox(height: 25),
-                              bigButton("Edit Injury", () {
-                                if (_formKey.currentState!.validate()) {
-                                  updateInjury(
-                                      injuryId: widget.injuryId,
-                                      physioId: widget.physioId,
-                                      injuryType: injuryTypeController.text,
-                                      injuryLocation:
-                                          injuryLocationController.text,
-                                      expectedRecoveryTime:
-                                          expectedRecoveryTimeController.text,
-                                      recoveryMethod:
-                                          recoveryMethodController.text,
-                                      dateOfInjury: selectedDateOfInjury,
-                                      dateOfRecovery: selectedDateOfRecovery,
-                                      playerId: widget.playerId,
-                                      injuryReport: injuryReportFile != null
-                                          ? injuryReportFile!.bytes
-                                          : Uint8List(0));
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PlayerProfileViewScreen(
-                                                  userId: widget.playerId)));
-                                }
-                              })
-                            ]),
-                      )
-                    ]))),
+                                      const SizedBox(height: 5),
+                                      datePickerNoDivider(
+                                          context,
+                                          "Date of recovery",
+                                          selectedDateOfRecovery, (date) {
+                                        setState(() {
+                                          selectedDateOfRecovery = date;
+                                        });
+                                      }),
+                                      const SizedBox(height: 15),
+                                      injuryReportFile != null
+                                          ? Column(children: [
+                                              filePill(
+                                                  injuryReportFile!.name,
+                                                  formatBytes(
+                                                      injuryReportFile!.size),
+                                                  Icons.file_open,
+                                                  () {}),
+                                              const SizedBox(height: 15),
+                                              underlineButtonTransparentRedGabarito(
+                                                  "Remove injury report", () {
+                                                setState(() {
+                                                  injuryReportFile = null;
+                                                });
+                                              })
+                                            ])
+                                          : Center(
+                                              child: underlineButtonTransparent(
+                                                  "Upload injury report", () {
+                                                pickInjuryReportPdf();
+                                              }),
+                                            ),
+                                      const SizedBox(height: 25),
+                                      bigButton("Edit Injury", () {
+                                        if (_formKey.currentState!.validate()) {
+                                          updateInjury(
+                                              injuryId: widget.injuryId,
+                                              physioId: widget.physioId,
+                                              injuryType:
+                                                  injuryTypeController.text,
+                                              injuryLocation:
+                                                  injuryLocationController.text,
+                                              expectedRecoveryTime:
+                                                  expectedRecoveryTimeController
+                                                      .text,
+                                              recoveryMethod:
+                                                  recoveryMethodController.text,
+                                              dateOfInjury:
+                                                  selectedDateOfInjury,
+                                              dateOfRecovery:
+                                                  selectedDateOfRecovery,
+                                              playerId: widget.playerId,
+                                              injuryReport:
+                                                  injuryReportFile != null
+                                                      ? injuryReportFile!.bytes
+                                                      : Uint8List(0));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PlayerProfileViewScreen(
+                                                          userId: widget
+                                                              .playerId)));
+                                        }
+                                      })
+                                    ]),
+                              )
+                            ]))))),
         bottomNavigationBar: physioBottomNavBar(context, 0));
   }
 }

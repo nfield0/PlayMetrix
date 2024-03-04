@@ -41,12 +41,14 @@ class HomeScreen extends ConsumerWidget {
                   extendBodyBehindAppBar: true,
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
-                    title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          smallPill(userRoleText(userRole)),
-                          profileDropdown(context, profile, userRole, ref),
-                        ]),
+                    title: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1000),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              smallPill(userRoleText(userRole)),
+                              profileDropdown(context, profile, userRole, ref),
+                            ])),
                     iconTheme: const IconThemeData(
                       color: Colors.white, //change your color here
                     ),
@@ -70,131 +72,151 @@ class HomeScreen extends ConsumerWidget {
                           top: kToolbarHeight + 60,
                           left: 0,
                           right: 0,
-                          child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 25, vertical: 5),
-                                    child: Text(
-                                      "Hello, ${profile.firstName}!",
-                                      style: const TextStyle(
-                                        fontFamily: AppFonts.gabarito,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 36,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      child: Center(
-                                          child: _menu(userRole, context)))
-                                ],
-                              ))),
+                          child: Center(
+                            child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 1000),
+                                child: Container(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25, vertical: 5),
+                                          child: Text(
+                                            "Hello, ${profile.firstName}!",
+                                            style: const TextStyle(
+                                              fontFamily: AppFonts.gabarito,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              fontSize: 36,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.2,
+                                            child: Center(
+                                                child:
+                                                    _menu(userRole, context)))
+                                      ],
+                                    ))),
+                          )),
                       Positioned(
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: SizedBox(
+                          child: Center(
+                              child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.4,
                             child: SingleChildScrollView(
                               child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 30),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(30),
-                                      topRight: Radius.circular(30),
-                                    ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 30),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30),
+                                    topRight: Radius.circular(30),
                                   ),
-                                  child: Column(
-                                    children: [
-                                      const Text("Latest Notifications",
-                                          style: TextStyle(
-                                            color: AppColours.darkBlue,
-                                            fontFamily: AppFonts.gabarito,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 30,
-                                          )),
-                                      const SizedBox(height: 20),
-                                      FutureBuilder(
-                                          future: getNotifications(
-                                              teamId: ref.read(teamIdProvider),
-                                              userType: userRoleText(ref
-                                                      .read(userRoleProvider))
-                                                  .toLowerCase()),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return CircularProgressIndicator();
-                                            } else if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
-                                            } else if (snapshot.hasData) {
-                                              List<NotificationData>
-                                                  notifications =
-                                                  snapshot.data!;
-                                              return Column(
-                                                  children: notifications
-                                                          .isNotEmpty
-                                                      ? notifications
-                                                          .where((notification) =>
-                                                              notification.date
-                                                                  .isBefore(DateTime
-                                                                      .now()) ||
-                                                              notification.date
-                                                                  .isAtSameMomentAs(
-                                                                      DateTime
-                                                                          .now()))
-                                                          .map((notification) {
-                                                          return announcementBox(
-                                                            icon:
-                                                                notificationTypeToIcon(
-                                                                    notification
-                                                                        .type),
-                                                            iconColor: notification
-                                                                        .type ==
-                                                                    NotificationType
-                                                                        .event
-                                                                ? AppColours
-                                                                    .darkBlue
-                                                                : AppColours
-                                                                    .red,
-                                                            title: notification
-                                                                .title,
-                                                            description:
-                                                                notification
-                                                                    .desc,
-                                                            date: notification
-                                                                .date
-                                                                .toIso8601String(),
-                                                          );
-                                                        }).toList()
-                                                      : [
-                                                          emptySection(
-                                                              Icons
-                                                                  .notifications_off,
-                                                              "No notifications yet")
-                                                        ]);
-                                            } else {
-                                              return emptySection(
-                                                  Icons.notifications_off,
-                                                  "No notifications yet");
-                                            }
-                                          }),
-                                    ],
-                                  )),
+                                ),
+                                child: ConstrainedBox(
+                                    constraints:
+                                        const BoxConstraints(maxWidth: 1000),
+                                    child: Column(
+                                      children: [
+                                        const Text("Latest Notifications",
+                                            style: TextStyle(
+                                              color: AppColours.darkBlue,
+                                              fontFamily: AppFonts.gabarito,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 30,
+                                            )),
+                                        const SizedBox(height: 20),
+                                        FutureBuilder(
+                                            future: getNotifications(
+                                                teamId:
+                                                    ref.read(teamIdProvider),
+                                                userType: userRoleText(ref
+                                                        .read(userRoleProvider))
+                                                    .toLowerCase()),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text(
+                                                    'Error: ${snapshot.error}');
+                                              } else if (snapshot.hasData) {
+                                                List<NotificationData>
+                                                    notifications =
+                                                    snapshot.data!;
+                                                return Center(
+                                                    child: ConstrainedBox(
+                                                        constraints:
+                                                            const BoxConstraints(
+                                                                maxWidth: 800),
+                                                        child: Column(
+                                                            children: notifications
+                                                                    .isNotEmpty
+                                                                ? notifications
+                                                                    .where((notification) =>
+                                                                        notification
+                                                                            .date
+                                                                            .isBefore(DateTime
+                                                                                .now()) ||
+                                                                        notification
+                                                                            .date
+                                                                            .isAtSameMomentAs(DateTime
+                                                                                .now()))
+                                                                    .map(
+                                                                        (notification) {
+                                                                    return announcementBox(
+                                                                      icon: notificationTypeToIcon(
+                                                                          notification
+                                                                              .type),
+                                                                      iconColor: notification.type ==
+                                                                              NotificationType
+                                                                                  .event
+                                                                          ? AppColours
+                                                                              .darkBlue
+                                                                          : AppColours
+                                                                              .red,
+                                                                      title: notification
+                                                                          .title,
+                                                                      description:
+                                                                          notification
+                                                                              .desc,
+                                                                      date: notification
+                                                                          .date
+                                                                          .toIso8601String(),
+                                                                    );
+                                                                  }).toList()
+                                                                : [
+                                                                    emptySection(
+                                                                        Icons
+                                                                            .notifications_off,
+                                                                        "No notifications yet")
+                                                                  ])));
+                                              } else {
+                                                return emptySection(
+                                                    Icons.notifications_off,
+                                                    "No notifications yet");
+                                              }
+                                            }),
+                                      ],
+                                    )),
+                              ),
                             ),
-                          ))
+                          )))
                     ],
                   ),
                   bottomNavigationBar:

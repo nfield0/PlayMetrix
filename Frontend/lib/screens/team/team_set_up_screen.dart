@@ -50,6 +50,9 @@ class TeamSetUpScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
+            child: Center(
+                child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
           child: Form(
               child: Container(
             padding: EdgeInsets.all(35),
@@ -174,6 +177,6 @@ class TeamSetUpScreen extends ConsumerWidget {
               ],
             ),
           )),
-        ));
+        ))));
   }
 }

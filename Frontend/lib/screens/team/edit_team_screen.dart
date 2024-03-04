@@ -70,17 +70,13 @@ class EditTeamScreenState extends State<EditTeamScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title:
-              const Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Text(
-              "Team Profile",
+          title: const Text("Edit Team",
               style: TextStyle(
                 color: AppColours.darkBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ]),
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w700,
+              )),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -88,6 +84,9 @@ class EditTeamScreenState extends State<EditTeamScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
+            child: Center(
+                child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
           child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.always,
@@ -96,19 +95,7 @@ class EditTeamScreenState extends State<EditTeamScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Edit Team',
-                        style: TextStyle(
-                          color: AppColours.darkBlue,
-                          fontFamily: AppFonts.gabarito,
-                          fontSize: 36.0,
-                          fontWeight: FontWeight.w700,
-                        )),
-                    const Divider(
-                      color: AppColours.darkBlue,
-                      thickness: 1.0, // Set the thickness of the line
-                      height: 40.0, // Set the height of the line
-                    ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Center(
                         child: Column(children: [
                       _teamLogo.isNotEmpty
@@ -190,6 +177,6 @@ class EditTeamScreenState extends State<EditTeamScreen> {
                   ],
                 ),
               )),
-        ));
+        ))));
   }
 }

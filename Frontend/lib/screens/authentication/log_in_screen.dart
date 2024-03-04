@@ -56,7 +56,7 @@ class LogInScreen extends ConsumerWidget {
         body: SingleChildScrollView(
             child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 650),
+            constraints: const BoxConstraints(maxWidth: 800),
             child: Form(
               key: _formKey,
               autovalidateMode:

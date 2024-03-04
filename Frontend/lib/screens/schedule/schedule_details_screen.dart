@@ -96,191 +96,197 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                     backgroundColor: Colors.transparent,
                   ),
                   body: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 35),
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            sch.subject,
-                            style: const TextStyle(
-                              fontFamily: AppFonts.gabarito,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 26,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            DateFormat('EEEE, d MMMM y').format(
-                              sch.startTime,
-                            ),
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            '${DateFormat('jm').format(sch.startTime)} to ${DateFormat('jm').format(sch.endTime)}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          // Location?
-                          Text(
-                            sch.location ?? "",
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 35),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 800),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (widget.userRole == UserRole.manager ||
-                                  widget.userRole == UserRole.coach)
-                                underlineButtonTransparent(
-                                    scheduleType == ScheduleType.match
-                                        ? "Match lineup"
-                                        : "Players attending", () {
-                                  if (scheduleType == ScheduleType.match) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MatchLineUpScreen(
-                                                userRole: widget.userRole,
-                                                teamId: widget.teamId,
-                                                schedule: sch,
-                                              )),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PlayersAttendingScreen(
-                                                scheduleId: widget.scheduleId,
-                                                teamId: widget.teamId,
-                                              )),
-                                    );
-                                  }
-                                })
-                            ],
-                          ),
-                          if (widget.userRole == UserRole.player)
-                            const Text(
-                              "Attending?",
-                              style: TextStyle(
-                                fontFamily: AppFonts.gabarito,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                              ),
-                            ),
-                          if (widget.userRole == UserRole.player)
-                            const SizedBox(height: 15),
-                          if (widget.userRole == UserRole.player)
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Wrap(
-                                children: [
-                                  if (playerAttendingStatus ==
-                                      PlayerAttendingStatus.present)
-                                    smallButtonBlue(Icons.check, "Yes", () {}),
-                                  if (playerAttendingStatus !=
-                                      PlayerAttendingStatus.present)
-                                    smallButton(Icons.check, "Yes", () {
-                                      setState(() {
-                                        playerAttendingStatus =
-                                            PlayerAttendingStatus.present;
-                                      });
-                                      updatePlayerAttendingStatus(
-                                        widget.userId,
-                                        widget.scheduleId,
-                                        PlayerAttendingStatus.present,
-                                      );
-                                    }),
-                                  const SizedBox(width: 10),
-                                  if (playerAttendingStatus ==
-                                      PlayerAttendingStatus.absent)
-                                    smallButtonBlue(Icons.close, "No", () {}),
-                                  if (playerAttendingStatus !=
-                                      PlayerAttendingStatus.absent)
-                                    smallButton(Icons.close, "No", () {
-                                      setState(() {
-                                        playerAttendingStatus =
-                                            PlayerAttendingStatus.absent;
-                                      });
-                                      updatePlayerAttendingStatus(
-                                        widget.userId,
-                                        widget.scheduleId,
-                                        PlayerAttendingStatus.absent,
-                                      );
-                                    }),
-                                  const SizedBox(width: 10),
-                                  if (playerAttendingStatus ==
-                                      PlayerAttendingStatus.undecided)
-                                    smallButtonBlue(
-                                        Icons.question_mark, "Unknown", () {}),
-                                  if (playerAttendingStatus !=
-                                      PlayerAttendingStatus.undecided)
-                                    smallButton(Icons.question_mark, "Unknown",
-                                        () {
-                                      setState(() {
-                                        playerAttendingStatus =
-                                            PlayerAttendingStatus.undecided;
-                                      });
-                                      updatePlayerAttendingStatus(
-                                        widget.userId,
-                                        widget.scheduleId,
-                                        PlayerAttendingStatus.undecided,
-                                      );
-                                    }),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(height: 15),
-                          greyDivider(),
-                          SizedBox(
-                            height: 160,
-                            child: SfCalendar(
-                              view: CalendarView.schedule,
-                              dataSource: dataSource,
-                              minDate: sch.startTime,
-                              maxDate:
-                                  sch.startTime.add(const Duration(days: 1)),
-                              scheduleViewSettings: const ScheduleViewSettings(
-                                appointmentItemHeight: 70,
-                                hideEmptyScheduleWeek: true,
-                                monthHeaderSettings: MonthHeaderSettings(
-                                  height: 0,
+                              Text(
+                                sch.subject,
+                                style: const TextStyle(
+                                  fontFamily: AppFonts.gabarito,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 26,
                                 ),
                               ),
-                            ),
+                              const SizedBox(height: 10),
+                              Text(
+                                DateFormat('EEEE, d MMMM y').format(
+                                  sch.startTime,
+                                ),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                '${DateFormat('jm').format(sch.startTime)} to ${DateFormat('jm').format(sch.endTime)}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              // Location?
+                              Text(
+                                sch.location ?? "",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (widget.userRole == UserRole.manager ||
+                                      widget.userRole == UserRole.coach)
+                                    underlineButtonTransparent(
+                                        scheduleType == ScheduleType.match
+                                            ? "Match lineup"
+                                            : "Players attending", () {
+                                      if (scheduleType == ScheduleType.match) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MatchLineUpScreen(
+                                                    userRole: widget.userRole,
+                                                    teamId: widget.teamId,
+                                                    schedule: sch,
+                                                  )),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PlayersAttendingScreen(
+                                                    scheduleId:
+                                                        widget.scheduleId,
+                                                    teamId: widget.teamId,
+                                                  )),
+                                        );
+                                      }
+                                    })
+                                ],
+                              ),
+                              if (widget.userRole == UserRole.player)
+                                const Text(
+                                  "Attending?",
+                                  style: TextStyle(
+                                    fontFamily: AppFonts.gabarito,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              if (widget.userRole == UserRole.player)
+                                const SizedBox(height: 15),
+                              if (widget.userRole == UserRole.player)
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Wrap(
+                                    children: [
+                                      if (playerAttendingStatus ==
+                                          PlayerAttendingStatus.present)
+                                        smallButtonBlue(
+                                            Icons.check, "Yes", () {}),
+                                      if (playerAttendingStatus !=
+                                          PlayerAttendingStatus.present)
+                                        smallButton(Icons.check, "Yes", () {
+                                          setState(() {
+                                            playerAttendingStatus =
+                                                PlayerAttendingStatus.present;
+                                          });
+                                          updatePlayerAttendingStatus(
+                                            widget.userId,
+                                            widget.scheduleId,
+                                            PlayerAttendingStatus.present,
+                                          );
+                                        }),
+                                      const SizedBox(width: 10),
+                                      if (playerAttendingStatus ==
+                                          PlayerAttendingStatus.absent)
+                                        smallButtonBlue(
+                                            Icons.close, "No", () {}),
+                                      if (playerAttendingStatus !=
+                                          PlayerAttendingStatus.absent)
+                                        smallButton(Icons.close, "No", () {
+                                          setState(() {
+                                            playerAttendingStatus =
+                                                PlayerAttendingStatus.absent;
+                                          });
+                                          updatePlayerAttendingStatus(
+                                            widget.userId,
+                                            widget.scheduleId,
+                                            PlayerAttendingStatus.absent,
+                                          );
+                                        }),
+                                      const SizedBox(width: 10),
+                                      if (playerAttendingStatus ==
+                                          PlayerAttendingStatus.undecided)
+                                        smallButtonBlue(Icons.question_mark,
+                                            "Unknown", () {}),
+                                      if (playerAttendingStatus !=
+                                          PlayerAttendingStatus.undecided)
+                                        smallButton(
+                                            Icons.question_mark, "Unknown", () {
+                                          setState(() {
+                                            playerAttendingStatus =
+                                                PlayerAttendingStatus.undecided;
+                                          });
+                                          updatePlayerAttendingStatus(
+                                            widget.userId,
+                                            widget.scheduleId,
+                                            PlayerAttendingStatus.undecided,
+                                          );
+                                        }),
+                                    ],
+                                  ),
+                                ),
+                              const SizedBox(height: 15),
+                              greyDivider(),
+                              SizedBox(
+                                height: 160,
+                                child: SfCalendar(
+                                  view: CalendarView.schedule,
+                                  dataSource: dataSource,
+                                  minDate: sch.startTime,
+                                  maxDate: sch.startTime
+                                      .add(const Duration(days: 1)),
+                                  scheduleViewSettings:
+                                      const ScheduleViewSettings(
+                                    appointmentItemHeight: 70,
+                                    hideEmptyScheduleWeek: true,
+                                    monthHeaderSettings: MonthHeaderSettings(
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              greyDivider(),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 15, left: 10, right: 10, bottom: 5),
+                                child: detailBoldTitle("Alert", sch.notes!),
+                              ),
+                              divider(),
+                              const SizedBox(height: 15),
+                              _announcementsSection(
+                                  context,
+                                  widget.userRole,
+                                  widget.scheduleId,
+                                  widget.userId,
+                                  announcements,
+                                  widget.teamId),
+                            ],
                           ),
-                          greyDivider(),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 15, left: 10, right: 10, bottom: 5),
-                            child: detailBoldTitle("Alert", sch.notes!),
-                          ),
-                          divider(),
-                          const SizedBox(height: 15),
-                          _announcementsSection(
-                              context,
-                              widget.userRole,
-                              widget.scheduleId,
-                              widget.userId,
-                              announcements,
-                              widget.teamId),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
+                      )),
                   bottomNavigationBar:
                       roleBasedBottomNavBar(widget.userRole, context, 3));
             }

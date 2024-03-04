@@ -128,189 +128,219 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.all(35),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Form(
-                        key: _formKey,
-                        autovalidateMode: AutovalidateMode.always,
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                        padding: const EdgeInsets.all(35),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                  child: Column(children: [
-                                playerImage.isNotEmpty
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(75),
-                                        child: Image.memory(
-                                          playerImage,
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
+                              Form(
+                                key: _formKey,
+                                autovalidateMode: AutovalidateMode.always,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                          child: Column(children: [
+                                        playerImage.isNotEmpty
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(75),
+                                                child: Image.memory(
+                                                  playerImage,
+                                                  width: 120,
+                                                  height: 120,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : Image.asset(
+                                                "lib/assets/icons/profile_placeholder.png",
+                                                width: 120,
+                                              ),
+                                        const SizedBox(height: 15),
+                                        Text(playerName,
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontFamily: AppFonts.gabarito,
+                                                fontWeight: FontWeight.bold)),
+                                      ])),
+                                      const SizedBox(height: 10),
+                                      Center(
+                                        child: DropdownSearch<Injury>(
+                                          popupProps: const PopupProps.menu(
+                                              searchDelay:
+                                                  Duration(milliseconds: 0),
+                                              searchFieldProps: TextFieldProps(
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                          "Search for injury",
+                                                      labelStyle: TextStyle(
+                                                          fontSize: 16,
+                                                          fontFamily:
+                                                              AppFonts.gabarito,
+                                                          color:
+                                                              Colors.black45),
+                                                      icon: Icon(Icons.search)),
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontFamily:
+                                                          AppFonts.gabarito)),
+                                              showSearchBox: true),
+                                          items: injuries,
+                                          itemAsString: (Injury i) =>
+                                              i.nameAndGrade,
+                                          dropdownDecoratorProps:
+                                              const DropDownDecoratorProps(
+                                            dropdownSearchDecoration:
+                                                InputDecoration(
+                                                    icon: Icon(
+                                                      Icons.healing,
+                                                    ),
+                                                    labelText: "Choose Injury"),
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedInjury =
+                                                  value; // Assuming selectedInjury is of type dynamic
+                                            });
+                                          },
+                                          selectedItem: selectedInjury,
                                         ),
-                                      )
-                                    : Image.asset(
-                                        "lib/assets/icons/profile_placeholder.png",
-                                        width: 120,
                                       ),
-                                const SizedBox(height: 15),
-                                Text(playerName,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontFamily: AppFonts.gabarito,
-                                        fontWeight: FontWeight.bold)),
-                              ])),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: DropdownSearch<Injury>(
-                                  popupProps: const PopupProps.menu(
-                                      searchDelay: Duration(milliseconds: 0),
-                                      searchFieldProps: TextFieldProps(
-                                          decoration: InputDecoration(
-                                              labelText: "Search for injury",
-                                              labelStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: AppFonts.gabarito,
-                                                  color: Colors.black45),
-                                              icon: Icon(Icons.search)),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: AppFonts.gabarito)),
-                                      showSearchBox: true),
-                                  items: injuries,
-                                  itemAsString: (Injury i) => i.nameAndGrade,
-                                  dropdownDecoratorProps:
-                                      const DropDownDecoratorProps(
-                                    dropdownSearchDecoration: InputDecoration(
-                                        icon: Icon(
-                                          Icons.healing,
-                                        ),
-                                        labelText: "Choose Injury"),
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedInjury =
-                                          value; // Assuming selectedInjury is of type dynamic
-                                    });
-                                  },
-                                  selectedItem: selectedInjury,
-                                ),
-                              ),
-                              const SizedBox(height: 25),
-                              if (selectedInjury != null)
-                                injuryDetails(selectedInjury!),
-                              greyDivider(),
-                              const SizedBox(height: 7),
-                              datePickerNoDivider(context, "Date of injury",
-                                  selectedDateOfInjury, (date) {
-                                setState(() {
-                                  selectedDateOfInjury = date;
-                                });
-                              }),
-                              const SizedBox(height: 5),
-                              datePickerNoDivider(context, "Date of recovery",
-                                  selectedDateOfRecovery, (date) {
-                                setState(() {
-                                  selectedDateOfRecovery = date;
-                                });
-                              }),
-                              const SizedBox(height: 15),
-                              injuryReportFile != null
-                                  ? Column(children: [
-                                      filePill(
-                                          injuryReportFile!.name,
-                                          formatBytes(injuryReportFile!.size),
-                                          Icons.file_open,
-                                          () {}),
-                                      const SizedBox(height: 15),
-                                      underlineButtonTransparentRedGabarito(
-                                          "Remove injury report", () {
+                                      const SizedBox(height: 25),
+                                      if (selectedInjury != null)
+                                        injuryDetails(selectedInjury!),
+                                      greyDivider(),
+                                      const SizedBox(height: 7),
+                                      datePickerNoDivider(
+                                          context,
+                                          "Date of injury",
+                                          selectedDateOfInjury, (date) {
                                         setState(() {
-                                          injuryReportFile = null;
+                                          selectedDateOfInjury = date;
                                         });
-                                      })
-                                    ])
-                                  : Center(
-                                      child: underlineButtonTransparent(
-                                          "Upload injury report", () {
-                                        pickInjuryReportPdf();
                                       }),
-                                    ),
-                              const SizedBox(height: 25),
-                              bigButton("Add Injury", () {
-                                if (_formKey.currentState!.validate()) {
-                                  bool isSameDay = selectedDateOfInjury.year ==
-                                          selectedDateOfInjury.year &&
-                                      selectedDateOfInjury.month ==
-                                          selectedDateOfInjury.month &&
-                                      selectedDateOfInjury.day ==
-                                          selectedDateOfInjury.day;
-                                  if (selectedDateOfInjury
-                                          .isAfter(DateTime.now()) ||
-                                      isSameDay) {
-                                    addNotification(
-                                        title:
-                                            "$playerName has been injured: ${injuryTypeController.text}",
-                                        desc:
-                                            "Injury location: ${injuryLocationController.text}\n"
-                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
-                                        date: DateTime.now(),
-                                        teamId: widget.teamId,
-                                        recieverUserRole: UserRole.manager,
-                                        type: NotificationType.injury);
+                                      const SizedBox(height: 5),
+                                      datePickerNoDivider(
+                                          context,
+                                          "Date of recovery",
+                                          selectedDateOfRecovery, (date) {
+                                        setState(() {
+                                          selectedDateOfRecovery = date;
+                                        });
+                                      }),
+                                      const SizedBox(height: 15),
+                                      injuryReportFile != null
+                                          ? Column(children: [
+                                              filePill(
+                                                  injuryReportFile!.name,
+                                                  formatBytes(
+                                                      injuryReportFile!.size),
+                                                  Icons.file_open,
+                                                  () {}),
+                                              const SizedBox(height: 15),
+                                              underlineButtonTransparentRedGabarito(
+                                                  "Remove injury report", () {
+                                                setState(() {
+                                                  injuryReportFile = null;
+                                                });
+                                              })
+                                            ])
+                                          : Center(
+                                              child: underlineButtonTransparent(
+                                                  "Upload injury report", () {
+                                                pickInjuryReportPdf();
+                                              }),
+                                            ),
+                                      const SizedBox(height: 25),
+                                      bigButton("Add Injury", () {
+                                        if (_formKey.currentState!.validate()) {
+                                          bool isSameDay = selectedDateOfInjury
+                                                      .year ==
+                                                  selectedDateOfInjury.year &&
+                                              selectedDateOfInjury.month ==
+                                                  selectedDateOfInjury.month &&
+                                              selectedDateOfInjury.day ==
+                                                  selectedDateOfInjury.day;
+                                          if (selectedDateOfInjury
+                                                  .isAfter(DateTime.now()) ||
+                                              isSameDay) {
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                desc:
+                                                    "Injury location: ${injuryLocationController.text}\n"
+                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.manager,
+                                                type: NotificationType.injury);
 
-                                    addNotification(
-                                        title:
-                                            "$playerName has been injured: ${injuryTypeController.text}",
-                                        desc:
-                                            "Injury location: ${injuryLocationController.text}\n"
-                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
-                                        date: DateTime.now(),
-                                        teamId: widget.teamId,
-                                        recieverUserRole: UserRole.coach,
-                                        type: NotificationType.injury);
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                desc:
+                                                    "Injury location: ${injuryLocationController.text}\n"
+                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.coach,
+                                                type: NotificationType.injury);
 
-                                    addNotification(
-                                        title:
-                                            "$playerName has been injured: ${injuryTypeController.text}",
-                                        desc:
-                                            "Injury location: ${injuryLocationController.text}\n"
-                                            "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
-                                        date: DateTime.now(),
-                                        teamId: widget.teamId,
-                                        recieverUserRole: UserRole.player,
-                                        type: NotificationType.injury);
-                                  }
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                desc:
+                                                    "Injury location: ${injuryLocationController.text}\n"
+                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.player,
+                                                type: NotificationType.injury);
+                                          }
 
-                                  addInjury(
-                                      playerId: widget.playerId,
-                                      physioId: widget.physioId,
-                                      injuryType: injuryTypeController.text,
-                                      injuryLocation:
-                                          injuryLocationController.text,
-                                      expectedRecoveryTime:
-                                          expectedRecoveryTimeController.text,
-                                      recoveryMethod:
-                                          recoveryMethodController.text,
-                                      dateOfInjury: selectedDateOfInjury,
-                                      dateOfRecovery: selectedDateOfRecovery,
-                                      injuryReport: injuryReportFile!.bytes);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditPlayerProfileScreen(
-                                                  physioId: widget.physioId,
-                                                  playerId: widget.playerId,
-                                                  userRole: widget.userRole,
-                                                  teamId: widget.teamId)));
-                                }
-                              })
-                            ]),
-                      )
-                    ]))),
+                                          addInjury(
+                                              playerId: widget.playerId,
+                                              physioId: widget.physioId,
+                                              injuryType:
+                                                  injuryTypeController.text,
+                                              injuryLocation:
+                                                  injuryLocationController.text,
+                                              expectedRecoveryTime:
+                                                  expectedRecoveryTimeController
+                                                      .text,
+                                              recoveryMethod:
+                                                  recoveryMethodController.text,
+                                              dateOfInjury:
+                                                  selectedDateOfInjury,
+                                              dateOfRecovery:
+                                                  selectedDateOfRecovery,
+                                              injuryReport:
+                                                  injuryReportFile!.bytes);
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditPlayerProfileScreen(
+                                                          physioId:
+                                                              widget.physioId,
+                                                          playerId:
+                                                              widget.playerId,
+                                                          userRole:
+                                                              widget.userRole,
+                                                          teamId:
+                                                              widget.teamId)));
+                                        }
+                                      })
+                                    ]),
+                              )
+                            ]))))),
         bottomNavigationBar: physioBottomNavBar(context, 0));
   }
 }

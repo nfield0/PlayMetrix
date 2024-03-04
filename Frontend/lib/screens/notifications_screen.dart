@@ -32,55 +32,68 @@ class NotificationsScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Container(
-          padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            FutureBuilder(
-                future: getNotifications(
-                    teamId: ref.read(teamIdProvider),
-                    userType:
-                        userRoleText(ref.read(userRoleProvider)).toLowerCase()),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    List<NotificationData> notifications = snapshot.data!;
-                    return Column(
-                        children: notifications.isNotEmpty
-                            ? notifications
-                                .where((notification) =>
-                                    notification.date
-                                        .isBefore(DateTime.now()) ||
-                                    notification.date
-                                        .isAtSameMomentAs(DateTime.now()))
-                                .map((notification) {
-                                return announcementBox(
-                                  icon:
-                                      notificationTypeToIcon(notification.type),
-                                  iconColor: notification.type ==
-                                          NotificationType.event
-                                      ? AppColours.darkBlue
-                                      : AppColours.red,
-                                  title: notification.title,
-                                  description: notification.desc,
-                                  date: notification.date.toIso8601String(),
-                                );
-                              }).toList()
-                            : [
-                                emptySection(Icons.notifications_off,
-                                    "No notifications yet")
-                              ]);
-                  } else {
-                    return emptySection(
-                        Icons.notifications_off, "No notifications yet");
-                  }
-                }),
-            const SizedBox(height: 20),
-          ]),
-        )),
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                      padding:
+                          const EdgeInsets.only(top: 20, right: 35, left: 35),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FutureBuilder(
+                                future: getNotifications(
+                                    teamId: ref.read(teamIdProvider),
+                                    userType:
+                                        userRoleText(ref.read(userRoleProvider))
+                                            .toLowerCase()),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    List<NotificationData> notifications =
+                                        snapshot.data!;
+                                    return Column(
+                                        children: notifications.isNotEmpty
+                                            ? notifications
+                                                .where((notification) =>
+                                                    notification.date.isBefore(
+                                                        DateTime.now()) ||
+                                                    notification.date
+                                                        .isAtSameMomentAs(
+                                                            DateTime.now()))
+                                                .map((notification) {
+                                                return announcementBox(
+                                                  icon: notificationTypeToIcon(
+                                                      notification.type),
+                                                  iconColor: notification
+                                                              .type ==
+                                                          NotificationType.event
+                                                      ? AppColours.darkBlue
+                                                      : AppColours.red,
+                                                  title: notification.title,
+                                                  description:
+                                                      notification.desc,
+                                                  date: notification.date
+                                                      .toIso8601String(),
+                                                );
+                                              }).toList()
+                                            : [
+                                                emptySection(
+                                                    Icons.notifications_off,
+                                                    "No notifications yet")
+                                              ]);
+                                  } else {
+                                    return emptySection(Icons.notifications_off,
+                                        "No notifications yet");
+                                  }
+                                }),
+                            const SizedBox(height: 20),
+                          ]),
+                    )))),
         bottomNavigationBar: roleBasedBottomNavBar(
           userRole,
           context,

@@ -164,230 +164,288 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.only(bottom: 35, left: 35, right: 35),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Form(
-                        key: _formKey,
-                        autovalidateMode: AutovalidateMode.always,
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                        padding: const EdgeInsets.only(
+                            bottom: 35, left: 35, right: 35),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (widget.userRole == UserRole.manager ||
-                                  widget.userRole == UserRole.physio)
-                                Center(
-                                  child: availabilityDropdown(
-                                      _selectedAvailability, availability,
-                                      (value) {
-                                    setState(() {
-                                      _selectedAvailability = value!;
-                                    });
-                                  }),
-                                ),
-                              const SizedBox(height: 20),
-                              Center(
-                                  child: Column(children: [
-                                _profilePicture.isNotEmpty
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(75),
-                                        child: Image.memory(
-                                          _profilePicture,
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Form(
+                                key: _formKey,
+                                autovalidateMode: AutovalidateMode.always,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (widget.userRole == UserRole.manager ||
+                                          widget.userRole == UserRole.physio)
+                                        Center(
+                                          child: availabilityDropdown(
+                                              _selectedAvailability,
+                                              availability, (value) {
+                                            setState(() {
+                                              _selectedAvailability = value!;
+                                            });
+                                          }),
                                         ),
-                                      )
-                                    : Image.asset(
-                                        "lib/assets/icons/profile_placeholder.png",
-                                        width: 120,
-                                      ),
-                                const SizedBox(height: 10),
-                                if (widget.userRole == UserRole.player)
-                                  underlineButtonTransparent("Edit picture",
-                                      () {
-                                    pickImage();
-                                  }),
-                                if (widget.userRole != UserRole.player)
-                                  const SizedBox(height: 15),
-                                if (widget.userRole != UserRole.player)
-                                  Text(playerName,
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontFamily: AppFonts.gabarito,
-                                          fontWeight: FontWeight.bold)),
-                                if (widget.userRole != UserRole.player)
-                                  const SizedBox(height: 15),
-                              ])),
-                              if (widget.userRole == UserRole.player)
-                                formFieldBottomBorderController(
-                                    "First Name", _firstNameController,
-                                    (value) {
-                                  return (value != null &&
-                                          !nameRegex.hasMatch(value))
-                                      ? 'Invalid first name.'
-                                      : null;
-                                }, context),
-                              if (widget.userRole == UserRole.player)
-                                formFieldBottomBorderController(
-                                    "Surname", _surnameController, (value) {
-                                  return (value != null &&
-                                          !nameRegex.hasMatch(value))
-                                      ? 'Invalid surname.'
-                                      : null;
-                                }, context),
-                              if (widget.userRole == UserRole.player)
-                                formFieldBottomBorderController(
-                                    "Phone", _contactNumberController, (value) {
-                                  return (value != null &&
-                                          !phoneRegex.hasMatch(value))
-                                      ? 'Invalid phone number.'
-                                      : null;
-                                }, context),
-                              if (widget.userRole == UserRole.manager)
-                                formFieldBottomBorderController(
-                                    "Number", _numberController, (value) {
-                                  if (value != null &&
-                                      RegExp(r'^\d+$').hasMatch(value)) {
-                                    int numericValue = int.tryParse(value) ?? 0;
+                                      const SizedBox(height: 20),
+                                      Center(
+                                          child: Column(children: [
+                                        _profilePicture.isNotEmpty
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(75),
+                                                child: Image.memory(
+                                                  _profilePicture,
+                                                  width: 120,
+                                                  height: 120,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : Image.asset(
+                                                "lib/assets/icons/profile_placeholder.png",
+                                                width: 120,
+                                              ),
+                                        const SizedBox(height: 10),
+                                        if (widget.userRole == UserRole.player)
+                                          underlineButtonTransparent(
+                                              "Edit picture", () {
+                                            pickImage();
+                                          }),
+                                        if (widget.userRole != UserRole.player)
+                                          const SizedBox(height: 15),
+                                        if (widget.userRole != UserRole.player)
+                                          Text(playerName,
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontFamily: AppFonts.gabarito,
+                                                  fontWeight: FontWeight.bold)),
+                                        if (widget.userRole != UserRole.player)
+                                          const SizedBox(height: 15),
+                                      ])),
+                                      if (widget.userRole == UserRole.player)
+                                        formFieldBottomBorderController(
+                                            "First Name", _firstNameController,
+                                            (value) {
+                                          return (value != null &&
+                                                  !nameRegex.hasMatch(value))
+                                              ? 'Invalid first name.'
+                                              : null;
+                                        }, context),
+                                      if (widget.userRole == UserRole.player)
+                                        formFieldBottomBorderController(
+                                            "Surname", _surnameController,
+                                            (value) {
+                                          return (value != null &&
+                                                  !nameRegex.hasMatch(value))
+                                              ? 'Invalid surname.'
+                                              : null;
+                                        }, context),
+                                      if (widget.userRole == UserRole.player)
+                                        formFieldBottomBorderController(
+                                            "Phone", _contactNumberController,
+                                            (value) {
+                                          return (value != null &&
+                                                  !phoneRegex.hasMatch(value))
+                                              ? 'Invalid phone number.'
+                                              : null;
+                                        }, context),
+                                      if (widget.userRole == UserRole.manager)
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const SizedBox(
+                                                width: 120,
+                                                child: Text(
+                                                  "Number",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                            const SizedBox(width: 30),
+                                            Container(
+                                              width: 115,
+                                              child: TextFormField(
+                                                controller: _numberController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  // labelText: 'Your Label',
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.grey),
+                                                  focusedBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey),
+                                                  ),
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey),
+                                                  ),
+                                                ),
+                                                validator: (value) {
+                                                  if (value != null &&
+                                                      RegExp(r'^\d+$')
+                                                          .hasMatch(value)) {
+                                                    int numericValue =
+                                                        int.tryParse(value) ??
+                                                            0;
 
-                                    if (numericValue > 0 &&
-                                        numericValue < 100) {
-                                      return null;
-                                    } else {
-                                      return "Enter a valid number from 1-99.";
-                                    }
-                                  }
+                                                    if (numericValue > 0 &&
+                                                        numericValue < 100) {
+                                                      return null;
+                                                    } else {
+                                                      return "Enter a valid number from 1-99.";
+                                                    }
+                                                  }
 
-                                  return "Enter a valid digit.";
-                                }, context),
-                              if (widget.userRole == UserRole.player)
-                                formFieldBottomBorderController(
-                                    "Height", _heightController, (value) {
-                                  return (value != null &&
-                                          !heightRegex.hasMatch(value))
-                                      ? 'Invalid height.'
-                                      : null;
-                                }, context),
-                              if (widget.userRole == UserRole.player)
-                                datePickerNoDivider(
-                                    context, "Date of birth", _selectedDob,
-                                    (value) {
-                                  setState(() {
-                                    _selectedDob = value;
-                                  });
-                                }),
-                              if (widget.userRole == UserRole.player)
-                                dropdownWithDivider("Gender", _selectedGender,
-                                    ["Male", "Female", "Others"], (value) {
-                                  setState(() {
-                                    _selectedGender = value!;
-                                  });
-                                }),
-                              const SizedBox(height: 10),
-                              if (widget.userRole == UserRole.manager)
-                                dropdownWithDivider(
-                                    "Position", _selectedPosition, [
-                                  teamRoleToText(TeamRole.defense),
-                                  teamRoleToText(TeamRole.attack),
-                                  teamRoleToText(TeamRole.midfield),
-                                  teamRoleToText(TeamRole.goalkeeper),
-                                ], (value) {
-                                  setState(() {
-                                    _selectedPosition = value!;
-                                  });
-                                }),
-                              const SizedBox(height: 10),
-                              if (widget.userRole == UserRole.manager)
-                                dropdownWithDivider(
-                                    "Lineup Status", _selectedLineupStatus, [
-                                  lineupStatusToText(LineupStatus.starter),
-                                  lineupStatusToText(LineupStatus.substitute),
-                                  lineupStatusToText(LineupStatus.reserve)
-                                ], (value) {
-                                  setState(() {
-                                    _selectedLineupStatus = value!;
-                                  });
-                                }),
-                              const SizedBox(height: 10),
-                              if (widget.userRole == UserRole.manager &&
-                                  _matchesPlayed != null &&
-                                  _matchesStarted != null &&
-                                  _matchesOffTheBench != null &&
-                                  _totalMinutesPlayed != null)
-                                Column(
-                                  children: [
-                                    const SizedBox(height: 10),
-                                    inputQuantity(
-                                        "Matches played", _matchesPlayed!,
-                                        (value) {
-                                      _matchesPlayed = value;
-                                    }),
-                                    const SizedBox(height: 35),
-                                    inputQuantity(
-                                        "Matches started", _matchesStarted!,
-                                        (value) {
-                                      _matchesStarted = value;
-                                    }),
-                                    const SizedBox(height: 35),
-                                    inputQuantity("Matches off the bench",
-                                        _matchesOffTheBench!, (value) {
-                                      _matchesOffTheBench = value;
-                                    }),
-                                    const SizedBox(height: 35),
-                                    inputQuantity("Total minutes played",
-                                        _totalMinutesPlayed!, (value) {
-                                      _totalMinutesPlayed = value;
-                                    }),
-                                  ],
-                                ),
-                              const SizedBox(height: 30),
-                              bigButton("Save Changes", () async {
-                                if (_formKey.currentState!.validate()) {
-                                  await editPlayerProfile(
-                                      widget.playerId,
-                                      _firstNameController.text,
-                                      _surnameController.text,
-                                      _contactNumberController.text,
-                                      _selectedDob,
-                                      _heightController.text,
-                                      _selectedGender,
-                                      _profilePicture);
+                                                  return "Enter a valid digit.";
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      if (widget.userRole == UserRole.player)
+                                        formFieldBottomBorderController(
+                                            "Height", _heightController,
+                                            (value) {
+                                          return (value != null &&
+                                                  !heightRegex.hasMatch(value))
+                                              ? 'Invalid height.'
+                                              : null;
+                                        }, context),
+                                      if (widget.userRole == UserRole.player)
+                                        datePickerNoDivider(
+                                            context,
+                                            "Date of birth",
+                                            _selectedDob, (value) {
+                                          setState(() {
+                                            _selectedDob = value;
+                                          });
+                                        }),
+                                      if (widget.userRole == UserRole.player)
+                                        dropdownWithDivider(
+                                            "Gender",
+                                            _selectedGender,
+                                            ["Male", "Female", "Others"],
+                                            (value) {
+                                          setState(() {
+                                            _selectedGender = value!;
+                                          });
+                                        }),
+                                      const SizedBox(height: 10),
+                                      if (widget.userRole == UserRole.manager)
+                                        dropdownWithDivider(
+                                            "Position", _selectedPosition, [
+                                          teamRoleToText(TeamRole.defense),
+                                          teamRoleToText(TeamRole.attack),
+                                          teamRoleToText(TeamRole.midfield),
+                                          teamRoleToText(TeamRole.goalkeeper),
+                                        ], (value) {
+                                          setState(() {
+                                            _selectedPosition = value!;
+                                          });
+                                        }),
+                                      const SizedBox(height: 10),
+                                      if (widget.userRole == UserRole.manager)
+                                        dropdownWithDivider("Lineup Status",
+                                            _selectedLineupStatus, [
+                                          lineupStatusToText(
+                                              LineupStatus.starter),
+                                          lineupStatusToText(
+                                              LineupStatus.substitute),
+                                          lineupStatusToText(
+                                              LineupStatus.reserve)
+                                        ], (value) {
+                                          setState(() {
+                                            _selectedLineupStatus = value!;
+                                          });
+                                        }),
+                                      const SizedBox(height: 10),
+                                      if (widget.userRole == UserRole.manager &&
+                                          _matchesPlayed != null &&
+                                          _matchesStarted != null &&
+                                          _matchesOffTheBench != null &&
+                                          _totalMinutesPlayed != null)
+                                        Column(
+                                          children: [
+                                            const SizedBox(height: 10),
+                                            inputQuantity("Matches played",
+                                                _matchesPlayed!, (value) {
+                                              _matchesPlayed = value;
+                                            }),
+                                            const SizedBox(height: 35),
+                                            inputQuantity("Matches started",
+                                                _matchesStarted!, (value) {
+                                              _matchesStarted = value;
+                                            }),
+                                            const SizedBox(height: 35),
+                                            inputQuantity(
+                                                "Matches off the bench",
+                                                _matchesOffTheBench!, (value) {
+                                              _matchesOffTheBench = value;
+                                            }),
+                                            const SizedBox(height: 35),
+                                            inputQuantity(
+                                                "Total minutes played",
+                                                _totalMinutesPlayed!, (value) {
+                                              _totalMinutesPlayed = value;
+                                            }),
+                                          ],
+                                        ),
+                                      const SizedBox(height: 30),
+                                      bigButton("Save Changes", () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          await editPlayerProfile(
+                                              widget.playerId,
+                                              _firstNameController.text,
+                                              _surnameController.text,
+                                              _contactNumberController.text,
+                                              _selectedDob,
+                                              _heightController.text,
+                                              _selectedGender,
+                                              _profilePicture);
 
-                                  if (widget.teamId != -1) {
-                                    await updateTeamPlayer(
-                                        widget.teamId,
-                                        widget.playerId,
-                                        int.parse(_numberController.text),
-                                        availabilityStatusText(
-                                            _selectedAvailability),
-                                        _selectedPosition,
-                                        _selectedLineupStatus);
-                                  }
+                                          if (widget.teamId != -1) {
+                                            await updateTeamPlayer(
+                                                widget.teamId,
+                                                widget.playerId,
+                                                int.parse(
+                                                    _numberController.text),
+                                                availabilityStatusText(
+                                                    _selectedAvailability),
+                                                _selectedPosition,
+                                                _selectedLineupStatus);
+                                          }
 
-                                  await updatePlayerStatistics(
-                                      widget.playerId,
-                                      _matchesPlayed!,
-                                      _matchesStarted!,
-                                      _matchesOffTheBench!,
-                                      _totalMinutesPlayed!);
+                                          await updatePlayerStatistics(
+                                              widget.playerId,
+                                              _matchesPlayed!,
+                                              _matchesStarted!,
+                                              _matchesOffTheBench!,
+                                              _totalMinutesPlayed!);
 
-                                  navigator.push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            widget.userRole == UserRole.manager
-                                                ? PlayersScreen()
-                                                : PlayerProfileScreen()),
-                                  );
-                                }
-                              })
-                            ]),
-                      )
-                    ]))),
+                                          navigator.push(
+                                            MaterialPageRoute(
+                                                builder: (context) => widget
+                                                            .userRole ==
+                                                        UserRole.manager
+                                                    ? PlayersScreen()
+                                                    : PlayerProfileScreen()),
+                                          );
+                                        }
+                                      })
+                                    ]),
+                              )
+                            ]))))),
         bottomNavigationBar:
             roleBasedBottomNavBar(widget.userRole, context, 2));
   }

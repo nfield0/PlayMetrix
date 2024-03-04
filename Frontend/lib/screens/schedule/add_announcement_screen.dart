@@ -37,7 +37,15 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Schedule"),
+          title: const Text(
+            "Add Announcement",
+            style: TextStyle(
+              fontFamily: AppFonts.gabarito,
+              color: AppColours.darkBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue,
           ),
@@ -45,90 +53,89 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-          child: Form(
-              key: formKey,
-              child: Container(
-                padding: const EdgeInsets.all(40.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Add Announcement',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      divider(),
-                      const SizedBox(height: 25),
-                      Container(
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(
-                              color: AppColours.darkBlue, width: 1.5),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(children: [
-                          formFieldBottomBorderNoTitle(
-                              "Title", "", true, titleController, (value) {
-                            return (value != null && value.isEmpty
-                                ? 'This field is required.'
-                                : null);
-                          }),
-                          formFieldBottomBorderNoTitle(
-                              "Details", "", false, detailsController, (value) {
-                            return (value != null && value.isEmpty
-                                ? 'This field is required.'
-                                : null);
-                          })
-                        ]),
-                      ),
-                      const SizedBox(height: 30),
-                      bigButton("Send Announcement", () async {
-                        if (formKey.currentState!.validate()) {
-                          String scheduleTitle =
-                              await getScheduleById(widget.scheduleId)
-                                  .then((value) => value.schedule_title);
+          child: Center(
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Form(
+                      key: formKey,
+                      child: Container(
+                        padding: const EdgeInsets.all(40.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  border: Border.all(
+                                      color: AppColours.darkBlue, width: 1.5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(children: [
+                                  formFieldBottomBorderNoTitle(
+                                      "Title", "", true, titleController,
+                                      (value) {
+                                    return (value != null && value.isEmpty
+                                        ? 'This field is required.'
+                                        : null);
+                                  }),
+                                  formFieldBottomBorderNoTitle(
+                                      "Details", "", false, detailsController,
+                                      (value) {
+                                    return (value != null && value.isEmpty
+                                        ? 'This field is required.'
+                                        : null);
+                                  })
+                                ]),
+                              ),
+                              const SizedBox(height: 30),
+                              bigButton("Send Announcement", () async {
+                                if (formKey.currentState!.validate()) {
+                                  String scheduleTitle = await getScheduleById(
+                                          widget.scheduleId)
+                                      .then((value) => value.schedule_title);
 
-                          addNotification(
-                              title: "$scheduleTitle: ${titleController.text}",
-                              desc: detailsController.text,
-                              date: DateTime.now(),
-                              teamId: widget.teamId,
-                              recieverUserRole:
-                                  widget.userRole == UserRole.manager
-                                      ? UserRole.coach
-                                      : UserRole.manager,
-                              type: NotificationType.event);
+                                  addNotification(
+                                      title:
+                                          "$scheduleTitle: ${titleController.text}",
+                                      desc: detailsController.text,
+                                      date: DateTime.now(),
+                                      teamId: widget.teamId,
+                                      recieverUserRole:
+                                          widget.userRole == UserRole.manager
+                                              ? UserRole.coach
+                                              : UserRole.manager,
+                                      type: NotificationType.event);
 
-                          addNotification(
-                              title: "$scheduleTitle: ${titleController.text}",
-                              desc: detailsController.text,
-                              date: DateTime.now(),
-                              teamId: widget.teamId,
-                              recieverUserRole: UserRole.physio,
-                              type: NotificationType.event);
+                                  addNotification(
+                                      title:
+                                          "$scheduleTitle: ${titleController.text}",
+                                      desc: detailsController.text,
+                                      date: DateTime.now(),
+                                      teamId: widget.teamId,
+                                      recieverUserRole: UserRole.physio,
+                                      type: NotificationType.event);
 
-                          addNotification(
-                              title: "$scheduleTitle: ${titleController.text}",
-                              desc: detailsController.text,
-                              date: DateTime.now(),
-                              teamId: widget.teamId,
-                              recieverUserRole: UserRole.player,
-                              type: NotificationType.event);
+                                  addNotification(
+                                      title:
+                                          "$scheduleTitle: ${titleController.text}",
+                                      desc: detailsController.text,
+                                      date: DateTime.now(),
+                                      teamId: widget.teamId,
+                                      recieverUserRole: UserRole.player,
+                                      type: NotificationType.event);
 
-                          addAnnouncement(
-                              title: titleController.text,
-                              details: detailsController.text,
-                              scheduleId: widget.scheduleId,
-                              posterId: widget.userId,
-                              posterType: widget.userRole);
-                          navigator.pop(true);
-                        }
-                      }),
-                    ]),
-              )),
+                                  addAnnouncement(
+                                      title: titleController.text,
+                                      details: detailsController.text,
+                                      scheduleId: widget.scheduleId,
+                                      posterId: widget.userId,
+                                      posterType: widget.userRole);
+                                  navigator.pop(true);
+                                }
+                              }),
+                            ]),
+                      )))),
         ),
         bottomNavigationBar:
             roleBasedBottomNavBar(widget.userRole, context, 3));

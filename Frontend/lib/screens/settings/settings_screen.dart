@@ -34,70 +34,80 @@ class SettingsScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      sectionHeader("Your account"),
-                      const SizedBox(height: 15),
-                      settingsRow("My profile", Icons.person, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfileScreen()),
-                        );
-                      }),
-                      settingsRow("Edit profile", Icons.edit, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditProfileScreen(
-                                  userId: ref.read(userIdProvider),
-                                  userRole: ref.read(userRoleProvider))),
-                        );
-                      }),
-                      settingsRow("Change password", Icons.key_outlined, () {}),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: greyDividerThick(),
-                      ),
-                      const SizedBox(height: 10),
-                      sectionHeader("Security"),
-                      const SizedBox(height: 15),
-                      settingsRow(
-                          "Two-factor authentication", Icons.lock, () {}),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: greyDividerThick(),
-                      ),
-                      const SizedBox(height: 10),
-                      sectionHeader("About PlayMetrix"),
-                      const SizedBox(height: 15),
-                      settingsRow("Online guidebook", Icons.book_online, () {}),
-                      settingsRow("Contact us", Icons.contacts, () {}),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: greyDividerThick(),
-                      ),
-                      InkWell(
-                          onTap: () {
-                            logOut(ref, context);
-                          },
-                          child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 25, vertical: 15),
-                              child: Row(children: [
-                                Text(
-                                  "Log out",
-                                  style: TextStyle(
-                                    color: AppColours.red,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )
-                              ]))),
-                    ]))),
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              sectionHeader("Your account"),
+                              const SizedBox(height: 15),
+                              settingsRow("My profile", Icons.person, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProfileScreen()),
+                                );
+                              }),
+                              settingsRow("Edit profile", Icons.edit, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfileScreen(
+                                          userId: ref.read(userIdProvider),
+                                          userRole:
+                                              ref.read(userRoleProvider))),
+                                );
+                              }),
+                              settingsRow(
+                                  "Change password", Icons.key_outlined, () {}),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: greyDividerThick(),
+                              ),
+                              const SizedBox(height: 10),
+                              sectionHeader("Security"),
+                              const SizedBox(height: 15),
+                              settingsRow("Two-factor authentication",
+                                  Icons.lock, () {}),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: greyDividerThick(),
+                              ),
+                              const SizedBox(height: 10),
+                              sectionHeader("About PlayMetrix"),
+                              const SizedBox(height: 15),
+                              settingsRow(
+                                  "Online guidebook", Icons.book_online, () {}),
+                              settingsRow("Contact us", Icons.contacts, () {}),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: greyDividerThick(),
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    logOut(ref, context);
+                                  },
+                                  child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 25, vertical: 15),
+                                      child: Row(children: [
+                                        Text(
+                                          "Log out",
+                                          style: TextStyle(
+                                            color: AppColours.red,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      ]))),
+                            ]))))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 4));
   }
 }

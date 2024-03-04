@@ -34,59 +34,62 @@ class DailyScheduleScreen extends ConsumerWidget {
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
-        body: Container(
-          padding: const EdgeInsets.all(30),
-          child: FutureBuilder(
-              future:
-                  getTeamAppointments(ref.read(teamIdProvider.notifier).state),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final dataSource = snapshot.data;
+        body: Center(
+            child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: Container(
+                  padding: const EdgeInsets.all(30),
+                  child: FutureBuilder(
+                      future: getTeamAppointments(
+                          ref.read(teamIdProvider.notifier).state),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final dataSource = snapshot.data;
 
-                  return SfCalendar(
-                    onTap: (CalendarTapDetails details) {
-                      if (details.targetElement ==
-                          CalendarElement.appointment) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ScheduleDetailsScreen(
-                              userId: ref.read(userIdProvider),
-                              userRole: userRole,
-                              teamId: ref.read(teamIdProvider),
-                              scheduleId: details.appointments![0].id,
+                          return SfCalendar(
+                            onTap: (CalendarTapDetails details) {
+                              if (details.targetElement ==
+                                  CalendarElement.appointment) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ScheduleDetailsScreen(
+                                      userId: ref.read(userIdProvider),
+                                      userRole: userRole,
+                                      teamId: ref.read(teamIdProvider),
+                                      scheduleId: details.appointments![0].id,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            view: CalendarView.schedule,
+                            headerStyle: const CalendarHeaderStyle(
+                              textStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: AppFonts.gabarito,
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                    view: CalendarView.schedule,
-                    headerStyle: const CalendarHeaderStyle(
-                      textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: AppFonts.gabarito,
-                      ),
-                    ),
-                    todayHighlightColor: AppColours.darkBlue,
-                    selectionDecoration: BoxDecoration(
-                      border:
-                          Border.all(color: AppColours.darkBlue, width: 2.0),
-                    ),
-                    initialSelectedDate: selectedDate,
-                    initialDisplayDate: selectedDate,
-                    timeSlotViewSettings: const TimeSlotViewSettings(
-                      numberOfDaysInView: 1,
-                    ),
-                    dataSource: AppointmentDataSource(dataSource!),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return const CircularProgressIndicator();
-              }),
-        ),
+                            todayHighlightColor: AppColours.darkBlue,
+                            selectionDecoration: BoxDecoration(
+                              border: Border.all(
+                                  color: AppColours.darkBlue, width: 2.0),
+                            ),
+                            initialSelectedDate: selectedDate,
+                            initialDisplayDate: selectedDate,
+                            timeSlotViewSettings: const TimeSlotViewSettings(
+                              numberOfDaysInView: 1,
+                            ),
+                            dataSource: AppointmentDataSource(dataSource!),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return const CircularProgressIndicator();
+                      }),
+                ))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }

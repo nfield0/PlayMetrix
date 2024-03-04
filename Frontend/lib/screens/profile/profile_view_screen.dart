@@ -30,105 +30,109 @@ class ProfileViewScreen extends ConsumerWidget {
             Profile profile = snapshot.data!;
 
             return Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                  "Profile",
-                  style: TextStyle(
-                    fontFamily: AppFonts.gabarito,
-                    color: AppColours.darkBlue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                appBar: AppBar(
+                  title: const Text(
+                    "Profile",
+                    style: TextStyle(
+                      fontFamily: AppFonts.gabarito,
+                      color: AppColours.darkBlue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
                   ),
+                  iconTheme: const IconThemeData(
+                    color: AppColours.darkBlue, //change your color here
+                  ),
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
                 ),
-                iconTheme: const IconThemeData(
-                  color: AppColours.darkBlue, //change your color here
-                ),
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-              ),
-              body: SingleChildScrollView(
-                  child: Padding(
-                      padding:
-                          const EdgeInsets.only(right: 35, left: 35),
-                      child: Column(children: [
-                        Center(
+                body: SingleChildScrollView(
+                    child: Center(
+                  child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Padding(
+                          padding: const EdgeInsets.only(right: 35, left: 35),
                           child: Column(children: [
-                            const SizedBox(height: 20),
-                            Text(
-                              "${profile.firstName} ${profile.surname}",
-                              style: const TextStyle(
-                                fontFamily: AppFonts.gabarito,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            profile.imageBytes != null &&
-                                    profile.imageBytes!.isNotEmpty
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        75), // Adjust the radius as needed
-                                    child: Image.memory(
-                                      profile.imageBytes!,
-                                      width: 150,
-                                      height: 150,
-                                      fit: BoxFit
-                                          .cover, // Ensure the image fills the rounded rectangle
-                                    ),
-                                  )
-                                : Image.asset(
-                                    "lib/assets/icons/profile_placeholder.png",
-                                    width: 150),
-                            const SizedBox(height: 20),
-                            smallPill(userRoleText(userRole)),
-                            const SizedBox(height: 40),
-                            FutureBuilder(
-                                future: getTeamById(
-                                    ref.read(teamIdProvider.notifier).state),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return CircularProgressIndicator();
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else if (snapshot.hasData) {
-                                    TeamData team = snapshot.data!;
-                                    return profilePill(
-                                        team.team_name,
-                                        team.team_location,
-                                        "lib/assets/icons/logo_placeholder.png",
-                                        team.team_logo, () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TeamProfileScreen()),
-                                      );
-                                    });
-                                  } else {
-                                    return emptySection(
-                                        Icons.group_off, "No team yet");
-                                  }
-                                }),
-                            const SizedBox(height: 20),
-                            divider(),
-                            const SizedBox(height: 20),
-                            const Text("Contacts",
-                                style: TextStyle(
-                                  fontFamily: AppFonts.gabarito,
-                                  fontSize: 32,
-                                  color: AppColours.darkBlue,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                            const SizedBox(height: 20),
-                            detailWithDivider("Phone", profile.contactNumber),
-                            const SizedBox(height: 10),
-                            detailWithDivider("Email", profile.email),
-                            const SizedBox(height: 25),
-                          ]),
-                        )
-                      ]))),
-            );
+                            Center(
+                              child: Column(children: [
+                                const SizedBox(height: 20),
+                                Text(
+                                  "${profile.firstName} ${profile.surname}",
+                                  style: const TextStyle(
+                                    fontFamily: AppFonts.gabarito,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                profile.imageBytes != null &&
+                                        profile.imageBytes!.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            75), // Adjust the radius as needed
+                                        child: Image.memory(
+                                          profile.imageBytes!,
+                                          width: 150,
+                                          height: 150,
+                                          fit: BoxFit
+                                              .cover, // Ensure the image fills the rounded rectangle
+                                        ),
+                                      )
+                                    : Image.asset(
+                                        "lib/assets/icons/profile_placeholder.png",
+                                        width: 150),
+                                const SizedBox(height: 20),
+                                smallPill(userRoleText(userRole)),
+                                const SizedBox(height: 40),
+                                FutureBuilder(
+                                    future: getTeamById(ref
+                                        .read(teamIdProvider.notifier)
+                                        .state),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else if (snapshot.hasData) {
+                                        TeamData team = snapshot.data!;
+                                        return profilePill(
+                                            team.team_name,
+                                            team.team_location,
+                                            "lib/assets/icons/logo_placeholder.png",
+                                            team.team_logo, () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TeamProfileScreen()),
+                                          );
+                                        });
+                                      } else {
+                                        return emptySection(
+                                            Icons.group_off, "No team yet");
+                                      }
+                                    }),
+                                const SizedBox(height: 20),
+                                divider(),
+                                const SizedBox(height: 20),
+                                const Text("Contacts",
+                                    style: TextStyle(
+                                      fontFamily: AppFonts.gabarito,
+                                      fontSize: 32,
+                                      color: AppColours.darkBlue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                                const SizedBox(height: 20),
+                                detailWithDivider(
+                                    "Phone", profile.contactNumber),
+                                const SizedBox(height: 10),
+                                detailWithDivider("Email", profile.email),
+                                const SizedBox(height: 25),
+                              ]),
+                            )
+                          ]))),
+                )));
           } else {
             return const Text('No data available');
           }

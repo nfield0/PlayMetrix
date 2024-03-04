@@ -152,20 +152,20 @@ Widget emptySection(IconData icon, String text) {
 Widget divider() {
   return const Divider(
     color: AppColours.darkBlue,
-    thickness: 1, 
+    thickness: 1,
   );
 }
 
 Widget greyDivider() {
   return const Divider(
-    color: AppColours.grey, 
-    thickness: 1, 
+    color: AppColours.grey,
+    thickness: 1,
   );
 }
 
 Widget greyDividerThick() {
   return const Divider(
-    color: Colors.black12, 
+    color: Colors.black12,
     thickness: 2.5,
   );
 }
@@ -441,7 +441,9 @@ Widget formFieldBottomBorderController(
           )),
       const SizedBox(width: 30),
       Container(
-        width: MediaQuery.of(context).size.width * 0.4,
+        width: MediaQuery.of(context).size.width * 0.4 >= 800 * 0.4
+            ? 800 * 0.4
+            : MediaQuery.of(context).size.width * 0.4,
         child: TextFormField(
           controller: controller,
           decoration: const InputDecoration(
