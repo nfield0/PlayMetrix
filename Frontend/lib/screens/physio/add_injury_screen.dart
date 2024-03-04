@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:play_metrix/api_clients/injury_api_client.dart';
 import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
@@ -13,34 +12,6 @@ import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
-
-// SAMPLE DATA
-List<Map<String, dynamic>> jsonData = [
-  {
-    'injury_id': 1,
-    'injury_type': 'Acute/Chronic',
-    'injury_name_and_grade': 'Rotar Cuff',
-    'injury_location': 'Shoulder',
-    'potential_recovery_method_1': 'Rest',
-    'potential_recovery_method_2': 'Physiotherapy',
-    'potential_recovery_method_3': 'Surgery Depending on Severity',
-    'expected_minimum_recovery_time': 6,
-    'expected_maximum_recovery_time': 9,
-  },
-  {
-    'injury_id': 2,
-    'injury_type': 'Acute',
-    'injury_name_and_grade': 'Meniscal Tear',
-    'injury_location': 'Knee',
-    'potential_recovery_method_1': 'Rest',
-    'potential_recovery_method_2': 'Ice',
-    'potential_recovery_method_3': 'Compression & Elevation',
-    'expected_minimum_recovery_time': 4,
-    'expected_maximum_recovery_time': 12,
-  },
-];
-
-List<Injury> injuries = jsonData.map((json) => Injury.fromJson(json)).toList();
 
 class AddInjuryScreen extends StatefulWidget {
   final int playerId;
@@ -74,6 +45,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
   Uint8List playerImage = Uint8List(0);
 
   Injury? selectedInjury;
+  int selectedInjuryId = 0;
   DateTime selectedDateOfInjury = DateTime.now();
   DateTime selectedDateOfRecovery = DateTime.now();
 
@@ -189,7 +161,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                                       fontFamily:
                                                           AppFonts.gabarito)),
                                               showSearchBox: true),
-                                          items: injuries,
+                                          asyncItems: (String query) =>
+                                              getInjuries(query),
                                           itemAsString: (Injury i) =>
                                               i.nameAndGrade,
                                           dropdownDecoratorProps:
@@ -203,8 +176,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                           ),
                                           onChanged: (value) {
                                             setState(() {
-                                              selectedInjury =
-                                                  value; // Assuming selectedInjury is of type dynamic
+                                              selectedInjury = value;
+                                              selectedInjuryId = value!.id;
                                             });
                                           },
                                           selectedItem: selectedInjury,
@@ -305,24 +278,17 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                                 type: NotificationType.injury);
                                           }
 
-                                          addInjury(
-                                              playerId: widget.playerId,
-                                              physioId: widget.physioId,
-                                              injuryType:
-                                                  injuryTypeController.text,
-                                              injuryLocation:
-                                                  injuryLocationController.text,
-                                              expectedRecoveryTime:
-                                                  expectedRecoveryTimeController
-                                                      .text,
-                                              recoveryMethod:
-                                                  recoveryMethodController.text,
+                                          addPlayerInjury(
                                               dateOfInjury:
                                                   selectedDateOfInjury,
                                               dateOfRecovery:
                                                   selectedDateOfRecovery,
+                                              injuryId: selectedInjuryId,
+                                              playerId: widget.playerId,
+                                              physioId: widget.physioId,
                                               injuryReport:
-                                                  injuryReportFile!.bytes);
+                                                  injuryReportFile?.bytes);
+
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -381,13 +347,14 @@ Widget injuryDetails(Injury injury) {
                   for (int i = 0;
                       i < injury.potentialRecoveryMethods.length;
                       i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Text(
-                          '${i + 1}. ${injury.potentialRecoveryMethods[i]}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                    ),
+                    if (injury.potentialRecoveryMethods[i].isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Text(
+                            '${i + 1}. ${injury.potentialRecoveryMethods[i]}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
                 ],
               ),
             ),

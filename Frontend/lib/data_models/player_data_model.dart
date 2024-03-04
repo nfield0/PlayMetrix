@@ -132,14 +132,14 @@ class Injury {
 
   factory Injury.fromJson(Map<String, dynamic> json) {
     return Injury(
-        id: json['injury_id'],
-        type: json['injury_type'],
-        nameAndGrade: json['injury_name_and_grade'],
-        location: json['injury_location'],
+        id: json['injury_id'] ?? 0,
+        type: json['injury_type'] ?? "",
+        nameAndGrade: json['injury_name_and_grade'] ?? "",
+        location: json['injury_location'] ?? "",
         potentialRecoveryMethods: [
-          json['potential_recovery_method_1'],
-          json['potential_recovery_method_2'],
-          json['potential_recovery_method_3']
+          json['potential_recovery_method_1'] ?? "",
+          json['potential_recovery_method_2'] ?? "",
+          json['potential_recovery_method_3'] ?? ""
         ],
         expectedMinRecoveryTime: json['expected_minimum_recovery_time'],
         expectedMaxRecoveryTime: json['expected_maximum_recovery_time']);
@@ -156,7 +156,6 @@ class AllPlayerInjuriesData {
   final int expectedMaxRecoveryTime;
   final DateTime dateOfInjury;
   final DateTime expectedDateOfRecovery;
-  final bool playerCleared;
   final int playerId;
   final int physioId;
   final Uint8List? playerInjuryReport;
@@ -171,7 +170,6 @@ class AllPlayerInjuriesData {
     required this.expectedMaxRecoveryTime,
     required this.dateOfInjury,
     required this.expectedDateOfRecovery,
-    required this.playerCleared,
     required this.playerId,
     required this.physioId,
     this.playerInjuryReport,
@@ -184,7 +182,6 @@ class PlayerInjuries {
   final int physioId;
   final DateTime dateOfInjury;
   final DateTime dateOfRecovery;
-  final bool playerCleared;
   final Uint8List? playerInjuryReport;
 
   PlayerInjuries({
@@ -193,7 +190,6 @@ class PlayerInjuries {
     required this.physioId,
     required this.dateOfInjury,
     required this.dateOfRecovery,
-    required this.playerCleared,
     this.playerInjuryReport,
   });
 
@@ -204,7 +200,6 @@ class PlayerInjuries {
       physioId: json['physio_id'],
       dateOfInjury: json['date_of_injury'],
       dateOfRecovery: json['expected_date_of_recovery'],
-      playerCleared: json['player_cleared'],
       playerInjuryReport: json['player_injury_report'] != null
           ? base64.decode(json['player_injury_report'])
           : null,
