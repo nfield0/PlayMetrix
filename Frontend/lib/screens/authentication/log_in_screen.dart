@@ -35,6 +35,7 @@ class LogInScreen extends ConsumerWidget {
   );
 
   LogInScreen({super.key});
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -302,12 +303,14 @@ class LogInScreen extends ConsumerWidget {
                           }
                         }
                       })),
+                      const GoogleSignInButton(),
                 ],
               ),
             ),
           ),
         ));
   }
+  
 
   Widget twoFactorAuthPopUp(BuildContext context, String phoneNumber,
       WidgetRef ref, UserRole userRole, int userId, String verificationCode) {

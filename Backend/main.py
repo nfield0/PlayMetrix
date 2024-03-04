@@ -73,9 +73,11 @@ async def login_google():
     return {
         "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
     }
+    #return RedirectResponse(url="https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline")
+
 
 @app.get("/auth/google")
-async def auth_google(code: str):
+async def auth_google(code: str, db: Session = Depends(get_db)):
     token_url = "https://accounts.google.com/o/oauth2/token"
     data = {
         "code": code,
@@ -87,16 +89,14 @@ async def auth_google(code: str):
     response = requests.post(token_url, data=data)
     access_token = response.json().get("access_token")
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {access_token}"})
+    print(user_info.json().get("email"))
 
     if user_info.json().get("email") == None:
         return {"error": "Invalid email"}
-    elif check_user_exists_by_email(user_info.json().get("email")):
-        return get_user_details_by_email(user_info.json().get("email"))
-
-
-
-    # print(user_info.json())
-    # return user_info.json()
+    elif check_user_exists_by_email(db, user_info.json().get("email")):
+        return get_user_details_by_email(db, user_info.json().get("email"))
+    else:
+        return {"error": "User does not exist"}
 
 @app.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):
