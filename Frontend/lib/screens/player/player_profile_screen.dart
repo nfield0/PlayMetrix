@@ -12,11 +12,11 @@ import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/physio/edit_injury_screen.dart';
+import 'package:play_metrix/screens/injury/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
-import 'package:play_metrix/screens/player/injury_report_view.dart';
-import 'package:play_metrix/screens/player/statistics_constants.dart';
-import 'package:play_metrix/screens/player/statistics_screen.dart';
+import 'package:play_metrix/screens/injury/injury_report_view.dart';
+import 'package:play_metrix/screens/statistics/statistics_constants.dart';
+import 'package:play_metrix/screens/statistics/statistics_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
@@ -82,7 +82,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                     constraints: const BoxConstraints(maxWidth: 800),
                     child: Padding(
                         padding:
-                            const EdgeInsets.only(top: 10, right: 35, left: 35),
+                            const EdgeInsets.only(top: 10, right: 20, left: 20),
                         child: Center(
                           child: Column(children: [
                             if (ref.read(teamIdProvider.notifier).state == -1)
@@ -527,6 +527,7 @@ Widget injuriesSection(
                                   physioId: injury.physioId,
                                   injuryId: injury.id,
                                   playerId: injury.playerId,
+                                  dateOfInjury: injury.dateOfInjury,
                                 )),
                       );
                     })
@@ -546,6 +547,8 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
     children: [
       greyDivider(),
       const SizedBox(height: 10),
+      detailWithDivider("Injury Name", injury.nameAndGrade),
+      const SizedBox(height: 10),
       detailWithDivider("Date of Injury",
           DateFormat('yyyy-MM-dd').format(injury.dateOfInjury)),
       const SizedBox(height: 10),
@@ -553,8 +556,6 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
           DateFormat('yyyy-MM-dd').format(injury.expectedDateOfRecovery)),
       const SizedBox(height: 10),
       detailWithDivider("Injury Type", injury.type),
-      const SizedBox(height: 10),
-      detailWithDivider("Injury Name", injury.nameAndGrade),
       const SizedBox(height: 10),
       detailWithDivider("Injury Location", injury.location),
       const SizedBox(height: 10),

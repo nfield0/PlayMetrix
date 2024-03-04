@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:intl/intl.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:play_metrix/data_models/player_data_model.dart';
@@ -46,7 +47,7 @@ Future<void> updatePlayerInjury({
   required Uint8List? injuryReport,
 }) async {
   try {
-    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$playerId";
+    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$injuryId";
     final playerInjuryResponse = await http.put(
       Uri.parse(playerInjuryApiUrl),
       headers: <String, String>{
@@ -58,7 +59,7 @@ Future<void> updatePlayerInjury({
         "expected_date_of_recovery": dateOfRecovery.toIso8601String(),
         "player_id": playerId,
         "physio_id": physioId,
-        "player_injury_report": injuryReport != null || injuryReport!.isEmpty
+        "player_injury_report": injuryReport != null && injuryReport.isNotEmpty
             ? base64Encode(injuryReport)
             : null,
       }),
@@ -130,8 +131,9 @@ Future<Injury> getInjuryById(int injuryId) async {
 }
 
 Future<AllPlayerInjuriesData> getPlayerInjuryById(
-    int injuryId, int playerId) async {
-  final apiUrl = '$apiBaseUrl/player_injuries/$playerId';
+    int injuryId, int playerId, DateTime dateOfInjury) async {
+  final apiUrl =
+      '$apiBaseUrl/player_injuries/$playerId/date/${DateFormat("yyyy-MM-dd").format(dateOfInjury)}/injury/$injuryId';
 
   try {
     final response = await http.get(
@@ -141,7 +143,29 @@ Future<AllPlayerInjuriesData> getPlayerInjuryById(
       },
     );
 
-    if (response.statusCode == 200) {}
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+      final injuryData = await getInjuryById(jsonResponse['injury_id']);
+
+      AllPlayerInjuriesData playerInjuryData = AllPlayerInjuriesData(
+        id: injuryData.id,
+        type: injuryData.type,
+        nameAndGrade: injuryData.nameAndGrade,
+        location: injuryData.location,
+        potentialRecoveryMethods: injuryData.potentialRecoveryMethods,
+        expectedMinRecoveryTime: injuryData.expectedMinRecoveryTime,
+        expectedMaxRecoveryTime: injuryData.expectedMaxRecoveryTime,
+        dateOfInjury: DateTime.parse(jsonResponse['date_of_injury']),
+        expectedDateOfRecovery:
+            DateTime.parse(jsonResponse['expected_date_of_recovery']),
+        playerId: jsonResponse['player_id'],
+        physioId: jsonResponse['physio_id'],
+        playerInjuryReport: jsonResponse['player_injury_report'],
+      );
+
+      return playerInjuryData;
+    }
   } catch (error) {
     print('Error: $error');
     throw Exception('Failed to retrieve All Player Injury Data');

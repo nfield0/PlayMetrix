@@ -3,7 +3,7 @@ import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/physio/add_injury_screen.dart';
+import 'package:play_metrix/screens/injury/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';

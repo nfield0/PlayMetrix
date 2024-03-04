@@ -3,30 +3,33 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/injury_api_client.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
-import 'package:play_metrix/screens/physio/add_injury_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
-class EditInjuryScreen extends StatefulWidget {
+class AddInjuryScreen extends StatefulWidget {
   final int playerId;
-  final int injuryId;
   final int physioId;
-  const EditInjuryScreen(
+  final UserRole userRole;
+  final int teamId;
+  const AddInjuryScreen(
       {super.key,
       required this.playerId,
-      required this.injuryId,
-      required this.physioId});
+      required this.physioId,
+      required this.userRole,
+      required this.teamId});
 
   @override
-  EditInjuryScreenState createState() => EditInjuryScreenState();
+  AddInjuryScreenState createState() => AddInjuryScreenState();
 }
 
-class EditInjuryScreenState extends State<EditInjuryScreen> {
+class AddInjuryScreenState extends State<AddInjuryScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers for form fields
@@ -41,13 +44,10 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
   String playerName = "";
   Uint8List playerImage = Uint8List(0);
 
+  Injury? selectedInjury;
+  int selectedInjuryId = 0;
   DateTime selectedDateOfInjury = DateTime.now();
   DateTime selectedDateOfRecovery = DateTime.now();
-
-  Injury? selectedInjury;
-  int? selectedInjuryId;
-
-  PlatformFile? injuryReportFile;
 
   @override
   void initState() {
@@ -59,24 +59,9 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
         playerImage = player.player_image;
       });
     });
-
-    // getPlayerInjuryById(widget.injuryId, widget.playerId).then((injury) {
-    //   setState(() {
-    //     injuryTypeController.text = injury.type;
-    //     injuryLocationController.text = injury.location;
-    //     expectedRecoveryTimeController.text = injury.expected_recovery_time;
-    //     recoveryMethodController.text = injury.recovery_method;
-    //     selectedDateOfInjury = DateTime.parse(injury.date_of_injury);
-    //     selectedDateOfRecovery = DateTime.parse(injury.date_of_recovery);
-    //     injuryReportFile = injury.player_injury_report != null
-    //         ? PlatformFile(
-    //             name: "Injury Report",
-    //             size: injury.player_injury_report!.length,
-    //             bytes: injury.player_injury_report)
-    //         : null;
-    //   });
-    // });
   }
+
+  PlatformFile? injuryReportFile;
 
   @override
   Widget build(BuildContext context) {
@@ -100,15 +85,16 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Edit Injury',
+            "Add Injury",
             style: TextStyle(
-                color: AppColours.darkBlue,
-                fontSize: 24,
-                fontFamily: AppFonts.gabarito,
-                fontWeight: FontWeight.bold),
+              color: AppColours.darkBlue,
+              fontFamily: AppFonts.gabarito,
+              fontSize: 24.0,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
+            color: AppColours.darkBlue,
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -243,15 +229,79 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                               }),
                                             ),
                                       const SizedBox(height: 25),
-                                      bigButton("Edit Injury", () {
+                                      bigButton("Add Injury", () {
                                         if (_formKey.currentState!.validate()) {
+                                          bool isSameDay = selectedDateOfInjury
+                                                      .year ==
+                                                  selectedDateOfInjury.year &&
+                                              selectedDateOfInjury.month ==
+                                                  selectedDateOfInjury.month &&
+                                              selectedDateOfInjury.day ==
+                                                  selectedDateOfInjury.day;
+                                          if (selectedDateOfInjury
+                                                  .isAfter(DateTime.now()) ||
+                                              isSameDay) {
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                desc:
+                                                    "Injury location: ${injuryLocationController.text}\n"
+                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.manager,
+                                                type: NotificationType.injury);
+
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                desc:
+                                                    "Injury location: ${injuryLocationController.text}\n"
+                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.coach,
+                                                type: NotificationType.injury);
+
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                desc:
+                                                    "Injury location: ${injuryLocationController.text}\n"
+                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.player,
+                                                type: NotificationType.injury);
+                                          }
+
+                                          addPlayerInjury(
+                                              dateOfInjury:
+                                                  selectedDateOfInjury,
+                                              dateOfRecovery:
+                                                  selectedDateOfRecovery,
+                                              injuryId: selectedInjuryId,
+                                              playerId: widget.playerId,
+                                              physioId: widget.physioId,
+                                              injuryReport:
+                                                  injuryReportFile?.bytes);
+
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      PlayerProfileViewScreen(
-                                                          userId: widget
-                                                              .playerId)));
+                                                      EditPlayerProfileScreen(
+                                                          physioId:
+                                                              widget.physioId,
+                                                          playerId:
+                                                              widget.playerId,
+                                                          userRole:
+                                                              widget.userRole,
+                                                          teamId:
+                                                              widget.teamId)));
                                         }
                                       })
                                     ]),
@@ -259,4 +309,58 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                             ]))))),
         bottomNavigationBar: physioBottomNavBar(context, 0));
   }
+}
+
+Widget injuryDetails(Injury injury) {
+  return Column(
+    children: [
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Name", injury.nameAndGrade),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Type", injury.type),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Location", injury.location),
+      const SizedBox(height: 10),
+      detailWithDivider(
+          "Expected Recovery Time",
+          "${injury.expectedMinRecoveryTime}-"
+              "${injury.expectedMaxRecoveryTime} weeks"),
+      ExpansionPanelList.radio(
+        elevation: 0,
+        expandedHeaderPadding: const EdgeInsets.all(0),
+        children: [
+          ExpansionPanelRadio(
+            value: injury.id,
+            backgroundColor: Colors.transparent,
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return const ListTile(
+                contentPadding: EdgeInsets.all(0),
+                title: Text("Potential Recovery Methods",
+                    style: TextStyle(fontSize: 16)),
+              );
+            },
+            body: ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int i = 0;
+                      i < injury.potentialRecoveryMethods.length;
+                      i++)
+                    if (injury.potentialRecoveryMethods[i].isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Text(
+                            '${i + 1}. ${injury.potentialRecoveryMethods[i]}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    ],
+  );
 }

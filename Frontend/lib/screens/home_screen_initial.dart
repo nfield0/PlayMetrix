@@ -7,7 +7,7 @@ import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/player/statistics_screen.dart';
+import 'package:play_metrix/screens/statistics/statistics_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/settings/settings_screen.dart';

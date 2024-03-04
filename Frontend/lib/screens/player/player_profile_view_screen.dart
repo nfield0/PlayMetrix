@@ -85,7 +85,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                     constraints: const BoxConstraints(maxWidth: 800),
                     child: Padding(
                         padding:
-                            const EdgeInsets.only(top: 10, right: 35, left: 35),
+                            const EdgeInsets.only(top: 10, right: 20, left: 20),
                         child: Center(
                           child: Column(children: [
                             if (ref.read(teamIdProvider.notifier).state == -1)
