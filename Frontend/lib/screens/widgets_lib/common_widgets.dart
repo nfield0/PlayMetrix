@@ -170,16 +170,24 @@ Widget greyDividerThick() {
   );
 }
 
-Widget detailWithDivider(String title, String detail) {
+Widget detailWithDivider(String title, String detail, BuildContext context) {
   return Column(
     children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: const TextStyle(fontSize: 16)),
-          Text(detail,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4 >= 800 * 0.4
+                ? 800 * 0.4
+                : MediaQuery.of(context).size.width * 0.4,
+            child: Text(detail,
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                )),
+          )
         ],
       ),
       const SizedBox(height: 10),
@@ -440,7 +448,7 @@ Widget formFieldBottomBorderController(
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           )),
       const SizedBox(width: 30),
-      Container(
+      SizedBox(
         width: MediaQuery.of(context).size.width * 0.4 >= 800 * 0.4
             ? 800 * 0.4
             : MediaQuery.of(context).size.width * 0.4,

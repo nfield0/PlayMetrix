@@ -547,22 +547,25 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
     children: [
       greyDivider(),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Name", injury.nameAndGrade),
+      detailWithDivider("Injury Name", injury.nameAndGrade, context),
       const SizedBox(height: 10),
       detailWithDivider("Date of Injury",
-          DateFormat('yyyy-MM-dd').format(injury.dateOfInjury)),
+          DateFormat('yyyy-MM-dd').format(injury.dateOfInjury), context),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Recovery",
-          DateFormat('yyyy-MM-dd').format(injury.expectedDateOfRecovery)),
+      detailWithDivider(
+          "Date of Recovery",
+          DateFormat('yyyy-MM-dd').format(injury.expectedDateOfRecovery),
+          context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.type),
+      detailWithDivider("Injury Type", injury.type, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.location),
+      detailWithDivider("Injury Location", injury.location, context),
       const SizedBox(height: 10),
       detailWithDivider(
           "Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
-              "${injury.expectedMaxRecoveryTime} weeks"),
+              "${injury.expectedMaxRecoveryTime} weeks",
+          context),
       ExpansionPanelList.radio(
         elevation: 0,
         expandedHeaderPadding: const EdgeInsets.all(0),

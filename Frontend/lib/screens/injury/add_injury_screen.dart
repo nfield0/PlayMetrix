@@ -185,7 +185,7 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                       ),
                                       const SizedBox(height: 25),
                                       if (selectedInjury != null)
-                                        injuryDetails(selectedInjury!),
+                                        injuryDetails(selectedInjury!, context),
                                       greyDivider(),
                                       const SizedBox(height: 7),
                                       datePickerNoDivider(
@@ -311,20 +311,21 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
   }
 }
 
-Widget injuryDetails(Injury injury) {
+Widget injuryDetails(Injury injury, BuildContext context) {
   return Column(
     children: [
       const SizedBox(height: 10),
-      detailWithDivider("Injury Name", injury.nameAndGrade),
+      detailWithDivider("Injury Name", injury.nameAndGrade, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.type),
+      detailWithDivider("Injury Type", injury.type, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.location),
+      detailWithDivider("Injury Location", injury.location, context),
       const SizedBox(height: 10),
       detailWithDivider(
-          "Expected Recovery Time",
+          "Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
-              "${injury.expectedMaxRecoveryTime} weeks"),
+              "${injury.expectedMaxRecoveryTime} weeks",
+          context),
       ExpansionPanelList.radio(
         elevation: 0,
         expandedHeaderPadding: const EdgeInsets.all(0),

@@ -125,9 +125,10 @@ class ProfileViewScreen extends ConsumerWidget {
                                     )),
                                 const SizedBox(height: 20),
                                 detailWithDivider(
-                                    "Phone", profile.contactNumber),
+                                    "Phone", profile.contactNumber, context),
                                 const SizedBox(height: 10),
-                                detailWithDivider("Email", profile.email),
+                                detailWithDivider(
+                                    "Email", profile.email, context),
                                 const SizedBox(height: 25),
                               ]),
                             )

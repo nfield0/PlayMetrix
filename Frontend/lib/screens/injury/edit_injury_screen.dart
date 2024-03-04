@@ -199,7 +199,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                       ),
                                       const SizedBox(height: 25),
                                       if (selectedInjury != null)
-                                        injuryDetails(selectedInjury!),
+                                        injuryDetails(selectedInjury!, context),
                                       greyDivider(),
                                       const SizedBox(height: 7),
                                       datePickerNoDivider(
