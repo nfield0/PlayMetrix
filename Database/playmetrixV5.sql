@@ -187,7 +187,6 @@ CREATE TABLE IF NOT EXISTS player_injuries
 	injury_id INT NOT NULL,
 	date_of_injury DATE NOT NULL, 
 	expected_date_of_recovery DATE NOT NULL,
-	player_cleared BOOLEAN NOT NULL,
 	player_injury_report bytea,
 	FOREIGN KEY (physio_id)
 		REFERENCES physio_info(physio_id), 
@@ -214,6 +213,7 @@ CREATE TABLE IF NOT EXISTS player_team
 	team_position VARCHAR (30),
     player_team_number INT,
     playing_status VARCHAR(25),
+	reason_for_status VARCHAR(255),
     lineup_status VARCHAR(30),
 	PRIMARY KEY (player_id, team_id),
 	FOREIGN KEY (player_id)
