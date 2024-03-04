@@ -98,6 +98,13 @@ def get_player_injury_by_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
     
+def get_player_injury_by_date(db: Session, date: str):
+    try:
+        result = db.query(player_injuries).filter_by(date_of_injury=date).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving player injuries: {e}")
+    
 def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
     try:
         if new_player_injury is not None:
