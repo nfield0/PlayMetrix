@@ -21,6 +21,7 @@ class LogInScreen extends ConsumerWidget {
   final _emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
 
   LogInScreen({super.key});
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -211,12 +212,14 @@ class LogInScreen extends ConsumerWidget {
                           }
                         }
                       })),
+                      const GoogleSignInButton(),
                 ],
               ),
             ),
           ),
         ));
   }
+  
 
   Widget _2FAPopUp(BuildContext context) {
     TextEditingController _phoneNumberController = TextEditingController();

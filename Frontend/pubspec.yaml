@@ -50,6 +50,9 @@ dependencies:
   timezone: ^0.9.2
   flutter_timezone: ^1.0.8
   file_picker: ^6.1.1
+  google_sign_in: ^5.0.0
+  flutter_signin_button: ^2.0.0
+  url_launcher: ^6.0.3
 
 dev_dependencies:
   flutter_test:
