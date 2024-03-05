@@ -120,7 +120,7 @@ Widget sectionHeader(String title) {
         style: const TextStyle(
             fontFamily: AppFonts.gabarito,
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 18,
             color: AppColours.darkBlue),
       ));
 }
