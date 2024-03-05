@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS notifications
 		REFERENCES team(team_id)
 );
 
-CREATE TABLE IF NOT EXSITS matches
+CREATE TABLE IF NOT EXISTS matches
 (
 	match_id serial PRIMARY KEY,
 	player_id INT NOT NULL,
