@@ -32,15 +32,6 @@ class AddInjuryScreen extends StatefulWidget {
 class AddInjuryScreenState extends State<AddInjuryScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for form fields
-  final TextEditingController injuryTypeController = TextEditingController();
-  final TextEditingController injuryLocationController =
-      TextEditingController();
-  final TextEditingController expectedRecoveryTimeController =
-      TextEditingController();
-  final TextEditingController recoveryMethodController =
-      TextEditingController();
-
   String playerName = "";
   Uint8List playerImage = Uint8List(0);
 
@@ -243,10 +234,10 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                               isSameDay) {
                                             addNotification(
                                                 title:
-                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                    "$playerName has been injured: ${selectedInjury!.nameAndGrade}",
                                                 desc:
-                                                    "Injury location: ${injuryLocationController.text}\n"
-                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                    "Injury location: ${selectedInjury!.location}\n"
+                                                    "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
                                                 date: DateTime.now(),
                                                 teamId: widget.teamId,
                                                 recieverUserRole:
@@ -255,10 +246,10 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
                                             addNotification(
                                                 title:
-                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                    "$playerName has been injured: ${selectedInjury!.nameAndGrade}",
                                                 desc:
-                                                    "Injury location: ${injuryLocationController.text}\n"
-                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                    "Injury location: ${selectedInjury!.location}\n"
+                                                    "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
                                                 date: DateTime.now(),
                                                 teamId: widget.teamId,
                                                 recieverUserRole:
@@ -267,10 +258,10 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
                                             addNotification(
                                                 title:
-                                                    "$playerName has been injured: ${injuryTypeController.text}",
+                                                    "$playerName has been injured: ${selectedInjury!.nameAndGrade}",
                                                 desc:
-                                                    "Injury location: ${injuryLocationController.text}\n"
-                                                    "Expected recovery time: ${expectedRecoveryTimeController.text}\n",
+                                                    "Injury location: ${selectedInjury!.location}\n"
+                                                    "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
                                                 date: DateTime.now(),
                                                 teamId: widget.teamId,
                                                 recieverUserRole:
