@@ -367,21 +367,7 @@ VALUES
 ('Acute/Chronic', 'Torn Ligament Grade 3', 'Knee', 'Surgery', 12,24),
 ('Acute','Concussion','Head','Rest', 1,2);
 
-
-
-
-SELECT injury_id, injury_type, injury_name_and_grade, injury_location, 
-	   potential_recovery_method_1, potential_recovery_method_2, potential_recovery_method_3, 
-	   expected_minimum_recovery_time AS Min Weeks, expected_maximum_recovery_time AS Max Weeks 
-FROM injuries;
-
-
-
-
-
-
-
-
+/*Not added yet because i don't know where it best fits */
 /*('Overuse Injuries','Anywhere','Rest, Physiotherapy', 'Weeks to Months (Depending on Serverity)'),*/
 
 
