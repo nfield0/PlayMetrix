@@ -6,6 +6,7 @@ import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/injury/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
+import 'package:play_metrix/screens/settings/settings_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -42,6 +43,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
       TextEditingController();
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _reasonController = TextEditingController();
 
   final List<AvailabilityData> availability = [
     AvailabilityData(AvailabilityStatus.available, "Available",
@@ -86,11 +88,12 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
     getTeamPlayerData(widget.teamId, widget.playerId).then((value) {
       setState(() {
         teamPlayerData = value;
-        _numberController.text = teamPlayerData.player_team_number.toString();
+        _numberController.text = teamPlayerData.playerTeamNumber.toString();
         _selectedAvailability =
-            stringToAvailabilityStatus(teamPlayerData.playing_status);
-        _selectedPosition = teamPlayerData.team_position;
-        _selectedLineupStatus = teamPlayerData.lineup_status;
+            stringToAvailabilityStatus(teamPlayerData.playingStatus);
+        _selectedPosition = teamPlayerData.teamPosition;
+        _selectedLineupStatus = teamPlayerData.lineupStatus;
+        _reasonController.text = teamPlayerData.reasonForStatus;
       });
     });
 
@@ -183,18 +186,6 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      if (widget.userRole == UserRole.manager ||
-                                          widget.userRole == UserRole.physio)
-                                        Center(
-                                          child: availabilityDropdown(
-                                              _selectedAvailability,
-                                              availability, (value) {
-                                            setState(() {
-                                              _selectedAvailability = value!;
-                                            });
-                                          }),
-                                        ),
-                                      const SizedBox(height: 20),
                                       Center(
                                           child: Column(children: [
                                         _profilePicture.isNotEmpty
@@ -215,7 +206,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                         const SizedBox(height: 10),
                                         if (widget.userRole == UserRole.player)
                                           underlineButtonTransparent(
-                                              "Edit picture", () {
+                                              "Upload picture", () {
                                             pickImage();
                                           }),
                                         if (widget.userRole != UserRole.player)
@@ -229,146 +220,184 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                         if (widget.userRole != UserRole.player)
                                           const SizedBox(height: 15),
                                       ])),
-                                      if (widget.userRole == UserRole.player)
-                                        formFieldBottomBorderController(
-                                            "First Name", _firstNameController,
-                                            (value) {
-                                          return (value != null &&
-                                                  !nameRegex.hasMatch(value))
-                                              ? 'Invalid first name.'
-                                              : null;
-                                        }, context),
-                                      if (widget.userRole == UserRole.player)
-                                        formFieldBottomBorderController(
-                                            "Surname", _surnameController,
-                                            (value) {
-                                          return (value != null &&
-                                                  !nameRegex.hasMatch(value))
-                                              ? 'Invalid surname.'
-                                              : null;
-                                        }, context),
-                                      if (widget.userRole == UserRole.player)
-                                        formFieldBottomBorderController(
-                                            "Phone", _contactNumberController,
-                                            (value) {
-                                          return (value != null &&
-                                                  !phoneRegex.hasMatch(value))
-                                              ? 'Invalid phone number.'
-                                              : null;
-                                        }, context),
-                                      if (widget.userRole == UserRole.manager)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const SizedBox(
-                                                width: 120,
-                                                child: Text(
-                                                  "Number",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )),
-                                            const SizedBox(width: 30),
-                                            Container(
-                                              width: 115,
-                                              child: TextFormField(
-                                                controller: _numberController,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  // labelText: 'Your Label',
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  focusedBorder:
-                                                      UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey),
-                                                  ),
-                                                  enabledBorder:
-                                                      UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey),
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value != null &&
-                                                      RegExp(r'^\d+$')
-                                                          .hasMatch(value)) {
-                                                    int numericValue =
-                                                        int.tryParse(value) ??
-                                                            0;
-
-                                                    if (numericValue > 0 &&
-                                                        numericValue < 100) {
-                                                      return null;
-                                                    } else {
-                                                      return "Enter a valid number from 1-99.";
-                                                    }
-                                                  }
-
-                                                  return "Enter a valid digit.";
-                                                },
-                                              ),
+                                      if (widget.userRole == UserRole.manager ||
+                                          widget.userRole == UserRole.physio)
+                                        Column(children: [
+                                          Center(
+                                            child: availabilityDropdown(
+                                                _selectedAvailability,
+                                                availability, (value) {
+                                              setState(() {
+                                                _selectedAvailability = value!;
+                                              });
+                                            }),
+                                          ),
+                                          const SizedBox(height: 20),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              color: Colors.transparent,
+                                              border: Border.all(
+                                                  color: AppColours.darkBlue,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
                                             ),
-                                          ],
-                                        ),
+                                            child: formFieldBottomBorderNoTitle(
+                                                "Reason for status change",
+                                                "",
+                                                false,
+                                                _reasonController, (value) {
+                                              return null;
+                                            }),
+                                          ),
+                                          const SizedBox(height: 15),
+                                        ]),
                                       if (widget.userRole == UserRole.player)
-                                        formFieldBottomBorderController(
-                                            "Height", _heightController,
-                                            (value) {
-                                          return (value != null &&
-                                                  !heightRegex.hasMatch(value))
-                                              ? 'Invalid height.'
-                                              : null;
-                                        }, context),
-                                      if (widget.userRole == UserRole.player)
-                                        datePickerNoDivider(
-                                            context,
-                                            "Date of birth",
-                                            _selectedDob, (value) {
-                                          setState(() {
-                                            _selectedDob = value;
-                                          });
-                                        }),
-                                      if (widget.userRole == UserRole.player)
-                                        dropdownWithDivider(
-                                            "Gender",
-                                            _selectedGender,
-                                            ["Male", "Female", "Others"],
-                                            (value) {
-                                          setState(() {
-                                            _selectedGender = value!;
-                                          });
-                                        }),
+                                        Column(children: [
+                                          const SizedBox(height: 15),
+                                          formFieldBottomBorderController(
+                                              "First Name",
+                                              _firstNameController, (value) {
+                                            return (value != null &&
+                                                    !nameRegex.hasMatch(value))
+                                                ? 'Invalid first name.'
+                                                : null;
+                                          }, context),
+                                          formFieldBottomBorderController(
+                                              "Surname", _surnameController,
+                                              (value) {
+                                            return (value != null &&
+                                                    !nameRegex.hasMatch(value))
+                                                ? 'Invalid surname.'
+                                                : null;
+                                          }, context),
+                                          formFieldBottomBorderController(
+                                              "Phone", _contactNumberController,
+                                              (value) {
+                                            return (value != null &&
+                                                    !phoneRegex.hasMatch(value))
+                                                ? 'Invalid phone number.'
+                                                : null;
+                                          }, context),
+                                          formFieldBottomBorderController(
+                                              "Height", _heightController,
+                                              (value) {
+                                            return (value != null &&
+                                                    !heightRegex
+                                                        .hasMatch(value))
+                                                ? 'Invalid height.'
+                                                : null;
+                                          }, context),
+                                          datePickerNoDivider(
+                                              context,
+                                              "Date of birth",
+                                              _selectedDob, (value) {
+                                            setState(() {
+                                              _selectedDob = value;
+                                            });
+                                          }),
+                                          dropdownWithDivider(
+                                              "Gender",
+                                              _selectedGender,
+                                              ["Male", "Female", "Others"],
+                                              (value) {
+                                            setState(() {
+                                              _selectedGender = value!;
+                                            });
+                                          }),
+                                        ]),
                                       const SizedBox(height: 10),
                                       if (widget.userRole == UserRole.manager)
-                                        dropdownWithDivider(
-                                            "Position", _selectedPosition, [
-                                          teamRoleToText(TeamRole.defense),
-                                          teamRoleToText(TeamRole.attack),
-                                          teamRoleToText(TeamRole.midfield),
-                                          teamRoleToText(TeamRole.goalkeeper),
-                                        ], (value) {
-                                          setState(() {
-                                            _selectedPosition = value!;
-                                          });
-                                        }),
-                                      const SizedBox(height: 10),
-                                      if (widget.userRole == UserRole.manager)
-                                        dropdownWithDivider("Lineup Status",
-                                            _selectedLineupStatus, [
-                                          lineupStatusToText(
-                                              LineupStatus.starter),
-                                          lineupStatusToText(
-                                              LineupStatus.substitute),
-                                          lineupStatusToText(
-                                              LineupStatus.reserve)
-                                        ], (value) {
-                                          setState(() {
-                                            _selectedLineupStatus = value!;
-                                          });
-                                        }),
+                                        Column(children: [
+                                          greyDivider(),
+                                          const SizedBox(height: 15),
+                                          sectionHeader("Team Details"),
+                                          const SizedBox(height: 20),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const SizedBox(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "Number",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )),
+                                              const SizedBox(width: 30),
+                                              Container(
+                                                width: 115,
+                                                child: TextFormField(
+                                                  controller: _numberController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    // labelText: 'Your Label',
+                                                    labelStyle: TextStyle(
+                                                        color: Colors.grey),
+                                                    focusedBorder:
+                                                        UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors.grey),
+                                                    ),
+                                                    enabledBorder:
+                                                        UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors.grey),
+                                                    ),
+                                                  ),
+                                                  validator: (value) {
+                                                    if (value != null &&
+                                                        RegExp(r'^\d+$')
+                                                            .hasMatch(value)) {
+                                                      int numericValue =
+                                                          int.tryParse(value) ??
+                                                              0;
+
+                                                      if (numericValue > 0 &&
+                                                          numericValue < 100) {
+                                                        return null;
+                                                      } else {
+                                                        return "Enter a valid number from 1-99.";
+                                                      }
+                                                    }
+
+                                                    return "Enter a valid digit.";
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          dropdownWithDivider(
+                                              "Position", _selectedPosition, [
+                                            teamRoleToText(TeamRole.defense),
+                                            teamRoleToText(TeamRole.attack),
+                                            teamRoleToText(TeamRole.midfield),
+                                            teamRoleToText(TeamRole.goalkeeper),
+                                          ], (value) {
+                                            setState(() {
+                                              _selectedPosition = value!;
+                                            });
+                                          }),
+                                          const SizedBox(height: 10),
+                                          dropdownWithDivider("Lineup Status",
+                                              _selectedLineupStatus, [
+                                            lineupStatusToText(
+                                                LineupStatus.starter),
+                                            lineupStatusToText(
+                                                LineupStatus.substitute),
+                                            lineupStatusToText(
+                                                LineupStatus.reserve)
+                                          ], (value) {
+                                            setState(() {
+                                              _selectedLineupStatus = value!;
+                                            });
+                                          }),
+                                        ]),
                                       const SizedBox(height: 10),
                                       if (widget.userRole == UserRole.manager &&
                                           _matchesPlayed != null &&
@@ -377,7 +406,10 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                           _totalMinutesPlayed != null)
                                         Column(
                                           children: [
-                                            const SizedBox(height: 10),
+                                            greyDivider(),
+                                            const SizedBox(height: 15),
+                                            sectionHeader("Statistics"),
+                                            const SizedBox(height: 35),
                                             inputQuantity("Matches played",
                                                 _matchesPlayed!, (value) {
                                               _matchesPlayed = value;
@@ -399,9 +431,10 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                                 _totalMinutesPlayed!, (value) {
                                               _totalMinutesPlayed = value;
                                             }),
+                                            const SizedBox(height: 30),
                                           ],
                                         ),
-                                      const SizedBox(height: 30),
+                                      const SizedBox(height: 15),
                                       bigButton("Save Changes", () async {
                                         if (_formKey.currentState!.validate()) {
                                           await editPlayerProfile(
@@ -423,7 +456,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                                 availabilityStatusText(
                                                     _selectedAvailability),
                                                 _selectedPosition,
-                                                _selectedLineupStatus);
+                                                _selectedLineupStatus,
+                                                _reasonController.text);
                                           }
 
                                           await updatePlayerStatistics(

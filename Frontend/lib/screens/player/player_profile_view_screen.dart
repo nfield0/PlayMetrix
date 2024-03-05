@@ -122,7 +122,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                                           gender,
                                           profilePicture);
                                     } else {
-                                      return Text('No data available');
+                                      return const Text('No data available');
                                     }
                                   }),
                             if (ref.read(teamIdProvider.notifier).state != -1)
@@ -158,6 +158,8 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                                                       AvailabilityStatus.limited
                                                   ? limited
                                                   : unavailable;
+                                      String reasonForStatus =
+                                          player.reasonForStatus;
 
                                       return playerProfile(
                                           firstName,
@@ -167,9 +169,10 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                                           height,
                                           gender,
                                           availabilityData,
+                                          reasonForStatus,
                                           profilePicture);
                                     } else {
-                                      return Text('No data available');
+                                      return const Text('No data available');
                                     }
                                   }),
                             const SizedBox(height: 20),

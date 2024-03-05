@@ -156,6 +156,8 @@ class PlayerProfileScreen extends ConsumerWidget {
                                                       AvailabilityStatus.limited
                                                   ? limited
                                                   : unavailable;
+                                      String reasonForStatus =
+                                          player.reasonForStatus;
 
                                       return playerProfile(
                                           firstName,
@@ -165,6 +167,7 @@ class PlayerProfileScreen extends ConsumerWidget {
                                           height,
                                           gender,
                                           availabilityData,
+                                          reasonForStatus,
                                           profilePicture);
                                     } else {
                                       return Text('No data available');
@@ -296,10 +299,11 @@ Widget playerProfile(
     String height,
     String gender,
     AvailabilityData availability,
+    String reasonForStatus,
     Uint8List? profilePicture) {
   return Container(
     alignment: Alignment.center,
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.only(right: 20, left: 20),
     child: Column(children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -368,6 +372,32 @@ Widget playerProfile(
       profileDetails("Gender", gender),
       const SizedBox(height: 35),
       availabilityTrafficLight(availability.status),
+      const SizedBox(
+        height: 35,
+      ),
+      if (reasonForStatus.isNotEmpty)
+        RichText(
+          text: TextSpan(
+            children: [
+              const TextSpan(
+                text: "Reason: ",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColours.darkBlue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: reasonForStatus,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: AppFonts.openSans,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        )
     ]),
   );
 }

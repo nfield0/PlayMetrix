@@ -118,8 +118,9 @@ Widget sectionHeader(String title) {
       child: Text(
         title,
         style: const TextStyle(
+            fontFamily: AppFonts.gabarito,
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 20,
             color: AppColours.darkBlue),
       ));
 }

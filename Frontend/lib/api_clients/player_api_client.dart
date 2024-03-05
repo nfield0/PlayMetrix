@@ -29,12 +29,13 @@ Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
 
       if (playerData != null) {
         return TeamPlayerData(
-          team_id: playerData['team_id'],
-          player_id: playerData['player_id'],
-          team_position: playerData['team_position'],
-          player_team_number: playerData['player_team_number'],
-          playing_status: playerData['playing_status'],
-          lineup_status: playerData['lineup_status'],
+          teamId: playerData['team_id'],
+          playerId: playerData['player_id'],
+          teamPosition: playerData['team_position'],
+          playerTeamNumber: playerData['player_team_number'],
+          playingStatus: playerData['playing_status'],
+          reasonForStatus: playerData['reason_for_status'] ?? "",
+          lineupStatus: playerData['lineup_status'],
         );
       } else {
         throw Exception('Player not found');
@@ -60,12 +61,12 @@ Future<void> updateTeamPlayerNumber(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        'player_id': teamPlayer.player_id,
-        'team_id': teamPlayer.team_id,
-        'team_position': teamPlayer.team_position,
+        'player_id': teamPlayer.playerId,
+        'team_id': teamPlayer.teamId,
+        'team_position': teamPlayer.teamPosition,
         'player_team_number': number,
-        'playing_status': teamPlayer.playing_status,
-        'lineup_status': teamPlayer.lineup_status,
+        'playing_status': teamPlayer.playingStatus,
+        'lineup_status': teamPlayer.lineupStatus,
       }),
     );
 
@@ -269,8 +270,14 @@ Future<void> editPlayerProfile(
   }
 }
 
-Future<void> updateTeamPlayer(int teamId, int playerId, int number,
-    String status, String teamPosition, String lineupStatus) async {
+Future<void> updateTeamPlayer(
+    int teamId,
+    int playerId,
+    int number,
+    String status,
+    String teamPosition,
+    String lineupStatus,
+    String reasonForStatus) async {
   const apiUrl = '$apiBaseUrl/team_player';
 
   try {
@@ -285,6 +292,7 @@ Future<void> updateTeamPlayer(int teamId, int playerId, int number,
         'team_position': teamPosition,
         'player_team_number': number,
         'playing_status': status,
+        'reason_for_status': reasonForStatus,
         'lineup_status': lineupStatus
       }),
     );
@@ -392,16 +400,17 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
         PlayerData player = await getPlayerById(playerJson['player_id']);
 
         players.add(PlayerProfile(
-            player.player_id,
-            player.player_firstname,
-            player.player_surname,
-            "${player.player_dob.toLocal()}".split(' ')[0],
-            player.player_gender,
-            player.player_height,
-            playerJson['player_team_number'],
-            stringToAvailabilityStatus(playerJson['playing_status']),
-            textToLineupStatus(playerJson['lineup_status']),
-            player.player_image));
+            playerId: player.player_id,
+            firstName: player.player_firstname,
+            surname: player.player_surname,
+            dob: "${player.player_dob.toLocal()}".split(' ')[0],
+            gender: player.player_gender,
+            height: player.player_height,
+            teamNumber: playerJson['player_team_number'],
+            reasonForStatus: playerJson['reason_for_status'] ?? "",
+            status: stringToAvailabilityStatus(playerJson['playing_status']),
+            lineupStatus: textToLineupStatus(playerJson['lineup_status']),
+            imageBytes: player.player_image));
       }
 
       return players;
@@ -439,16 +448,17 @@ Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
         if (playerJson['player_id'] == playerId) {
           PlayerData player = await getPlayerById(playerJson['player_id']);
           PlayerProfile playerProfile = PlayerProfile(
-              playerJson['player_id'],
-              player.player_firstname,
-              player.player_surname,
-              "${player.player_dob.toLocal()}".split(' ')[0],
-              player.player_gender,
-              player.player_height,
-              playerJson['player_team_number'],
-              stringToAvailabilityStatus(playerJson['playing_status']),
-              textToLineupStatus(playerJson['lineup_status']),
-              player.player_image);
+              playerId: playerJson['player_id'],
+              firstName: player.player_firstname,
+              surname: player.player_surname,
+              dob: "${player.player_dob.toLocal()}".split(' ')[0],
+              gender: player.player_gender,
+              height: player.player_height,
+              teamNumber: playerJson['player_team_number'],
+              reasonForStatus: playerJson['reason_for_status'] ?? "",
+              status: stringToAvailabilityStatus(playerJson['playing_status']),
+              lineupStatus: textToLineupStatus(playerJson['lineup_status']),
+              imageBytes: player.player_image);
           return playerProfile;
         }
       }

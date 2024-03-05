@@ -48,37 +48,41 @@ class PlayerProfile {
   final String height;
   final int teamNumber;
   final AvailabilityStatus status;
+  final String reasonForStatus;
   final LineupStatus lineupStatus;
   final Uint8List? imageBytes;
 
   PlayerProfile(
-      this.playerId,
-      this.firstName,
-      this.surname,
-      this.dob,
-      this.gender,
-      this.height,
-      this.teamNumber,
-      this.status,
-      this.lineupStatus,
-      this.imageBytes);
+      {required this.playerId,
+      required this.firstName,
+      required this.surname,
+      required this.dob,
+      required this.gender,
+      required this.height,
+      required this.teamNumber,
+      required this.status,
+      required this.lineupStatus,
+      required this.reasonForStatus,
+      required this.imageBytes});
 }
 
 class TeamPlayerData {
-  final int team_id;
-  final int player_id;
-  final String team_position;
-  final int player_team_number;
-  final String playing_status;
-  final String lineup_status;
+  final int teamId;
+  final int playerId;
+  final String teamPosition;
+  final int playerTeamNumber;
+  final String playingStatus;
+  final String reasonForStatus;
+  final String lineupStatus;
 
   TeamPlayerData({
-    required this.team_id,
-    required this.player_id,
-    required this.team_position,
-    required this.player_team_number,
-    required this.playing_status,
-    required this.lineup_status,
+    required this.teamId,
+    required this.playerId,
+    required this.teamPosition,
+    required this.playerTeamNumber,
+    required this.playingStatus,
+    required this.reasonForStatus,
+    required this.lineupStatus,
   });
 }
 
