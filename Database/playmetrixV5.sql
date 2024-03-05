@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS  injuries
 
 CREATE TABLE IF NOT EXISTS player_injuries 
 (
+	player_injury_id serial PRIMARY KEY,
 	player_id INT NOT NULL,
 	physio_id INT NOT NULL,
 	injury_id INT NOT NULL,
