@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import injuries, player_injuries
-from schema import InjuryBase, PlayerInjuryBase
+from schema import InjuryBase, PlayerInjuryBase, PlayerInjuryBaseNOID
 from Crud.crud import check_is_valid_name
 
 #region injuries
@@ -98,6 +98,13 @@ def get_player_injury_by_id(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
     
+def get_player_injury_by_player_injury_id(db: Session, id: int):
+    try:
+        result = db.query(player_injuries).filter_by(player_injury_id=id).all()
+        return result
+    except Exception as e:
+        return(f"Error retrieving player injuries: {e}")
+    
 def get_player_injury_by_date(db: Session, date: str, injury:int, id:int):
     try:
         result = db.query(player_injuries).filter_by(date_of_injury=date, injury_id=injury, player_id=id).first()
@@ -105,7 +112,7 @@ def get_player_injury_by_date(db: Session, date: str, injury:int, id:int):
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
     
-def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBase):
+def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBaseNOID):
     try:
         if new_player_injury is not None:
             new_player_injury = player_injuries(player_id=new_player_injury.player_id,

@@ -575,16 +575,21 @@ def read_player_injuries(db:Session = Depends(get_db)):
 def read_player_injury(id: int, db:Session = Depends(get_db)):
     return crud.get_player_injury_by_id(db, id)
 
+@app.get("/player_injuries/player_injury/{player_injury_id}")
+def read_player_injury(player_injury_id: int, db:Session = Depends(get_db)):
+    return crud.get_player_injury_by_player_injury_id(db, player_injury_id)
+
+
 @app.get("/player_injuries/{player_id}/date/{date}/injury/{injury}")
 def read_player_injury(player_id:int, date, injury:int, db:Session = Depends(get_db)):
     return crud.get_player_injury_by_date(db, date, injury, player_id)
 
 @app.post("/player_injuries/")
-def insert_player_injury(player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
+def insert_player_injury(player_injury: PlayerInjuryBaseNOID, db:Session = Depends(get_db)):
     return crud.insert_new_player_injury(db, player_injury)
 
 @app.put("/player_injuries/{id}")
-def update_player_injury(id: int, player_injury: PlayerInjuryBase, db:Session = Depends(get_db)):
+def update_player_injury(id: int, player_injury: PlayerInjuryBaseNOID, db:Session = Depends(get_db)):
     return crud.update_player_injury(db, player_injury, id)
 
 @app.delete("/player_injuries/{id}")

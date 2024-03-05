@@ -170,8 +170,16 @@ class InjuryBase(BaseModel):
     expected_minimum_recovery_time: int
     expected_maximum_recovery_time: int
 
+class PlayerInjuryBaseNOID(BaseModel):
+    player_id: int
+    physio_id: int
+    injury_id: int
+    date_of_injury: str
+    expected_date_of_recovery: str
+    player_injury_report: Optional[bytes] = None
 
 class PlayerInjuryBase(BaseModel):
+    player_injury_id: int
     player_id: int
     physio_id: int
     injury_id: int

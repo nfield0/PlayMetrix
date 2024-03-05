@@ -22,6 +22,7 @@ def get_notification_by_id(db: Session, id: int):
 def get_notification_by_team_id_type(db: Session, team_id_obj: int, user_type_obj: str):
     try:
         result = db.query(notifications).filter_by(team_id=team_id_obj, user_type=user_type_obj).all()
+        result.sort(key=lambda x: x.notification_date, reverse=True)
         return result
     except Exception as e:
         return(f"Error retrieving notification: {e}")
