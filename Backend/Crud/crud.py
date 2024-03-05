@@ -68,6 +68,7 @@ def cleanup(db: Session):
         db.execute(text("ALTER SEQUENCE sport_sport_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE coach_login_coach_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE injuries_injury_id_seq RESTART WITH 1;"))
+        db.execute(text("ALTER SEQUENCE player_injuries_player_injury_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE physio_login_physio_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE announcements_announcements_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE schedule_schedule_id_seq RESTART WITH 1;"))

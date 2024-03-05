@@ -28,9 +28,10 @@ class player_info(Base):
 
 class player_injuries(Base): 
     __tablename__ = "player_injuries"
+    player_injury_id = Column(Integer, primary_key = True, index = True)
     player_id = Column(Integer, index = True)
     physio_id = Column(Integer, index = True)
-    injury_id = Column(Integer, primary_key = True, index = True)
+    injury_id = Column(Integer, index = True)
     date_of_injury = Column(Date, index = True)
     expected_date_of_recovery = Column(Date, index = True)
     player_injury_report = Column(LargeBinary, index = True)
