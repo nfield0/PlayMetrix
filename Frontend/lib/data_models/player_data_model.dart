@@ -151,7 +151,7 @@ class Injury {
 }
 
 class AllPlayerInjuriesData {
-  final int id;
+  final int injuryId;
   final String type;
   final String nameAndGrade;
   final String location;
@@ -160,12 +160,13 @@ class AllPlayerInjuriesData {
   final int expectedMaxRecoveryTime;
   final DateTime dateOfInjury;
   final DateTime expectedDateOfRecovery;
+  final int playerInjuryId;
   final int playerId;
   final int physioId;
   final Uint8List? playerInjuryReport;
 
   AllPlayerInjuriesData({
-    required this.id,
+    required this.injuryId,
     required this.type,
     required this.nameAndGrade,
     required this.location,
@@ -174,6 +175,7 @@ class AllPlayerInjuriesData {
     required this.expectedMaxRecoveryTime,
     required this.dateOfInjury,
     required this.expectedDateOfRecovery,
+    required this.playerInjuryId,
     required this.playerId,
     required this.physioId,
     this.playerInjuryReport,
@@ -184,6 +186,7 @@ class PlayerInjuries {
   final int injuryId;
   final int playerId;
   final int physioId;
+  final int playerInjuryId;
   final DateTime dateOfInjury;
   final DateTime dateOfRecovery;
   final Uint8List? playerInjuryReport;
@@ -192,6 +195,7 @@ class PlayerInjuries {
     required this.injuryId,
     required this.playerId,
     required this.physioId,
+    required this.playerInjuryId,
     required this.dateOfInjury,
     required this.dateOfRecovery,
     this.playerInjuryReport,
@@ -202,6 +206,7 @@ class PlayerInjuries {
       injuryId: json['injury_id'],
       playerId: json['player_id'],
       physioId: json['physio_id'],
+      playerInjuryId: json['player_injury_id'],
       dateOfInjury: DateTime.parse(json['date_of_injury']),
       dateOfRecovery: DateTime.parse(json['expected_date_of_recovery']),
       playerInjuryReport: json['player_injury_report'] != null

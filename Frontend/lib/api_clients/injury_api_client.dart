@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:intl/intl.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:play_metrix/data_models/player_data_model.dart';
@@ -130,10 +129,8 @@ Future<Injury> getInjuryById(int injuryId) async {
   });
 }
 
-Future<AllPlayerInjuriesData> getPlayerInjuryById(
-    int injuryId, int playerId, DateTime dateOfInjury) async {
-  final apiUrl =
-      '$apiBaseUrl/player_injuries/$playerId/date/${DateFormat("yyyy-MM-dd").format(dateOfInjury)}/injury/$injuryId';
+Future<AllPlayerInjuriesData> getPlayerInjuryById(int playerInjuryId) async {
+  final apiUrl = '$apiBaseUrl/player_injuries/player_injury/$playerInjuryId';
 
   try {
     final response = await http.get(
@@ -144,12 +141,12 @@ Future<AllPlayerInjuriesData> getPlayerInjuryById(
     );
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body)[0];
 
       final injuryData = await getInjuryById(jsonResponse['injury_id']);
 
       AllPlayerInjuriesData playerInjuryData = AllPlayerInjuriesData(
-        id: injuryData.id,
+        injuryId: injuryData.id,
         type: injuryData.type,
         nameAndGrade: injuryData.nameAndGrade,
         location: injuryData.location,
@@ -161,6 +158,7 @@ Future<AllPlayerInjuriesData> getPlayerInjuryById(
             DateTime.parse(jsonResponse['expected_date_of_recovery']),
         playerId: jsonResponse['player_id'],
         physioId: jsonResponse['physio_id'],
+        playerInjuryId: jsonResponse['player_injury_id'],
         playerInjuryReport: jsonResponse['player_injury_report'],
       );
 
@@ -195,7 +193,7 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
       for (PlayerInjuries pi in allPlayerInjuries) {
         final injuryData = await getInjuryById(pi.injuryId);
         allPlayerInjuriesData.add(AllPlayerInjuriesData(
-          id: injuryData.id,
+          injuryId: injuryData.id,
           type: injuryData.type,
           nameAndGrade: injuryData.nameAndGrade,
           location: injuryData.location,
@@ -204,6 +202,7 @@ Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
           expectedMaxRecoveryTime: injuryData.expectedMaxRecoveryTime,
           dateOfInjury: pi.dateOfInjury,
           expectedDateOfRecovery: pi.dateOfRecovery,
+          playerInjuryId: pi.playerInjuryId,
           playerId: pi.playerId,
           physioId: pi.physioId,
           playerInjuryReport: pi.playerInjuryReport,

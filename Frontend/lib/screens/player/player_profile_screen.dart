@@ -537,7 +537,7 @@ Widget injuriesSection(
       children: playerInjuriesData
           .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
         return ExpansionPanelRadio(
-          value: injury.id,
+          value: injury.injuryId,
           backgroundColor: Colors.transparent,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
@@ -555,9 +555,8 @@ Widget injuriesSection(
                         MaterialPageRoute(
                             builder: (context) => EditInjuryScreen(
                                   physioId: injury.physioId,
-                                  injuryId: injury.id,
                                   playerId: injury.playerId,
-                                  dateOfInjury: injury.dateOfInjury,
+                                  playerInjuryId: injury.playerInjuryId,
                                 )),
                       );
                     })
@@ -601,7 +600,7 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
         expandedHeaderPadding: const EdgeInsets.all(0),
         children: [
           ExpansionPanelRadio(
-            value: injury.id,
+            value: injury.injuryId,
             backgroundColor: Colors.transparent,
             headerBuilder: (BuildContext context, bool isExpanded) {
               return const ListTile(

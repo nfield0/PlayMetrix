@@ -188,14 +188,14 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                         });
                                       }),
                                       const SizedBox(height: 5),
-                                      datePickerNoDivider(
+                                      datePickerNoDividerTooltip(
                                           context,
                                           "Date of recovery",
                                           selectedDateOfRecovery, (date) {
                                         setState(() {
                                           selectedDateOfRecovery = date;
                                         });
-                                      }),
+                                      }, "Enter expected date of recovery if player is not recovered, or actual date of recovery if player is recovered"),
                                       const SizedBox(height: 15),
                                       injuryReportFile != null
                                           ? Column(children: [

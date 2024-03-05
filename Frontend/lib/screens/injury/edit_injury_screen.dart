@@ -14,16 +14,15 @@ import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class EditInjuryScreen extends StatefulWidget {
   final int playerId;
-  final int injuryId;
   final int physioId;
-  final DateTime dateOfInjury;
+  final int playerInjuryId;
 
-  const EditInjuryScreen(
-      {super.key,
-      required this.playerId,
-      required this.injuryId,
-      required this.physioId,
-      required this.dateOfInjury});
+  const EditInjuryScreen({
+    super.key,
+    required this.playerId,
+    required this.physioId,
+    required this.playerInjuryId,
+  });
 
   @override
   EditInjuryScreenState createState() => EditInjuryScreenState();
@@ -54,12 +53,11 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
       });
     });
 
-    getPlayerInjuryById(widget.injuryId, widget.playerId, widget.dateOfInjury)
-        .then((injury) {
+    getPlayerInjuryById(widget.playerInjuryId).then((injury) {
       setState(() {
-        selectedInjuryId = injury.id;
+        selectedInjuryId = injury.injuryId;
         selectedInjury = Injury(
-            id: injury.id,
+            id: injury.injuryId,
             type: injury.type,
             nameAndGrade: injury.nameAndGrade,
             location: injury.location,
@@ -211,14 +209,14 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                         });
                                       }),
                                       const SizedBox(height: 5),
-                                      datePickerNoDivider(
+                                      datePickerNoDividerTooltip(
                                           context,
                                           "Date of recovery",
                                           selectedDateOfRecovery, (date) {
                                         setState(() {
                                           selectedDateOfRecovery = date;
                                         });
-                                      }),
+                                      }, "Enter expected date of recovery if player is not recovered, or actual date of recovery if player is recovered"),
                                       const SizedBox(height: 15),
                                       injuryReportFile != null
                                           ? Column(children: [
@@ -261,7 +259,7 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       PlayerProfileViewScreen(
-                                                          userId: widget
+                                                          playerId: widget
                                                               .playerId)));
                                         }
                                       })

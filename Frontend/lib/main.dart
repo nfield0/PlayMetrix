@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/push_notification_manager.dart';
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
       title: 'PlayMetrix',
 
       theme: ThemeData(
+        tooltipTheme: const TooltipThemeData(
+            margin: EdgeInsets.symmetric(horizontal: 10)),
         colorScheme: const ColorScheme.light(primary: AppColours.darkBlue),
         appBarTheme: const AppBarTheme(surfaceTintColor: AppColours.mediumBlue),
         datePickerTheme: DatePickerThemeData(

@@ -214,7 +214,7 @@ Widget playerProfilePill(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        PlayerProfileViewScreen(userId: playerId)),
+                        PlayerProfileViewScreen(playerId: playerId)),
               );
             },
             child: Container(

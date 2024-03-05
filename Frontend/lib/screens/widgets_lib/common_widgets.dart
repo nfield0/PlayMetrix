@@ -367,6 +367,54 @@ Widget datePickerNoDivider(BuildContext context, String title,
   );
 }
 
+Widget datePickerNoDividerTooltip(
+    BuildContext context,
+    String title,
+    DateTime selectedDate,
+    void Function(DateTime) onChanged,
+    String tooltipMessage) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(children: [
+            Text(title,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(width: 5),
+            Tooltip(
+                message: tooltipMessage,
+                child: const Icon(Icons.info_outline,
+                    size: 20, color: Colors.grey)),
+          ]),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime(1920),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Call the onChanged callback with the selected date
+                onChanged(pickedDate);
+              }
+            },
+            child: Text(
+              "${selectedDate.toLocal().toLocal()}"
+                  .split(' ')[0], // Display selected date
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget timePickerWithDivider(BuildContext context, String title,
     TimeOfDay selectedTime, void Function(TimeOfDay) onChanged) {
   return Column(

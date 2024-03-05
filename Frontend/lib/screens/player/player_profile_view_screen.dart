@@ -7,6 +7,7 @@ import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/screens/injury/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +19,9 @@ import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class PlayerProfileViewScreen extends ConsumerWidget {
-  final int userId;
+  final int playerId;
 
-  PlayerProfileViewScreen({super.key, required this.userId});
+  PlayerProfileViewScreen({super.key, required this.playerId});
 
   final AvailabilityData available = AvailabilityData(
       AvailabilityStatus.available,
@@ -66,7 +67,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                           builder: (context) => EditPlayerProfileScreen(
                                 physioId: ref.read(userIdProvider),
                                 userRole: userRole,
-                                playerId: userId,
+                                playerId: playerId,
                                 teamId: ref.read(teamIdProvider),
                               )),
                     );
@@ -90,7 +91,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                           child: Column(children: [
                             if (ref.read(teamIdProvider.notifier).state == -1)
                               FutureBuilder<PlayerData>(
-                                  future: getPlayerById(userId),
+                                  future: getPlayerById(playerId),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -128,7 +129,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                             if (ref.read(teamIdProvider.notifier).state != -1)
                               FutureBuilder<PlayerProfile>(
                                   future: getPlayerTeamProfile(
-                                      ref.read(teamIdProvider), userId),
+                                      ref.read(teamIdProvider), playerId),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -178,7 +179,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                             const SizedBox(height: 20),
                             divider(),
                             const SizedBox(height: 20),
-                            const Text("Teams",
+                            const Text("Team",
                                 style: TextStyle(
                                     fontFamily: AppFonts.gabarito,
                                     fontWeight: FontWeight.bold,
@@ -222,6 +223,34 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                                     fontWeight: FontWeight.bold,
                                     color: AppColours.darkBlue,
                                     fontSize: 30)),
+                            if (userRole == UserRole.physio)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 20),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        smallButton(Icons.add_circle_outline,
+                                            "Add Injury", () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddInjuryScreen(
+                                                      physioId: ref
+                                                          .read(userIdProvider),
+                                                      userRole: userRole,
+                                                      teamId: ref
+                                                          .read(teamIdProvider),
+                                                      playerId: playerId,
+                                                    )),
+                                          );
+                                        }),
+                                      ]),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
                             allPlayersInjuriesData.when(
                               loading: () => const CircularProgressIndicator(),
                               error: (err, stack) => Text('Error: $err'),
@@ -242,7 +271,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                             Padding(
                                 padding: EdgeInsets.all(20),
                                 child: FutureBuilder<StatisticsData>(
-                                    future: getStatisticsData(userId),
+                                    future: getStatisticsData(playerId),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
