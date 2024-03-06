@@ -114,6 +114,20 @@ class StatisticsData {
       this.matchesOffTheBench, this.injuryProne);
 }
 
+class PlayerMatchData {
+  final int id;
+  final int playerId;
+  final int scheduleId;
+  final int minutesPlayed;
+
+  PlayerMatchData({
+    required this.id,
+    required this.playerId,
+    required this.scheduleId,
+    required this.minutesPlayed,
+  });
+}
+
 class Injury {
   final int id;
   final String type;
