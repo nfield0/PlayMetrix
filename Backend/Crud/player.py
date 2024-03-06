@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import player_login, player_info, player_stats, player_injuries
 from schema import PlayerBase, PlayerInfo, PlayerStat
-from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt
+from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt, check_is_valid_name,check_is_valid_contact_number
 
 #region players
 
@@ -61,6 +61,10 @@ def get_player_stats_by_id(db:Session, id: int):
     
 def update_player_info_by_id(db:Session, player: PlayerInfo, id: int):
     try:
+        if not check_is_valid_name(player.player_firstname) or not check_is_valid_name(player.player_surname):
+            raise HTTPException(status_code=400, detail="Invalid name")
+        if not check_is_valid_contact_number(player.player_contact_number):
+            raise HTTPException(status_code=400, detail="Invalid contact number")
         player_info_to_update = db.query(player_info).filter_by(player_id=id).first()
         new_player_info = player_info(player_id=player.player_id,
                                       player_firstname=player.player_firstname,
@@ -104,8 +108,7 @@ def update_player_stat_by_id(db:Session, player: PlayerStat,id: int ):
             matches_played = player.matches_played,
             matches_started = player.matches_started,
             matches_off_the_bench = player.matches_off_the_bench,
-            injury_prone = player.injury_prone,
-            minutes_played = player.minutes_played)
+            injury_prone = player.injury_prone)
             # raise HTTPException(status_code=404, detail="Player info not found")
             db.add(new_player_stat)
         else:
@@ -114,13 +117,26 @@ def update_player_stat_by_id(db:Session, player: PlayerStat,id: int ):
             player_stat_to_update.matches_started = player.matches_started
             player_stat_to_update.matches_off_the_bench = player.matches_off_the_bench
             player_stat_to_update.injury_prone = player.injury_prone
-            player_stat_to_update.minutes_played = player.minutes_played
 
         db.commit()
 
         return {"message": f"Player stats with ID {id} has been updated"}
     except Exception as e:
                 return(f"Error retrieving player stats: {e}")
+    
+# def update_minutes_played(db, minutes_played, id):
+#     try:
+#         player_stat_to_update = db.query(player_stats).filter_by(player_id=id).first()
+#         player_stat_to_update.minutes_played += minutes_played
+#         db.commit()
+#         db.refresh(player_stat_to_update)
+
+#         return {"message": f"Player with ID {id} minutes played set to {player_stat_to_update.minutes_played}"}
+#     except Exception as e:
+#         return(f"Error updating minutes played: {e}")
+    
+
+
 
 def update_player_by_id(db:Session,  player: PlayerBase, id: int):
     try:

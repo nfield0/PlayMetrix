@@ -29,12 +29,13 @@ Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
 
       if (playerData != null) {
         return TeamPlayerData(
-          team_id: playerData['team_id'],
-          player_id: playerData['player_id'],
-          team_position: playerData['team_position'],
-          player_team_number: playerData['player_team_number'],
-          playing_status: playerData['playing_status'],
-          lineup_status: playerData['lineup_status'],
+          teamId: playerData['team_id'],
+          playerId: playerData['player_id'],
+          teamPosition: playerData['team_position'],
+          playerTeamNumber: playerData['player_team_number'],
+          playingStatus: playerData['playing_status'],
+          reasonForStatus: playerData['reason_for_status'] ?? "",
+          lineupStatus: playerData['lineup_status'],
         );
       } else {
         throw Exception('Player not found');
@@ -60,12 +61,12 @@ Future<void> updateTeamPlayerNumber(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        'player_id': teamPlayer.player_id,
-        'team_id': teamPlayer.team_id,
-        'team_position': teamPlayer.team_position,
+        'player_id': teamPlayer.playerId,
+        'team_id': teamPlayer.teamId,
+        'team_position': teamPlayer.teamPosition,
         'player_team_number': number,
-        'playing_status': teamPlayer.playing_status,
-        'lineup_status': teamPlayer.lineup_status,
+        'playing_status': teamPlayer.playingStatus,
+        'lineup_status': teamPlayer.lineupStatus,
       }),
     );
 
@@ -269,8 +270,14 @@ Future<void> editPlayerProfile(
   }
 }
 
-Future<void> updateTeamPlayer(int teamId, int playerId, int number,
-    String status, String teamPosition, String lineupStatus) async {
+Future<void> updateTeamPlayer(
+    int teamId,
+    int playerId,
+    int number,
+    String status,
+    String teamPosition,
+    String lineupStatus,
+    String reasonForStatus) async {
   const apiUrl = '$apiBaseUrl/team_player';
 
   try {
@@ -285,6 +292,7 @@ Future<void> updateTeamPlayer(int teamId, int playerId, int number,
         'team_position': teamPosition,
         'player_team_number': number,
         'playing_status': status,
+        'reason_for_status': reasonForStatus,
         'lineup_status': lineupStatus
       }),
     );
@@ -303,7 +311,7 @@ Future<void> updateTeamPlayer(int teamId, int playerId, int number,
 }
 
 Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
-    int matchesStarted, int matchesOffTheBench, int totalMinutesPlayed) async {
+    int matchesStarted, int matchesOffTheBench) async {
   final apiUrl = '$apiBaseUrl/players/stats/$playerId';
 
   try {
@@ -318,7 +326,6 @@ Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
         "matches_started": matchesStarted,
         "matches_off_the_bench": matchesOffTheBench,
         "injury_prone": false,
-        "minutes_played": totalMinutesPlayed
       }),
     );
 
@@ -369,261 +376,6 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
   }
 }
 
-Future<void> addInjury({
-  required int playerId,
-  required String injuryType,
-  required String injuryLocation,
-  required String expectedRecoveryTime,
-  required String recoveryMethod,
-  required DateTime dateOfInjury,
-  required DateTime dateOfRecovery,
-}) async {
-  const apiUrl =
-      '$apiBaseUrl/injuries/'; // Replace with your actual backend URL
-
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'injury_type': injuryType,
-        'injury_location': injuryLocation,
-        'expected_recovery_time': expectedRecoveryTime,
-        'recovery_method': recoveryMethod,
-      }),
-    );
-
-    print('Response: ${response.body}');
-    if (response.statusCode == 200) {
-      const playerInjuriesApiUrl = "$apiBaseUrl/player_injuries/";
-
-      final playerInjuriesResponse = await http.post(
-        Uri.parse(playerInjuriesApiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'player_id': playerId,
-          'injury_id': jsonDecode(response.body)['id'],
-          'date_of_injury': dateOfInjury.toIso8601String(),
-          'date_of_recovery': dateOfRecovery.toIso8601String(),
-        }),
-      );
-
-      print('Response: ${playerInjuriesResponse.body}');
-    } else {
-      print('Failed to register. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    print('Error: $error');
-  }
-}
-
-Future<void> updateInjury({
-  required int injuryId,
-  required String injuryType,
-  required String injuryLocation,
-  required String expectedRecoveryTime,
-  required String recoveryMethod,
-  required DateTime dateOfInjury,
-  required DateTime dateOfRecovery,
-  required int playerId,
-}) async {
-  final apiUrl = '$apiBaseUrl/injuries/$injuryId';
-  try {
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'injury_type': injuryType,
-        'injury_location': injuryLocation,
-        'expected_recovery_time': expectedRecoveryTime,
-        'recovery_method': recoveryMethod,
-      }),
-    );
-
-    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$playerId";
-    final playerInjuryResponse = await http.put(
-      Uri.parse(playerInjuryApiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "injury_id": injuryId,
-        "date_of_injury": dateOfInjury.toIso8601String(),
-        "date_of_recovery": dateOfRecovery.toIso8601String(),
-        "player_id": playerId
-      }),
-    );
-
-    if (response.statusCode == 200 && playerInjuryResponse.statusCode == 200) {
-      // Successfully updated, handle the response accordingly
-      print('Update successful!');
-      print('Response: ${playerInjuryResponse.body}');
-      // You can parse the response JSON here and perform actions based on it
-    } else {
-      // Failed to update, handle the error accordingly
-      print(
-          'Failed to update. Status code: ${playerInjuryResponse.statusCode}');
-      print('Error message: ${playerInjuryResponse.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print('Error: $error');
-  }
-}
-
-Future<AllPlayerInjuriesData> getPlayerInjuryById(
-    int injuryId, int playerId) async {
-  final apiUrl = "$apiBaseUrl/injuries/$injuryId";
-
-  final response = await http.get(Uri.parse(apiUrl));
-
-  final injuryData = jsonDecode(response.body);
-
-  if (response.statusCode == 200) {
-    final playerInjuryApiUrl = "$apiBaseUrl/player_injuries/$playerId";
-
-    final playerInjuryResponse = await http.get(Uri.parse(playerInjuryApiUrl));
-
-    if (playerInjuryResponse.statusCode == 200) {
-      List<dynamic> playerInjuriesJson = jsonDecode(playerInjuryResponse.body);
-
-      for (var injury in playerInjuriesJson) {
-        if (injury['injury_id'] == injuryId) {
-          return AllPlayerInjuriesData(
-              injuryId,
-              injuryData['injury_type'],
-              injuryData['injury_location'],
-              injuryData['expected_recovery_time'],
-              injuryData['recovery_method'],
-              injury['date_of_injury'],
-              injury['date_of_recovery'],
-              playerId);
-        }
-      }
-    } else {
-      throw Exception('Failed to load player injuries');
-    }
-  } else {
-    throw Exception('Failed to load player injuries');
-  }
-  throw Exception('Failed to load player injuries');
-}
-
-Future<List<AllPlayerInjuriesData>> getAllPlayerInjuriesByUserId(
-    int userId) async {
-  const apiUrl =
-      '$apiBaseUrl/player_injuries'; // Replace with your actual backend URL and provide the user ID
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Successfully retrieved data, parse and store it in individual variables
-      List<dynamic> jsonResponse = jsonDecode(response.body);
-      List<PlayerInjuries> allPlayerInjuries =
-          jsonResponse.map((json) => PlayerInjuries.fromJson(json)).toList();
-      List<PlayerInjuries> playerInjuries = [];
-      // loop thourgh all the injuries and get the ones that match the user id passed in
-      for (var injury in allPlayerInjuries) {
-        if (injury.player_id == userId) {
-          playerInjuries.add(injury);
-        }
-      }
-
-      List<int> injuryIds = [];
-      for (var injury in playerInjuries) {
-        injuryIds.add(injury.injury_id); // Corrected property name
-      }
-
-      const apiUrlForInjuries =
-          '$apiBaseUrl/injuries'; // Replace with your actual backend URL and provide the user ID
-
-      try {
-        final response = await http.get(
-          Uri.parse(apiUrlForInjuries),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-        );
-
-        if (response.statusCode == 200) {
-          // Successfully retrieved data, parse and store it in individual variables
-          List<dynamic> jsonResponse = jsonDecode(response.body);
-          List<Injury> allInjuries =
-              jsonResponse.map((json) => Injury.fromJson(json)).toList();
-
-          List<Injury> injuriesInIdsList = [];
-
-          for (var injury in allInjuries) {
-            if (injuryIds.contains(injury.injury_id)) {
-              injuriesInIdsList.add(injury);
-            }
-          }
-
-          List<AllPlayerInjuriesData> allPlayerInjuriesData = [];
-          for (var injury in injuriesInIdsList) {
-            for (var playerInjury in playerInjuries) {
-              if (injury.injury_id == playerInjury.injury_id) {
-                // create a AllPlayerInjuriesData object
-                AllPlayerInjuriesData data = AllPlayerInjuriesData(
-                    injury.injury_id,
-                    injury.injury_type,
-                    injury.injury_location,
-                    injury.expected_recovery_time,
-                    injury.recovery_method,
-                    playerInjury.date_of_injury,
-                    playerInjury.date_of_recovery,
-                    playerInjury.player_id);
-                allPlayerInjuriesData.add(data);
-              }
-            }
-          }
-          return allPlayerInjuriesData;
-        } else {
-          // Failed to retrieve data, handle the error accordingly
-          print(
-              'Failed to retrieve data for injuries request. Status code: ${response.statusCode}');
-          print('Error message for injuries request: ${response.body}');
-        }
-      } catch (error) {
-        // Handle any network or other errors
-        print("injuries");
-        print('Error in injuries request: $error');
-      }
-      throw Exception('Failed to retrieve Injury Data');
-    } else {
-      // Failed to retrieve data, handle the error accordingly
-      print(
-          'Failed to retrieve data for player injuries request. Status code: ${response.statusCode}');
-      print(
-          'Error message for player injuries request. Status code: ${response.body}');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    print("Player Injuries by user id");
-    print('Error: $error');
-  }
-  throw Exception('Failed to retrieve All Player Injuries By User Id data');
-}
-
-void printList(List<dynamic> list) {
-  for (var item in list) {
-    print(item);
-  }
-}
-
 Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
   final apiUrl = '$apiBaseUrl/team_player/$teamId';
 
@@ -647,16 +399,17 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
         PlayerData player = await getPlayerById(playerJson['player_id']);
 
         players.add(PlayerProfile(
-            player.player_id,
-            player.player_firstname,
-            player.player_surname,
-            "${player.player_dob.toLocal()}".split(' ')[0],
-            player.player_gender,
-            player.player_height,
-            playerJson['player_team_number'],
-            stringToAvailabilityStatus(playerJson['playing_status']),
-            textToLineupStatus(playerJson['lineup_status']),
-            player.player_image));
+            playerId: player.player_id,
+            firstName: player.player_firstname,
+            surname: player.player_surname,
+            dob: "${player.player_dob.toLocal()}".split(' ')[0],
+            gender: player.player_gender,
+            height: player.player_height,
+            teamNumber: playerJson['player_team_number'],
+            reasonForStatus: playerJson['reason_for_status'] ?? "",
+            status: stringToAvailabilityStatus(playerJson['playing_status']),
+            lineupStatus: textToLineupStatus(playerJson['lineup_status']),
+            imageBytes: player.player_image));
       }
 
       return players;
@@ -694,16 +447,17 @@ Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
         if (playerJson['player_id'] == playerId) {
           PlayerData player = await getPlayerById(playerJson['player_id']);
           PlayerProfile playerProfile = PlayerProfile(
-              playerJson['player_id'],
-              player.player_firstname,
-              player.player_surname,
-              "${player.player_dob.toLocal()}".split(' ')[0],
-              player.player_gender,
-              player.player_height,
-              playerJson['player_team_number'],
-              stringToAvailabilityStatus(playerJson['playing_status']),
-              textToLineupStatus(playerJson['lineup_status']),
-              player.player_image);
+              playerId: playerJson['player_id'],
+              firstName: player.player_firstname,
+              surname: player.player_surname,
+              dob: "${player.player_dob.toLocal()}".split(' ')[0],
+              gender: player.player_gender,
+              height: player.player_height,
+              teamNumber: playerJson['player_team_number'],
+              reasonForStatus: playerJson['reason_for_status'] ?? "",
+              status: stringToAvailabilityStatus(playerJson['playing_status']),
+              lineupStatus: textToLineupStatus(playerJson['lineup_status']),
+              imageBytes: player.player_image);
           return playerProfile;
         }
       }
@@ -768,7 +522,6 @@ Future<StatisticsData> getStatisticsData(int id) async {
             parsed["matches_played"],
             parsed["matches_started"],
             parsed["matches_off_the_bench"],
-            parsed["minutes_played"],
             parsed["injury_prone"]);
       } else {
         throw Exception('Failed to load player statistics');

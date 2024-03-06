@@ -4,10 +4,15 @@ def test_add_injury():
     url = 'http://127.0.0.1:8000/injuries/'
     headers = {'Content-Type': 'application/json'}
     json = {
+        
         "injury_type": "Ankle Sprain",
+        "injury_name_and_grade": "Grade 1",
         "injury_location": "Left Ankle",
-        "expected_recovery_time": "2021-05-01",
-        "recovery_method": "Physical Therapy and rest"
+        "potential_recovery_method_1": "Physical Therapy and rest",
+        "potential_recovery_method_2": "Surgery",
+        "potential_recovery_method_3": "Rest and Ice",
+        "expected_minimum_recovery_time": 24,
+        "expected_maximum_recovery_time": 120
     }
     response = requests.post(url, headers=headers, json=json)
 
@@ -28,9 +33,13 @@ def test_add_injury_incorrect():
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Ankle Sprain123!",
+        "injury_name_and_grade": "Grade 1",
         "injury_location": "Left Ankle",
-        "expected_recovery_time": "2021-05-01",
-        "recovery_method": "Physical Therapy and rest"
+        "potential_recovery_method_1": "Physical Therapy and rest",
+        "potential_recovery_method_2": "Surgery",
+        "potential_recovery_method_3": "Rest and Ice",
+        "expected_minimum_recovery_time": 24,
+        "expected_maximum_recovery_time": 120
     }
     response = requests.post(url, headers=headers, json=json)
 
@@ -56,9 +65,13 @@ def test_get_injury_by_id():
         expected_data = {
             "injury_id": 1,
             "injury_type": "Ankle Sprain",
-            "injury_location": "Left Ankle",
-            "expected_recovery_time": "2021-05-01",
-            "recovery_method": "Physical Therapy and rest"
+        "injury_name_and_grade": "Grade 1",
+        "injury_location": "Left Ankle",
+        "potential_recovery_method_1": "Physical Therapy and rest",
+        "potential_recovery_method_2": "Surgery",
+        "potential_recovery_method_3": "Rest and Ice",
+        "expected_minimum_recovery_time": 24,
+        "expected_maximum_recovery_time": 120
         }
         
         assert response_json == expected_data
@@ -85,9 +98,13 @@ def test_update_injury_by_id():
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Broken Ankle",
+        "injury_name_and_grade": "Grade 1",
         "injury_location": "Left Ankle",
-        "expected_recovery_time": "2022-09-02",
-        "recovery_method": "Physical Therapy and rest"
+        "potential_recovery_method_1": "Physical Therapy and rest",
+        "potential_recovery_method_2": "Surgery",
+        "potential_recovery_method_3": "Rest and Ice",
+        "expected_minimum_recovery_time": 24,
+        "expected_maximum_recovery_time": 144
     }
     response = requests.put(url, headers=headers, json=json)
 

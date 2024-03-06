@@ -56,7 +56,7 @@ def register_player(db, user):
     db.add(new_user_info)
 
     new_user_stats = player_stats(player_id=new_user_id.player_id, matches_played=0, matches_started=0, 
-                                  matches_off_the_bench=0, injury_prone=False, minutes_played=0)
+                                  matches_off_the_bench=0, injury_prone=False)
     db.add(new_user_stats)
     db.commit()
     db.refresh(new_user_stats)
@@ -291,5 +291,28 @@ def get_user_by_email(db:Session, type: str, email: str):
     except Exception as e:
         return(f"Error retrieving from {type}s: {e}")
     
+def get_user_details_by_email(db: Session, email :str):
+    # raise HTTPException(status_code=200, detail=email)
+
+    try:
+        manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
+        player_login_result = db.query(player_login).filter_by(player_email=email).first()
+        physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
+        coach_login_result = db.query(coach_login).filter_by(coach_email=email).first()
+
+
+        if manager_login_result:
+            return UserLoginBase(user_id=manager_login_result.manager_id, user_type="manager", user_email=True, user_password=True)
+        elif player_login_result:
+            return UserLoginBase(user_id=player_login_result.player_id, user_type="player", user_email=True, user_password=True)
+        elif physio_login_result:
+            return UserLoginBase(user_id=physio_login_result.physio_id, user_type="physio", user_email=True, user_password=True)
+        elif coach_login_result:
+            return UserLoginBase(user_id=coach_login_result.coach_id, user_type="coach", user_email=True, user_password=True)
+        else:
+            raise HTTPException(status_code=400, detail="No user found")
+        
+    except Exception as e:
+        return(f"Error retrieving user: {e}") 
 
 #endregion

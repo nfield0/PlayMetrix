@@ -151,28 +151,43 @@ Widget emptySection(IconData icon, String text) {
 
 Widget divider() {
   return const Divider(
-    color: AppColours.darkBlue, // You can set the color of the divider
-    thickness: 1, // You can set the thickness of the divider
+    color: AppColours.darkBlue,
+    thickness: 1,
   );
 }
 
 Widget greyDivider() {
   return const Divider(
-    color: AppColours.grey, // You can set the color of the divider
-    thickness: 1, // You can set the thickness of the divider
+    color: AppColours.grey,
+    thickness: 1,
   );
 }
 
-Widget detailWithDivider(String title, String detail) {
+Widget greyDividerThick() {
+  return const Divider(
+    color: Colors.black12,
+    thickness: 2.5,
+  );
+}
+
+Widget detailWithDivider(String title, String detail, BuildContext context) {
   return Column(
     children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: const TextStyle(fontSize: 16)),
-          Text(detail,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4 >= 800 * 0.4
+                ? 800 * 0.4
+                : MediaQuery.of(context).size.width * 0.4,
+            child: Text(detail,
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                )),
+          )
         ],
       ),
       const SizedBox(height: 10),
@@ -352,6 +367,54 @@ Widget datePickerNoDivider(BuildContext context, String title,
   );
 }
 
+Widget datePickerNoDividerTooltip(
+    BuildContext context,
+    String title,
+    DateTime selectedDate,
+    void Function(DateTime) onChanged,
+    String tooltipMessage) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(children: [
+            Text(title,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(width: 5),
+            Tooltip(
+                message: tooltipMessage,
+                child: const Icon(Icons.info_outline,
+                    size: 20, color: Colors.grey)),
+          ]),
+          TextButton(
+            onPressed: () async {
+              // Show date picker
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime(1920),
+                lastDate: DateTime(2101),
+              );
+
+              if (pickedDate != null) {
+                // Call the onChanged callback with the selected date
+                onChanged(pickedDate);
+              }
+            },
+            child: Text(
+              "${selectedDate.toLocal().toLocal()}"
+                  .split(' ')[0], // Display selected date
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 Widget timePickerWithDivider(BuildContext context, String title,
     TimeOfDay selectedTime, void Function(TimeOfDay) onChanged) {
   return Column(
@@ -433,8 +496,10 @@ Widget formFieldBottomBorderController(
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           )),
       const SizedBox(width: 30),
-      Container(
-        width: MediaQuery.of(context).size.width * 0.4,
+      SizedBox(
+        width: MediaQuery.of(context).size.width * 0.4 >= 800 * 0.4
+            ? 800 * 0.4
+            : MediaQuery.of(context).size.width * 0.4,
         child: TextFormField(
           controller: controller,
           decoration: const InputDecoration(
@@ -495,7 +560,8 @@ Widget appBarTitlePreviousPage(String text) {
         style: const TextStyle(
           color: AppColours.darkBlue,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 24,
+          fontFamily: AppFonts.gabarito,
         ))
   ]);
 }

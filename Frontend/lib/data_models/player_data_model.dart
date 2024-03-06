@@ -48,37 +48,41 @@ class PlayerProfile {
   final String height;
   final int teamNumber;
   final AvailabilityStatus status;
+  final String reasonForStatus;
   final LineupStatus lineupStatus;
   final Uint8List? imageBytes;
 
   PlayerProfile(
-      this.playerId,
-      this.firstName,
-      this.surname,
-      this.dob,
-      this.gender,
-      this.height,
-      this.teamNumber,
-      this.status,
-      this.lineupStatus,
-      this.imageBytes);
+      {required this.playerId,
+      required this.firstName,
+      required this.surname,
+      required this.dob,
+      required this.gender,
+      required this.height,
+      required this.teamNumber,
+      required this.status,
+      required this.lineupStatus,
+      required this.reasonForStatus,
+      required this.imageBytes});
 }
 
 class TeamPlayerData {
-  final int team_id;
-  final int player_id;
-  final String team_position;
-  final int player_team_number;
-  final String playing_status;
-  final String lineup_status;
+  final int teamId;
+  final int playerId;
+  final String teamPosition;
+  final int playerTeamNumber;
+  final String playingStatus;
+  final String reasonForStatus;
+  final String lineupStatus;
 
   TeamPlayerData({
-    required this.team_id,
-    required this.player_id,
-    required this.team_position,
-    required this.player_team_number,
-    required this.playing_status,
-    required this.lineup_status,
+    required this.teamId,
+    required this.playerId,
+    required this.teamPosition,
+    required this.playerTeamNumber,
+    required this.playingStatus,
+    required this.reasonForStatus,
+    required this.lineupStatus,
   });
 }
 
@@ -104,90 +108,124 @@ class StatisticsData {
   final int matchesPlayed;
   final int matchesStarted;
   final int matchesOffTheBench;
-  final int totalMinutesPlayed;
   final bool injuryProne;
 
   StatisticsData(this.matchesPlayed, this.matchesStarted,
-      this.matchesOffTheBench, this.totalMinutesPlayed, this.injuryProne);
+      this.matchesOffTheBench, this.injuryProne);
+}
+
+class PlayerMatchData {
+  final int id;
+  final int playerId;
+  final int scheduleId;
+  final int minutesPlayed;
+
+  PlayerMatchData({
+    required this.id,
+    required this.playerId,
+    required this.scheduleId,
+    required this.minutesPlayed,
+  });
 }
 
 class Injury {
-  var injury_id;
-  var injury_type;
-  String injury_location;
-  var expected_recovery_time;
-  var recovery_method;
+  final int id;
+  final String type;
+  final String nameAndGrade;
+  final String location;
+  final List<String> potentialRecoveryMethods;
+  final int expectedMinRecoveryTime;
+  final int expectedMaxRecoveryTime;
 
-  Injury(
-    this.injury_id,
-    this.injury_type,
-    this.injury_location,
-    this.expected_recovery_time,
-    this.recovery_method,
-  );
+  Injury({
+    required this.id,
+    required this.type,
+    required this.nameAndGrade,
+    required this.location,
+    required this.potentialRecoveryMethods,
+    required this.expectedMinRecoveryTime,
+    required this.expectedMaxRecoveryTime,
+  });
 
   factory Injury.fromJson(Map<String, dynamic> json) {
     return Injury(
-        json['injury_id'],
-        json['injury_type'],
-        json['injury_location'],
-        json['expected_recovery_time'],
-        json['recovery_method']);
-  }
-
-  @override
-  String toString() {
-    return 'Injury{injury_id: $injury_id, injury_type: $injury_type, expected_recovery_time: $expected_recovery_time, recovery_method: $recovery_method}';
+        id: json['injury_id'] ?? 0,
+        type: json['injury_type'] ?? "",
+        nameAndGrade: json['injury_name_and_grade'] ?? "",
+        location: json['injury_location'] ?? "",
+        potentialRecoveryMethods: [
+          json['potential_recovery_method_1'] ?? "",
+          json['potential_recovery_method_2'] ?? "",
+          json['potential_recovery_method_3'] ?? ""
+        ],
+        expectedMinRecoveryTime: json['expected_minimum_recovery_time'],
+        expectedMaxRecoveryTime: json['expected_maximum_recovery_time']);
   }
 }
 
 class AllPlayerInjuriesData {
-  final int injury_id;
-  final String injury_type;
-  final String injury_location;
-  final String expected_recovery_time;
-  final String recovery_method;
-  final String date_of_injury;
-  final String date_of_recovery;
-  final int player_id;
+  final int injuryId;
+  final String type;
+  final String nameAndGrade;
+  final String location;
+  final List<String> potentialRecoveryMethods;
+  final int expectedMinRecoveryTime;
+  final int expectedMaxRecoveryTime;
+  final DateTime dateOfInjury;
+  final DateTime expectedDateOfRecovery;
+  final int playerInjuryId;
+  final int playerId;
+  final int physioId;
+  final Uint8List? playerInjuryReport;
 
-  AllPlayerInjuriesData(
-    this.injury_id,
-    this.injury_type,
-    this.injury_location,
-    this.expected_recovery_time,
-    this.recovery_method,
-    this.date_of_injury,
-    this.date_of_recovery,
-    this.player_id,
-  );
+  AllPlayerInjuriesData({
+    required this.injuryId,
+    required this.type,
+    required this.nameAndGrade,
+    required this.location,
+    required this.potentialRecoveryMethods,
+    required this.expectedMinRecoveryTime,
+    required this.expectedMaxRecoveryTime,
+    required this.dateOfInjury,
+    required this.expectedDateOfRecovery,
+    required this.playerInjuryId,
+    required this.playerId,
+    required this.physioId,
+    this.playerInjuryReport,
+  });
 }
 
 class PlayerInjuries {
-  final int injury_id;
-  final String date_of_injury;
-  final String date_of_recovery;
-  final int player_id;
+  final int injuryId;
+  final int playerId;
+  final int physioId;
+  final int playerInjuryId;
+  final DateTime dateOfInjury;
+  final DateTime dateOfRecovery;
+  final Uint8List? playerInjuryReport;
 
   PlayerInjuries({
-    required this.injury_id,
-    required this.date_of_injury,
-    required this.date_of_recovery,
-    required this.player_id,
+    required this.injuryId,
+    required this.playerId,
+    required this.physioId,
+    required this.playerInjuryId,
+    required this.dateOfInjury,
+    required this.dateOfRecovery,
+    this.playerInjuryReport,
   });
 
   factory PlayerInjuries.fromJson(Map<String, dynamic> json) {
     return PlayerInjuries(
-      injury_id: json['injury_id'],
-      date_of_injury: json['date_of_injury'],
-      date_of_recovery: json['date_of_recovery'],
-      player_id: json['player_id'],
+      injuryId: json['injury_id'],
+      playerId: json['player_id'],
+      physioId: json['physio_id'],
+      playerInjuryId: json['player_injury_id'],
+      dateOfInjury: DateTime.parse(json['date_of_injury']),
+      dateOfRecovery: DateTime.parse(json['expected_date_of_recovery']),
+      playerInjuryReport: json['player_injury_report'] != null
+          ? base64.decode(json['player_injury_report'])
+          : null,
     );
-  }
-
-  @override
-  String toString() {
-    return 'PlayerInjuries{injury_id: $injury_id, date_of_injury: $date_of_injury, date_of_recovery: $date_of_recovery, player_id: $player_id}';
   }
 }
 

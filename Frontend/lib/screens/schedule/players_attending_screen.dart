@@ -64,100 +64,107 @@ class PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
                   backgroundColor: Colors.transparent,
                 ),
                 body: SingleChildScrollView(
-                    child: Container(
-                  padding: const EdgeInsets.all(35),
-                  child: Center(
-                      child: Column(children: [
-                    const Text("Players Attending",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppFonts.gabarito)),
-                    const SizedBox(height: 5),
-                    Text("$scheduleType | ${DateFormat('EEEE, d MMMM y').format(
-                      scheduleStartTime,
-                    )}"),
-                    const SizedBox(height: 20),
-                    greyDivider(),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Attending",
-                      style: TextStyle(
-                          color: AppColours.darkBlue,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppFonts.gabarito,
-                          fontSize: 26),
-                    ),
-                    const SizedBox(height: 20),
-                    if (playersAttending.isEmpty)
-                      emptySection(Icons.person_off, "No players attending"),
-                    if (playersAttending.isNotEmpty)
-                      for (PlayerProfile player in playersAttending)
-                        Column(children: [
-                          playerProfilePill(
-                              context,
-                              player.imageBytes,
-                              player.playerId,
-                              player.firstName,
-                              player.surname,
-                              player.teamNumber,
-                              player.status),
-                          const SizedBox(height: 10),
-                        ]),
-                    greyDivider(),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Not Attending",
-                      style: TextStyle(
-                          color: AppColours.darkBlue,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppFonts.gabarito,
-                          fontSize: 26),
-                    ),
-                    const SizedBox(height: 20),
-                    if (playersNotAttending.isEmpty)
-                      emptySection(Icons.person_off, "No players absent"),
-                    if (playersNotAttending.isNotEmpty)
-                      for (PlayerProfile player in playersNotAttending)
-                        Column(children: [
-                          playerProfilePill(
-                              context,
-                              player.imageBytes,
-                              player.playerId,
-                              player.firstName,
-                              player.surname,
-                              player.teamNumber,
-                              player.status),
-                          const SizedBox(height: 10),
-                        ]),
-                    greyDivider(),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Undecided",
-                      style: TextStyle(
-                          color: AppColours.darkBlue,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppFonts.gabarito,
-                          fontSize: 26),
-                    ),
-                    const SizedBox(height: 20),
-                    if (playersUndecided.isEmpty)
-                      emptySection(Icons.person_off, "No players undecided"),
-                    if (playersUndecided.isNotEmpty)
-                      for (PlayerProfile player in playersUndecided)
-                        Column(children: [
-                          playerProfilePill(
-                              context,
-                              player.imageBytes,
-                              player.playerId,
-                              player.firstName,
-                              player.surname,
-                              player.teamNumber,
-                              player.status),
-                          const SizedBox(height: 10),
-                        ]),
-                  ])),
+                    child: Center(
+                  child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Container(
+                          padding: const EdgeInsets.all(35),
+                          child: Center(
+                              child: Column(children: [
+                            const Text("Players Attending",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppFonts.gabarito)),
+                            const SizedBox(height: 5),
+                            Text(
+                                "$scheduleType | ${DateFormat('EEEE, d MMMM y').format(
+                              scheduleStartTime,
+                            )}"),
+                            const SizedBox(height: 20),
+                            greyDivider(),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Attending",
+                              style: TextStyle(
+                                  color: AppColours.darkBlue,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFonts.gabarito,
+                                  fontSize: 26),
+                            ),
+                            const SizedBox(height: 20),
+                            if (playersAttending.isEmpty)
+                              emptySection(
+                                  Icons.person_off, "No players attending"),
+                            if (playersAttending.isNotEmpty)
+                              for (PlayerProfile player in playersAttending)
+                                Column(children: [
+                                  playerProfilePill(
+                                      context,
+                                      player.imageBytes,
+                                      player.playerId,
+                                      player.firstName,
+                                      player.surname,
+                                      player.teamNumber,
+                                      player.status),
+                                  const SizedBox(height: 10),
+                                ]),
+                            greyDivider(),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Not Attending",
+                              style: TextStyle(
+                                  color: AppColours.darkBlue,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFonts.gabarito,
+                                  fontSize: 26),
+                            ),
+                            const SizedBox(height: 20),
+                            if (playersNotAttending.isEmpty)
+                              emptySection(
+                                  Icons.person_off, "No players absent"),
+                            if (playersNotAttending.isNotEmpty)
+                              for (PlayerProfile player in playersNotAttending)
+                                Column(children: [
+                                  playerProfilePill(
+                                      context,
+                                      player.imageBytes,
+                                      player.playerId,
+                                      player.firstName,
+                                      player.surname,
+                                      player.teamNumber,
+                                      player.status),
+                                  const SizedBox(height: 10),
+                                ]),
+                            greyDivider(),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Undecided",
+                              style: TextStyle(
+                                  color: AppColours.darkBlue,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFonts.gabarito,
+                                  fontSize: 26),
+                            ),
+                            const SizedBox(height: 20),
+                            if (playersUndecided.isEmpty)
+                              emptySection(
+                                  Icons.person_off, "No players undecided"),
+                            if (playersUndecided.isNotEmpty)
+                              for (PlayerProfile player in playersUndecided)
+                                Column(children: [
+                                  playerProfilePill(
+                                      context,
+                                      player.imageBytes,
+                                      player.playerId,
+                                      player.firstName,
+                                      player.surname,
+                                      player.teamNumber,
+                                      player.status),
+                                  const SizedBox(height: 10),
+                                ]),
+                          ])))),
                 )),
                 bottomNavigationBar: managerBottomNavBar(context, 3));
           } else {

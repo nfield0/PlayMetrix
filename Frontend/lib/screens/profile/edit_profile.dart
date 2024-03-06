@@ -80,7 +80,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("My Profile"),
+          title: const Text(
+            "Edit Profile",
+            style: TextStyle(
+              fontFamily: AppFonts.gabarito,
+              color: AppColours.darkBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -88,98 +96,96 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.all(35),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Edit Profile',
-                          style: TextStyle(
-                            color: AppColours.darkBlue,
-                            fontFamily: AppFonts.gabarito,
-                            fontSize: 36.0,
-                            fontWeight: FontWeight.w700,
-                          )),
-                      const SizedBox(height: 10),
-                      divider(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Form(
-                        key: _formKey,
-                        autovalidateMode: AutovalidateMode.always,
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                        padding: const EdgeInsets.only(
+                            top: 15, bottom: 35, right: 35, left: 35),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20),
-                              Center(
-                                  child: Column(children: [
-                                _profilePicture != null &&
-                                        _profilePicture!.isNotEmpty
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(75),
-                                        child: Image.memory(
-                                          _profilePicture!,
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : Image.asset(
-                                        "lib/assets/icons/profile_placeholder.png",
-                                        width: 120,
-                                      ),
-                                const SizedBox(height: 10),
-                                underlineButtonTransparent("Edit picture", () {
-                                  pickImage();
-                                }),
-                              ])),
-                              formFieldBottomBorderController(
-                                  "First name", firstNameController,
-                                  (String? value) {
-                                return (value != null &&
-                                        !nameRegex.hasMatch(value))
-                                    ? 'Invalid first name.'
-                                    : null;
-                              }, context),
-                              formFieldBottomBorderController(
-                                  "Surname", surnameController,
-                                  (String? value) {
-                                return (value != null &&
-                                        !nameRegex.hasMatch(value))
-                                    ? 'Invalid surname.'
-                                    : null;
-                              }, context),
-                              formFieldBottomBorderController(
-                                  "Phone", phoneController, (String? value) {
-                                return (value != null &&
-                                        !phoneRegex.hasMatch(value))
-                                    ? 'Invalid phone number.'
-                                    : null;
-                              }, context),
-                              const SizedBox(height: 30),
-                              bigButton("Save Changes", () {
-                                if (_formKey.currentState!.validate()) {
-                                  updateProfile(
-                                          widget.userRole,
-                                          widget.userId,
-                                          firstNameController.text,
-                                          surnameController.text,
-                                          phoneController.text,
-                                          _profilePicture ?? Uint8List(0))
-                                      .then((value) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ProfileScreen()),
-                                    );
-                                  });
-                                }
-                              })
-                            ]),
-                      )
-                    ]))),
+                              Form(
+                                key: _formKey,
+                                autovalidateMode: AutovalidateMode.always,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 20),
+                                      Center(
+                                          child: Column(children: [
+                                        _profilePicture != null &&
+                                                _profilePicture!.isNotEmpty
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(75),
+                                                child: Image.memory(
+                                                  _profilePicture!,
+                                                  width: 120,
+                                                  height: 120,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : Image.asset(
+                                                "lib/assets/icons/profile_placeholder.png",
+                                                width: 120,
+                                              ),
+                                        const SizedBox(height: 10),
+                                        underlineButtonTransparent(
+                                            "Edit picture", () {
+                                          pickImage();
+                                        }),
+                                      ])),
+                                      const SizedBox(height: 30),
+                                      formFieldBottomBorderController(
+                                          "First name", firstNameController,
+                                          (String? value) {
+                                        return (value != null &&
+                                                !nameRegex.hasMatch(value))
+                                            ? 'Invalid first name.'
+                                            : null;
+                                      }, context),
+                                      formFieldBottomBorderController(
+                                          "Surname", surnameController,
+                                          (String? value) {
+                                        return (value != null &&
+                                                !nameRegex.hasMatch(value))
+                                            ? 'Invalid surname.'
+                                            : null;
+                                      }, context),
+                                      formFieldBottomBorderController(
+                                          "Phone", phoneController,
+                                          (String? value) {
+                                        return (value != null &&
+                                                !phoneRegex.hasMatch(value))
+                                            ? 'Invalid phone number.'
+                                            : null;
+                                      }, context),
+                                      const SizedBox(height: 40),
+                                      bigButton("Save Changes", () {
+                                        if (_formKey.currentState!.validate()) {
+                                          updateProfile(
+                                                  widget.userRole,
+                                                  widget.userId,
+                                                  firstNameController.text,
+                                                  surnameController.text,
+                                                  phoneController.text,
+                                                  _profilePicture ??
+                                                      Uint8List(0))
+                                              .then((value) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProfileScreen()),
+                                            );
+                                          });
+                                        }
+                                      })
+                                    ]),
+                              )
+                            ]))))),
         bottomNavigationBar:
             roleBasedBottomNavBar(widget.userRole, context, 2));
   }

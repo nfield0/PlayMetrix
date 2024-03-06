@@ -22,33 +22,19 @@ class MonthlyScheduleScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
-          ),
-          iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
-        body: Padding(
-            padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
-            child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Schedule",
-                    style: TextStyle(
-                      fontFamily: AppFonts.gabarito,
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 36,
+          title: userRole == UserRole.manager
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Schedule",
+                      style: TextStyle(
+                        fontFamily: AppFonts.gabarito,
+                        color: AppColours.darkBlue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
                     ),
-                  ),
-                  if (userRole == UserRole.manager)
                     smallButton(Icons.add_task, "Add", () {
                       Navigator.push(
                         context,
@@ -56,58 +42,82 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                             builder: (context) => AddScheduleScreen()),
                       );
                     })
-                ],
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder(
-                  future: getTeamAppointments(
-                      ref.read(teamIdProvider.notifier).state),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final dataSource = snapshot.data;
+                  ],
+                )
+              : const Text(
+                  "Schedule",
+                  style: TextStyle(
+                    fontFamily: AppFonts.gabarito,
+                    color: AppColours.darkBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
+          iconTheme: const IconThemeData(
+            color: AppColours.darkBlue, //change your color here
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
+        body: Center(
+            child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: 20, right: 35, left: 35),
+                    child: Column(children: [
+                      const SizedBox(height: 20),
+                      FutureBuilder(
+                          future: getTeamAppointments(
+                              ref.read(teamIdProvider.notifier).state),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final dataSource = snapshot.data;
 
-                      return Expanded(
-                        child: SfCalendar(
-                          onTap: (CalendarTapDetails details) {
-                            ref.watch(selectedDateProvider.notifier).state =
-                                details.date;
-                          },
-                          dataSource: AppointmentDataSource(dataSource!),
-                          view: CalendarView.month,
-                          todayHighlightColor: AppColours.darkBlue,
-                          selectionDecoration: BoxDecoration(
-                            border: Border.all(
-                                color: AppColours.darkBlue, width: 2.0),
-                          ),
-                          headerStyle: const CalendarHeaderStyle(
-                            textStyle: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: AppFonts.gabarito,
-                            ),
-                          ),
-                          monthViewSettings: const MonthViewSettings(
-                            showAgenda: true,
-                            agendaViewHeight: 150,
-                          ),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return const CircularProgressIndicator();
-                  }),
-              Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: underlineButtonTransparent("More details", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DailyScheduleScreen()),
-                    );
-                  })),
-            ])),
+                              return Expanded(
+                                child: SfCalendar(
+                                  onTap: (CalendarTapDetails details) {
+                                    ref
+                                        .watch(selectedDateProvider.notifier)
+                                        .state = details.date;
+                                  },
+                                  dataSource:
+                                      AppointmentDataSource(dataSource!),
+                                  view: CalendarView.month,
+                                  todayHighlightColor: AppColours.darkBlue,
+                                  selectionDecoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: AppColours.darkBlue, width: 2.0),
+                                  ),
+                                  headerStyle: const CalendarHeaderStyle(
+                                    textStyle: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: AppFonts.gabarito,
+                                    ),
+                                  ),
+                                  monthViewSettings: const MonthViewSettings(
+                                    showAgenda: true,
+                                    agendaViewHeight: 150,
+                                  ),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("${snapshot.error}");
+                            }
+                            return const CircularProgressIndicator();
+                          }),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: underlineButtonTransparent("More details", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DailyScheduleScreen()),
+                            );
+                          })),
+                    ])))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 3));
   }
 }

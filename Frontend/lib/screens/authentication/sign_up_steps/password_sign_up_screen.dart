@@ -53,19 +53,22 @@ class PasswordSignUpScreen extends ConsumerWidget {
               bottom: 0,
               left: 0,
               right: 0,
-              child: SizedBox(
+              child: Center(
+                  child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.75,
                 child: SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 50),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      ),
+                    child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
                     ),
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 650),
                     child: Form(
                       key: _formKey,
                       autovalidateMode: AutovalidateMode.always,
@@ -225,8 +228,8 @@ class PasswordSignUpScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                ),
-              ))
+                )),
+              )))
         ],
       ),
     );

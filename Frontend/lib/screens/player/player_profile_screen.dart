@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
+import 'package:play_metrix/api_clients/injury_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
@@ -10,10 +12,11 @@ import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/physio/edit_injury_screen.dart';
+import 'package:play_metrix/screens/injury/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
-import 'package:play_metrix/screens/player/statistics_constants.dart';
-import 'package:play_metrix/screens/player/statistics_screen.dart';
+import 'package:play_metrix/screens/injury/injury_report_view.dart';
+import 'package:play_metrix/screens/statistics/statistics_constants.dart';
+import 'package:play_metrix/screens/statistics/statistics_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
@@ -43,21 +46,22 @@ class PlayerProfileScreen extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: Padding(
-              padding: const EdgeInsets.only(right: 25, left: 25),
+              padding: const EdgeInsets.only(right: 10, left: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text("Player Profile",
                       style: TextStyle(
-                        color: AppColours.darkBlue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
+                          color: AppColours.darkBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          fontFamily: AppFonts.gabarito)),
                   smallButton(Icons.edit, "Edit", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => EditPlayerProfileScreen(
+                                physioId: ref.read(userIdProvider),
                                 teamId: ref.read(teamIdProvider),
                                 userRole: userRole,
                                 playerId: userId,
@@ -73,195 +77,216 @@ class PlayerProfileScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.only(top: 30, right: 35, left: 35),
-                child: Center(
-                  child: Column(children: [
-                    if (ref.read(teamIdProvider.notifier).state == -1)
-                      FutureBuilder<PlayerData>(
-                          future: getPlayerById(userId),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // Display a loading indicator while the data is being fetched
-                              return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              // Display an error message if the data fetching fails
-                              return Text('Error: ${snapshot.error}');
-                            } else if (snapshot.hasData) {
-                              // Data has been successfully fetched, use it here
-                              PlayerData player = snapshot.data!;
-                              String firstName = player.player_firstname;
-                              String surname = player.player_surname;
-                              DateTime dob = player.player_dob;
-                              String height = player.player_height;
-                              String gender = player.player_gender;
-                              Uint8List? profilePicture = player.player_image;
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Padding(
+                        padding:
+                            const EdgeInsets.only(top: 10, right: 20, left: 20),
+                        child: Center(
+                          child: Column(children: [
+                            if (ref.read(teamIdProvider.notifier).state == -1)
+                              FutureBuilder<PlayerData>(
+                                  future: getPlayerById(userId),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      // Display a loading indicator while the data is being fetched
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      // Display an error message if the data fetching fails
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (snapshot.hasData) {
+                                      // Data has been successfully fetched, use it here
+                                      PlayerData player = snapshot.data!;
+                                      String firstName =
+                                          player.player_firstname;
+                                      String surname = player.player_surname;
+                                      DateTime dob = player.player_dob;
+                                      String height = player.player_height;
+                                      String gender = player.player_gender;
+                                      Uint8List? profilePicture =
+                                          player.player_image;
 
-                              String formattedDate =
-                                  "${dob.toLocal()}".split(' ')[0];
+                                      String formattedDate =
+                                          "${dob.toLocal()}".split(' ')[0];
 
-                              return playerProfileNoTeam(
-                                  firstName,
-                                  surname,
-                                  formattedDate,
-                                  height,
-                                  gender,
-                                  profilePicture);
-                            } else {
-                              return Text('No data available');
-                            }
-                          }),
-                    if (ref.read(teamIdProvider.notifier).state != -1)
-                      FutureBuilder<PlayerProfile>(
-                          future: getPlayerTeamProfile(ref.read(teamIdProvider),
-                              ref.read(userIdProvider)),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // Display a loading indicator while the data is being fetched
-                              return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              // Display an error message if the data fetching fails
-                              return Text('Error: ${snapshot.error}');
-                            } else if (snapshot.hasData) {
-                              // Data has been successfully fetched, use it here
-                              PlayerProfile player = snapshot.data!;
-                              String firstName = player.firstName;
-                              String surname = player.surname;
-                              String dob = player.dob;
-                              String height = player.height;
-                              String gender = player.gender;
-                              Uint8List? profilePicture = player.imageBytes;
-                              int playerNumber = player.teamNumber;
-                              AvailabilityStatus availability = player.status;
-                              AvailabilityData availabilityData =
-                                  availability == AvailabilityStatus.available
-                                      ? available
-                                      : availability ==
-                                              AvailabilityStatus.limited
-                                          ? limited
-                                          : unavailable;
+                                      return playerProfileNoTeam(
+                                          firstName,
+                                          surname,
+                                          formattedDate,
+                                          height,
+                                          gender,
+                                          profilePicture);
+                                    } else {
+                                      return Text('No data available');
+                                    }
+                                  }),
+                            if (ref.read(teamIdProvider.notifier).state != -1)
+                              FutureBuilder<PlayerProfile>(
+                                  future: getPlayerTeamProfile(
+                                      ref.read(teamIdProvider),
+                                      ref.read(userIdProvider)),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      // Display a loading indicator while the data is being fetched
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      // Display an error message if the data fetching fails
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (snapshot.hasData) {
+                                      // Data has been successfully fetched, use it here
+                                      PlayerProfile player = snapshot.data!;
+                                      String firstName = player.firstName;
+                                      String surname = player.surname;
+                                      String dob = player.dob;
+                                      String height = player.height;
+                                      String gender = player.gender;
+                                      Uint8List? profilePicture =
+                                          player.imageBytes;
+                                      int playerNumber = player.teamNumber;
+                                      AvailabilityStatus availability =
+                                          player.status;
+                                      AvailabilityData availabilityData =
+                                          availability ==
+                                                  AvailabilityStatus.available
+                                              ? available
+                                              : availability ==
+                                                      AvailabilityStatus.limited
+                                                  ? limited
+                                                  : unavailable;
+                                      String reasonForStatus =
+                                          player.reasonForStatus;
 
-                              return playerProfile(
-                                  firstName,
-                                  surname,
-                                  playerNumber,
-                                  dob,
-                                  height,
-                                  gender,
-                                  availabilityData,
-                                  profilePicture);
-                            } else {
-                              return Text('No data available');
-                            }
-                          }),
-                    const SizedBox(height: 20),
-                    divider(),
-                    const SizedBox(height: 20),
-                    const Text("Teams",
-                        style: TextStyle(
-                            fontFamily: AppFonts.gabarito,
-                            fontWeight: FontWeight.bold,
-                            color: AppColours.darkBlue,
-                            fontSize: 30)),
-                    const SizedBox(height: 20),
-                    FutureBuilder(
-                        future: getTeamById(
-                            ref.read(teamIdProvider.notifier).state),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            TeamData team = snapshot.data!;
-                            return profilePill(
-                                team.team_name,
-                                team.team_location,
-                                "lib/assets/icons/logo_placeholder.png",
-                                team.team_logo, () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TeamProfileScreen()),
-                              );
-                            });
-                          } else {
-                            return emptySection(Icons.group_off, "No team yet");
-                          }
-                        }),
-                    const SizedBox(height: 20),
-                    divider(),
-                    const SizedBox(height: 20),
-                    const Text("Injuries",
-                        style: TextStyle(
-                            fontFamily: AppFonts.gabarito,
-                            fontWeight: FontWeight.bold,
-                            color: AppColours.darkBlue,
-                            fontSize: 30)),
-                    FutureBuilder<List<AllPlayerInjuriesData>>(
-                        future: getAllPlayerInjuriesByUserId(userId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // Display a loading indicator while the data is being fetched
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            // Display an error message if the data fetching fails
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            // Data has been successfully fetched, use it here
-                            List<AllPlayerInjuriesData> playerInjuriesData =
-                                snapshot.data!;
-                            int numPlayerIds = playerInjuriesData.length;
+                                      return playerProfile(
+                                          firstName,
+                                          surname,
+                                          playerNumber,
+                                          dob,
+                                          height,
+                                          gender,
+                                          availabilityData,
+                                          reasonForStatus,
+                                          profilePicture);
+                                    } else {
+                                      return Text('No data available');
+                                    }
+                                  }),
+                            const SizedBox(height: 20),
+                            divider(),
+                            const SizedBox(height: 20),
+                            const Text("Teams",
+                                style: TextStyle(
+                                    fontFamily: AppFonts.gabarito,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColours.darkBlue,
+                                    fontSize: 30)),
+                            const SizedBox(height: 20),
+                            FutureBuilder(
+                                future: getTeamById(
+                                    ref.read(teamIdProvider.notifier).state),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    TeamData team = snapshot.data!;
+                                    return profilePill(
+                                        team.team_name,
+                                        team.team_location,
+                                        "lib/assets/icons/logo_placeholder.png",
+                                        team.team_logo, () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TeamProfileScreen()),
+                                      );
+                                    });
+                                  } else {
+                                    return emptySection(
+                                        Icons.group_off, "No team yet");
+                                  }
+                                }),
+                            const SizedBox(height: 20),
+                            divider(),
+                            const SizedBox(height: 20),
+                            const Text("Injuries",
+                                style: TextStyle(
+                                    fontFamily: AppFonts.gabarito,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColours.darkBlue,
+                                    fontSize: 30)),
+                            FutureBuilder<List<AllPlayerInjuriesData>>(
+                                future: getAllPlayerInjuriesByUserId(userId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    // Display a loading indicator while the data is being fetched
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    // Display an error message if the data fetching fails
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    // Data has been successfully fetched, use it here
+                                    List<AllPlayerInjuriesData>
+                                        playerInjuriesData = snapshot.data!;
+                                    int numPlayerIds =
+                                        playerInjuriesData.length;
 
-                            return injuriesSection(
-                                numPlayerIds, playerInjuriesData, userRole);
-                          } else {
-                            return Text('No data available');
-                          }
-                        }),
-                    //_injuriesSection(3),
-                    divider(),
-                    const SizedBox(height: 20),
-                    const Text("Statistics",
-                        style: TextStyle(
-                            fontFamily: AppFonts.gabarito,
-                            fontWeight: FontWeight.bold,
-                            color: AppColours.darkBlue,
-                            fontSize: 30)),
-                    const SizedBox(height: 20),
-                    Padding(
-                        padding: EdgeInsets.all(20),
-                        child: FutureBuilder<StatisticsData>(
-                            future: getStatisticsData(userId),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                // Display a loading indicator while the data is being fetched
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                // Display an error message if the data fetching fails
-                                return Text('Error: ${snapshot.error}');
-                              } else if (snapshot.hasData) {
-                                // Data has been successfully fetched, use it here
-                                StatisticsData statisticsData = snapshot.data!;
-                                return statisticsSection(statisticsData,
-                                    available, limited, unavailable);
-                              } else {
-                                return Text('No data available');
-                              }
-                            })),
-                    const SizedBox(height: 20),
-                    if (userRole == UserRole.player)
-                      bigButton("Log Out", () async {
-                        logOut(ref, context);
-                      }),
-                    const SizedBox(height: 25),
-                  ]),
-                ))),
+                                    return injuriesSection(
+                                        numPlayerIds,
+                                        playerInjuriesData,
+                                        userRole,
+                                        context,
+                                        ref);
+                                  } else {
+                                    return Text('No data available');
+                                  }
+                                }),
+                            //_injuriesSection(3),
+                            divider(),
+                            const SizedBox(height: 20),
+                            const Text("Statistics",
+                                style: TextStyle(
+                                    fontFamily: AppFonts.gabarito,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColours.darkBlue,
+                                    fontSize: 30)),
+                            const SizedBox(height: 20),
+                            Padding(
+                                padding: EdgeInsets.all(20),
+                                child: FutureBuilder<StatisticsData>(
+                                    future: getStatisticsData(userId),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        // Display a loading indicator while the data is being fetched
+                                        return CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        // Display an error message if the data fetching fails
+                                        return Text('Error: ${snapshot.error}');
+                                      } else if (snapshot.hasData) {
+                                        // Data has been successfully fetched, use it here
+                                        StatisticsData statisticsData =
+                                            snapshot.data!;
+                                        return statisticsSection(statisticsData,
+                                            available, limited, unavailable);
+                                      } else {
+                                        return Text('No data available');
+                                      }
+                                    })),
+                            const SizedBox(height: 20),
+                            if (userRole == UserRole.player)
+                              bigButton("Log Out", () async {
+                                logOut(ref, context);
+                              }),
+                            const SizedBox(height: 25),
+                          ]),
+                        ))))),
         bottomNavigationBar: playerBottomNavBar(context, 2));
   }
 }
@@ -274,10 +299,11 @@ Widget playerProfile(
     String height,
     String gender,
     AvailabilityData availability,
+    String reasonForStatus,
     Uint8List? profilePicture) {
   return Container(
     alignment: Alignment.center,
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.only(right: 20, left: 20),
     child: Column(children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -346,6 +372,32 @@ Widget playerProfile(
       profileDetails("Gender", gender),
       const SizedBox(height: 35),
       availabilityTrafficLight(availability.status),
+      const SizedBox(
+        height: 35,
+      ),
+      if (reasonForStatus.isNotEmpty)
+        RichText(
+          text: TextSpan(
+            children: [
+              const TextSpan(
+                text: "Reason: ",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColours.darkBlue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: reasonForStatus,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: AppFonts.openSans,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        )
     ]),
   );
 }
@@ -457,8 +509,12 @@ Widget availabilityTrafficLightItem(
   );
 }
 
-Widget injuriesSection(int numInjuries,
-    List<AllPlayerInjuriesData> playerInjuriesData, UserRole userRole) {
+Widget injuriesSection(
+    int numInjuries,
+    List<AllPlayerInjuriesData> playerInjuriesData,
+    UserRole userRole,
+    BuildContext context,
+    WidgetRef ref) {
   return Column(children: [
     Padding(
         padding: EdgeInsets.all(20),
@@ -481,14 +537,14 @@ Widget injuriesSection(int numInjuries,
       children: playerInjuriesData
           .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
         return ExpansionPanelRadio(
-          value: injury.injury_id,
+          value: injury.injuryId,
           backgroundColor: Colors.transparent,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
                 title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                  Text(injury.date_of_injury,
+                  Text(DateFormat('yyyy-MM-dd').format(injury.dateOfInjury),
                       style: const TextStyle(
                           color: AppColours.darkBlue,
                           fontWeight: FontWeight.bold)),
@@ -498,15 +554,16 @@ Widget injuriesSection(int numInjuries,
                         context,
                         MaterialPageRoute(
                             builder: (context) => EditInjuryScreen(
-                                  injuryId: injury.injury_id,
-                                  playerId: injury.player_id,
+                                  physioId: injury.physioId,
+                                  playerId: injury.playerId,
+                                  playerInjuryId: injury.playerInjuryId,
                                 )),
                       );
                     })
                 ]));
           },
           body: ListTile(
-            title: injuryDetails(injury),
+            title: playerInjuryDetails(injury, context),
           ),
         );
       }).toList(),
@@ -514,24 +571,77 @@ Widget injuriesSection(int numInjuries,
   ]);
 }
 
-Widget injuryDetails(AllPlayerInjuriesData injury) {
+Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
   return Column(
     children: [
       greyDivider(),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Injury", injury.date_of_injury.toString()),
+      detailWithDivider("Injury Name", injury.nameAndGrade, context),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Recovery", injury.date_of_recovery.toString()),
-      const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.injury_type),
-      const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.injury_location),
+      detailWithDivider("Date of Injury",
+          DateFormat('yyyy-MM-dd').format(injury.dateOfInjury), context),
       const SizedBox(height: 10),
       detailWithDivider(
-          "Expected Recovery Time", injury.expected_recovery_time),
+          "Date of Recovery",
+          DateFormat('yyyy-MM-dd').format(injury.expectedDateOfRecovery),
+          context),
       const SizedBox(height: 10),
-      detailWithDivider("Recovery Method", injury.recovery_method),
-      underlineButtonTransparent("View player report", () {}),
+      detailWithDivider("Injury Type", injury.type, context),
+      const SizedBox(height: 10),
+      detailWithDivider("Injury Location", injury.location, context),
+      const SizedBox(height: 10),
+      detailWithDivider(
+          "Recovery Time",
+          "${injury.expectedMinRecoveryTime}-"
+              "${injury.expectedMaxRecoveryTime} weeks",
+          context),
+      ExpansionPanelList.radio(
+        elevation: 0,
+        expandedHeaderPadding: const EdgeInsets.all(0),
+        children: [
+          ExpansionPanelRadio(
+            value: injury.injuryId,
+            backgroundColor: Colors.transparent,
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return const ListTile(
+                contentPadding: EdgeInsets.all(0),
+                title: Text("Potential Recovery Methods",
+                    style: TextStyle(fontSize: 16)),
+              );
+            },
+            body: ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int i = 0;
+                      i < injury.potentialRecoveryMethods.length;
+                      i++)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                          '${i + 1}. ${injury.potentialRecoveryMethods[i]}',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+      injury.playerInjuryReport != null
+          ? underlineButtonTransparent("View player report", () {
+              injury.playerInjuryReport != null
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InjuryReportView(
+                              data: injury.playerInjuryReport)),
+                    )
+                  : null;
+            })
+          : const SizedBox(),
     ],
   );
 }
@@ -560,13 +670,13 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
           ? available
           : limited;
 
-  AvailabilityData totalMinutesPlayed =
-      statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
-              statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
-          ? limited
-          : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
-              ? unavailable
-              : available;
+  // AvailabilityData totalMinutesPlayed =
+  //     statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
+  //             statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
+  //         ? limited
+  //         : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
+  //             ? unavailable
+  //             : available;
 
   return Column(
     children: [
@@ -585,11 +695,11 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
       const SizedBox(
         height: 7,
       ),
-      statisticsDetailWithDivider("Total minutes played",
-          statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
-      const SizedBox(
-        height: 7,
-      ),
+      // statisticsDetailWithDivider("Total minutes played",
+      //     statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
+      // const SizedBox(
+      //   height: 7,
+      // ),
       statisticsDetailWithDivider(
           "Injury Prone", statistics.injuryProne ? "Yes" : "No", null)
     ],

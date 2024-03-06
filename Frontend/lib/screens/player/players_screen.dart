@@ -26,140 +26,155 @@ class PlayersScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Image.asset(
-            'lib/assets/logo.png',
-            width: 150,
-            fit: BoxFit.contain,
-          ),
-          iconTheme: const IconThemeData(
-            color: AppColours.darkBlue, //change your color here
-          ),
+          title: const Text("Your Team",
+              style: TextStyle(
+                color: AppColours.darkBlue,
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w700,
+              )),
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.only(top: 20, right: 35, left: 35),
-                child: Column(children: [
-                  if (userRole == UserRole.manager)
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      const Icon(Icons.sync_alt,
-                          color: AppColours.darkBlue, size: 24),
-                      underlineButtonTransparent("Switch to Coaches", () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation1, animation2) =>
-                                CoachesScreen(),
-                            transitionDuration: Duration.zero,
-                            reverseTransitionDuration: Duration.zero,
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Padding(
+                        padding:
+                            const EdgeInsets.only(top: 20, right: 35, left: 35),
+                        child: Column(children: [
+                          if (userRole == UserRole.manager)
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.sync_alt,
+                                      color: AppColours.darkBlue, size: 24),
+                                  underlineButtonTransparent(
+                                      "Switch to Coaches", () {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder:
+                                            (context, animation1, animation2) =>
+                                                CoachesScreen(),
+                                        transitionDuration: Duration.zero,
+                                        reverseTransitionDuration:
+                                            Duration.zero,
+                                      ),
+                                    );
+                                  }),
+                                ]),
+                          const SizedBox(height: 25),
+                          FutureBuilder(
+                              future: getTeamById(
+                                  ref.read(teamIdProvider.notifier).state),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (snapshot.hasData) {
+                                  TeamData team = snapshot.data!;
+                                  return profilePill(
+                                      team.team_name,
+                                      team.team_location,
+                                      "lib/assets/icons/logo_placeholder.png",
+                                      team.team_logo, () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TeamProfileScreen()),
+                                    );
+                                  });
+                                } else {
+                                  return emptySection(
+                                      Icons.group_off, "No team yet");
+                                }
+                              }),
+                          const SizedBox(height: 30),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Players",
+                                style: TextStyle(
+                                  fontFamily: AppFonts.gabarito,
+                                  color: AppColours.darkBlue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 36,
+                                ),
+                              ),
+                              if (userRole == UserRole.manager)
+                                smallButton(Icons.person_add, "Add", () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AddPlayerScreen()),
+                                  );
+                                })
+                            ],
                           ),
-                        );
-                      }),
-                    ]),
-                  const SizedBox(height: 25),
-                  FutureBuilder(
-                      future:
-                          getTeamById(ref.read(teamIdProvider.notifier).state),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          TeamData team = snapshot.data!;
-                          return profilePill(
-                              team.team_name,
-                              team.team_location,
-                              "lib/assets/icons/logo_placeholder.png",
-                              team.team_logo, () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TeamProfileScreen()),
-                            );
-                          });
-                        } else {
-                          return emptySection(Icons.group_off, "No team yet");
-                        }
-                      }),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Players",
-                        style: TextStyle(
-                          fontFamily: AppFonts.gabarito,
-                          color: AppColours.darkBlue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 36,
-                        ),
-                      ),
-                      if (userRole == UserRole.manager)
-                        smallButton(Icons.person_add, "Add", () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddPlayerScreen()),
-                          );
-                        })
-                    ],
-                  ),
-                  const SizedBox(height: 35),
-                  FutureBuilder(
-                      future: getAllPlayersForTeam(
-                          ref.read(teamIdProvider.notifier).state),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          List<PlayerProfile> players = snapshot.data!;
+                          const SizedBox(height: 35),
+                          FutureBuilder(
+                              future: getAllPlayersForTeam(
+                                  ref.read(teamIdProvider.notifier).state),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (snapshot.hasData) {
+                                  List<PlayerProfile> players = snapshot.data!;
 
-                          return players.isNotEmpty
-                              ? MediaQuery.of(context).size.longestSide >= 1000
-                                  ? Wrap(
-                                      direction: Axis.horizontal,
-                                      spacing: 20.0,
-                                      runSpacing: 20.0,
-                                      children:
-                                          players.map((PlayerProfile player) {
-                                        return playerProfilePill(
-                                          context,
-                                          player.imageBytes,
-                                          player.playerId,
-                                          player.firstName,
-                                          player.surname,
-                                          player.teamNumber,
-                                          player.status,
-                                        );
-                                      }).toList(),
-                                    )
-                                  : Column(
-                                      children:
-                                          players.map((PlayerProfile player) {
-                                        return playerProfilePill(
-                                          context,
-                                          player.imageBytes,
-                                          player.playerId,
-                                          player.firstName,
-                                          player.surname,
-                                          player.teamNumber,
-                                          player.status,
-                                        );
-                                      }).toList(),
-                                    )
-                              : emptySection(
-                                  Icons.person_off, "No players added yet");
-                        } else {
-                          return emptySection(Icons.group_off, "No team yet");
-                        }
-                      }),
-                ]))),
+                                  return players.isNotEmpty
+                                      ? MediaQuery.of(context)
+                                                  .size
+                                                  .longestSide >=
+                                              1000
+                                          ? Wrap(
+                                              direction: Axis.horizontal,
+                                              spacing: 20.0,
+                                              runSpacing: 20.0,
+                                              children: players
+                                                  .map((PlayerProfile player) {
+                                                return playerProfilePill(
+                                                  context,
+                                                  player.imageBytes,
+                                                  player.playerId,
+                                                  player.firstName,
+                                                  player.surname,
+                                                  player.teamNumber,
+                                                  player.status,
+                                                );
+                                              }).toList(),
+                                            )
+                                          : Column(
+                                              children: players
+                                                  .map((PlayerProfile player) {
+                                                return playerProfilePill(
+                                                  context,
+                                                  player.imageBytes,
+                                                  player.playerId,
+                                                  player.firstName,
+                                                  player.surname,
+                                                  player.teamNumber,
+                                                  player.status,
+                                                );
+                                              }).toList(),
+                                            )
+                                      : emptySection(Icons.person_off,
+                                          "No players added yet");
+                                } else {
+                                  return emptySection(
+                                      Icons.group_off, "No team yet");
+                                }
+                              }),
+                        ]))))),
         bottomNavigationBar: roleBasedBottomNavBar(userRole, context, 0));
   }
 }
@@ -199,7 +214,7 @@ Widget playerProfilePill(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        PlayerProfileViewScreen(userId: playerId)),
+                        PlayerProfileViewScreen(playerId: playerId)),
               );
             },
             child: Container(

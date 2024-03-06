@@ -34,14 +34,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  syncfusion_flutter_calendar: ^23.2.6
-  http: ^0.13.3
+  syncfusion_flutter_calendar: ^24.2.7
+  http: ^1.2.0
   flutter_riverpod: ^2.4.9
   provider: ^6.1.1
   image_picker: ^1.0.7
-  intl: ^0.18.1
+  intl: ^0.19.0
   input_quantity: ^2.2.0
-  twilio_flutter: ^0.0.9
+  twilio_flutter: ^0.3.0
   introduction_screen: ^3.1.12
   shared_preferences: ^2.2.2
   dots_indicator: ^2.1.1
@@ -50,6 +50,11 @@ dependencies:
   timezone: ^0.9.2
   flutter_timezone: ^1.0.8
   file_picker: ^6.1.1
+  syncfusion_flutter_pdfviewer: ^24.2.7
+  dropdown_search: ^5.0.6
+  google_sign_in: ^5.0.0
+  flutter_signin_button: ^2.0.0
+  url_launcher: ^6.0.3
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +93,7 @@ flutter:
     - lib/assets/icons/schedule_menu.png
     - lib/assets/icons/statistics_menu.png
     - lib/assets/icons/logo_placeholder.png
+    - lib/assets/icons/google_icon.png
     - lib/assets/icons/profile_placeholder.png
     - lib/assets/intro/intro_1.png
     - lib/assets/intro/intro_2.png

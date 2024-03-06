@@ -54,110 +54,115 @@ class MatchLineUpScreenState extends State<MatchLineUpScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: SingleChildScrollView(
-          child: Container(
-              padding: const EdgeInsets.all(35),
-              child: Center(
-                  child: Column(children: [
-                const Text("Match Line Up",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFonts.gabarito)),
-                const SizedBox(height: 5),
-                const Text("Training | Tuesday, 2 October 2023"),
-                const SizedBox(height: 20),
-                underlineButtonTransparent("Record duration played", () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DurationPlayedScreen(),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 20),
-                greyDivider(),
-                const SizedBox(height: 20),
-                const Text(
-                  "Starting Players",
-                  style: TextStyle(
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppFonts.gabarito,
-                      fontSize: 26),
-                ),
-                const SizedBox(height: 20),
-                if (staters.isEmpty)
-                  emptySection(Icons.person_off, "No players attending"),
-                if (staters.isNotEmpty)
-                  for (PlayerProfile player in staters)
-                    Column(children: [
-                      playerProfilePill(
-                          context,
-                          player.imageBytes,
-                          player.playerId,
-                          player.firstName,
-                          player.surname,
-                          player.teamNumber,
-                          player.status),
-                      const SizedBox(height: 10),
-                    ]),
-                greyDivider(),
-                const SizedBox(height: 20),
-                const Text(
-                  "Substitutes",
-                  style: TextStyle(
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppFonts.gabarito,
-                      fontSize: 26),
-                ),
-                const SizedBox(height: 20),
-                if (substitutes.isEmpty)
-                  emptySection(Icons.person_off, "No substitutes"),
-                if (substitutes.isNotEmpty)
-                  for (PlayerProfile player in staters)
-                    Column(children: [
-                      playerProfilePill(
-                          context,
-                          player.imageBytes,
-                          player.playerId,
-                          player.firstName,
-                          player.surname,
-                          player.teamNumber,
-                          player.status),
-                      const SizedBox(height: 10),
-                    ]),
-                greyDivider(),
-                const SizedBox(height: 20),
-                const Text(
-                  "Reserves",
-                  style: TextStyle(
-                      color: AppColours.darkBlue,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppFonts.gabarito,
-                      fontSize: 26),
-                ),
-                const SizedBox(height: 20),
-                if (reserves.isEmpty)
-                  emptySection(Icons.person_off, "No reserves"),
-                if (reserves.isNotEmpty)
-                  for (PlayerProfile player in staters)
-                    Column(children: [
-                      playerProfilePill(
-                          context,
-                          player.imageBytes,
-                          player.playerId,
-                          player.firstName,
-                          player.surname,
-                          player.teamNumber,
-                          player.status),
-                      const SizedBox(height: 10),
-                    ]),
-                const SizedBox(height: 20),
-              ]))),
-        )),
+          child: Center(
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Container(
+                      padding: const EdgeInsets.all(35),
+                      child: Center(
+                          child: Column(children: [
+                        const Text("Match Line Up",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppFonts.gabarito)),
+                        const SizedBox(height: 5),
+                        const Text("Training | Tuesday, 2 October 2023"),
+                        const SizedBox(height: 20),
+                        underlineButtonTransparent("Record duration played",
+                            () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DurationPlayedScreen(),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 20),
+                        greyDivider(),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Starting Players",
+                          style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppFonts.gabarito,
+                              fontSize: 26),
+                        ),
+                        const SizedBox(height: 20),
+                        if (staters.isEmpty)
+                          emptySection(
+                              Icons.person_off, "No players attending"),
+                        if (staters.isNotEmpty)
+                          for (PlayerProfile player in staters)
+                            Column(children: [
+                              playerProfilePill(
+                                  context,
+                                  player.imageBytes,
+                                  player.playerId,
+                                  player.firstName,
+                                  player.surname,
+                                  player.teamNumber,
+                                  player.status),
+                              const SizedBox(height: 10),
+                            ]),
+                        greyDivider(),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Substitutes",
+                          style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppFonts.gabarito,
+                              fontSize: 26),
+                        ),
+                        const SizedBox(height: 20),
+                        if (substitutes.isEmpty)
+                          emptySection(Icons.person_off, "No substitutes"),
+                        if (substitutes.isNotEmpty)
+                          for (PlayerProfile player in staters)
+                            Column(children: [
+                              playerProfilePill(
+                                  context,
+                                  player.imageBytes,
+                                  player.playerId,
+                                  player.firstName,
+                                  player.surname,
+                                  player.teamNumber,
+                                  player.status),
+                              const SizedBox(height: 10),
+                            ]),
+                        greyDivider(),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Reserves",
+                          style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppFonts.gabarito,
+                              fontSize: 26),
+                        ),
+                        const SizedBox(height: 20),
+                        if (reserves.isEmpty)
+                          emptySection(Icons.person_off, "No reserves"),
+                        if (reserves.isNotEmpty)
+                          for (PlayerProfile player in staters)
+                            Column(children: [
+                              playerProfilePill(
+                                  context,
+                                  player.imageBytes,
+                                  player.playerId,
+                                  player.firstName,
+                                  player.surname,
+                                  player.teamNumber,
+                                  player.status),
+                              const SizedBox(height: 10),
+                            ]),
+                        const SizedBox(height: 20),
+                      ]))))),
+        ),
         bottomNavigationBar:
             roleBasedBottomNavBar(widget.userRole, context, 3));
   }

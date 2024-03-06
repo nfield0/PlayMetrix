@@ -59,7 +59,8 @@ class ProfilePictureSignUpScreen extends ConsumerWidget {
               bottom: 0,
               left: 0,
               right: 0,
-              child: SizedBox(
+              child: Center(
+                  child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.75,
                 child: SingleChildScrollView(
                   child: Container(
@@ -72,86 +73,89 @@ class ProfilePictureSignUpScreen extends ConsumerWidget {
                         topRight: Radius.circular(30),
                       ),
                     ),
-                    child: Form(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.always,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Text(
-                            'Step 5/5',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.center,
+                    child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 650),
+                        child: Form(
+                          key: _formKey,
+                          autovalidateMode: AutovalidateMode.always,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Text(
+                                'Step 5/5',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w500),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 40),
+                              const Text(
+                                'Choose a profile picture',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: AppColours.darkBlue,
+                                  fontFamily: AppFonts.gabarito,
+                                  fontSize: 36.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 40),
+                              Center(
+                                  child: Column(children: [
+                                profilePicture != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(75),
+                                        child: Image.memory(
+                                          profilePicture,
+                                          width: 135,
+                                          height: 135,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Image.asset(
+                                        "lib/assets/icons/profile_placeholder.png",
+                                        width: 135,
+                                      ),
+                                const SizedBox(height: 10),
+                                profilePicture == null
+                                    ? underlineButtonTransparentBlack(
+                                        "Upload picture", () {
+                                        pickImage();
+                                      })
+                                    : underlineButtonTransparentRed(
+                                        "Remove picture", () {
+                                        profilePicture = null;
+                                        ref
+                                            .read(
+                                                profilePictureProvider.notifier)
+                                            .state = null;
+                                      })
+                              ])),
+                              const SizedBox(height: 30),
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: bigButton(
+                                      profilePicture == null ? "Skip" : "Next",
+                                      () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SignUpChooseTypeScreen(),
+                                        ),
+                                      );
+                                    }
+                                  })),
+                              const SizedBox(height: 30),
+                            ],
                           ),
-                          const SizedBox(height: 40),
-                          const Text(
-                            'Choose a profile picture',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: AppColours.darkBlue,
-                              fontFamily: AppFonts.gabarito,
-                              fontSize: 36.0,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          Center(
-                              child: Column(children: [
-                            profilePicture != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(75),
-                                    child: Image.memory(
-                                      profilePicture,
-                                      width: 135,
-                                      height: 135,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                : Image.asset(
-                                    "lib/assets/icons/profile_placeholder.png",
-                                    width: 135,
-                                  ),
-                            const SizedBox(height: 10),
-                            profilePicture == null
-                                ? underlineButtonTransparentBlack(
-                                    "Upload picture", () {
-                                    pickImage();
-                                  })
-                                : underlineButtonTransparentRed(
-                                    "Remove picture", () {
-                                    profilePicture = null;
-                                    ref
-                                        .read(profilePictureProvider.notifier)
-                                        .state = null;
-                                  })
-                          ])),
-                          const SizedBox(height: 30),
-                          Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: bigButton(
-                                  profilePicture == null ? "Skip" : "Next",
-                                  () async {
-                                if (_formKey.currentState!.validate()) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          SignUpChooseTypeScreen(),
-                                    ),
-                                  );
-                                }
-                              })),
-                          const SizedBox(height: 30),
-                        ],
-                      ),
-                    ),
+                        )),
                   ),
                 ),
-              ))
+              )))
         ],
       ),
     );

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/authentication_data_model.dart';
+import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/providers/team_set_up_provider.dart';
+import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:flutter/foundation.dart';
-import 'package:play_metrix/screens/home_screen.dart';
+import 'package:play_metrix/screens/home_screen_initial.dart';
 
-class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({super.key});
-
-  @override
-  OnBoardingScreenState createState() => OnBoardingScreenState();
-}
-
-class OnBoardingScreenState extends State<OnBoardingScreen> {
+class OnBoardingScreen extends ConsumerWidget {
   final introKey = GlobalKey<IntroductionScreenState>();
+
+  OnBoardingScreen({super.key});
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
@@ -27,7 +26,10 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    int userId = -1;
+    UserRole userRole = UserRole.player;
+
     const bodyStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500);
 
     const pageDecoration = PageDecoration(
@@ -58,7 +60,63 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
           );
         } else {
           if (snapshot.data == true) {
-            return const HomeScreen();
+            return FutureBuilder(
+                future: AuthStorage.getUserId(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else {
+                    userId = snapshot.data ?? -1;
+                    Future.microtask(() =>
+                        {ref.read(userIdProvider.notifier).state = userId});
+
+                    return FutureBuilder(
+                        future: AuthStorage.getUserRole(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Scaffold(
+                              body: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          } else {
+                            userRole = snapshot.data ?? UserRole.manager;
+                            Future.microtask(() => {
+                                  ref.read(userRoleProvider.notifier).state =
+                                      userRole
+                                });
+
+                            return FutureBuilder(
+                                future: AuthStorage.getTeamId(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Scaffold(
+                                      body: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  } else {
+                                    Future.microtask(() => {
+                                          ref
+                                              .read(teamIdProvider.notifier)
+                                              .state = snapshot.data ?? -1
+                                        });
+                                    return HomeScreenInitial(
+                                        userId: userId,
+                                        userRole: userRole,
+                                        teamId: snapshot.data ?? -1);
+                                  }
+                                });
+                          }
+                        });
+                  }
+                });
           } else {
             return IntroductionScreen(
               key: introKey,

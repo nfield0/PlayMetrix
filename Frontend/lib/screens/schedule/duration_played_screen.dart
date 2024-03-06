@@ -23,6 +23,9 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
+          child: Center(
+              child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 45),
           child: Center(
@@ -96,7 +99,7 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
             ),
           ),
         ),
-      ),
+      ))),
       bottomNavigationBar: managerBottomNavBar(context, 3),
     );
   }

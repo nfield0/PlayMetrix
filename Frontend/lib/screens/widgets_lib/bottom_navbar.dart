@@ -3,10 +3,10 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/screens/notifications_screen.dart';
-import 'package:play_metrix/screens/player/statistics_screen.dart';
+import 'package:play_metrix/screens/statistics/statistics_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
-import 'package:play_metrix/screens/settings_screen.dart';
+import 'package:play_metrix/screens/settings/settings_screen.dart';
 
 Widget bottomNavBar(List<BottomNavigationBarItem> items, int selectedIndex,
     void Function(int?)? onPressed) {

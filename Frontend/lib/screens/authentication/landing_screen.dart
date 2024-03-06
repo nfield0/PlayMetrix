@@ -29,25 +29,37 @@ class LandingScreen extends ConsumerWidget {
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 18),
-              CupertinoButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NameSignUpScreen()),
-                  );
-                },
-                borderRadius: BorderRadius.circular(25),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 85),
-                color: AppColours.darkBlue,
-                child: const Text(
-                  'Sign up with email',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: AppFonts.openSans,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: 320,
+                    maxWidth:
+                        MediaQuery.of(context).size.width <= 500 ? 350 : 500,
+                    minHeight: 68,
+                    maxHeight: 68),
+                child: CupertinoButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NameSignUpScreen()),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(25),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  color: AppColours.darkBlue,
+                  child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Create an account',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: AppFonts.openSans,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ]),
                 ),
               ),
               const SizedBox(height: 18),
@@ -61,27 +73,79 @@ class LandingScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              CupertinoButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LogInScreen()),
-                  );
-                },
-                borderRadius: BorderRadius.circular(25),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 85),
-                color: Colors.white,
-                child: const Text(
-                  'Log in with account',
-                  style: TextStyle(
-                    color: AppColours.darkBlue,
-                    fontFamily: 'Open Sans',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: 320,
+                    maxWidth:
+                        MediaQuery.of(context).size.width <= 500 ? 350 : 500,
+                    minHeight: 68,
+                    maxHeight: 68),
+                child: CupertinoButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LogInScreen()),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(25),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  color: Colors.white,
+                  child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Log in with email',
+                          style: TextStyle(
+                            color: AppColours.darkBlue,
+                            fontFamily: 'Open Sans',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ]),
                 ),
               ),
+              const SizedBox(height: 18),
+              ConstrainedBox(
+                  constraints: BoxConstraints(
+                      minWidth: 320,
+                      maxWidth:
+                          MediaQuery.of(context).size.width <= 500 ? 350 : 500,
+                      minHeight: 68,
+                      maxHeight: 68),
+                  child: CupertinoButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LogInScreen()),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(25),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                    ),
+                    color: Colors.white,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'lib/assets/icons/google_icon.png',
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'Log in with Google',
+                            style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontFamily: 'Open Sans',
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          )
+                        ]),
+                  ))
             ],
           ),
         ),

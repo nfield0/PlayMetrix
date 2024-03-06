@@ -108,7 +108,7 @@ def get_players_by_team_id(db: Session, id: int):
 def add_player_to_team(db:Session, team_player_obj: TeamPlayerBase):
     try:
         new_team_player = team_player(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id, team_position=team_player_obj.team_position, player_team_number=team_player_obj.player_team_number,
-                                       playing_status=team_player_obj.playing_status, lineup_status=team_player_obj.lineup_status)
+                                       playing_status=team_player_obj.playing_status, reason_for_status=team_player_obj.reason_for_status, lineup_status=team_player_obj.lineup_status)
         db.add(new_team_player)
         db.commit()
         return {"message": f"Player with ID {str(team_player_obj.player_id)} has been added to team with ID {str(team_player_obj.team_id)}"}
@@ -123,6 +123,7 @@ def update_player_on_team(db:Session, team_player_obj: TeamPlayerBase):
         player_to_update.team_position = team_player_obj.team_position
         player_to_update.player_team_number = team_player_obj.player_team_number
         player_to_update.playing_status = team_player_obj.playing_status
+        player_to_update.reason_for_status = team_player_obj.reason_for_status
         player_to_update.lineup_status = team_player_obj.lineup_status
         db.commit()
         return {"message": f"Player with ID {str(team_player_obj.player_id)} has been updated"}

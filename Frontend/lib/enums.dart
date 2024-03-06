@@ -24,13 +24,13 @@ String userRoleText(UserRole userRole) {
 
 UserRole stringToUserRole(String userRole) {
   switch (userRole) {
-    case "manager":
+    case "manager" || "Manager":
       return UserRole.manager;
-    case "player":
+    case "player" || "Player":
       return UserRole.player;
-    case "coach":
+    case "coach" || "Coach":
       return UserRole.coach;
-    case "physio":
+    case "physio" || "Physio":
       return UserRole.physio;
     default:
       return UserRole.manager;
@@ -271,5 +271,38 @@ String teamRoleToText(TeamRole role) {
       return 'Goalkeeper';
     case TeamRole.headCoach:
       return 'Head Coach';
+  }
+}
+
+// Notification Type
+
+enum NotificationType { injury, event }
+
+String notificationTypeToText(NotificationType type) {
+  switch (type) {
+    case NotificationType.injury:
+      return 'injury';
+    case NotificationType.event:
+      return 'event';
+  }
+}
+
+NotificationType stringToNotificationType(String? type) {
+  switch (type) {
+    case 'injury':
+      return NotificationType.injury;
+    case 'event':
+      return NotificationType.event;
+    default:
+      return NotificationType.event;
+  }
+}
+
+IconData notificationTypeToIcon(NotificationType type) {
+  switch (type) {
+    case NotificationType.injury:
+      return Icons.healing;
+    case NotificationType.event:
+      return Icons.event;
   }
 }
