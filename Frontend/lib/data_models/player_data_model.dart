@@ -108,11 +108,10 @@ class StatisticsData {
   final int matchesPlayed;
   final int matchesStarted;
   final int matchesOffTheBench;
-  final int totalMinutesPlayed;
   final bool injuryProne;
 
   StatisticsData(this.matchesPlayed, this.matchesStarted,
-      this.matchesOffTheBench, this.totalMinutesPlayed, this.injuryProne);
+      this.matchesOffTheBench, this.injuryProne);
 }
 
 class Injury {

@@ -311,7 +311,7 @@ Future<void> updateTeamPlayer(
 }
 
 Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
-    int matchesStarted, int matchesOffTheBench, int totalMinutesPlayed) async {
+    int matchesStarted, int matchesOffTheBench) async {
   final apiUrl = '$apiBaseUrl/players/stats/$playerId';
 
   try {
@@ -326,7 +326,6 @@ Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
         "matches_started": matchesStarted,
         "matches_off_the_bench": matchesOffTheBench,
         "injury_prone": false,
-        "minutes_played": totalMinutesPlayed
       }),
     );
 
@@ -523,7 +522,6 @@ Future<StatisticsData> getStatisticsData(int id) async {
             parsed["matches_played"],
             parsed["matches_started"],
             parsed["matches_off_the_bench"],
-            parsed["minutes_played"],
             parsed["injury_prone"]);
       } else {
         throw Exception('Failed to load player statistics');

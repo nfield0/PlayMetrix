@@ -65,7 +65,6 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   int? _matchesPlayed;
   int? _matchesStarted;
   int? _matchesOffTheBench;
-  int? _totalMinutesPlayed;
 
   @override
   void initState() {
@@ -102,7 +101,6 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
         _matchesPlayed = value.matchesPlayed;
         _matchesStarted = value.matchesStarted;
         _matchesOffTheBench = value.matchesOffTheBench;
-        _totalMinutesPlayed = value.totalMinutesPlayed;
       });
     });
   }
@@ -402,8 +400,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                       if (widget.userRole == UserRole.manager &&
                                           _matchesPlayed != null &&
                                           _matchesStarted != null &&
-                                          _matchesOffTheBench != null &&
-                                          _totalMinutesPlayed != null)
+                                          _matchesOffTheBench != null)
                                         Column(
                                           children: [
                                             greyDivider(),
@@ -425,12 +422,12 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                                 _matchesOffTheBench!, (value) {
                                               _matchesOffTheBench = value;
                                             }),
-                                            const SizedBox(height: 35),
-                                            inputQuantity(
-                                                "Total minutes played",
-                                                _totalMinutesPlayed!, (value) {
-                                              _totalMinutesPlayed = value;
-                                            }),
+                                            // const SizedBox(height: 35),
+                                            // inputQuantity(
+                                            //     "Total minutes played",
+                                            //     _totalMinutesPlayed!, (value) {
+                                            //   _totalMinutesPlayed = value;
+                                            // }),
                                             const SizedBox(height: 30),
                                           ],
                                         ),
@@ -464,8 +461,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                               widget.playerId,
                                               _matchesPlayed!,
                                               _matchesStarted!,
-                                              _matchesOffTheBench!,
-                                              _totalMinutesPlayed!);
+                                              _matchesOffTheBench!);
 
                                           navigator.push(
                                             MaterialPageRoute(
