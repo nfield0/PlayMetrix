@@ -56,7 +56,7 @@ def register_player(db, user):
     db.add(new_user_info)
 
     new_user_stats = player_stats(player_id=new_user_id.player_id, matches_played=0, matches_started=0, 
-                                  matches_off_the_bench=0, injury_prone=False, minutes_played=0)
+                                  matches_off_the_bench=0, injury_prone=False)
     db.add(new_user_stats)
     db.commit()
     db.refresh(new_user_stats)
