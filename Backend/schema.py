@@ -158,7 +158,6 @@ class PlayerStat(BaseModel):
     matches_started: int
     matches_off_the_bench: int
     injury_prone: bool
-    minutes_played: int
     
 class InjuryBase(BaseModel):
     injury_type: str

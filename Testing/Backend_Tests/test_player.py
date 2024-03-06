@@ -208,8 +208,7 @@ def test_update_player_stats():
             "matches_played": 5, 
             "matches_started": 2,
             "matches_off_the_bench": 3,
-            "injury_prone": True,
-            "minutes_played" : 90,
+            "injury_prone": True
             
         }
     
@@ -233,8 +232,7 @@ def test_get_player_stats():
             "matches_played": 5, 
             "matches_started": 2,
             "matches_off_the_bench": 3,
-            "injury_prone": True,
-            "minutes_played" : 90,
+            "injury_prone": True
             
         }
     response = requests.put(url, headers=headers, json=json)
@@ -249,21 +247,21 @@ def test_get_player_stats():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-def test_update_player_minutes_played():
-    url = 'http://127.0.0.1:8000/players/stats/1/minutes_played/90'
-    headers = {'Content-Type': 'application/json'}
+# def test_update_player_minutes_played():
+#     url = 'http://127.0.0.1:8000/players/stats/1/minutes_played/90'
+#     headers = {'Content-Type': 'application/json'}
     
-    response = requests.put(url, headers=headers)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
+#     response = requests.put(url, headers=headers)
+#     assert response.status_code == 200
+#     assert response.headers['Content-Type'] == 'application/json'
 
-    try:
-        response_json = response.json()
-        print(response_json)
-        assert response_json.get("message") == "Player with ID 1 minutes played set to 180"
+#     try:
+#         response_json = response.json()
+#         print(response_json)
+#         assert response_json.get("message") == "Player with ID 1 minutes played set to 180"
     
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
+#     except (ValueError, AssertionError) as e:
+#         assert False, f"Test failed: {e}"
 
 
 def test_update_get_player_stats():
@@ -274,8 +272,7 @@ def test_update_get_player_stats():
             "matches_played": 5, 
             "matches_started": 2,
             "matches_off_the_bench": 3,
-            "injury_prone": True,
-            "minutes_played" : 180,
+            "injury_prone": True
             
         }
     response = requests.put(url, headers=headers, json=json)
@@ -291,21 +288,21 @@ def test_update_get_player_stats():
         assert False, f"Test failed: {e}"
 
 
-def test_update_player_minutes_played_negative():
-    url = 'http://127.0.0.1:8000/players/stats/1/minutes_played/-30'
-    headers = {'Content-Type': 'application/json'}
+# def test_update_player_minutes_played_negative():
+#     url = 'http://127.0.0.1:8000/players/stats/1/minutes_played/-30'
+#     headers = {'Content-Type': 'application/json'}
     
-    response = requests.put(url, headers=headers)
-    assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
+#     response = requests.put(url, headers=headers)
+#     assert response.status_code == 200
+#     assert response.headers['Content-Type'] == 'application/json'
 
-    try:
-        response_json = response.json()
-        print(response_json)
-        assert response_json.get("message") == "Player with ID 1 minutes played set to 150"
+#     try:
+#         response_json = response.json()
+#         print(response_json)
+#         assert response_json.get("message") == "Player with ID 1 minutes played set to 150"
     
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
+#     except (ValueError, AssertionError) as e:
+#         assert False, f"Test failed: {e}"
 
 
 def test_update_get_player_stats_negative():
@@ -316,8 +313,7 @@ def test_update_get_player_stats_negative():
             "matches_played": 5, 
             "matches_started": 2,
             "matches_off_the_bench": 3,
-            "injury_prone": True,
-            "minutes_played" : 150,
+            "injury_prone": True
             
         }
     response = requests.put(url, headers=headers, json=json)

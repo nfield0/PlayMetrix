@@ -9,7 +9,7 @@ physio_login, physio_info,
 sport, league, team, 
 injuries, team_physio, player_team, team_coach,
 player_injuries, schedule, player_schedule, team_schedule,
-announcements, notifications;
+announcements, notifications, matches;
 */
 
 
@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS player_stats
 	matches_started INT NOT NULL,
 	matches_off_the_bench INT NOT NULL, 
 	injury_prone BOOLEAN NOT NULL,
-	minutes_played INT NOT NULL,
 	FOREIGN KEY(player_id)
 		REFERENCES player_info(player_id)
 );
@@ -298,6 +297,18 @@ CREATE TABLE IF NOT EXISTS notifications
 	user_type VARCHAR(50),
 	FOREIGN KEY (team_id)
 		REFERENCES team(team_id)
+);
+
+CREATE TABLE IF NOT EXISTS matches
+(
+	match_id serial PRIMARY KEY,
+	player_id INT NOT NULL,
+	schedule_id INT NOT NULL, 
+	minutes_played INT NOT NULL,
+	FOREIGN KEY(player_id)
+		REFERENCES player_info(player_id),
+	FOREIGN KEY(schedule_id)
+		REFERENCES schedule(schedule_id)
 );
 
 

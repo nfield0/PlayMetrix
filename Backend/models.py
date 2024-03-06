@@ -55,7 +55,6 @@ class player_stats(Base):
 	matches_started = Column(Integer, index = True)
 	matches_off_the_bench = Column(Integer, index = True)
 	injury_prone = Column(Boolean, index = True)
-	minutes_played = Column(Integer, index = True)
 
 class manager_login(Base):
     __tablename__ = "manager_login"
