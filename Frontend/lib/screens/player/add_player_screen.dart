@@ -21,6 +21,7 @@ class AddPlayerScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _reasonController = TextEditingController();
 
   AddPlayerScreen({super.key});
 
@@ -182,6 +183,19 @@ class AddPlayerScreen extends ConsumerWidget {
                                             .state = value!;
                                       }),
                                       const SizedBox(height: 10),
+                                      dropdownWithDivider("Lineup Status",
+                                          selectedLineupStatus, [
+                                        lineupStatusToText(
+                                            LineupStatus.starter),
+                                        lineupStatusToText(
+                                            LineupStatus.substitute),
+                                        lineupStatusToText(LineupStatus.reserve)
+                                      ], (value) {
+                                        ref
+                                            .read(lineupStatusProvider.notifier)
+                                            .state = value!;
+                                      }),
+                                      const SizedBox(height: 10),
                                       Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -222,18 +236,11 @@ class AddPlayerScreen extends ConsumerWidget {
                                             ),
                                           ]),
                                       const SizedBox(height: 10),
-                                      dropdownWithDivider("Lineup Status",
-                                          selectedLineupStatus, [
-                                        lineupStatusToText(
-                                            LineupStatus.starter),
-                                        lineupStatusToText(
-                                            LineupStatus.substitute),
-                                        lineupStatusToText(LineupStatus.reserve)
-                                      ], (value) {
-                                        ref
-                                            .read(lineupStatusProvider.notifier)
-                                            .state = value!;
-                                      }),
+                                      formFieldBottomBorderController(
+                                          "Reason for Playing Status",
+                                          _reasonController, (value) {
+                                        return null;
+                                      }, context),
                                       const SizedBox(height: 40),
                                       bigButton("Add Player", () async {
                                         if (_formKey.currentState!.validate()) {
@@ -255,7 +262,8 @@ class AddPlayerScreen extends ConsumerWidget {
                                                 int.parse(
                                                     _numberController.text),
                                                 selectedStatus,
-                                                ref.read(lineupStatusProvider));
+                                                ref.read(lineupStatusProvider),
+                                                _reasonController.text);
                                             ref
                                                     .read(positionProvider.notifier)
                                                     .state =
