@@ -67,6 +67,7 @@ Future<void> updateTeamPlayerNumber(
         'player_team_number': number,
         'playing_status': teamPlayer.playingStatus,
         'lineup_status': teamPlayer.lineupStatus,
+        'reason_for_status': teamPlayer.reasonForStatus,
       }),
     );
 
@@ -342,8 +343,14 @@ Future<void> updatePlayerStatistics(int playerId, int matchesPlayed,
   }
 }
 
-Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
-    int number, AvailabilityData playingStatus, String lineupStatus) async {
+Future<void> addTeamPlayer(
+    int teamId,
+    int userId,
+    String teamPosition,
+    int number,
+    AvailabilityData playingStatus,
+    String lineupStatus,
+    String reasonForStatus) async {
   const apiUrl = '$apiBaseUrl/team_player';
 
   try {
@@ -358,7 +365,8 @@ Future<void> addTeamPlayer(int teamId, int userId, String teamPosition,
         "team_position": teamPosition,
         "player_team_number": number,
         "playing_status": playingStatus.message,
-        "lineup_status": lineupStatus
+        "lineup_status": lineupStatus,
+        "reason_for_status": reasonForStatus,
       }),
     );
 
