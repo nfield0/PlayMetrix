@@ -527,7 +527,7 @@ Widget injuriesSection(
             ),
             Text(
               numInjuries.toString(),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
         )),
@@ -537,7 +537,7 @@ Widget injuriesSection(
       children: playerInjuriesData
           .map<ExpansionPanelRadio>((AllPlayerInjuriesData injury) {
         return ExpansionPanelRadio(
-          value: injury.injuryId,
+          value: injury.playerInjuryId,
           backgroundColor: Colors.transparent,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
@@ -600,7 +600,7 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
         expandedHeaderPadding: const EdgeInsets.all(0),
         children: [
           ExpansionPanelRadio(
-            value: injury.injuryId,
+            value: injury.playerInjuryId,
             backgroundColor: Colors.transparent,
             headerBuilder: (BuildContext context, bool isExpanded) {
               return const ListTile(
