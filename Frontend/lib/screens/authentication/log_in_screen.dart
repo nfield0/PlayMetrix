@@ -185,131 +185,55 @@ class LogInScreen extends ConsumerWidget {
                                 if (userRole == UserRole.manager) {
                                   Profile managerProfile =
                                       await getManagerProfile(userId);
-                                  String formattedPhoneNumber =
-                                      getPhoneNumberPrefix(
-                                          managerProfile.contactNumber);
-                                  String verificationCode =
-                                      generateRandomCode();
-                                  ref
-                                      .read(verificationCodeProvider.notifier)
-                                      .state = verificationCode;
-                                  bool sentSuccessfully =
-                                      await twilioService.sendVerificationCode(
-                                          formattedPhoneNumber,
-                                          verificationCode);
 
-                                  if (!sentSuccessfully) {
-                                    print("SMS not sent");
-                                  }
+                                  // show2faPopUp(
+                                  //     context,
+                                  //     ref,
+                                  //     managerProfile.contactNumber,
+                                  //     userRole,
+                                  //     userId);
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return twoFactorAuthPopUp(
-                                          context,
-                                          formattedPhoneNumber,
-                                          ref,
-                                          userRole,
-                                          userId,
-                                          verificationCode);
-                                    },
-                                  );
+                                  logInFunctionality(
+                                      context, ref, userRole, userId);
                                 } else if (userRole == UserRole.physio) {
                                   Profile physioProfile =
                                       await getPhysioProfile(userId);
-                                  String formattedPhoneNumber =
-                                      getPhoneNumberPrefix(
-                                          physioProfile.contactNumber);
-                                  String verificationCode =
-                                      generateRandomCode();
-                                  ref
-                                      .read(verificationCodeProvider.notifier)
-                                      .state = verificationCode;
-                                  bool sentSuccessfully =
-                                      await twilioService.sendVerificationCode(
-                                          formattedPhoneNumber,
-                                          verificationCode);
 
-                                  if (!sentSuccessfully) {
-                                    print("SMS not sent");
-                                  }
+                                  show2faPopUp(
+                                      context,
+                                      ref,
+                                      physioProfile.contactNumber,
+                                      userRole,
+                                      userId);
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return twoFactorAuthPopUp(
-                                          context,
-                                          formattedPhoneNumber,
-                                          ref,
-                                          userRole,
-                                          userId,
-                                          verificationCode);
-                                    },
-                                  );
+                                  logInFunctionality(
+                                      context, ref, userRole, userId);
                                 } else if (userRole == UserRole.player) {
                                   PlayerData playerProfile =
                                       await getPlayerById(userId);
-                                  String formattedPhoneNumber =
-                                      getPhoneNumberPrefix(
-                                          playerProfile.player_contact_number);
-                                  String verificationCode =
-                                      generateRandomCode();
-                                  ref
-                                      .read(verificationCodeProvider.notifier)
-                                      .state = verificationCode;
-                                  bool sentSuccessfully =
-                                      await twilioService.sendVerificationCode(
-                                          formattedPhoneNumber,
-                                          verificationCode);
 
-                                  if (!sentSuccessfully) {
-                                    print("SMS not sent");
-                                  }
+                                  // show2faPopUp(
+                                  //     context,
+                                  //     ref,
+                                  //     playerProfile.player_contact_number,
+                                  //     userRole,
+                                  //     userId);
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return twoFactorAuthPopUp(
-                                          context,
-                                          formattedPhoneNumber,
-                                          ref,
-                                          userRole,
-                                          userId,
-                                          verificationCode);
-                                    },
-                                  );
+                                  logInFunctionality(
+                                      context, ref, userRole, userId);
                                 } else {
                                   Profile coachProfile =
                                       await getCoachProfile(userId);
-                                  String formattedPhoneNumber =
-                                      getPhoneNumberPrefix(
-                                          coachProfile.contactNumber);
-                                  String verificationCode =
-                                      generateRandomCode();
-                                  ref
-                                      .read(verificationCodeProvider.notifier)
-                                      .state = verificationCode;
-                                  bool sentSuccessfully =
-                                      await twilioService.sendVerificationCode(
-                                          formattedPhoneNumber,
-                                          verificationCode);
 
-                                  if (!sentSuccessfully) {
-                                    print("SMS not sent");
-                                  }
+                                  // show2faPopUp(
+                                  //     context,
+                                  //     ref,
+                                  //     coachProfile.contactNumber,
+                                  //     userRole,
+                                  //     userId);
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return twoFactorAuthPopUp(
-                                          context,
-                                          formattedPhoneNumber,
-                                          ref,
-                                          userRole,
-                                          userId,
-                                          verificationCode);
-                                    },
-                                  );
+                                  logInFunctionality(
+                                      context, ref, userRole, userId);
                                 }
                               }
                             }
@@ -399,43 +323,7 @@ class LogInScreen extends ConsumerWidget {
                       child: bigButton("Verify", () async {
                         String code = verificationCodeController.text;
                         if (code == verificationCode) {
-                          ref.read(userRoleProvider.notifier).state = userRole;
-
-                          await AuthStorage.saveLoginStatus(true);
-                          await AuthStorage.saveUserId(userId);
-                          await AuthStorage.saveUserRole(userRole);
-
-                          if (userRole == UserRole.manager) {
-                            int teamId = await getTeamByManagerId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            await AuthStorage.saveTeamId(teamId);
-                            scheduleNotificationsForTeamSchedules(teamId);
-                          } else if (userRole == UserRole.coach) {
-                            int teamId = await getTeamByCoachId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            await AuthStorage.saveTeamId(teamId);
-
-                            scheduleNotificationsForTeamSchedules(teamId);
-                          } else if (userRole == UserRole.physio) {
-                            int teamId = await getTeamByPhysioId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            await AuthStorage.saveTeamId(teamId);
-                            scheduleNotificationsForTeamSchedules(teamId);
-                          } else if (userRole == UserRole.player) {
-                            int teamId = await getTeamByPlayerId(userId);
-                            ref.read(teamIdProvider.notifier).state = teamId;
-                            scheduleNotificationsForTeamSchedules(teamId);
-                            await AuthStorage.saveTeamId(teamId);
-                          }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()),
-                          );
-                          _emailController.clear();
-                          _passwordController.clear();
-                          ref.read(passwordVisibilityNotifier.notifier).state =
-                              true;
+                          logInFunctionality(context, ref, userRole, userId);
                         } else {
                           showDialog(
                             context: context,
@@ -467,5 +355,65 @@ class LogInScreen extends ConsumerWidget {
                 ],
               )
             ])));
+  }
+
+  void show2faPopUp(BuildContext context, WidgetRef ref, String phoneNumber,
+      UserRole userRole, int userId) async {
+    String formattedPhoneNumber = getPhoneNumberPrefix(phoneNumber);
+    String verificationCode = generateRandomCode();
+    ref.read(verificationCodeProvider.notifier).state = verificationCode;
+    bool sentSuccessfully = await twilioService.sendVerificationCode(
+        formattedPhoneNumber, verificationCode);
+
+    if (!sentSuccessfully) {
+      print("SMS not sent");
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return twoFactorAuthPopUp(context, formattedPhoneNumber, ref, userRole,
+            userId, verificationCode);
+      },
+    );
+  }
+
+  void logInFunctionality(BuildContext context, WidgetRef ref,
+      UserRole userRole, int userId) async {
+    ref.read(userRoleProvider.notifier).state = userRole;
+
+    await AuthStorage.saveLoginStatus(true);
+    await AuthStorage.saveUserId(userId);
+    await AuthStorage.saveUserRole(userRole);
+
+    if (userRole == UserRole.manager) {
+      int teamId = await getTeamByManagerId(userId);
+      ref.read(teamIdProvider.notifier).state = teamId;
+      await AuthStorage.saveTeamId(teamId);
+      scheduleNotificationsForTeamSchedules(teamId);
+    } else if (userRole == UserRole.coach) {
+      int teamId = await getTeamByCoachId(userId);
+      ref.read(teamIdProvider.notifier).state = teamId;
+      await AuthStorage.saveTeamId(teamId);
+
+      scheduleNotificationsForTeamSchedules(teamId);
+    } else if (userRole == UserRole.physio) {
+      int teamId = await getTeamByPhysioId(userId);
+      ref.read(teamIdProvider.notifier).state = teamId;
+      await AuthStorage.saveTeamId(teamId);
+      scheduleNotificationsForTeamSchedules(teamId);
+    } else if (userRole == UserRole.player) {
+      int teamId = await getTeamByPlayerId(userId);
+      ref.read(teamIdProvider.notifier).state = teamId;
+      scheduleNotificationsForTeamSchedules(teamId);
+      await AuthStorage.saveTeamId(teamId);
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+    _emailController.clear();
+    _passwordController.clear();
+    ref.read(passwordVisibilityNotifier.notifier).state = true;
   }
 }
