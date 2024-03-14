@@ -3,7 +3,7 @@ import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/profile/edit_profile.dart';
+import 'package:play_metrix/screens/profile/edit_profile_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
