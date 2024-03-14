@@ -30,6 +30,10 @@ from Crud.security import *
 #     db.refresh(new_user)
 #     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
+#20MB encodes larger so allow some excess
+max_image_size_bytes = 23087450
+
+
 def register_player(db, user):
     user.player_email = user.player_email.lower()
     existing_user = check_user_exists_by_email(db, user.player_email)
@@ -42,6 +46,9 @@ def register_player(db, user):
         raise HTTPException(status_code=400, detail="Email format invalid")
     if not check_password_regex(user.player_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    if len(user.player_image) > max_image_size_bytes:
+        raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
     
     new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
     
@@ -76,7 +83,8 @@ def register_manager(db, user):
         raise HTTPException(status_code=400, detail="Email format invalid")
     if not check_password_regex(user.manager_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
-    
+    if len(user.manager_image) > max_image_size_bytes:
+        raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
 
     new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
     
@@ -110,7 +118,8 @@ def register_physio(db, user):
         raise HTTPException(status_code=400, detail="First name format invalid")
     if not check_is_valid_name(str(user.physio_surname)):
         raise HTTPException(status_code=400, detail="Surname format invalid")
-    
+    if len(user.physio_image) > max_image_size_bytes:
+        raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
     new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
     
     db.add(new_user)
@@ -138,7 +147,9 @@ def register_coach(db, user):
             raise HTTPException(status_code=400, detail="Email format invalid")
         if not check_email(user.coach_email):
             raise HTTPException(status_code=400, detail="Password format invalid")
-        
+        print(len(user.coach_image))
+        if len(user.coach_image) > max_image_size_bytes:
+            raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
         new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
         
         db.add(new_user)
