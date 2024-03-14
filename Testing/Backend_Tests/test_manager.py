@@ -29,6 +29,32 @@ def test_add_manager():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_add_manager2():
+    url = baseUrl + '/register_manager'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "manager_email": "testmanagerregex@gmail.com",
+        "manager_password": "Testpassword123!",
+        "manager_firstname": "Colm O'Rourke",
+        "manager_surname": "tester",
+        "manager_contact_number": "012345",
+        "manager_image": "something"
+    
+    }
+    response = requests.post(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.status_code == 200
+
+    try:
+        response_json = response.json()
+        assert response_json.get("detail") == "Manager Registered Successfully"
+        assert 'id' in response_json
+        assert response_json['id']['manager_id'] == 2
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 
 def test_login_manager():
     url = baseUrl + '/login'
