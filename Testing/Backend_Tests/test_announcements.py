@@ -1,13 +1,14 @@
 import requests
+from test_url import baseUrl
 
 def test_a_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
 
 def test_add_a_manager():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
@@ -34,7 +35,7 @@ def test_add_a_manager():
 
 
 def test_add_league():
-    url = 'http://127.0.0.1:8000/leagues/'
+    url = baseUrl + '/leagues/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "league_name": "Louth GAA"
@@ -54,7 +55,7 @@ def test_add_league():
         assert False, f"Test failed: {e}"
 
 def test_add_sport():
-    url = 'http://127.0.0.1:8000/sports/'
+    url = baseUrl + '/sports/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "sport_name": "Gaelic Rugby"
@@ -74,7 +75,7 @@ def test_add_sport():
         assert False, f"Test failed: {e}"
 
 def test_add_team():
-    url = 'http://127.0.0.1:8000/teams/'
+    url = baseUrl + '/teams/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "team_name": "Louth Under 21s GAA",
@@ -100,7 +101,7 @@ def test_add_team():
 
 
 def test_add_schedule():
-    url = 'http://127.0.0.1:8000/schedules'
+    url = baseUrl + '/schedules'
     headers = {'Content-Type': 'application/json'}
     json = {
     "schedule_title": "Match 1",
@@ -127,7 +128,7 @@ def test_add_schedule():
         assert False, f"Test failed: {e}"
 
 def test_add_announcement():
-    url = 'http://127.0.0.1:8000/announcements'
+    url = baseUrl + '/announcements'
     headers = {'Content-Type': 'application/json'}
     json = {
     "announcements_title": "Test Announcement",
@@ -154,7 +155,7 @@ def test_add_announcement():
 
 
 def test_get_announcement():
-    url = 'http://127.0.0.1:8000/announcements/1'
+    url = baseUrl + '/announcements/1'
     headers = {'Content-Type': 'application/json'}
     
     response = requests.get(url, headers=headers)
@@ -182,7 +183,7 @@ def test_get_announcement():
 
 def test_update_announcement():
 
-    url = 'http://127.0.0.1:8000/announcements/1'
+    url = baseUrl + '/announcements/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "announcements_id": 1,
@@ -208,7 +209,7 @@ def test_update_announcement():
 
 
 def test_delete_announcement():
-    url = 'http://127.0.0.1:8000/announcements/1'
+    url = baseUrl + '/announcements/1'
     headers = {'Content-Type': 'application/json'}
 
     response = requests.delete(url, headers=headers)

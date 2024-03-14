@@ -1,7 +1,10 @@
 import requests
+from test_url import baseUrl
+
+
 
 def test_add_league():
-    url = 'http://127.0.0.1:8000/leagues/'
+    url = baseUrl + '/leagues/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "league_name": "Louth GAA"
@@ -21,7 +24,7 @@ def test_add_league():
         assert False, f"Test failed: {e}"
 
 def test_add_league_incorrect():
-    url = 'http://127.0.0.1:8000/leagues/'
+    url = baseUrl + '/leagues/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "league_name": "Louth GAA 123"
@@ -39,7 +42,7 @@ def test_add_league_incorrect():
         assert False, f"Test failed: {e}"
 
 def test_get_league_by_id():
-    url = 'http://127.0.0.1:8000/leagues/1'
+    url = baseUrl + '/leagues/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -59,7 +62,7 @@ def test_get_league_by_id():
         assert False, f"Test failed: {e}"
 
 def test_get_league_by_false_id():
-    url = 'http://127.0.0.1:8000/leagues/.1'
+    url = baseUrl + '/leagues/.1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
     # assert response.headers['Content-Type'] == 'application/json'
@@ -70,7 +73,7 @@ def test_get_league_by_false_id():
         assert False, f"Test failed: {e}"
 
 def test_update_league_by_id():
-    url = 'http://127.0.0.1:8000/leagues/1'
+    url = baseUrl + '/leagues/1'
     headers = {'Content-Type': 'application/json'}
     json = {
              "league_name": "Monaghan GAA"                
@@ -89,7 +92,7 @@ def test_update_league_by_id():
         assert False, f"Test failed: {e}"        
 
 def test_delete_league_by_id():
-    url = 'http://127.0.0.1:8000/leagues/1'
+    url = baseUrl + '/leagues/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     

@@ -1,7 +1,10 @@
 import requests
+from test_url import baseUrl
+
+
 
 def test_add_manager():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
@@ -28,7 +31,7 @@ def test_add_manager():
 
 
 def test_login_manager():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testmanager@gmail.com",
@@ -53,7 +56,7 @@ def test_login_manager():
         assert False, f"Test failed: {e}"
 
 def test_login_manager_incorrect():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testmanager@gmail.com",
@@ -78,7 +81,7 @@ def test_login_manager_incorrect():
         assert False, f"Test failed: {e}"
 
 def test_add_manager_incorrect_email():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanagergmailcom",
@@ -100,7 +103,7 @@ def test_add_manager_incorrect_email():
         assert False, f"Test failed: {e}"
 
 # def test_get_manager_no_info():
-#     url = 'http://127.0.0.1:8000/managers/1'
+#     url = baseUrl + '/managers/1'
 #     headers = {'Content-Type': 'application/json'}
 #     response = requests.get(url, headers=headers)
 #     assert response.status_code == 200
@@ -121,7 +124,7 @@ def test_add_manager_incorrect_email():
 
 
 def test_update_manager():
-    url = 'http://127.0.0.1:8000/managers/1'
+    url = baseUrl + '/managers/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "manager_email": "testmanager@gmail.com",
@@ -147,7 +150,7 @@ def test_update_manager():
 
 
 def test_update_manager_login():
-    url = 'http://127.0.0.1:8000/managers/login/1'
+    url = baseUrl + '/managers/login/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "manager_id": 1,
@@ -170,7 +173,7 @@ def test_update_manager_login():
 
 
 def test_update_manager_info():
-    url = 'http://127.0.0.1:8000/managers/info/1'
+    url = baseUrl + '/managers/info/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "manager_id": 1,
@@ -196,7 +199,7 @@ def test_update_manager_info():
 
 # test is passable on static databases with hashed password returning
 def test_get_manager_info():
-    url = 'http://127.0.0.1:8000/managers/1'
+    url = baseUrl + '/managers/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
     assert response.status_code == 200
@@ -219,7 +222,7 @@ def test_get_manager_info():
 
 
 def test_delete_manager():
-    url = 'http://127.0.0.1:8000/managers/1'
+    url = baseUrl + '/managers/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
@@ -239,7 +242,7 @@ def test_delete_manager():
 
 
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
@@ -248,7 +251,7 @@ def test_z_cleanup():
 
 
 # def test_update_manager_incorrect():
-#     url = 'http://127.0.0.1:8000/managers/1'
+#     url = baseUrl + '/managers/1'
 #     headers = {'Content-Type': 'application/json'}
 #     json = {
 #             "manager_email": "testcom",

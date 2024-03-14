@@ -1,7 +1,10 @@
 import requests
+from test_url import baseUrl
+
+
 
 def test_add_injury():
-    url = 'http://127.0.0.1:8000/injuries/'
+    url = baseUrl + '/injuries/'
     headers = {'Content-Type': 'application/json'}
     json = {
         
@@ -29,7 +32,7 @@ def test_add_injury():
         assert False, f"Test failed: {e}"
 
 def test_add_injury_incorrect():
-    url = 'http://127.0.0.1:8000/injuries/'
+    url = baseUrl + '/injuries/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Ankle Sprain123!",
@@ -54,7 +57,7 @@ def test_add_injury_incorrect():
         assert False, f"Test failed: {e}"
 
 def test_get_injury_by_id():
-    url = 'http://127.0.0.1:8000/injuries/1'
+    url = baseUrl + '/injuries/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -81,7 +84,7 @@ def test_get_injury_by_id():
         assert False, f"Test failed: {e}"
 
 def test_get_injury_by_false_id():
-    url = 'http://127.0.0.1:8000/injuries/.1'
+    url = baseUrl + '/injuries/.1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -94,7 +97,7 @@ def test_get_injury_by_false_id():
         assert False, f"Test failed: {e}"
 
 def test_update_injury_by_id():
-    url = 'http://127.0.0.1:8000/injuries/1'
+    url = baseUrl + '/injuries/1'
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Broken Ankle",
@@ -122,7 +125,7 @@ def test_update_injury_by_id():
  
         
 def test_add_player():
-    url = 'http://127.0.0.1:8000/register_player'
+    url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayer@gmail.com",
@@ -152,7 +155,7 @@ def test_add_player():
         assert False, f"Test failed: {e}"
 
 def test_delete_injury_by_id():
-    url = 'http://127.0.0.1:8000/injuries/1'
+    url = baseUrl + '/injuries/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     
@@ -169,7 +172,7 @@ def test_delete_injury_by_id():
 
 
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200

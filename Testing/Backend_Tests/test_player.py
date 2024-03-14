@@ -1,8 +1,10 @@
 import requests
+from test_url import baseUrl
+
 
 
 def test_add_player():
-    url = 'http://127.0.0.1:8000/register_player'
+    url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayer@gmail.com",
@@ -31,7 +33,7 @@ def test_add_player():
         assert False, f"Test failed: {e}"
 
 def test_login_player():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testplayer@gmail.com",
@@ -56,7 +58,7 @@ def test_login_player():
         assert False, f"Test failed: {e}"
 
 def test_login_player_incorrect():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
        "user_email": "testplayer@gmail.com",
@@ -81,7 +83,7 @@ def test_login_player_incorrect():
         assert False, f"Test failed: {e}"
 
 def test_add_player_incorrect_email():
-    url = 'http://127.0.0.1:8000/register_player'
+    url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayergmailcom",
@@ -108,7 +110,7 @@ def test_add_player_incorrect_email():
 
 #password is now hashed everytime tests are run so is passable on static databases
 # def test_get__all_player():
-#     url = 'http://127.0.0.1:8000/players'
+#     url = baseUrl + '/players'
 #     headers = {'Content-Type': 'application/json'}
 #     response = requests.get(url, headers=headers)
 #     assert response.status_code == 200
@@ -130,7 +132,7 @@ def test_add_player_incorrect_email():
 
 
 def test_update_player_info():
-    url = 'http://127.0.0.1:8000/players/info/1'
+    url = baseUrl + '/players/info/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
@@ -157,7 +159,7 @@ def test_update_player_info():
         assert False, f"Test failed: {e}"
 
 def test_update_player_login():
-    url = 'http://127.0.0.1:8000/players/login/1'
+    url = baseUrl + '/players/login/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
@@ -179,7 +181,7 @@ def test_update_player_login():
         assert False, f"Test failed: {e}"
 
 def test_get_player_info():
-    url = 'http://127.0.0.1:8000/players/info/1'
+    url = baseUrl + '/players/info/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
     assert response.status_code == 200
@@ -201,7 +203,7 @@ def test_get_player_info():
         assert False, f"Test failed: {e}"
 
 def test_update_player_stats():
-    url = 'http://127.0.0.1:8000/players/stats/1'
+    url = baseUrl + '/players/stats/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
@@ -225,7 +227,7 @@ def test_update_player_stats():
         assert False, f"Test failed: {e}"
 
 def test_get_player_stats():
-    url = 'http://127.0.0.1:8000/players/stats/1'
+    url = baseUrl + '/players/stats/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
@@ -248,7 +250,7 @@ def test_get_player_stats():
         assert False, f"Test failed: {e}"
 
 # def test_update_player_minutes_played():
-#     url = 'http://127.0.0.1:8000/players/stats/1/minutes_played/90'
+#     url = baseUrl + '/players/stats/1/minutes_played/90'
 #     headers = {'Content-Type': 'application/json'}
     
 #     response = requests.put(url, headers=headers)
@@ -265,7 +267,7 @@ def test_get_player_stats():
 
 
 def test_update_get_player_stats():
-    url = 'http://127.0.0.1:8000/players/stats/1'
+    url = baseUrl + '/players/stats/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
@@ -289,7 +291,7 @@ def test_update_get_player_stats():
 
 
 # def test_update_player_minutes_played_negative():
-#     url = 'http://127.0.0.1:8000/players/stats/1/minutes_played/-30'
+#     url = baseUrl + '/players/stats/1/minutes_played/-30'
 #     headers = {'Content-Type': 'application/json'}
     
 #     response = requests.put(url, headers=headers)
@@ -306,7 +308,7 @@ def test_update_get_player_stats():
 
 
 def test_update_get_player_stats_negative():
-    url = 'http://127.0.0.1:8000/players/stats/1'
+    url = baseUrl + '/players/stats/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
@@ -331,7 +333,7 @@ def test_update_get_player_stats_negative():
         
 
 def test_delete_player():
-    url = 'http://127.0.0.1:8000/players/1'
+    url = baseUrl + '/players/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
@@ -348,7 +350,7 @@ def test_delete_player():
         assert False, f"Test failed: {e}"
         
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
@@ -359,7 +361,7 @@ def test_z_cleanup():
 
 
 # def test_update_player_info_incorrect():
-#     url = 'http://127.0.0.1:8000/players/info/1'
+#     url = baseUrl + '/players/info/1'
 #     headers = {'Content-Type': 'application/json'}
 #     json = {
 #             "player_id": 1,

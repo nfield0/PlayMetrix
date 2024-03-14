@@ -1,13 +1,15 @@
 import requests
+from test_url import baseUrl
+
 
 def test_a_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
 
 def test_add_physio():
-    url = 'http://127.0.0.1:8000/register_physio'
+    url = baseUrl + '/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio@gmail.com",
@@ -31,7 +33,7 @@ def test_add_physio():
         assert False, f"Test failed: {e}"
 
 def test_add_physio_incorrect_email():
-    url = 'http://127.0.0.1:8000/register_physio'
+    url = baseUrl + '/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysiogmail.com",
@@ -53,7 +55,7 @@ def test_add_physio_incorrect_email():
         assert False, f"Test failed: {e}"
 
 def test_add_physio_incorrect_name():
-    url = 'http://127.0.0.1:8000/register_physio'
+    url = baseUrl + '/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio12@gmail.com",
@@ -76,7 +78,7 @@ def test_add_physio_incorrect_name():
 
 
 def test_get_physio():
-    url = 'http://127.0.0.1:8000/physio/info/1'
+    url = baseUrl + '/physio/info/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
     assert response.status_code == 200
@@ -97,7 +99,7 @@ def test_get_physio():
 
 
 def test_login_physio():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testphysio@gmail.com",
@@ -122,7 +124,7 @@ def test_login_physio():
         assert False, f"Test failed: {e}"
 
 def test_login_physio_fail():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testphysio@gmail.com",
@@ -147,7 +149,7 @@ def test_login_physio_fail():
         assert False, f"Test failed: {e}"
 
 def test_update_physio():
-    url = 'http://127.0.0.1:8000/physio/1'
+    url = baseUrl + '/physio/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "physio_email": "testphysioupdate@gmail.com",
@@ -172,7 +174,7 @@ def test_update_physio():
         assert False, f"Test failed: {e}"
 
 def test_update_physio_login():
-    url = 'http://127.0.0.1:8000/physio/login/1'
+    url = baseUrl + '/physio/login/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "physio_id": 1,
@@ -193,7 +195,7 @@ def test_update_physio_login():
         assert False, f"Test failed: {e}"
 
 def test_update_physio_info():
-    url = 'http://127.0.0.1:8000/physio/info/1'
+    url = baseUrl + '/physio/info/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "physio_id": 1,
@@ -216,7 +218,7 @@ def test_update_physio_info():
         assert False, f"Test failed: {e}"    
 
 def test_update_physio_fail():
-    url = 'http://127.0.0.1:8000/physio/1'
+    url = baseUrl + '/physio/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "physio_email": "testphysioupdate@gmail.com",
@@ -242,7 +244,7 @@ def test_update_physio_fail():
 
 
 def test_delete_physio():
-    url = 'http://127.0.0.1:8000/physio/1'
+    url = baseUrl + '/physio/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
@@ -261,7 +263,7 @@ def test_delete_physio():
 # team_physio tests
 
 def test_add_team_manager():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
@@ -288,7 +290,7 @@ def test_add_team_manager():
 
 
 def test_add_league():
-    url = 'http://127.0.0.1:8000/leagues/'
+    url = baseUrl + '/leagues/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "league_name": "Louth GAA"
@@ -308,7 +310,7 @@ def test_add_league():
         assert False, f"Test failed: {e}"
 
 def test_add_sport():
-    url = 'http://127.0.0.1:8000/sports/'
+    url = baseUrl + '/sports/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "sport_name": "Gaelic Rugby"
@@ -328,7 +330,7 @@ def test_add_sport():
         assert False, f"Test failed: {e}"
 
 def test_add_team_before_team_test():
-    url = 'http://127.0.0.1:8000/teams/'
+    url = baseUrl + '/teams/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "team_name": "Louth Under 21s GAA",
@@ -353,7 +355,7 @@ def test_add_team_before_team_test():
         assert False, f"Test failed: {e}"
 
 def test_add_physio_2():
-    url = 'http://127.0.0.1:8000/register_physio'
+    url = baseUrl + '/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio@gmail.com",
@@ -378,7 +380,7 @@ def test_add_physio_2():
 
 
 # def test_add_z_team_physio():
-#     url = 'http://127.0.0.1:8000/team_physio'
+#     url = baseUrl + '/team_physio'
 #     headers = {'Content-Type': 'application/json'}
 #     json = {
 #         "team_id": 1,
@@ -392,7 +394,7 @@ def test_add_physio_2():
 
 
 # def test_get_team_physio():
-#     url = 'http://127.0.0.1:8000/team_physio/1'
+#     url = baseUrl + '/team_physio/1'
 #     headers = {'Content-Type': 'application/json'}
 #     response = requests.get(url, headers=headers)
 #     assert response.status_code == 200

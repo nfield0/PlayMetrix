@@ -1,14 +1,16 @@
 import requests
+from test_url import baseUrl
+
 
 
 def test_a_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200   
 
 def test_adc_manager():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
@@ -35,7 +37,7 @@ def test_adc_manager():
 
 
 def test_add_league():
-    url = 'http://127.0.0.1:8000/leagues/'
+    url = baseUrl + '/leagues/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "league_name": "Louth GAA"
@@ -55,7 +57,7 @@ def test_add_league():
         assert False, f"Test failed: {e}"
 
 def test_add_sport():
-    url = 'http://127.0.0.1:8000/sports/'
+    url = baseUrl + '/sports/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "sport_name": "Gaelic Rugby"
@@ -75,7 +77,7 @@ def test_add_sport():
         assert False, f"Test failed: {e}"
 
 def test_add_team():
-    url = 'http://127.0.0.1:8000/teams/'
+    url = baseUrl + '/teams/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "team_name": "Louth Under 21s GAA",
@@ -100,7 +102,7 @@ def test_add_team():
         assert False, f"Test failed: {e}"
 
 def test_add_notification():
-    url = 'http://127.0.0.1:8000/notification'
+    url = baseUrl + '/notification'
     headers = {'Content-Type': 'application/json'}
     json = {
         "notification_title": "Test Notification",
@@ -122,7 +124,7 @@ def test_add_notification():
 
         
 def test_add_notification_2():
-    url = 'http://127.0.0.1:8000/notification'
+    url = baseUrl + '/notification'
     headers = {'Content-Type': 'application/json'}
     json = {
         "notification_title": "Test Notification2",
@@ -146,7 +148,7 @@ def test_add_notification_2():
 
 
 def test_get_notification():
-    url = 'http://127.0.0.1:8000/notification/1'
+    url = baseUrl + '/notification/1'
     headers = {'Content-Type': 'application/json'}
     
     response = requests.get(url, headers=headers)
@@ -168,7 +170,7 @@ def test_get_notification():
         assert False, f"Test failed: {e}"
 
 def test_get_notification_by_team_type():
-    url = 'http://127.0.0.1:8000/notification/1/manager'
+    url = baseUrl + '/notification/1/manager'
     headers = {'Content-Type': 'application/json'}
     
     response = requests.get(url, headers=headers)
@@ -198,7 +200,7 @@ def test_get_notification_by_team_type():
         assert False, f"Test failed: {e}"
 
 def test_update_notification():
-    url = 'http://127.0.0.1:8000/notification/1'
+    url = baseUrl + '/notification/1'
     headers = {'Content-Type': 'application/json'}
     json = {
         "notification_title": "Test Notification Updated",
@@ -218,7 +220,7 @@ def test_update_notification():
 
 
 def test_z_delete_notification():
-    url = 'http://127.0.0.1:8000/notification/1'
+    url = baseUrl + '/notification/1'
     headers = {'Content-Type': 'application/json'}
     
     response = requests.delete(url, headers=headers)
