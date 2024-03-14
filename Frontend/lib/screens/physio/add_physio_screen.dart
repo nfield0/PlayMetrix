@@ -6,7 +6,6 @@ import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
-import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class AddPhysioScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
