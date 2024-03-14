@@ -30,8 +30,33 @@ from Crud.security import *
 #     db.refresh(new_user)
 #     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
+def change_password(db, user):
+    user.user_email = user.user_email.lower()
+    existing_user = get_user_details_by_email_password(db, user.user_email, user.old_user_password)
+
+    if not existing_user:
+        raise HTTPException(status_code=400, detail="User details incorrect")
+    if existing_user.user_password == False:
+        raise HTTPException(status_code=400, detail="User details incorrect")
+    if not user.user_email or not user.old_user_password or not user.new_user_password:
+        raise HTTPException(status_code=400, detail="Email and both passwords are required")
+    if not check_email(user.user_email):
+        raise HTTPException(status_code=400, detail="Email format invalid")
+    if not check_password_regex(user.old_user_password) or not check_password_regex(user.new_user_password):
+        raise HTTPException(status_code=400, detail="Password format invalid")
+    if user.old_user_password == user.new_user_password:
+        raise HTTPException(status_code=400, detail="New password cannot be the same as the old password")
+
+    existing_user.user_password = encrypt_password(user.new_user_password)   
+    db.commit()
+    return {"detail": "Password Changed Successfully"}
+
+
+
 #20MB encodes larger so allow some excess
 max_image_size_bytes = 23087450
+
+
 
 
 def register_player(db, user):

@@ -24,6 +24,11 @@ class User(BaseModel):
     user_email: str
     user_password: str
 
+class ChangeUserPassword(BaseModel):
+    user_email: str
+    old_user_password: str
+    new_user_password: str
+
 class PlayerCreate(BaseModel):
     player_email: str
     player_password: str
