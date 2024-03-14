@@ -20,7 +20,13 @@ class AddPhysioScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Team Profile"),
+          title: const Text('Add Physio to Team',
+              style: TextStyle(
+                color: AppColours.darkBlue,
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w700,
+              )),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -36,21 +42,6 @@ class AddPhysioScreen extends ConsumerWidget {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Add Physio to Team',
-                                  style: TextStyle(
-                                    color: AppColours.darkBlue,
-                                    fontFamily: AppFonts.gabarito,
-                                    fontSize: 36.0,
-                                    fontWeight: FontWeight.w700,
-                                  )),
-                              Divider(
-                                color: AppColours.darkBlue,
-                                thickness: 1.0,
-                                height: 40.0,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
                               Form(
                                 key: _formKey,
                                 autovalidateMode: AutovalidateMode.always,
