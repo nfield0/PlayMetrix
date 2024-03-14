@@ -199,12 +199,12 @@ class LogInScreen extends ConsumerWidget {
                                   Profile physioProfile =
                                       await getPhysioProfile(userId);
 
-                                  show2faPopUp(
-                                      context,
-                                      ref,
-                                      physioProfile.contactNumber,
-                                      userRole,
-                                      userId);
+                                  // show2faPopUp(
+                                  //     context,
+                                  //     ref,
+                                  //     physioProfile.contactNumber,
+                                  //     userRole,
+                                  //     userId);
 
                                   logInFunctionality(
                                       context, ref, userRole, userId);
