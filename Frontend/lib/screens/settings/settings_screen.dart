@@ -5,6 +5,7 @@ import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/profile/edit_profile_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
+import 'package:play_metrix/screens/settings/change_password_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -63,7 +64,16 @@ class SettingsScreen extends ConsumerWidget {
                                 );
                               }),
                               settingsRow(
-                                  "Change password", Icons.key_outlined, () {}),
+                                  "Change password", Icons.key_outlined, () {
+                                    Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChangePasswordScreen(
+                                          userId: ref.read(userIdProvider),
+                                          userRole:
+                                              ref.read(userRoleProvider))),
+                                );
+                                  }),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
