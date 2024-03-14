@@ -19,9 +19,11 @@ from Crud.sport_leagues import *
 from Crud.announcement import *
 from Crud.coach import *
 from Crud.notification import *
-    
+from Crud.match import *
+
 def cleanup(db: Session):
     try:       
+        db.query(matches).delete()
         db.query(team_schedule).delete() 
 
         db.query(notifications).delete()
@@ -59,6 +61,7 @@ def cleanup(db: Session):
 
 
         db.flush()
+        db.execute(text("ALTER SEQUENCE matches_match_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE notifications_notification_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE manager_login_manager_id_seq RESTART WITH 1;"))
         db.execute(text("ALTER SEQUENCE physio_info_physio_id_seq RESTART WITH 1;"))

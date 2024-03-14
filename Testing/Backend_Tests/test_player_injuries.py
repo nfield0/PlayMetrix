@@ -1,8 +1,12 @@
 import requests, base64
+from test_url import baseUrl
+
+
+
 # player injuries
 
 def test_add_injury_for_player_injuries():
-    url = 'http://127.0.0.1:8000/injuries/'
+    url = baseUrl + '/injuries/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "injury_type": "Ankle Sprain",
@@ -30,7 +34,7 @@ def test_add_injury_for_player_injuries():
 
 
 def test_add_player():
-    url = 'http://127.0.0.1:8000/register_player'
+    url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayer@gmail.com",
@@ -60,7 +64,7 @@ def test_add_player():
         assert False, f"Test failed: {e}"
 
 def test_add_physio():
-    url = 'http://127.0.0.1:8000/register_physio'
+    url = baseUrl + '/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio@gmail.com",
@@ -84,7 +88,7 @@ def test_add_physio():
         assert False, f"Test failed: {e}"
 
 def test_add_player_injury():
-    url = 'http://127.0.0.1:8000/player_injuries/'
+    url = baseUrl + '/player_injuries/'
     headers = {'Content-Type': 'application/json'}
     with open("Backend\Sample.pdf", "rb") as pdf_file:
              encoded_string = base64.b64encode(pdf_file.read())
@@ -113,7 +117,7 @@ def test_add_player_injury():
         assert False, f"Test failed: {e}"
 
 def test_get_player_injuries():
-    url = 'http://127.0.0.1:8000/player_injuries/1'
+    url = baseUrl + '/player_injuries/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -135,7 +139,7 @@ def test_get_player_injuries():
 
 
 def test_get_player_injury_date():
-    url = 'http://127.0.0.1:8000/player_injuries/1/date/2021-04-01/injury/1'
+    url = baseUrl + '/player_injuries/1/date/2021-04-01/injury/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -157,7 +161,7 @@ def test_get_player_injury_date():
 
 
 def test_get_player_injury_by_id():
-    url = 'http://127.0.0.1:8000/player_injuries/player_injury/1'
+    url = baseUrl + '/player_injuries/player_injury/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -178,7 +182,7 @@ def test_get_player_injury_by_id():
         assert False, f"Test failed: {e}"
 
 def test_update_2_player_injury():
-    url = 'http://127.0.0.1:8000/player_injuries/1'
+    url = baseUrl + '/player_injuries/1'
     headers = {'Content-Type': 'application/json'}
     json={
         "player_id": 1,
@@ -199,7 +203,7 @@ def test_update_2_player_injury():
         assert False, f"Test failed: {e}"
 
 def test_update_3_get_player_injuries():
-    url = 'http://127.0.0.1:8000/player_injuries/1'
+    url = baseUrl + '/player_injuries/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -222,7 +226,7 @@ def test_update_3_get_player_injuries():
 
 
 def test_z_delete_player_injury():
-    url = 'http://127.0.0.1:8000/player_injuries/1'
+    url = baseUrl + '/player_injuries/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
 
@@ -236,7 +240,7 @@ def test_z_delete_player_injury():
     
 
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200

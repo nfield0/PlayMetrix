@@ -267,6 +267,10 @@ class NotificationBase(BaseModel):
     notification_desc: str
     team_id: int
     user_type: str
-    
+
+class MatchBase(BaseModel):
+    player_id: int
+    schedule_id: int
+    minutes_played: int
 
 

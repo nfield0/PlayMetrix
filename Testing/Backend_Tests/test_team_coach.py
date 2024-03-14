@@ -1,8 +1,10 @@
 import requests
+from test_url import baseUrl
+
 
 
 def test_adc_manager():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
@@ -29,7 +31,7 @@ def test_adc_manager():
 
 
 def test_add_league():
-    url = 'http://127.0.0.1:8000/leagues/'
+    url = baseUrl + '/leagues/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "league_name": "Louth GAA"
@@ -49,7 +51,7 @@ def test_add_league():
         assert False, f"Test failed: {e}"
 
 def test_add_sport():
-    url = 'http://127.0.0.1:8000/sports/'
+    url = baseUrl + '/sports/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "sport_name": "Gaelic Rugby"
@@ -69,7 +71,7 @@ def test_add_sport():
         assert False, f"Test failed: {e}"
 
 def test_add_team():
-    url = 'http://127.0.0.1:8000/teams/'
+    url = baseUrl + '/teams/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "team_name": "Louth Under 21s GAA",
@@ -94,7 +96,7 @@ def test_add_team():
         assert False, f"Test failed: {e}"
 
 def test_add_coach():
-    url = 'http://127.0.0.1:8000/register_coach'
+    url = baseUrl + '/register_coach'
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_email": "testcoach@gmail.com",
@@ -120,7 +122,7 @@ def test_add_coach():
         assert False, f"Test failed: {e}"
 
 def test_add_team_coach():
-    url = 'http://127.0.0.1:8000/team_coach'
+    url = baseUrl + '/team_coach'
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_id": 1,
@@ -141,7 +143,7 @@ def test_add_team_coach():
         assert False, f"Test failed: {e}"
 
 def test_get_team_coach():
-    url = 'http://127.0.0.1:8000/team_coach/1'
+    url = baseUrl + '/team_coach/1'
     headers = {'Content-Type': 'application/json'}
 
     response = requests.get(url, headers=headers)
@@ -160,7 +162,7 @@ def test_get_team_coach():
         assert False, f"Test failed: {e}"
 
 def test_get_coaches_by_team_id():
-    url = 'http://127.0.0.1:8000/coaches_team/1'
+    url = baseUrl + '/coaches_team/1'
     headers = {'Content-Type': 'application/json'}
 
     response = requests.get(url, headers=headers)
@@ -182,7 +184,7 @@ def test_get_coaches_by_team_id():
 
 
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200

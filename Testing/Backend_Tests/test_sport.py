@@ -1,7 +1,9 @@
 import requests
+from test_url import baseUrl
+
 
 def test_add_sport():
-    url = 'http://127.0.0.1:8000/sports/'
+    url = baseUrl + '/sports/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "sport_name": "Gaelic Rugby"
@@ -22,7 +24,7 @@ def test_add_sport():
 
 
 def test_add_sport_incorrect():
-    url = 'http://127.0.0.1:8000/sports/'
+    url = baseUrl + '/sports/'
     headers = {'Content-Type': 'application/json'}
     json = {
         "sport_name": "Gaelic Rugby 1234!"
@@ -40,7 +42,7 @@ def test_add_sport_incorrect():
         assert False, f"Test failed: {e}"
 
 def test_get_league_by_id():
-    url = 'http://127.0.0.1:8000/sports/1'
+    url = baseUrl + '/sports/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
@@ -60,7 +62,7 @@ def test_get_league_by_id():
         assert False, f"Test failed: {e}"
 
 def test_get_sport_by_false_id():
-    url = 'http://127.0.0.1:8000/sports/.1'
+    url = baseUrl + '/sports/.1'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
     # assert response.headers['Content-Type'] == 'application/json'
@@ -71,7 +73,7 @@ def test_get_sport_by_false_id():
         assert False, f"Test failed: {e}"
 
 def test_update_sport_by_id():
-    url = 'http://127.0.0.1:8000/sports/1'
+    url = baseUrl + '/sports/1'
     headers = {'Content-Type': 'application/json'}
     json = {
              "sport_name": "Basketball"                
@@ -90,7 +92,7 @@ def test_update_sport_by_id():
         assert False, f"Test failed: {e}" 
 
 def test_update_sport_by_id_incorrect_name():
-    url = 'http://127.0.0.1:8000/sports/1'
+    url = baseUrl + '/sports/1'
     headers = {'Content-Type': 'application/json'}
     json = {
              "sport_name": "Basketball 1236!"                
@@ -108,7 +110,7 @@ def test_update_sport_by_id_incorrect_name():
 
 
 def test_delete_sport_by_id():
-    url = 'http://127.0.0.1:8000/sports/1'
+    url = baseUrl + '/sports/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     

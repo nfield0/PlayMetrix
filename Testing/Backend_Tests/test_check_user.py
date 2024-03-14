@@ -1,13 +1,16 @@
 import requests
+from test_url import baseUrl
+
+
 
 def test_a_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
 
 def test_add_manager():
-    url = 'http://127.0.0.1:8000/register_manager'
+    url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
     json = {
         "manager_email": "testmanager@gmail.com",
@@ -34,7 +37,7 @@ def test_add_manager():
 
 
 def test_add_coach():
-    url = 'http://127.0.0.1:8000/register_coach'
+    url = baseUrl + '/register_coach'
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_email": "testcoach@gmail.com",
@@ -60,7 +63,7 @@ def test_add_coach():
         assert False, f"Test failed: {e}"
 
 def test_add_physio():
-    url = 'http://127.0.0.1:8000/register_physio'
+    url = baseUrl + '/register_physio'
     headers = {'Content-Type': 'application/json'}
     json = {
         "physio_email": "testphysio@gmail.com",
@@ -85,7 +88,7 @@ def test_add_physio():
 
 
 def test_add_player():
-    url = 'http://127.0.0.1:8000/register_player'
+    url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
         "player_email": "testplayer@gmail.com",
@@ -117,7 +120,7 @@ def test_add_player():
 
 
 def test_check_player():
-    url = 'http://127.0.0.1:8000/users'
+    url = baseUrl + '/users'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_type": "player",
@@ -137,7 +140,7 @@ def test_check_player():
         assert False, f"Test failed: {e}"
 
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200

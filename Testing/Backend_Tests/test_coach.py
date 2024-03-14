@@ -1,14 +1,16 @@
 import requests
+from test_url import baseUrl
+
 
 
 def test_a_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
 
 def test_add_coach():
-    url = 'http://127.0.0.1:8000/register_coach'
+    url = baseUrl + '/register_coach'
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_email": "testcoach@gmail.com",
@@ -35,7 +37,7 @@ def test_add_coach():
 
 
 def test_get_coach():
-    url = 'http://127.0.0.1:8000/coaches/info/1'
+    url = baseUrl + '/coaches/info/1'
     headers = {'Content-Type': 'application/json'}
     
     response = requests.get(url, headers=headers)
@@ -57,7 +59,7 @@ def test_get_coach():
         assert False, f"Test failed: {e}"
 
 def test_login_coach():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testcoach@gmail.com",
@@ -82,7 +84,7 @@ def test_login_coach():
         assert False, f"Test failed: {e}"
 
 def test_login_coach_incorrect():
-    url = 'http://127.0.0.1:8000/login'
+    url = baseUrl + '/login'
     headers = {'Content-Type': 'application/json'}
     json = {
         "user_email": "testcoach@gmail.com",
@@ -107,7 +109,7 @@ def test_login_coach_incorrect():
         assert False, f"Test failed: {e}"
 
 def test_update_coach():
-    url = 'http://127.0.0.1:8000/coaches/1'
+    url = baseUrl + '/coaches/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "coach_email": "updatetestcoach@gmail.com",
@@ -132,7 +134,7 @@ def test_update_coach():
         assert False, f"Test failed: {e}"
 
 def test_update_coach_login():
-    url = 'http://127.0.0.1:8000/coaches/login/1'
+    url = baseUrl + '/coaches/login/1'
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_id": 1,   
@@ -154,7 +156,7 @@ def test_update_coach_login():
         assert False, f"Test failed: {e}"
 
 def test_update_coach_info():
-    url = 'http://127.0.0.1:8000/coaches/info/1'
+    url = baseUrl + '/coaches/info/1'
     headers = {'Content-Type': 'application/json'}
     json = {
         "coach_id": 1,   
@@ -178,7 +180,7 @@ def test_update_coach_info():
 
 
 def test_update_coach_invalid_email():
-    url = 'http://127.0.0.1:8000/coaches/1'
+    url = baseUrl + '/coaches/1'
     headers = {'Content-Type': 'application/json'}
     json = {
             "coach_email": "updatetestcoachgmail.com",
@@ -204,7 +206,7 @@ def test_update_coach_invalid_email():
 
 
 def test_delete_coach():
-    url = 'http://127.0.0.1:8000/coaches/1'
+    url = baseUrl + '/coaches/1'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200
@@ -226,7 +228,7 @@ def test_delete_coach():
 
 
 def test_z_cleanup():
-    url = 'http://127.0.0.1:8000/cleanup_tests'
+    url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, headers=headers)
     assert response.status_code == 200

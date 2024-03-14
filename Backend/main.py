@@ -650,7 +650,7 @@ def delete_sports(id: int, db:Session = Depends(get_db)):
 
 #endregion
 
-#region 
+#region notifs
 @app.get("/notification")
 def get_notifications(db:Session = Depends(get_db)):
     return crud.get_notifications(db)
@@ -677,6 +677,51 @@ def delete_notification(id: int, db:Session = Depends(get_db)):
     return crud.delete_notification(db, id)
 
 
+
+#endregion
+
+#region matches
+
+@app.get("/match/{id}")
+def get_matches(id:int, db:Session = Depends(get_db)):
+    return crud.get_match(db, id)
+
+@app.get("/match/schedule/{schedule_id}/player/{player_id}")
+def get_matches(schedule_id:int, player_id:int, db:Session = Depends(get_db)):
+    return crud.get_match_by_schedule_player_id(db, schedule_id, player_id)
+
+@app.get("/match/player/{id}")
+def get_matches_by_player(id:int, db:Session = Depends(get_db)):
+    return crud.get_match_by_player_id(db, id)
+
+@app.get("/match/player/{id}/minutes_played")
+def get_minutes_by_player(id:int, db:Session = Depends(get_db)):
+    return crud.get_minutes_played_by_player_id(db, id)
+
+
+
+@app.post("/match")
+def create_match(match: MatchBase, db:Session = Depends(get_db)):
+    return crud.insert_match(db, match)
+
+
+
+#redundant?
+@app.put("/match/{id}")
+def update_match(id: int, match: MatchBase, db:Session = Depends(get_db)):
+    return crud.update_match(db, match, id)
+
+
+@app.delete("/match/{id}")
+def delete_match(id: int, db:Session = Depends(get_db)):
+    return crud.delete_match(db, id)
+
+
+
+
+#endregion
+
+
 #region test_routes
 
 
@@ -688,5 +733,8 @@ def cleanup(db:Session = Depends(get_db)):
 
 #endregion
 
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level="debug")
+    

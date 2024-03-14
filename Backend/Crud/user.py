@@ -30,7 +30,12 @@ from Crud.security import *
 #     db.refresh(new_user)
 #     return {"detail": f"{user.user_type.capitalize()} Registered Successfully", "id": get_user_by_email(db,user.user_type,user.user_email)}
 
+#20MB encodes larger so allow some excess
+max_image_size_bytes = 23087450
+
+
 def register_player(db, user):
+    user.player_email = user.player_email.lower()
     existing_user = check_user_exists_by_email(db, user.player_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -41,6 +46,9 @@ def register_player(db, user):
         raise HTTPException(status_code=400, detail="Email format invalid")
     if not check_password_regex(user.player_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
+    
+    if len(user.player_image) > max_image_size_bytes:
+        raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
     
     new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
     
@@ -64,6 +72,7 @@ def register_player(db, user):
     return {"detail": "Player Registered Successfully", "id": new_user.player_id}
 
 def register_manager(db, user):
+    user.manager_email = user.manager_email.lower()
     existing_user = check_user_exists_by_email(db, user.manager_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -74,7 +83,8 @@ def register_manager(db, user):
         raise HTTPException(status_code=400, detail="Email format invalid")
     if not check_password_regex(user.manager_password):
         raise HTTPException(status_code=400, detail="Password format invalid")
-    
+    if len(user.manager_image) > max_image_size_bytes:
+        raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
 
     new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
     
@@ -93,6 +103,7 @@ def register_manager(db, user):
     return {"detail": "Manager Registered Successfully", "id": get_user_by_email(db,"manager",user.manager_email)}
 
 def register_physio(db, user):
+    user.physio_email = user.physio_email.lower()
     existing_user = check_user_exists_by_email(db, user.physio_email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -107,7 +118,8 @@ def register_physio(db, user):
         raise HTTPException(status_code=400, detail="First name format invalid")
     if not check_is_valid_name(str(user.physio_surname)):
         raise HTTPException(status_code=400, detail="Surname format invalid")
-    
+    if len(user.physio_image) > max_image_size_bytes:
+        raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
     new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
     
     db.add(new_user)
@@ -124,6 +136,7 @@ def register_physio(db, user):
 
 def register_coach(db, user):
     try:
+        user.coach_email = user.coach_email.lower()
         existing_user = check_user_exists_by_email(db, user.coach_email)
         if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
@@ -134,7 +147,9 @@ def register_coach(db, user):
             raise HTTPException(status_code=400, detail="Email format invalid")
         if not check_email(user.coach_email):
             raise HTTPException(status_code=400, detail="Password format invalid")
-        
+        print(len(user.coach_image))
+        if len(user.coach_image) > max_image_size_bytes:
+            raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
         new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
         
         db.add(new_user)
@@ -211,6 +226,7 @@ def get_user_details_by_email_password(db:Session, email: str, password: str):
     # raise HTTPException(status_code=200, detail=email)
 
     try:
+        email = email.lower()
         manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
         player_login_result = db.query(player_login).filter_by(player_email=email).first()
         physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
@@ -253,6 +269,7 @@ def get_user_by_id_type(db:Session, id: int, type: str):
 
 def check_user_exists_by_email(db:Session, email: str):
     try:
+        email = email.lower()
         manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
         player_login_result = db.query(player_login).filter_by(player_email=email).first()
         physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
@@ -274,8 +291,8 @@ def check_user_exists_by_email(db:Session, email: str):
         return(f"Error retrieving user: {e}")
 def get_user_by_email(db:Session, type: str, email: str):
     # raise HTTPException(status_code=200, detail=email)
-
     try:
+        email = email.lower()
         if type == "manager":
             login_info = db.query(manager_login).filter_by(manager_email=email).first()
         elif type == "player":
@@ -295,6 +312,7 @@ def get_user_details_by_email(db: Session, email :str):
     # raise HTTPException(status_code=200, detail=email)
 
     try:
+        email = email.lower()
         manager_login_result = db.query(manager_login).filter_by(manager_email=email).first()
         player_login_result = db.query(player_login).filter_by(player_email=email).first()
         physio_login_result = db.query(physio_login).filter_by(physio_email=email).first()
