@@ -34,7 +34,13 @@ class AddPlayerScreen extends ConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: appBarTitlePreviousPage("Players"),
+          title: const Text('Add Player to Team',
+              style: TextStyle(
+                color: AppColours.darkBlue,
+                fontFamily: AppFonts.gabarito,
+                fontSize: 24.0,
+                fontWeight: FontWeight.w700,
+              )),
           iconTheme: const IconThemeData(
             color: AppColours.darkBlue, //change your color here
           ),
@@ -50,21 +56,6 @@ class AddPlayerScreen extends ConsumerWidget {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Add Player to Team',
-                                  style: TextStyle(
-                                    color: AppColours.darkBlue,
-                                    fontFamily: AppFonts.gabarito,
-                                    fontSize: 36.0,
-                                    fontWeight: FontWeight.w700,
-                                  )),
-                              const Divider(
-                                color: AppColours.darkBlue,
-                                thickness: 1.0,
-                                height: 40.0,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
                               Form(
                                 key: _formKey,
                                 autovalidateMode: AutovalidateMode.always,
