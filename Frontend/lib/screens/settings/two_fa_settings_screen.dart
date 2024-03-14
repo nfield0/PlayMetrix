@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/settings/settings_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class TwoFASettingsScreen extends StatefulWidget {

@@ -10,6 +10,7 @@ import 'package:play_metrix/screens/settings/two_fa_settings_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -17,6 +18,9 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     UserRole userRole = ref.watch(userRoleProvider.notifier).state;
+    final Uri contactUsUrl = Uri.parse("https://linktr.ee/playmetrix");
+    final Uri guidebookUrl =
+        Uri.parse("https://online.fliphtml5.com/shnzj/gdnt/index.html#p=1");
 
     return Scaffold(
         appBar: AppBar(
@@ -103,9 +107,13 @@ class SettingsScreen extends ConsumerWidget {
                               const SizedBox(height: 10),
                               sectionHeader("About PlayMetrix"),
                               const SizedBox(height: 15),
-                              settingsRow(
-                                  "Online guidebook", Icons.book_online, () {}),
-                              settingsRow("Contact us", Icons.contacts, () {}),
+                              settingsRow("Online guidebook", Icons.book_online,
+                                  () {
+                                _launchUrl(guidebookUrl);
+                              }),
+                              settingsRow("Contact us", Icons.contacts, () {
+                                _launchUrl(contactUsUrl);
+                              }),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
@@ -146,34 +154,10 @@ Widget sectionHeader(String title) {
       ));
 }
 
-Widget settingsRowSwitch(String name, IconData icon, bool switchValue,
-    void Function(bool) onSwitch) {
-  return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(
-                icon,
-                size: 28,
-              ),
-              const SizedBox(width: 15),
-              Text(
-                name,
-                style:
-                    const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-          Switch(
-              // This bool value toggles the switch.
-              value: switchValue,
-              activeColor: Colors.green,
-              onChanged: onSwitch),
-        ],
-      ));
+Future<void> _launchUrl(url) async {
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch $url');
+  }
 }
 
 Widget settingsRow(String name, IconData icon, void Function() onTap) {
