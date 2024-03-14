@@ -193,4 +193,10 @@ class notifications(Base):
 	team_id = Column(Integer, index = True)
 	user_type = Column(String(50))
 
+class matches(Base):
+	__tablename__ = "matches"
+	match_id = Column(Integer, primary_key = True, index = True)
+	player_id = Column(Integer, index = True)
+	schedule_id = Column(Integer, index = True)
+	minutes_played = Column(Integer, index = True)
 
