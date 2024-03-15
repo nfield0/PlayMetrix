@@ -156,6 +156,8 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                                   MatchLineUpScreen(
                                                     userRole: widget.userRole,
                                                     teamId: widget.teamId,
+                                                    scheduleId:
+                                                        widget.scheduleId,
                                                     schedule: sch,
                                                   )),
                                         );

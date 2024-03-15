@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:play_metrix/api_clients/match_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
@@ -526,9 +527,12 @@ Future<StatisticsData> getStatisticsData(int id) async {
       final parsed = jsonDecode(response.body);
 
       if (parsed != null) {
+        int totalMinutesPlayed = await getTotalMinutesPlayedByPlayerId(id);
+
         return StatisticsData(
             parsed["matches_played"],
             parsed["matches_started"],
+            totalMinutesPlayed,
             parsed["matches_off_the_bench"],
             parsed["injury_prone"]);
       } else {

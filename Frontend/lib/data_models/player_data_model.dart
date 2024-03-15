@@ -107,25 +107,12 @@ final List<AvailabilityData> availabilityData = [
 class StatisticsData {
   final int matchesPlayed;
   final int matchesStarted;
+  final int totalMinutesPlayed;
   final int matchesOffTheBench;
   final bool injuryProne;
 
   StatisticsData(this.matchesPlayed, this.matchesStarted,
-      this.matchesOffTheBench, this.injuryProne);
-}
-
-class PlayerMatchData {
-  final int id;
-  final int playerId;
-  final int scheduleId;
-  final int minutesPlayed;
-
-  PlayerMatchData({
-    required this.id,
-    required this.playerId,
-    required this.scheduleId,
-    required this.minutesPlayed,
-  });
+      this.totalMinutesPlayed, this.matchesOffTheBench, this.injuryProne);
 }
 
 class Injury {
@@ -238,4 +225,32 @@ String formatBytes(int bytes) {
     i++;
   }
   return '${size.toStringAsFixed(2)} ${suffixes[i]}';
+}
+
+class MatchData {
+  final int playerId;
+  final int scheduleId;
+  Duration minutesPlayed;
+
+  MatchData({
+    required this.playerId,
+    required this.scheduleId,
+    required this.minutesPlayed,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'player_id': playerId,
+      'schedule_id': scheduleId,
+      'minutes_played': minutesPlayed.inMinutes,
+    };
+  }
+
+  factory MatchData.fromJson(Map<String, dynamic> json) {
+    return MatchData(
+      playerId: json['player_id'],
+      scheduleId: json['schedule_id'],
+      minutesPlayed: Duration(minutes: json['minutes_played']),
+    );
+  }
 }
