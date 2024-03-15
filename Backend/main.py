@@ -710,9 +710,9 @@ def create_match(match: MatchBase, db:Session = Depends(get_db)):
 
 
 #redundant?
-@app.put("/match/{id}")
-def update_match(id: int, match: MatchBase, db:Session = Depends(get_db)):
-    return crud.update_match(db, match, id)
+@app.put("/match/schedule/{schedule_id}/player/{player_id}/minutes/{minutes}")
+def update_match(schedule_id: int, player_id: int, minutes: int, db:Session = Depends(get_db)):
+    return crud.update_minutes(db, minutes, player_id, schedule_id)
 
 
 @app.delete("/match/{id}")
