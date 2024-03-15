@@ -55,10 +55,15 @@ def update_match(db: Session, match: MatchBase, pid: int, sid: int):
     
 def update_minutes(db: Session, minutes: int, pid: int, sid: int):
     try:
-        result = db.query(matches).filter(matches.player_id==pid, matches.schedule_id==sid)
+        result = db.query(matches).filter_by(player_id=pid, schedule_id=sid).first()
+        print(result.minutes_played)
+
         result.minutes_played = minutes
         db.commit()
-        return {"message": "Minutes Updated Successfully to " + str(minutes)}
+        db.refresh(result)
+        print(result.minutes_played)
+
+        return {"message": "Minutes Updated Successfully to " + str(result.minutes_played)}
     except Exception as e:
         return(f"Error updating matches: {e}")
 
