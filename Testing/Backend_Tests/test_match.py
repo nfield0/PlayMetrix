@@ -336,7 +336,7 @@ def test_2_get_match_updated():
 
 
 def test_3_matches_played():
-    url = baseUrl + '/calculate_matches_played'
+    url = baseUrl + '/calculate_matches_played/1'
     response = requests.put(url)
 
     try:

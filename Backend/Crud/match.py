@@ -86,11 +86,10 @@ def calculate_matches_played(db: Session, id: int):
     except Exception as e:
         return(f"Error retrieving matches: {e}")
 
-def update_matches_played(db: Session):
+def update_matches_played(db: Session, player_id: int):
     try:
-        result = db.query(player_stats).all()
-        for match in result:
-            match.matches_played = calculate_matches_played(db, match.player_id)
+        result = db.query(player_stats).filter_by(player_id=player_id).first()
+        result.matches_played = calculate_matches_played(db, player_id)
         db.commit()
         return {"message": "Matches Played Updated Successfully"}
     except Exception as e:

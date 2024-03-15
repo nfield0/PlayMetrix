@@ -720,9 +720,9 @@ def delete_match(id: int, db:Session = Depends(get_db)):
     return crud.delete_match(db, id)
 
 
-@app.put("/calculate_matches_played")
-def calculate_matches_played(db:Session = Depends(get_db)):
-    return crud.update_matches_played(db)
+@app.put("/calculate_matches_played/{player_id}")
+def calculate_matches_played(player_id: int, db:Session = Depends(get_db)):
+    return crud.update_matches_played(db, player_id)
 
 
 #endregion
