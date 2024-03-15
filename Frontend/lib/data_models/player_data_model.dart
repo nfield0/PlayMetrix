@@ -107,25 +107,12 @@ final List<AvailabilityData> availabilityData = [
 class StatisticsData {
   final int matchesPlayed;
   final int matchesStarted;
+  final int totalMinutesPlayed;
   final int matchesOffTheBench;
   final bool injuryProne;
 
   StatisticsData(this.matchesPlayed, this.matchesStarted,
-      this.matchesOffTheBench, this.injuryProne);
-}
-
-class PlayerMatchData {
-  final int id;
-  final int playerId;
-  final int scheduleId;
-  final int minutesPlayed;
-
-  PlayerMatchData({
-    required this.id,
-    required this.playerId,
-    required this.scheduleId,
-    required this.minutesPlayed,
-  });
+      this.totalMinutesPlayed, this.matchesOffTheBench, this.injuryProne);
 }
 
 class Injury {
@@ -243,7 +230,7 @@ String formatBytes(int bytes) {
 class MatchData {
   final int playerId;
   final int scheduleId;
-  final Duration minutesPlayed;
+  Duration minutesPlayed;
 
   MatchData({
     required this.playerId,

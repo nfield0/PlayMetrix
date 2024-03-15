@@ -670,13 +670,13 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
           ? available
           : limited;
 
-  // AvailabilityData totalMinutesPlayed =
-  //     statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
-  //             statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
-  //         ? limited
-  //         : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
-  //             ? unavailable
-  //             : available;
+  AvailabilityData totalMinutesPlayed =
+      statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
+              statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
+          ? limited
+          : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
+              ? unavailable
+              : available;
 
   return Column(
     children: [
@@ -695,11 +695,11 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
       const SizedBox(
         height: 7,
       ),
-      // statisticsDetailWithDivider("Total minutes played",
-      //     statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
-      // const SizedBox(
-      //   height: 7,
-      // ),
+      statisticsDetailWithDivider("Total minutes played",
+          statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
+      const SizedBox(
+        height: 7,
+      ),
       statisticsDetailWithDivider(
           "Injury Prone", statistics.injuryProne ? "Yes" : "No", null)
     ],
