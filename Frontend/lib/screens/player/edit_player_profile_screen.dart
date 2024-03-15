@@ -109,7 +109,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
 
-    final nameRegex = RegExp(r'^[A-Za-z]+$');
+    final nameRegex = RegExp(r"^[A-Za-z\s\’\'\-]+$");
     final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
     final heightRegex = RegExp(r'^[1-9]\d{0,2}(\.\d{1,2})?$');
 
