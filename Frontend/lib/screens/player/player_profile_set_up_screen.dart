@@ -21,7 +21,6 @@ class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _heightController = TextEditingController();
 
-  Uint8List? _profilePicture;
   DateTime _selectedDob = DateTime.now();
   String _selectedGender = 'Male';
 
@@ -105,7 +104,7 @@ class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
                               _selectedDob,
                               _heightController.text,
                               _selectedGender,
-                              _profilePicture,
+                              player.player_image,
                             );
 
                             navigator.push(
