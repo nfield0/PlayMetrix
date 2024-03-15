@@ -196,6 +196,18 @@ class AddScheduleScreen extends ConsumerWidget {
                                             "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                         date: DateTime.now(),
                                         teamId: ref.read(teamIdProvider),
+                                        recieverUserRole: UserRole.manager,
+                                        type: NotificationType.event);
+
+                                    await addNotification(
+                                        title:
+                                            "New event: ${titleController.text}",
+                                        desc:
+                                            "Location: ${locationController.text}\n"
+                                            "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                            "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                        date: DateTime.now(),
+                                        teamId: ref.read(teamIdProvider),
                                         recieverUserRole: UserRole.physio,
                                         type: NotificationType.event);
 
