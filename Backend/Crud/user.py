@@ -47,7 +47,17 @@ def change_password(db, user):
     if user.old_user_password == user.new_user_password:
         raise HTTPException(status_code=400, detail="New password cannot be the same as the old password")
 
-    existing_user.user_password = encrypt_password(user.new_user_password)   
+    user_details = get_user_by_email(db, existing_user.user_type, user.user_email)
+    if existing_user.user_type == "manager":
+        user_details.manager_password = encrypt_password(user.new_user_password)
+    elif existing_user.user_type == "player":
+        user_details.player_password = encrypt_password(user.new_user_password)
+    elif existing_user.user_type == "physio":
+        user_details.physio_password = encrypt_password(user.new_user_password)
+    elif existing_user.user_type == "coach":
+        user_details.coach_password = encrypt_password(user.new_user_password)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid user type") 
     db.commit()
     return {"detail": "Password Changed Successfully"}
 
