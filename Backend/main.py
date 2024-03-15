@@ -140,7 +140,10 @@ def register_physio(user: CoachCreate, db: Session = Depends(get_db)):
 def login_user(user: User, db: Session = Depends(get_db)):
     return crud.login(db, user)
 
-    
+@app.put("/change_password")
+def change_password(user: ChangeUserPassword, db: Session = Depends(get_db)):
+    return crud.change_password(db, user)    
+
 
 @app.get("/logout")
 def logout():

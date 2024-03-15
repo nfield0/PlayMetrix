@@ -139,6 +139,46 @@ def test_check_player():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_change_password_pass():
+    url = baseUrl + '/change_password'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_email": "testplayer@gmail.com",
+        "old_user_password": "Testpassword123!",
+        "new_user_password": "TestpasswordCHANGED1!"
+    }
+    response = requests.put(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.status_code == 200
+
+    try:
+        response_json = response.json()
+        assert response_json.get("detail") == "Password Changed Successfully"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_change_password_fail():
+    url = baseUrl + '/change_password'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_email": "testplayer@gmail.com",
+        "old_user_password": "Testpassword123@",
+        "new_user_password": "TestpasswordCHANGED1!"
+    }
+    response = requests.put(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+    assert response.status_code == 400
+
+    try:
+        response_json = response.json()
+        assert response_json.get("detail") == "User details incorrect"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
 def test_z_cleanup():
     url = baseUrl + '/cleanup_tests'
     headers = {'Content-Type': 'application/json'}
