@@ -42,7 +42,7 @@ class EditProfileScreen extends StatefulWidget {
 class EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
-  final nameRegex = RegExp(r'^[A-Za-z]+$');
+  final nameRegex = RegExp(r"^[A-Za-z\s\’\'\-]+$");
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController surnameController = TextEditingController();

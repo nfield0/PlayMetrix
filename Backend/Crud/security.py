@@ -11,7 +11,7 @@ import codecs
 
 email_regex = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$'
 password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
-name_regex = r'[a-zA-Z\'\-\s]+$'
+name_regex = r'[a-zA-Z\'\-\’\s]+$'
 team_name_regex = r'^[A-Za-z0-9\s]*$'
 phone_regex = r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
 #https://ihateregex.io/expr/phone/
