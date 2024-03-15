@@ -249,6 +249,21 @@ def test_get_minutes_played_total():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_delete_match():
     url = baseUrl + '/match/1'
     response = requests.delete(url)
@@ -259,6 +274,42 @@ def test_delete_match():
         response_json = response.json()
         assert response_json.get('message') == "Match deleted successfully"
         assert response.status_code == 200
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_z_add_match():
+    url = baseUrl + '/match'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "player_id": 1,
+        "schedule_id": 1,
+        "minutes_played": 60
+    }
+    response = requests.post(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        
+        response_json = response.json()
+        assert response_json.get('message') == "Player Match inserted successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 3
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_z_get_match_updated():
+    url = baseUrl + '/match/schedule/1/player/1/minutes/40'
+    response = requests.put(url)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("message") == "Minutes Updated Successfully to 40"
+    
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 

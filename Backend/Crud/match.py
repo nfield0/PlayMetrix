@@ -45,11 +45,20 @@ def insert_match(db: Session, match: MatchBase):
     except Exception as e:
         return (f"Error inserting match: {e}")
     
-def update_match(db: Session, match: MatchBase, id: int):
+def update_match(db: Session, match: MatchBase, pid: int, sid: int):
     try:
-        db.query(matches).filter(matches.match_id == id).update(match.model_dump())
+        db.query(matches).filter(match.player_id==pid, match.schedule_id==sid).update(match.model_dump())
         db.commit()
         return db.query(matches).filter(matches.match_id == id).first()
+    except Exception as e:
+        return(f"Error updating matches: {e}")
+    
+def update_minutes(db: Session, minutes: int, pid: int, sid: int):
+    try:
+        result = db.query(matches).filter(matches.player_id==pid, matches.schedule_id==sid)
+        result.minutes_played = minutes
+        db.commit()
+        return {"message": "Minutes Updated Successfully to " + str(minutes)}
     except Exception as e:
         return(f"Error updating matches: {e}")
 
