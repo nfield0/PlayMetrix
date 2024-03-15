@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -38,7 +39,7 @@ class PlayerProfileViewScreen extends ConsumerWidget {
 
   final allPlayerInjuriesProvider =
       FutureProvider.autoDispose<List<AllPlayerInjuriesData>>((ref) async {
-    return await getAllPlayerInjuriesByUserId(ref.read(userIdProvider));
+    return await getAllPlayerInjuriesByUserId(ref.read(playerIdProvider));
   });
 
   @override

@@ -17,6 +17,8 @@ import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
+final playerIdProvider = StateProvider<int>((ref) => -1);
+
 class PlayersScreen extends ConsumerWidget {
   const PlayersScreen({super.key});
 
@@ -144,6 +146,7 @@ class PlayersScreen extends ConsumerWidget {
                                                   .map((PlayerProfile player) {
                                                 return playerProfilePill(
                                                   context,
+                                                  ref,
                                                   player.imageBytes,
                                                   player.playerId,
                                                   player.firstName,
@@ -158,6 +161,7 @@ class PlayersScreen extends ConsumerWidget {
                                                   .map((PlayerProfile player) {
                                                 return playerProfilePill(
                                                   context,
+                                                  ref,
                                                   player.imageBytes,
                                                   player.playerId,
                                                   player.firstName,
@@ -181,6 +185,7 @@ class PlayersScreen extends ConsumerWidget {
 
 Widget playerProfilePill(
     BuildContext context,
+    WidgetRef ref,
     Uint8List? imageBytes,
     int playerId,
     String firstName,
@@ -210,6 +215,7 @@ Widget playerProfilePill(
       children: [
         InkWell(
             onTap: () {
+              ref.read(playerIdProvider.notifier).state = playerId;
               Navigator.push(
                 context,
                 MaterialPageRoute(

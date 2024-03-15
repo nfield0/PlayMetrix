@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
@@ -9,7 +10,7 @@ import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
-class PlayersAttendingScreen extends StatefulWidget {
+class PlayersAttendingScreen extends ConsumerWidget {
   final int scheduleId;
   final int teamId;
 
@@ -17,39 +18,16 @@ class PlayersAttendingScreen extends StatefulWidget {
       {super.key, required this.scheduleId, required this.teamId});
 
   @override
-  PlayersAttendingScreenState createState() => PlayersAttendingScreenState();
-}
-
-class PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
-  late Schedule schedule;
-  late List<PlayerProfile> playersAttending = [];
-  late List<PlayerProfile> playersNotAttending = [];
-  late List<PlayerProfile> playersUndecided = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getPlayersAttendanceForSchedule(widget.scheduleId, widget.teamId)
-        .then((value) {
-      setState(() {
-        playersAttending = value[PlayerAttendingStatus.present]!;
-        playersNotAttending = value[PlayerAttendingStatus.absent]!;
-        playersUndecided = value[PlayerAttendingStatus.undecided]!;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder<Schedule>(
-        future: getScheduleById(widget.scheduleId),
+        future: getScheduleById(scheduleId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            schedule = snapshot.data!;
+            Schedule schedule = snapshot.data!;
             String scheduleTitle = schedule.schedule_title;
             String scheduleType = schedule.schedule_type;
             DateTime scheduleStartTime =
@@ -94,76 +72,112 @@ class PlayersAttendingScreenState extends State<PlayersAttendingScreen> {
                                   fontSize: 26),
                             ),
                             const SizedBox(height: 20),
-                            if (playersAttending.isEmpty)
-                              emptySection(
-                                  Icons.person_off, "No players attending"),
-                            if (playersAttending.isNotEmpty)
-                              for (PlayerProfile player in playersAttending)
-                                Column(children: [
-                                  playerProfilePill(
-                                      context,
-                                      player.imageBytes,
-                                      player.playerId,
-                                      player.firstName,
-                                      player.surname,
-                                      player.teamNumber,
-                                      player.status),
-                                  const SizedBox(height: 10),
-                                ]),
-                            greyDivider(),
-                            const SizedBox(height: 20),
-                            const Text(
-                              "Not Attending",
-                              style: TextStyle(
-                                  color: AppColours.darkBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: AppFonts.gabarito,
-                                  fontSize: 26),
-                            ),
-                            const SizedBox(height: 20),
-                            if (playersNotAttending.isEmpty)
-                              emptySection(
-                                  Icons.person_off, "No players absent"),
-                            if (playersNotAttending.isNotEmpty)
-                              for (PlayerProfile player in playersNotAttending)
-                                Column(children: [
-                                  playerProfilePill(
-                                      context,
-                                      player.imageBytes,
-                                      player.playerId,
-                                      player.firstName,
-                                      player.surname,
-                                      player.teamNumber,
-                                      player.status),
-                                  const SizedBox(height: 10),
-                                ]),
-                            greyDivider(),
-                            const SizedBox(height: 20),
-                            const Text(
-                              "Undecided",
-                              style: TextStyle(
-                                  color: AppColours.darkBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: AppFonts.gabarito,
-                                  fontSize: 26),
-                            ),
-                            const SizedBox(height: 20),
-                            if (playersUndecided.isEmpty)
-                              emptySection(
-                                  Icons.person_off, "No players undecided"),
-                            if (playersUndecided.isNotEmpty)
-                              for (PlayerProfile player in playersUndecided)
-                                Column(children: [
-                                  playerProfilePill(
-                                      context,
-                                      player.imageBytes,
-                                      player.playerId,
-                                      player.firstName,
-                                      player.surname,
-                                      player.teamNumber,
-                                      player.status),
-                                  const SizedBox(height: 10),
-                                ]),
+                            FutureBuilder(
+                                future: getPlayersAttendanceForSchedule(
+                                    scheduleId, teamId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    Map<PlayerAttendingStatus,
+                                            List<PlayerProfile>>
+                                        playersAttendance = snapshot.data
+                                            as Map<PlayerAttendingStatus,
+                                                List<PlayerProfile>>;
+                                    List<PlayerProfile> playersAttending =
+                                        playersAttendance[
+                                            PlayerAttendingStatus.present]!;
+                                    List<PlayerProfile> playersNotAttending =
+                                        playersAttendance[
+                                            PlayerAttendingStatus.absent]!;
+                                    List<PlayerProfile> playersUndecided =
+                                        playersAttendance[
+                                            PlayerAttendingStatus.undecided]!;
+                                    return Column(children: [
+                                      if (playersAttending.isEmpty)
+                                        emptySection(Icons.person_off,
+                                            "No players attending"),
+                                      if (playersAttending.isNotEmpty)
+                                        for (PlayerProfile player
+                                            in playersAttending)
+                                          Column(children: [
+                                            playerProfilePill(
+                                                context,
+                                                ref,
+                                                player.imageBytes,
+                                                player.playerId,
+                                                player.firstName,
+                                                player.surname,
+                                                player.teamNumber,
+                                                player.status),
+                                            const SizedBox(height: 10),
+                                          ]),
+                                      greyDivider(),
+                                      const SizedBox(height: 20),
+                                      const Text(
+                                        "Not Attending",
+                                        style: TextStyle(
+                                            color: AppColours.darkBlue,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppFonts.gabarito,
+                                            fontSize: 26),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      if (playersNotAttending.isEmpty)
+                                        emptySection(Icons.person_off,
+                                            "No players absent"),
+                                      if (playersNotAttending.isNotEmpty)
+                                        for (PlayerProfile player
+                                            in playersNotAttending)
+                                          Column(children: [
+                                            playerProfilePill(
+                                                context,
+                                                ref,
+                                                player.imageBytes,
+                                                player.playerId,
+                                                player.firstName,
+                                                player.surname,
+                                                player.teamNumber,
+                                                player.status),
+                                            const SizedBox(height: 10),
+                                          ]),
+                                      greyDivider(),
+                                      const SizedBox(height: 20),
+                                      const Text(
+                                        "Undecided",
+                                        style: TextStyle(
+                                            color: AppColours.darkBlue,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: AppFonts.gabarito,
+                                            fontSize: 26),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      if (playersUndecided.isEmpty)
+                                        emptySection(Icons.person_off,
+                                            "No players undecided"),
+                                      if (playersUndecided.isNotEmpty)
+                                        for (PlayerProfile player
+                                            in playersUndecided)
+                                          Column(children: [
+                                            playerProfilePill(
+                                                context,
+                                                ref,
+                                                player.imageBytes,
+                                                player.playerId,
+                                                player.firstName,
+                                                player.surname,
+                                                player.teamNumber,
+                                                player.status),
+                                            const SizedBox(height: 10),
+                                          ])
+                                    ]);
+                                  } else {
+                                    return Text('No data available');
+                                  }
+                                }),
                           ])))),
                 )),
                 bottomNavigationBar: managerBottomNavBar(context, 3));
