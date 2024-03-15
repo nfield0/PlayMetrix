@@ -41,3 +41,16 @@ Future<void> addMatchData({scheduleId, playerId}) async {
     return;
   }
 }
+
+Future<void> updateMatchData({scheduleId, playerId, minutesPlayed}) async {
+  final apiUrl =
+      "$apiBaseUrl/match/schedule/$scheduleId/player/$playerId/minutes/$minutesPlayed";
+
+  try {
+    final response = await http.put(Uri.parse(apiUrl));
+
+    print(response.body);
+  } catch (e) {
+    return;
+  }
+}
