@@ -244,6 +244,8 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   horizontal: 25, vertical: 15),
                               child: bigButton("Change Password", () {
                                 if (_formKey.currentState!.validate()) {
+                                  
+
                                   _oldPasswordController.clear();
                                   _newPasswordController.clear();
                                   _confirmPasswordController.clear();

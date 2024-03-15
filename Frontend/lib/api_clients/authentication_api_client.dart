@@ -6,11 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/authentication_data_model.dart';
+import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
+import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -467,5 +469,31 @@ Future<void> _handleGoogleSignIn() async {
   } catch (error) {
     // Handle sign-in errors
     print('Error signing in with Google: $error');
+  }
+}
+
+Future<void> changePassword(int userId, UserRole userRole, String oldPassword,
+    String newPassword) async {
+  Profile user = await getProfileDetails(userId, userRole);
+
+  try {
+    const apiUrl = '$apiBaseUrl/change_password';
+
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'user_email': user.email,
+        'old_user_password': oldPassword,
+        'new_user_password': newPassword,
+      }),
+    );
+
+    print(response.body);
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
   }
 }
