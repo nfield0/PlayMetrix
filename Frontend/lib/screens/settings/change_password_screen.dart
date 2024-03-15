@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/settings/settings_screen.dart';
@@ -112,12 +113,6 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     color: AppColours.darkBlue,
                                     fontFamily: AppFonts.openSans),
                               ),
-                              validator: (String? value) {
-                                return (value != null &&
-                                        !_passwordRegex.hasMatch(value))
-                                    ? 'Password must contain at least 8 characters,\na number, and a symbol.'
-                                    : null;
-                              },
                             ),
                           ),
                           Padding(
@@ -242,22 +237,57 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 25, vertical: 15),
-                              child: bigButton("Change Password", () {
+                              child: bigButton("Change Password", () async {
                                 if (_formKey.currentState!.validate()) {
-                                  
+                                  String passwordChanged = await changePassword(
+                                      widget.userId,
+                                      widget.userRole,
+                                      _oldPasswordController.text,
+                                      _newPasswordController.text);
 
-                                  _oldPasswordController.clear();
-                                  _newPasswordController.clear();
-                                  _confirmPasswordController.clear();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Password changed successfully')));
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SettingsScreen()));
+                                  if (passwordChanged.isEmpty) {
+                                    _oldPasswordController.clear();
+                                    _newPasswordController.clear();
+                                    _confirmPasswordController.clear();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Password changed successfully')));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SettingsScreen()));
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Password not changed',
+                                                style: TextStyle(
+                                                    color: AppColours.darkBlue,
+                                                    fontFamily:
+                                                        AppFonts.gabarito,
+                                                    fontSize: 24,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            content: Text(
+                                              passwordChanged,
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  }
                                 }
                               }))
                         ],

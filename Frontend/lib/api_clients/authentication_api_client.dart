@@ -472,7 +472,7 @@ Future<void> _handleGoogleSignIn() async {
   }
 }
 
-Future<void> changePassword(int userId, UserRole userRole, String oldPassword,
+Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
     String newPassword) async {
   Profile user = await getProfileDetails(userId, userRole);
 
@@ -491,9 +491,23 @@ Future<void> changePassword(int userId, UserRole userRole, String oldPassword,
       }),
     );
 
-    print(response.body);
+    if (response.statusCode == 200) {
+      // Successfully changed password, handle the response accordingly
+      return "";
+    } else {
+      // Failed to change password, handle the error accordingly
+      print('Failed to change password. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      String detail = responseBody['detail'] ?? 'Unknown error';
+      
+      return detail;
+    }
   } catch (error) {
     // Handle any network or other errors
     print('Error: $error');
+    return error.toString();
   }
 }
