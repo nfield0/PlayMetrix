@@ -282,7 +282,8 @@ FROM injuries;
 
 
 
-
+INSERT INTO player_team (player_id, team_id, team_position, player_team_number, playing_status, lineup_status)
+VALUES (5,1, 'Midfielder', 8, 'Available','Starter');
 
 
 
