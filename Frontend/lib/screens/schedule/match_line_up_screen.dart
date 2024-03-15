@@ -11,32 +11,18 @@ import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-// final startersProvider = StateProvider<List<PlayerProfile>>((ref) => []);
-// final substitutesProvider = StateProvider<List<PlayerProfile>>((ref) => []);
-// final reservesProvider = StateProvider<List<PlayerProfile>>((ref) => []);
-
 class MatchLineUpScreen extends ConsumerWidget {
   final Appointment schedule;
+  final int scheduleId;
   final int teamId;
   final UserRole userRole;
 
   const MatchLineUpScreen(
       {super.key,
       required this.schedule,
+      required this.scheduleId,
       required this.teamId,
       required this.userRole});
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getPlayersLineupStatus(widget.teamId).then((value) {
-  //     setState(() {
-  //       staters = value[LineupStatus.starter]!;
-  //       substitutes = value[LineupStatus.substitute]!;
-  //       substitutes = value[LineupStatus.reserve]!;
-  //     });
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,6 +76,7 @@ class MatchLineUpScreen extends ConsumerWidget {
                                       builder: (context) =>
                                           DurationPlayedScreen(
                                         schedule: schedule,
+                                        scheduleId: scheduleId,
                                         teamId: teamId,
                                         userRole: userRole,
                                       ),

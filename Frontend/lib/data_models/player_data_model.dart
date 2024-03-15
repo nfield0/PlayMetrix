@@ -239,3 +239,31 @@ String formatBytes(int bytes) {
   }
   return '${size.toStringAsFixed(2)} ${suffixes[i]}';
 }
+
+class MatchData {
+  final int playerId;
+  final int scheduleId;
+  final Duration minutesPlayed;
+
+  MatchData({
+    required this.playerId,
+    required this.scheduleId,
+    required this.minutesPlayed,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'player_id': playerId,
+      'schedule_id': scheduleId,
+      'minutes_played': minutesPlayed.inMinutes,
+    };
+  }
+
+  factory MatchData.fromJson(Map<String, dynamic> json) {
+    return MatchData(
+      playerId: json['player_id'],
+      scheduleId: json['schedule_id'],
+      minutesPlayed: Duration(minutes: json['minutes_played']),
+    );
+  }
+}

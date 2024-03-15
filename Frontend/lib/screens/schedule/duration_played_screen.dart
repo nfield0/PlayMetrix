@@ -1,5 +1,6 @@
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/match_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
@@ -10,12 +11,14 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class DurationPlayedScreen extends StatefulWidget {
   final Appointment schedule;
+  final int scheduleId;
   final int teamId;
   final UserRole userRole;
 
   const DurationPlayedScreen(
       {super.key,
       required this.schedule,
+      required this.scheduleId,
       required this.teamId,
       required this.userRole});
 
@@ -39,8 +42,6 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
       });
     });
   }
-
-  Duration duration = Duration.zero;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,26 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
                 if (staters.isNotEmpty)
                   for (PlayerProfile player in staters)
                     Column(children: [
-                      _playerDurationPlayedBox(context, player, duration),
+                      FutureBuilder(
+                          future: getMatchDataForPlayerSchedule(
+                              scheduleId: widget.scheduleId,
+                              playerId: player.playerId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              MatchData matchData = snapshot.data!;
+                              print(matchData);
+                              return _playerDurationPlayedBox(
+                                  context, player, widget.schedule, matchData);
+                            } else {
+                              return _playerDurationPlayedBox(
+                                  context, player, widget.schedule, null);
+                            }
+                          }),
                       const SizedBox(height: 10),
                     ]),
                 const SizedBox(height: 20),
@@ -110,7 +130,25 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
                 if (substitutes.isNotEmpty)
                   for (PlayerProfile player in substitutes)
                     Column(children: [
-                      _playerDurationPlayedBox(context, player, duration),
+                      FutureBuilder(
+                          future: getMatchDataForPlayerSchedule(
+                              scheduleId: widget.scheduleId,
+                              playerId: player.playerId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              MatchData matchData = snapshot.data!;
+                              print(matchData);
+                              return _playerDurationPlayedBox(
+                                  context, player, widget.schedule, matchData);
+                            } else {
+                              return const SizedBox();
+                            }
+                          }),
                       const SizedBox(height: 10),
                     ]),
                 const SizedBox(height: 20),
@@ -130,7 +168,26 @@ class DurationPlayedScreenState extends State<DurationPlayedScreen> {
                 if (reserves.isNotEmpty)
                   for (PlayerProfile player in reserves)
                     Column(children: [
-                      _playerDurationPlayedBox(context, player, duration),
+                      FutureBuilder(
+                          future: getMatchDataForPlayerSchedule(
+                              scheduleId: widget.scheduleId,
+                              playerId: player.playerId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData) {
+                              MatchData matchData = snapshot.data!;
+                              print(matchData);
+                              return _playerDurationPlayedBox(
+                                  context, player, widget.schedule, matchData);
+                            } else {
+                              return _playerDurationPlayedBox(
+                                  context, player, widget.schedule, null);
+                            }
+                          }),
                       const SizedBox(height: 10),
                     ]),
               ],
@@ -158,11 +215,8 @@ Widget _playerSearchBar() {
   );
 }
 
-Widget _playerDurationPlayedBox(
-  BuildContext context,
-  PlayerProfile player,
-  Duration duration,
-) {
+Widget _playerDurationPlayedBox(BuildContext context, PlayerProfile player,
+    Appointment schedule, MatchData? matchData) {
   Color statusColour = AppColours.green;
   IconData statusIcon = Icons.check_circle;
   switch (player.status) {
@@ -180,9 +234,16 @@ Widget _playerDurationPlayedBox(
       break;
   }
 
+  Duration duration = matchData?.minutesPlayed ?? const Duration();
+
   return Stack(clipBehavior: Clip.none, children: [
     InkWell(
-        onTap: () {
+        onTap: () async {
+          if (matchData == null) {
+            await addMatchData(
+                scheduleId: schedule.id, playerId: player.playerId);
+          }
+
           showDialog(
               context: context,
               builder: (context) {
@@ -221,7 +282,7 @@ Widget _playerDurationPlayedBox(
                         child: const Text("Cancel"),
                       ),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.of(context).pop();
                         },
                         child: const Text("Save"),
@@ -297,27 +358,24 @@ Widget _playerDurationPlayedBox(
                 ],
               ),
               const SizedBox(height: 10),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    greyDivider(),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Duration played",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                        Row(
-                          children: [],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  greyDivider(),
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text("Duration played:",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 10),
+                      Text("${duration.inMinutes} minutes",
+                          style: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
