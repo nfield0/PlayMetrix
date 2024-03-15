@@ -145,6 +145,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.6"
+  duration_picker:
+    dependency: "direct main"
+    description:
+      name: duration_picker
+      sha256: "052b34dac04c29f3849bb3817a26c5aebe9e5f0697c3a374be87db2b84d75753"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   fake_async:
     dependency: transitive
     description:
@@ -460,10 +468,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_ios
-      sha256: fadafce49e8569257a0cad56d24438a6fa1f0cbd7ee0af9b631f7492818a4ca3
+      sha256: "917a5cadd67d052554cfb258595e54217de53fac5b52939426e26319a02e6297"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.9+1"
+    version: "0.8.9+2"
   image_picker_linux:
     dependency: transitive
     description:
@@ -500,10 +508,10 @@ packages:
     dependency: "direct main"
     description:
       name: input_quantity
-      sha256: "27278a6780584aa59833f08def3a14bac42b72fc42a41d831a626d7ba7738615"
+      sha256: "50d8da78bdcee682771a3e1a200595d91d1b86f1bcf105b6788d6d2ac1dec374"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.2"
   intl:
     dependency: "direct main"
     description:

@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         tooltipTheme: const TooltipThemeData(
             margin: EdgeInsets.symmetric(horizontal: 10)),
-        colorScheme: const ColorScheme.light(primary: AppColours.darkBlue),
+        colorScheme: const ColorScheme.light(
+            primary: AppColours.darkBlue, secondary: AppColours.darkBlue),
         appBarTheme: const AppBarTheme(surfaceTintColor: AppColours.mediumBlue),
         datePickerTheme: DatePickerThemeData(
           backgroundColor: Colors.white,

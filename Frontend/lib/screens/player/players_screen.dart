@@ -261,25 +261,29 @@ Widget playerProfilePill(
                   const SizedBox(
                     width: 25,
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        firstName,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontFamily: AppFonts.gabarito,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          firstName,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontFamily: AppFonts.gabarito,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      Text(
-                        surname,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontFamily: AppFonts.gabarito,
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          surname,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontFamily: AppFonts.gabarito,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
