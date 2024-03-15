@@ -332,3 +332,42 @@ def test_2_get_match_updated():
     
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
+
+
+
+def test_3_matches_played():
+    url = baseUrl + '/calculate_matches_played'
+    response = requests.put(url)
+
+    try:
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json.get('message') == "Matches Played Updated Successfully"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
+def test_get_player_stats():
+    url = baseUrl + '/players/stats/1'
+    headers = {'Content-Type': 'application/json'}
+    
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_json = {
+            "player_id": 1,
+            "matches_played": 2, 
+            "matches_started": 0,
+            "matches_off_the_bench": 0,
+            "injury_prone": False
+            
+        }
+        response_json = response.json()
+        assert response_json == expected_json
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
