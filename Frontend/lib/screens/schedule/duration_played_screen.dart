@@ -173,7 +173,6 @@ class DurationPlayedScreen extends ConsumerWidget {
                                       return Text('Error: ${snapshot.error}');
                                     } else if (snapshot.hasData) {
                                       MatchData matchData = snapshot.data!;
-                                      print(matchData);
                                       return _playerDurationPlayedBox(context,
                                           ref, player, schedule, matchData);
                                     } else {
@@ -242,6 +241,7 @@ Widget _playerDurationPlayedBox(BuildContext context, WidgetRef ref,
           if (matchData == null) {
             await addMatchData(
                 scheduleId: schedule.id, playerId: player.playerId);
+            await calculateMatchesPlayedByPlayerId(player.playerId);
           }
 
           showDialog(
@@ -287,6 +287,8 @@ Widget _playerDurationPlayedBox(BuildContext context, WidgetRef ref,
                               scheduleId: schedule.id,
                               playerId: player.playerId,
                               minutesPlayed: duration.inMinutes);
+                          await calculateMatchesPlayedByPlayerId(
+                              player.playerId);
                           ref.read(durationProvider.notifier).state = duration;
                           Navigator.of(context).pop();
                         },

@@ -65,3 +65,9 @@ Future<int> getTotalMinutesPlayedByPlayerId(int playerId) {
     }
   });
 }
+
+Future<void> calculateMatchesPlayedByPlayerId(int playerId) async {
+  final apiUrl = "$apiBaseUrl/calculate_matches_played/$playerId";
+
+  await http.put(Uri.parse(apiUrl));
+}

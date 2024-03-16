@@ -7,6 +7,7 @@ import 'package:play_metrix/screens/injury/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/settings/settings_screen.dart';
+import 'package:play_metrix/screens/statistics/statistics_constants.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -407,10 +408,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                             const SizedBox(height: 15),
                                             sectionHeader("Statistics"),
                                             const SizedBox(height: 35),
-                                            inputQuantity("Matches played",
-                                                _matchesPlayed!, (value) {
-                                              _matchesPlayed = value;
-                                            }),
+                                            matchPlayedStatisticsDetail(
+                                                _matchesPlayed!),
                                             const SizedBox(height: 35),
                                             inputQuantity("Matches started",
                                                 _matchesStarted!, (value) {
@@ -422,12 +421,6 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                                 _matchesOffTheBench!, (value) {
                                               _matchesOffTheBench = value;
                                             }),
-                                            // const SizedBox(height: 35),
-                                            // inputQuantity(
-                                            //     "Total minutes played",
-                                            //     _totalMinutesPlayed!, (value) {
-                                            //   _totalMinutesPlayed = value;
-                                            // }),
                                             const SizedBox(height: 30),
                                           ],
                                         ),
@@ -530,6 +523,50 @@ Widget inputQuantity(
                 btnColor: AppColours.darkBlue),
             onQtyChanged: onChanged,
           )
+        ],
+      )
+    ],
+  );
+}
+
+Widget matchPlayedStatisticsDetail(int matchesPlayed) {
+  final AvailabilityData available = AvailabilityData(
+      AvailabilityStatus.available,
+      "Available",
+      Icons.check_circle,
+      AppColours.green);
+  final AvailabilityData limited = AvailabilityData(
+      AvailabilityStatus.limited, "Limited", Icons.warning, AppColours.yellow);
+  final AvailabilityData unavailable = AvailabilityData(
+      AvailabilityStatus.unavailable,
+      "Unavailable",
+      Icons.cancel,
+      AppColours.red);
+
+  AvailabilityData matchesPlayedAvailability =
+      matchesPlayed > matchesPlayedLimit
+          ? unavailable
+          : matchesPlayed < matchesPlayedLimit
+              ? available
+              : limited;
+
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Matches played",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              Text(matchesPlayed.toString(),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 25),
+              Icon(matchesPlayedAvailability.icon,
+                  color: matchesPlayedAvailability.color, size: 20)
+            ],
+          ),
         ],
       )
     ],

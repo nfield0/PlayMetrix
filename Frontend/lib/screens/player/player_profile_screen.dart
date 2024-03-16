@@ -680,6 +680,11 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
 
   return Column(
     children: [
+      statisticsDetailWithDivider("Total minutes played",
+          statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
+      const SizedBox(
+        height: 7,
+      ),
       statisticsDetailWithDivider(
           "Matches played", statistics.matchesPlayed.toString(), matchesPlayed),
       const SizedBox(
@@ -692,11 +697,6 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
       ),
       statisticsDetailWithDivider("Matches off the bench",
           statistics.matchesOffTheBench.toString(), null),
-      const SizedBox(
-        height: 7,
-      ),
-      statisticsDetailWithDivider("Total minutes played",
-          statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
       const SizedBox(
         height: 7,
       ),

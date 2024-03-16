@@ -79,7 +79,7 @@ def delete_match(db: Session, id: int):
 
 def calculate_matches_played(db: Session, id: int):
     try:
-        condition = and_(matches.player_id == id, matches.minutes_played >= 0)
+        condition = and_(matches.player_id == id, matches.minutes_played > 0)
         
         matches_played = db.query(matches).filter(condition).all()
         return len(matches_played)
