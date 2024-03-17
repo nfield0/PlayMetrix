@@ -52,7 +52,7 @@ dependencies:
   file_picker: ^6.1.1
   syncfusion_flutter_pdfviewer: ^24.2.7
   dropdown_search: ^5.0.6
-  google_sign_in: ^5.0.0
+  google_sign_in: ^6.2.1
   flutter_signin_button: ^2.0.0
   url_launcher: ^6.0.3
   duration_picker: ^1.1.1
