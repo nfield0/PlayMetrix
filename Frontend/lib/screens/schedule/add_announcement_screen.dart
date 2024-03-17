@@ -4,6 +4,7 @@ import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/schedule_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -89,7 +90,7 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                 ]),
                               ),
                               const SizedBox(height: 30),
-                              bigButton("Send Announcement", () async {
+                              bigButton("Post", () async {
                                 if (formKey.currentState!.validate()) {
                                   String scheduleTitle = await getScheduleById(
                                           widget.scheduleId)
@@ -131,7 +132,19 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                       scheduleId: widget.scheduleId,
                                       posterId: widget.userId,
                                       posterType: widget.userRole);
-                                  navigator.pop(true);
+
+                                  navigator
+                                      .push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ScheduleDetailsScreen(
+                                                  scheduleId: widget.scheduleId,
+                                                  userRole: widget.userRole,
+                                                  userId: widget.userId,
+                                                  teamId: widget.teamId,
+                                                )),
+                                      )
+                                      .then((_) => setState(() {}));
                                 }
                               }),
                             ]),

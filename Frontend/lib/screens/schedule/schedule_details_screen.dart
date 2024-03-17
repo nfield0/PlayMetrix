@@ -33,8 +33,8 @@ class ScheduleDetailsScreen extends StatefulWidget {
 }
 
 class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
-  late PlayerAttendingStatus playerAttendingStatus;
-  late List<Announcement> announcements;
+  PlayerAttendingStatus playerAttendingStatus = PlayerAttendingStatus.undecided;
+  List<Announcement> announcements = [];
 
   @override
   void initState() {
@@ -338,6 +338,11 @@ Widget _announcementsSection(BuildContext context, UserRole userRole,
           })
       ]),
       const SizedBox(height: 15),
+      if (announcements.isEmpty)
+        Column(children: [
+          const SizedBox(height: 20),
+          emptySection(Icons.announcement, "No announcements yet")
+        ]),
       for (Announcement announcement in announcements)
         announcementBox(
             icon: Icons.announcement,
