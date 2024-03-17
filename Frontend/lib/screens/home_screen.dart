@@ -69,7 +69,8 @@ class HomeScreen extends ConsumerWidget {
                         ),
                       ),
                       Positioned(
-                          top: kToolbarHeight + 60,
+                          top: kToolbarHeight +
+                              MediaQuery.of(context).padding.top,
                           left: 0,
                           right: 0,
                           child: Center(
@@ -77,8 +78,8 @@ class HomeScreen extends ConsumerWidget {
                                 constraints:
                                     const BoxConstraints(maxWidth: 1000),
                                 child: Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -116,7 +117,10 @@ class HomeScreen extends ConsumerWidget {
                           right: 0,
                           child: Center(
                               child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.4,
+                            height:
+                                MediaQuery.of(context).size.height * 0.6 < 500
+                                    ? 250
+                                    : MediaQuery.of(context).size.height * 0.4,
                             child: SingleChildScrollView(
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -234,7 +238,7 @@ class HomeScreen extends ConsumerWidget {
         onTap: onPressed,
         child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.5 > 200
-                ? 300
+                ? 250
                 : MediaQuery.of(context).size.width * 0.5,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
