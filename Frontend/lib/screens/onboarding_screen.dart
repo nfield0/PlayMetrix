@@ -9,6 +9,8 @@ import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:play_metrix/screens/home_screen_initial.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnBoardingScreen extends ConsumerWidget {
   final introKey = GlobalKey<IntroductionScreenState>();
@@ -134,8 +136,18 @@ class OnBoardingScreen extends ConsumerWidget {
                 ),
                 PageViewModel(
                   title: "Before you get started...",
-                  body:
-                      "Make sure to check out our guidebook for more details on using our app by clicking here.",
+                  bodyWidget: Column(
+                    children: [
+                      const Text(
+                        "Make sure to check out our socials and guidebook to know more about our app.",
+                        textAlign: TextAlign.center,
+                        style: bodyStyle,
+                      ),
+                      underlineButtonTransparent("Check us out!", () {
+                        _launchUrl(Uri.parse("https://linktr.ee/playmetrix"));
+                      })
+                    ],
+                  ),
                   image: _buildImage('intro/intro_2.png'),
                   decoration: pageDecoration,
                 ),
@@ -184,5 +196,11 @@ class OnBoardingScreen extends ConsumerWidget {
         }
       },
     );
+  }
+}
+
+Future<void> _launchUrl(url) async {
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch $url');
   }
 }
