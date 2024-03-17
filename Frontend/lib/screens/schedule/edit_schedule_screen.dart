@@ -245,6 +245,18 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                               "Ends: ${selectedEndDate.toString().substring(0, 16)}",
                                           date: DateTime.now(),
                                           teamId: widget.teamId,
+                                          recieverUserRole: UserRole.manager,
+                                          type: NotificationType.event);
+
+                                      await addNotification(
+                                          title:
+                                              "Event update: ${titleController.text}",
+                                          desc:
+                                              "Location: ${locationController.text}\n"
+                                              "Starts: ${selectedStartDate.toString().substring(0, 16)}\n"
+                                              "Ends: ${selectedEndDate.toString().substring(0, 16)}",
+                                          date: DateTime.now(),
+                                          teamId: widget.teamId,
                                           recieverUserRole: UserRole.physio,
                                           type: NotificationType.event);
 
