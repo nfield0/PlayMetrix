@@ -33,11 +33,11 @@ class OnBoardingScreen extends ConsumerWidget {
     const bodyStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500);
 
     const pageDecoration = PageDecoration(
-      pageMargin: EdgeInsets.only(top: 120),
+      pageMargin: EdgeInsets.only(top: 50),
       imageAlignment: Alignment.bottomCenter,
       bodyAlignment: Alignment.topCenter,
       titleTextStyle: TextStyle(
-          fontSize: 36.0,
+          fontSize: 32.0,
           fontWeight: FontWeight.w700,
           color: AppColours.darkBlue,
           fontFamily: AppFonts.gabarito),
@@ -124,27 +124,6 @@ class OnBoardingScreen extends ConsumerWidget {
               allowImplicitScrolling: true,
               autoScrollDuration: 3000,
               infiniteAutoScroll: true,
-              globalHeader: Align(
-                alignment: Alignment.topCenter,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16, right: 16),
-                    child: _buildImage('logo.png', 150),
-                  ),
-                ),
-              ),
-              globalFooter: SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  child: const Text(
-                    'Let\'s go right away!',
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () => _onIntroEnd(context),
-                ),
-              ),
               pages: [
                 PageViewModel(
                   title: "Welcome to PlayMetrix!",
