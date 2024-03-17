@@ -260,7 +260,11 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                                   builder: (context) =>
                                                       PlayerProfileViewScreen(
                                                           playerId: widget
-                                                              .playerId)));
+                                                              .playerId))).then(
+                                            (value) {
+                                              setState(() {});
+                                            },
+                                          );
                                         }
                                       })
                                     ]),

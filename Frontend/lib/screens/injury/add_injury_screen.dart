@@ -8,7 +8,7 @@ import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -284,15 +284,12 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      EditPlayerProfileScreen(
-                                                          physioId:
-                                                              widget.physioId,
-                                                          playerId:
-                                                              widget.playerId,
-                                                          userRole:
-                                                              widget.userRole,
-                                                          teamId:
-                                                              widget.teamId)));
+                                                      PlayerProfileViewScreen(
+                                                        playerId:
+                                                            widget.playerId,
+                                                      ))).then((value) {
+                                            setState(() {});
+                                          });
                                         }
                                       })
                                     ]),
