@@ -99,7 +99,7 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                                   ),
                                   monthViewSettings: const MonthViewSettings(
                                     showAgenda: true,
-                                    agendaViewHeight: 150,
+                                    agendaViewHeight: 110,
                                   ),
                                 ),
                               );
