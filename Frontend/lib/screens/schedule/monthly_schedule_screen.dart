@@ -63,8 +63,7 @@ class MonthlyScheduleScreen extends ConsumerWidget {
             child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
                 child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20, right: 35, left: 35),
+                    padding: const EdgeInsets.only(right: 35, left: 35),
                     child: Column(children: [
                       const SizedBox(height: 20),
                       FutureBuilder(
