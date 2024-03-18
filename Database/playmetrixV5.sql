@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS player_login
 (
 	player_id serial PRIMARY KEY,
 	player_email VARCHAR(280) UNIQUE NOT NULL,
-	player_password VARCHAR(150) NOT NULL
+	player_password VARCHAR(150) NOT NULL,
+	player_2fa BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS player_info 
@@ -73,7 +74,8 @@ CREATE TABLE IF NOT EXISTS manager_login
 (
 	manager_id serial PRIMARY KEY,
 	manager_email VARCHAR (280) NOT NULL, 
-	manager_password VARCHAR (150) NOT NULL
+	manager_password VARCHAR (150) NOT NULL,
+	manager_2fa BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS manager_info
@@ -93,7 +95,8 @@ CREATE TABLE IF NOT EXISTS coach_login
 
 	coach_id serial PRIMARY KEY,
 	coach_email VARCHAR (280) NOT NULL,
-	coach_password VARCHAR(150) NOT NULL
+	coach_password VARCHAR(150) NOT NULL,
+	coach_2fa BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS coach_info
@@ -112,7 +115,8 @@ CREATE TABLE IF NOT EXISTS physio_login
 (
 	physio_id serial PRIMARY KEY,
 	physio_email VARCHAR(50) UNIQUE NOT NULL,
-	physio_password VARCHAR(150) NOT NULL
+	physio_password VARCHAR(150) NOT NULL,
+	physio_2fa BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS physio_info
@@ -330,7 +334,7 @@ INSERT INTO sport(sport_name) VALUES
 
 INSERT INTO injuries(injury_type, injury_name_and_grade, injury_location, potential_recovery_method_1, potential_recovery_method_2, potential_recovery_method_3, expected_minimum_recovery_time, expected_maximum_recovery_time)
 VALUES
-('Acute/Chronic', 'Rotar Cuff', 'Shoulder', 'Rest', 'Physiotherapy', 'Surgery Depedning on Severity', 6, 9),
+('Acute/Chronic', 'Rotator Cuff', 'Shoulder', 'Rest', 'Physiotherapy', 'Surgery Depending on Severity', 6, 9),
 ('Acute','Meniscal Tear','Knee','Rest', 'Ice', 'Compression & Elevation', 4,12),
 ('Acute/Chronic', 'Hamstring Strain Grade 1/2','Leg','Rest', 'Ice', 'Compression & Elevation', 3,8),
 ('Acute/Chronic', 'Hamstring Strain Grade 3','Leg','Rest', 'Ice', 'Compression & Elevation', 3,12),
@@ -340,7 +344,7 @@ VALUES
 ('Acute', 'Broken Leg Grade 3' ,'Leg', 'Surgery', 'Rest', 'Immobilisation', 12,24),
 ('Acute', 'Torn Quad Muscle','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 12,24),
 ('Acute', 'Torn Calf Muscle','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 2, 4),
-('Acute','Torn Abbuctor ','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 12,16);
+('Acute','Torn Abductor ','Leg','Rest & Ice', 'Compression & Elevation', 'Physiotherapy', 12,16);
 
 
 INSERT INTO injuries(injury_type, injury_name_and_grade, injury_location, potential_recovery_method_1, potential_recovery_method_2,  expected_minimum_recovery_time, expected_maximum_recovery_time)
