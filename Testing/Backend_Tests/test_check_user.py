@@ -184,7 +184,7 @@ def test_change_password_fail():
         assert False, f"Test failed: {e}"
 
 
-def test_change_2fa():
+def test_change_2fa_player():
     url = baseUrl + '/update_two_factor'
     headers = {'Content-Type': 'application/json'}
     json = {
@@ -226,6 +226,47 @@ def test_change_2fa_get_player():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
+def test_change_2fa_coach():
+    url = baseUrl + '/update_two_factor'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "user_email": "testcoach@gmail.com",
+        "user_2fa": False
+    }
+    response = requests.put(url, headers=headers, json=json)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        response_json = response.json()
+        assert response_json.get("detail") == "2FA Option Changed Successfully"
+        assert response.status_code == 200
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_change_2fa_get_coach():
+    url = baseUrl + '/coaches/1'
+    headers = {'Content-Type': 'application/json'}
+    
+    response = requests.get(url, headers=headers)
+    
+
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_json = {
+            "coach_id": 1,
+        "coach_email": "testcoach@gmail.com",
+        "coach_password": "Hidden",
+        "coach_2fa": False
+    }
+        response_json = response.json()
+        assert response_json == expected_json
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 def test_z_cleanup():
     url = baseUrl + '/cleanup_tests'

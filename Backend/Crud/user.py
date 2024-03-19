@@ -82,7 +82,7 @@ def change_2fa_option(db, user):
         user_to_update.physio_2fa = user.user_2fa  
     elif coach_result:
         user_to_update = get_user_by_id_type(db, coach_result.coach_id, "coach")
-        user_to_update.manager_2fa = user.user_2fa  
+        user_to_update.coach_2fa = user.user_2fa  
     else:
         raise HTTPException(status_code=400, detail="No user found")
 
