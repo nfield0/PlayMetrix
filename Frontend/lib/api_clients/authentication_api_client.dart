@@ -62,6 +62,7 @@ Future<String> registerUser({
           'manager_password': password,
           'manager_contact_number': contactNumber,
           'manager_image': image != null ? base64.encode(image) : "",
+          'manager_2fa': true
         }),
       );
 
@@ -100,6 +101,7 @@ Future<String> registerUser({
           'player_gender': "",
           'player_contact_number': contactNumber,
           'player_image': image != null ? base64.encode(image) : "",
+          'player_2fa': true
         }),
       );
 
@@ -136,6 +138,7 @@ Future<String> registerUser({
           'coach_surname': surname,
           'coach_contact': contactNumber,
           'coach_image': image != null ? base64.encode(image) : "",
+          'coach_2fa': true
         }),
       );
 
@@ -172,6 +175,7 @@ Future<String> registerUser({
           'physio_surname': surname,
           'physio_contact_number': contactNumber,
           'physio_image': image != null ? base64.encode(image) : "",
+          'physio_2fa': true
         }),
       );
 
@@ -502,7 +506,7 @@ Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
       Map<String, dynamic> responseBody = jsonDecode(response.body);
 
       String detail = responseBody['detail'] ?? 'Unknown error';
-      
+
       return detail;
     }
   } catch (error) {
