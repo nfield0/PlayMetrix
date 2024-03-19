@@ -301,7 +301,7 @@ class HomeScreenInitial extends ConsumerWidget {
                 ),
               );
             }, context)),
-        // _gapBetweenMenuItems(),
+        _gapBetweenMenuItems(),
         _buildMenuItem('Schedule', Icons.calendar_month, AppColours.mediumBlue,
             () {
           Navigator.push(
@@ -314,7 +314,7 @@ class HomeScreenInitial extends ConsumerWidget {
             ),
           );
         }, context),
-        // _gapBetweenMenuItems(),
+        _gapBetweenMenuItems(),
         Padding(
             padding: const EdgeInsets.only(right: 20),
             child: _buildMenuItem(
