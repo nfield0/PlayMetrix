@@ -21,7 +21,8 @@ Future<Profile> getPhysioProfile(int id) async {
           parsed['physio_surname'],
           parsed['physio_contact_number'],
           parsed['physio_email'],
-          base64Decode((parsed['physio_image'])));
+          base64Decode((parsed['physio_image'])),
+          parsed['physio_2fa']);
     } else {
       print('Error message: ${response.body}');
     }

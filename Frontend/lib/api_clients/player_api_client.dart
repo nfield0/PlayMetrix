@@ -7,6 +7,33 @@ import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
 
+Future<PlayerLogin> getPlayerLogin(int id) async {
+  final apiUrl = '$apiBaseUrl/players/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      final parsed = jsonDecode(response.body);
+
+      return PlayerLogin(
+        id: id,
+        email: parsed['player_email'],
+        password: parsed['player_password'],
+        twoFactorAuthEnabled: parsed['player_2fa'],
+      );
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  throw Exception("Player login not found");
+}
+
 Future<TeamPlayerData> getTeamPlayerData(int teamId, int playerId) async {
   final apiUrl = '$apiBaseUrl/team_player/$teamId';
   try {
@@ -85,34 +112,6 @@ Future<void> updateTeamPlayerNumber(
   }
 }
 
-Future<Profile> getPlayerProfile(int id) async {
-  final apiUrl = '$apiBaseUrl/players/info/$id';
-  try {
-    final response =
-        await http.get(Uri.parse(apiUrl), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-
-    if (response.statusCode == 200) {
-      final parsed = jsonDecode(response.body);
-
-      return Profile(
-          id,
-          parsed['player_firstname'],
-          parsed['player_surname'],
-          parsed['player_contact_number'],
-          parsed['player_height'],
-          base64Decode((parsed['player_image'])));
-    } else {
-      print('Error message: ${response.body}');
-    }
-  } catch (error) {
-    print('Error: $error');
-  }
-
-  throw Exception("Profile not found");
-}
-
 Future<PlayerData> getPlayerData(int id) async {
   final apiUrl = '$apiBaseUrl/players/info/$id';
   try {
@@ -140,14 +139,14 @@ Future<PlayerData> getPlayerData(int id) async {
       }
 
       return PlayerData(
-        player_id: id,
-        player_firstname: parsed['player_firstname'],
-        player_surname: parsed['player_surname'],
-        player_contact_number: parsed['player_contact_number'],
-        player_dob: playerDob,
-        player_height: parsed['player_height'],
-        player_gender: parsed['player_gender'],
-        player_image: playerImage,
+        id: id,
+        firstName: parsed['player_firstname'],
+        surname: parsed['player_surname'],
+        contactNumber: parsed['player_contact_number'],
+        dob: playerDob,
+        height: parsed['player_height'],
+        gender: parsed['player_gender'],
+        image: playerImage,
       );
     } else {
       print('Error message: ${response.body}');
@@ -157,6 +156,37 @@ Future<PlayerData> getPlayerData(int id) async {
   }
 
   throw Exception('Player not found');
+}
+
+Future<Profile> getPlayerProfile(int id) async {
+  final apiUrl = '$apiBaseUrl/players/info/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      final parsed = jsonDecode(response.body);
+
+      PlayerLogin playerLogin = await getPlayerLogin(id);
+
+      return Profile(
+          id,
+          parsed['player_firstname'],
+          parsed['player_surname'],
+          parsed['player_contact_number'],
+          playerLogin.email,
+          base64Decode((parsed['player_image'])),
+          playerLogin.twoFactorAuthEnabled);
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  throw Exception("Profile not found");
 }
 
 Future<void> updatePlayerProfile(
@@ -177,8 +207,8 @@ Future<void> updatePlayerProfile(
       },
       body: jsonEncode(<String, dynamic>{
         'player_id': id,
-        'player_firstname': player.player_firstname,
-        'player_surname': player.player_surname,
+        'player_firstname': player.firstName,
+        'player_surname': player.surname,
         'player_contact_number': contactNumber,
         'player_dob': dob.toIso8601String(),
         'player_height': height,
@@ -408,17 +438,17 @@ Future<List<PlayerProfile>> getAllPlayersForTeam(int teamId) async {
         PlayerData player = await getPlayerById(playerJson['player_id']);
 
         players.add(PlayerProfile(
-            playerId: player.player_id,
-            firstName: player.player_firstname,
-            surname: player.player_surname,
-            dob: "${player.player_dob.toLocal()}".split(' ')[0],
-            gender: player.player_gender,
-            height: player.player_height,
+            playerId: player.id,
+            firstName: player.firstName,
+            surname: player.surname,
+            dob: "${player.dob.toLocal()}".split(' ')[0],
+            gender: player.gender,
+            height: player.height,
             teamNumber: playerJson['player_team_number'],
             reasonForStatus: playerJson['reason_for_status'] ?? "",
             status: stringToAvailabilityStatus(playerJson['playing_status']),
             lineupStatus: textToLineupStatus(playerJson['lineup_status']),
-            imageBytes: player.player_image));
+            imageBytes: player.image));
       }
 
       return players;
@@ -457,16 +487,16 @@ Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
           PlayerData player = await getPlayerById(playerJson['player_id']);
           PlayerProfile playerProfile = PlayerProfile(
               playerId: playerJson['player_id'],
-              firstName: player.player_firstname,
-              surname: player.player_surname,
-              dob: "${player.player_dob.toLocal()}".split(' ')[0],
-              gender: player.player_gender,
-              height: player.player_height,
+              firstName: player.firstName,
+              surname: player.surname,
+              dob: "${player.dob.toLocal()}".split(' ')[0],
+              gender: player.gender,
+              height: player.height,
               teamNumber: playerJson['player_team_number'],
               reasonForStatus: playerJson['reason_for_status'] ?? "",
               status: stringToAvailabilityStatus(playerJson['playing_status']),
               lineupStatus: textToLineupStatus(playerJson['lineup_status']),
-              imageBytes: player.player_image);
+              imageBytes: player.image);
           return playerProfile;
         }
       }
@@ -485,8 +515,7 @@ Future<PlayerProfile> getPlayerTeamProfile(int teamId, int playerId) async {
 }
 
 Future<PlayerData> getPlayerById(int id) async {
-  final apiUrl =
-      '$apiBaseUrl/players/info/$id'; // Replace with your actual backend URL and provide the user ID
+  final apiUrl = '$apiBaseUrl/players/info/$id';
 
   try {
     final response = await http.get(

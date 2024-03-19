@@ -16,7 +16,6 @@ import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 void logOut(WidgetRef ref, BuildContext context) async {
   final navigator = Navigator.of(context);
@@ -473,6 +472,28 @@ Future<void> _handleGoogleSignIn() async {
   } catch (error) {
     // Handle sign-in errors
     print('Error signing in with Google: $error');
+  }
+}
+
+Future<void> updateTwoFactor(
+    int userId, UserRole userRole, bool twoFactorEnabled) async {
+  Profile user = await getProfileDetails(userId, userRole);
+
+  const apiUrl = '$apiBaseUrl/update_two_factor';
+
+  try {
+    http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'user_email': user.email,
+        'user_2fa': twoFactorEnabled,
+      }),
+    );
+  } catch (error) {
+    throw Exception('Failed to update 2FA');
   }
 }
 

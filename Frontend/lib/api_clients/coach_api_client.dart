@@ -21,7 +21,8 @@ Future<Profile> getCoachProfile(int id) async {
           parsed['coach_surname'],
           parsed['coach_contact'],
           parsed['coach_email'],
-          base64Decode((parsed['coach_image'])));
+          base64Decode((parsed['coach_image'])),
+          parsed['coach_2fa']);
     } else {
       print('Error message: ${response.body}');
     }
@@ -62,7 +63,6 @@ Future<void> updateCoachProfile(int id, ProfileName name, String contactNumber,
     print('Error: $error');
   }
 }
-
 
 Future<int> findCoachIdByEmail(String email) async {
   const apiUrl = '$apiBaseUrl/users';

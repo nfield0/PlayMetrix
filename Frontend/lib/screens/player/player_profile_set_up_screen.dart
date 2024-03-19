@@ -99,11 +99,11 @@ class PlayerProfileSetUpScreenState extends State<PlayerProfileSetUpScreen> {
                             await updatePlayerProfile(
                               widget.playerId,
                               player,
-                              player.player_contact_number,
+                              player.contactNumber,
                               _selectedDob,
                               _heightController.text,
                               _selectedGender,
-                              player.player_image,
+                              player.image,
                             );
 
                             navigator.push(

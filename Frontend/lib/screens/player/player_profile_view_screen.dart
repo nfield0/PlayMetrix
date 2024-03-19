@@ -104,14 +104,12 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                                     } else if (snapshot.hasData) {
                                       // Data has been successfully fetched, use it here
                                       PlayerData player = snapshot.data!;
-                                      String firstName =
-                                          player.player_firstname;
-                                      String surname = player.player_surname;
-                                      DateTime dob = player.player_dob;
-                                      String height = player.player_height;
-                                      String gender = player.player_gender;
-                                      Uint8List? profilePicture =
-                                          player.player_image;
+                                      String firstName = player.firstName;
+                                      String surname = player.surname;
+                                      DateTime dob = player.dob;
+                                      String height = player.height;
+                                      String gender = player.gender;
+                                      Uint8List? profilePicture = player.image;
 
                                       String formattedDate =
                                           "${dob.toLocal()}".split(' ')[0];

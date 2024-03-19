@@ -46,8 +46,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
     getPlayerById(widget.playerId).then((player) {
       setState(() {
-        playerName = "${player.player_firstname} ${player.player_surname}";
-        playerImage = player.player_image;
+        playerName = "${player.firstName} ${player.surname}";
+        playerImage = player.image;
       });
     });
   }

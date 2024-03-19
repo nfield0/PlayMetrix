@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
+import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
 
 class TwoFASettingsScreen extends StatefulWidget {
@@ -16,6 +18,16 @@ class TwoFASettingsScreen extends StatefulWidget {
 
 class TwoFASettingsScreenState extends State<TwoFASettingsScreen> {
   bool twoFaOn = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getProfileDetails(widget.userId, widget.userRole).then((profile) {
+      setState(() {
+        twoFaOn = profile.twoFactorAuthEnabled;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +69,11 @@ class TwoFASettingsScreenState extends State<TwoFASettingsScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Switch(
-                                  // This bool value toggles the switch.
                                   value: twoFaOn,
                                   activeColor: AppColours.darkBlue,
-                                  onChanged: (bool value) {
-                                    // This is called when the user toggles the switch.
+                                  onChanged: (bool value) async {
+                                    await updateTwoFactor(
+                                        widget.userId, widget.userRole, value);
                                     setState(() {
                                       twoFaOn = value;
                                     });

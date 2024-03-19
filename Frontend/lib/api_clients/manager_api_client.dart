@@ -21,7 +21,8 @@ Future<Profile> getManagerProfile(int id) async {
           parsed['manager_surname'],
           parsed['manager_contact_number'],
           parsed['manager_email'],
-          base64Decode((parsed['manager_image'])));
+          base64Decode((parsed['manager_image'])),
+          parsed['manager_2fa']);
     } else {
       print('Error message: ${response.body}');
     }

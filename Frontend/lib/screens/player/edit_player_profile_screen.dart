@@ -73,15 +73,14 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
     getPlayerData(widget.playerId).then((value) {
       setState(() {
         playerData = value;
-        _firstNameController.text = playerData.player_firstname;
-        _surnameController.text = playerData.player_surname;
-        _contactNumberController.text = playerData.player_contact_number;
-        _heightController.text = playerData.player_height;
-        _selectedDob = playerData.player_dob;
-        _profilePicture = playerData.player_image;
-        _selectedGender = playerData.player_gender;
-        playerName =
-            "${playerData.player_firstname} ${playerData.player_surname}";
+        _firstNameController.text = playerData.firstName;
+        _surnameController.text = playerData.surname;
+        _contactNumberController.text = playerData.contactNumber;
+        _heightController.text = playerData.height;
+        _selectedDob = playerData.dob;
+        _profilePicture = playerData.image;
+        _selectedGender = playerData.gender;
+        playerName = "${playerData.firstName} ${playerData.surname}";
       });
     });
 
