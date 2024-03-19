@@ -12,7 +12,8 @@ def test_add_manager():
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": True
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -38,7 +39,8 @@ def test_add_manager2():
         "manager_firstname": "Colm O'Rourke",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": True
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -115,7 +117,8 @@ def test_add_manager_incorrect_email():
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": "True"
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 400
@@ -158,7 +161,8 @@ def test_update_manager():
             "manager_firstname": "test",
             "manager_surname": "tester",
             "manager_contact_number": "012345",
-            "manager_image": "something"
+            "manager_image": "something",
+        "manager_2fa": True
         
     }
 
@@ -181,7 +185,8 @@ def test_update_manager_login():
     json = {
             "manager_id": 1,
             "manager_email": "testmanager@gmail.com",
-            "manager_password": "Password123!?"
+            "manager_password": "Password123!?",
+            "manager_2fa": True
     }
 
     response = requests.put(url, headers=headers, json=json)
@@ -238,7 +243,8 @@ def test_get_manager_info():
             "manager_firstname": "test1",
             "manager_surname": "tester1",
             "manager_contact_number": "012345",
-            "manager_image": "something"
+            "manager_image": "something",
+            "manager_2fa": True
         }
         
         assert response_json == expected_data

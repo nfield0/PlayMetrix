@@ -29,7 +29,8 @@ def get_physio_with_info_by_id(db: Session, id: int):
         if info_result:
             physio = PhysioNoID(physio_email=result.physio_email,physio_password="Hidden",
                                   physio_firstname=info_result.physio_firstname,physio_surname=decrypt_hex(info_result.physio_surname),
-                                  physio_contact_number=decrypt_hex(info_result.physio_contact_number), physio_image=info_result.physio_image)
+                                  physio_contact_number=decrypt_hex(info_result.physio_contact_number), physio_image=info_result.physio_image,
+                                  physio_2fa=result.physio_2fa)
             return physio
         else:
             raise HTTPException(status_code=404, detail="Physio Info not found")
@@ -57,6 +58,7 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
             raise HTTPException(status_code=404, detail="Physio not found")
         physio_to_update.physio_email = physio.physio_email
         physio_to_update.physio_password = encrypt_password(physio.physio_password)
+        physio_to_update.physio_2fa = physio.physio_2fa
         db.commit()
         #physio info section
         physio_info_to_update = db.query(physio_info).filter_by(physio_id= id).first()
@@ -66,13 +68,14 @@ def update_physio_by_id(db:Session, physio: PhysioNoID, id: int):
                                         physio_firstname=physio.physio_firstname,
                                         physio_surname=encrypt(physio.physio_surname),
                                         physio_contact_number=encrypt(physio.physio_contact_number),
-                                        physio_image = physio.physio_image)
+                                        physio_image = physio.physio_image, physio_2fa=physio_to_update.physio_2fa)
             db.add(new_physio_info)
         else:
             physio_info_to_update.physio_firstname = physio.physio_firstname
             physio_info_to_update.physio_surname = encrypt(physio.physio_surname)
             physio_info_to_update.physio_contact_number = encrypt(physio.physio_contact_number)
             physio_info_to_update.physio_image = physio.physio_image
+            physio_info_to_update.physio_2fa = physio_to_update.physio_2fa
         
         db.commit()
 
@@ -93,7 +96,7 @@ def update_physio_login_by_id(db:Session, physio: Physio, id: int):
         if not check_password_regex(str(physio.physio_password)):
             raise HTTPException(status_code=400, detail="Password format invalid")
         physio_to_update.physio_password = encrypt_password(physio.physio_password)
-        
+        physio_to_update.physio_2fa = physio.physio_2fa
         db.commit()
 
         return {"message": f"Physio Login with ID {id} has been updated"}

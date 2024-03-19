@@ -19,6 +19,7 @@ class UserCreate(BaseModel):
     user_type: str
     user_email: str
     user_password: str
+    user_2fa: bool
 
 class User(BaseModel):
     user_email: str
@@ -30,6 +31,7 @@ class ChangeUserPassword(BaseModel):
     new_user_password: str
 
 class PlayerCreate(BaseModel):
+    player_2fa: bool
     player_email: str
     player_password: str
     player_firstname: str 
@@ -44,6 +46,7 @@ class SportBase(BaseModel):
     sport_name : str
 
 class ManagerCreate(BaseModel):
+    manager_2fa: bool
     manager_email: str
     manager_password: str
     manager_firstname: str 
@@ -58,6 +61,8 @@ class PhysioCreate(BaseModel):
     physio_surname: str 
     physio_contact_number: str
     physio_image: Optional[bytes] = None
+    physio_2fa: bool
+
 
 class CoachCreate(BaseModel):
     coach_email: str
@@ -66,11 +71,14 @@ class CoachCreate(BaseModel):
     coach_surname: str
     coach_contact: str
     coach_image: Optional[bytes] = None
+    coach_2fa: bool
+
 
 class Coach(BaseModel):
     coach_id: int
     coach_email: str
     coach_password: str
+    coach_2fa: bool
 
 class CoachInfo(BaseModel):
     coach_id: int
@@ -84,6 +92,7 @@ class Manager(BaseModel):
     manager_id: int
     manager_email: str
     manager_password: str
+    manager_2fa: bool
 
 class ManagerInfo(BaseModel):
     manager_id: int
@@ -99,11 +108,13 @@ class ManagerNoID(BaseModel):
     manager_surname: str
     manager_contact_number: str
     manager_image: Optional[bytes] = None
+    manager_2fa: bool
 
 class Physio(BaseModel):
     physio_id: int
     physio_email: str
     physio_password: str
+    physio_2fa: bool
     
 class PhysioInfo(BaseModel):
     physio_id: int
@@ -119,6 +130,7 @@ class PhysioNoID(BaseModel):
     physio_surname: str
     physio_contact_number: str
     physio_image: Optional[bytes] = None
+    physio_2fa: bool
 
 class TeamBase(BaseModel):
     team_name: str
@@ -136,6 +148,7 @@ class PlayerBase(BaseModel):
     player_id: int
     player_email: str
     player_password: str
+    player_2fa: bool
     # player_firstname: str 
     # player_surname: str 
     # player_dob: str 

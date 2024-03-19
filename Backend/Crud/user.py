@@ -85,8 +85,8 @@ def register_player(db, user):
     if len(user.player_image) > max_image_size_bytes:
         raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
     
-    new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
-    
+    new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password), player_2fa=user.player_2fa)
+
     db.add(new_user)
     
     db.commit()
@@ -121,7 +121,7 @@ def register_manager(db, user):
     if len(user.manager_image) > max_image_size_bytes:
         raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
 
-    new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
+    new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password), manager_2fa=user.manager_2fa)
     
     db.add(new_user)
     
@@ -155,7 +155,7 @@ def register_physio(db, user):
         raise HTTPException(status_code=400, detail="Surname format invalid")
     if len(user.physio_image) > max_image_size_bytes:
         raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
-    new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
+    new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password), physio_2fa=user.physio_2fa)
     
     db.add(new_user)
     
@@ -185,7 +185,7 @@ def register_coach(db, user):
         print(len(user.coach_image))
         if len(user.coach_image) > max_image_size_bytes:
             raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
-        new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
+        new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password), coach_2fa=user.coach_2fa)
         
         db.add(new_user)
         

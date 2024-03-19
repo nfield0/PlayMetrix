@@ -21,7 +21,8 @@ def test_adc_manager():
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": True
     
     }
     response = requests.post(url, headers=headers, json=json)

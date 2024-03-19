@@ -145,6 +145,7 @@ def update_player_by_id(db:Session,  player: PlayerBase, id: int):
             raise HTTPException(status_code=404, detail="Player Login not found")
         player_to_update.player_email = player.player_email
         player_to_update.player_password = encrypt_password(player.player_password)
+        player_to_update.player_2fa = player.player_2fa
 
         db.commit()
 
