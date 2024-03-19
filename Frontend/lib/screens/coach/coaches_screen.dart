@@ -126,22 +126,104 @@ class CoachesScreen extends ConsumerWidget {
                                       ? Column(
                                           children: [
                                             for (Profile coach in coaches)
-                                              profilePill(
-                                                  "${coach.firstName} ${coach.surname}",
-                                                  coach.email,
-                                                  "lib/assets/icons/profile_placeholder.png",
-                                                  coach.imageBytes, () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ProfileViewScreen(
-                                                            userId: coach.id,
-                                                            userRole:
-                                                                UserRole.coach,
-                                                          )),
-                                                );
-                                              }),
+                                              Dismissible(
+                                                background: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                      color: AppColours.red),
+                                                  child: const Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                          "Remove coach from team",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily: AppFonts
+                                                                  .gabarito)),
+                                                      SizedBox(width: 20),
+                                                      Icon(Icons.delete,
+                                                          color: Colors.white,
+                                                          size: 30),
+                                                      SizedBox(width: 30),
+                                                    ],
+                                                  ),
+                                                ),
+                                                confirmDismiss:
+                                                    (direction) async {
+                                                  return await showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: const Text(
+                                                          "Remove Coach",
+                                                          style: TextStyle(
+                                                            color: AppColours
+                                                                .darkBlue,
+                                                            fontFamily: AppFonts
+                                                                .gabarito,
+                                                            fontSize: 24,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        content: Text(
+                                                          "Are you sure you want to remove ${coach.firstName} ${coach.surname} from your team?",
+                                                          style: const TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(false);
+                                                            },
+                                                            child: const Text(
+                                                                "Cancel"),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(true);
+                                                            },
+                                                            child: const Text(
+                                                                "Remove"),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                key: Key(coach.id.toString()),
+                                                child: profilePill(
+                                                    "${coach.firstName} ${coach.surname}",
+                                                    coach.email,
+                                                    "lib/assets/icons/profile_placeholder.png",
+                                                    coach.imageBytes, () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProfileViewScreen(
+                                                              userId: coach.id,
+                                                              userRole: UserRole
+                                                                  .coach,
+                                                            )),
+                                                  );
+                                                }),
+                                              )
                                           ],
                                         )
                                       : emptySection(Icons.person_off,

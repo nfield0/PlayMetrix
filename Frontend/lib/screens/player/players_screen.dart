@@ -210,102 +210,187 @@ Widget playerProfilePill(
   }
 
   return Column(children: [
-    Stack(
-      clipBehavior: Clip.none,
-      children: [
-        InkWell(
-            onTap: () {
-              ref.read(playerIdProvider.notifier).state = playerId;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        PlayerProfileViewScreen(playerId: playerId)),
-              );
-            },
-            child: Container(
-              // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
-              decoration: BoxDecoration(
-                border: Border.all(color: statusColour, width: 4),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                children: [
-                  imageBytes != null && imageBytes.isNotEmpty
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(75),
-                          child: Image.memory(
-                            imageBytes,
-                            width: 65,
-                            height: 65,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Image.asset(
-                          "lib/assets/icons/profile_placeholder.png",
-                          width: 65,
-                        ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  Text(
-                    "#$playerNum",
-                    style: TextStyle(
-                      color: statusColour,
-                      fontSize: 36,
-                      fontFamily: AppFonts.gabarito,
+    Dismissible(
+        background: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15), color: AppColours.red),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text("Remove player from team",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          firstName,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontFamily: AppFonts.gabarito,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          surname,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontFamily: AppFonts.gabarito,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )),
-        Positioned(
-          top: -10,
-          right: -10,
-          child: Container(
-            padding: EdgeInsets.zero,
-            decoration: const BoxDecoration(
-              color: Color(0XFFfafafa),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              statusIcon,
-              color: statusColour,
-              size: 40,
-            ),
+                      fontFamily: AppFonts.gabarito)),
+              SizedBox(width: 20),
+              Icon(Icons.delete, color: Colors.white, size: 30),
+              SizedBox(width: 30),
+            ],
           ),
         ),
-      ],
-    ),
+        confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text(
+                  "Remove Player",
+                  style: TextStyle(
+                    color: AppColours.darkBlue,
+                    fontFamily: AppFonts.gabarito,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Text(
+                  "Are you sure you want to remove #$playerNum $firstName $surname from your team?",
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text("Remove"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        key: Key(playerId.toString()),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            InkWell(
+                onTap: () {
+                  ref.read(playerIdProvider.notifier).state = playerId;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PlayerProfileViewScreen(playerId: playerId)),
+                  );
+                },
+                child: Container(
+                  // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: statusColour, width: 4),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    children: [
+                      imageBytes != null && imageBytes.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(75),
+                              child: Image.memory(
+                                imageBytes,
+                                width: 65,
+                                height: 65,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              "lib/assets/icons/profile_placeholder.png",
+                              width: 65,
+                            ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      Text(
+                        "#$playerNum",
+                        style: TextStyle(
+                          color: statusColour,
+                          fontSize: 36,
+                          fontFamily: AppFonts.gabarito,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              firstName,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontFamily: AppFonts.gabarito,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              surname,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontFamily: AppFonts.gabarito,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            Positioned(
+              top: -10,
+              right: -10,
+              child: Container(
+                padding: EdgeInsets.zero,
+                decoration: const BoxDecoration(
+                  color: Color(0XFFfafafa),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  statusIcon,
+                  color: statusColour,
+                  size: 40,
+                ),
+              ),
+            ),
+          ],
+        )),
     const SizedBox(height: 20),
   ]);
+}
+
+Widget removePlayerDialog(BuildContext context) {
+  return AlertDialog(
+    title: const Text("Remove Player",
+        style: TextStyle(
+            color: AppColours.darkBlue,
+            fontFamily: AppFonts.gabarito,
+            fontSize: 24,
+            fontWeight: FontWeight.bold)),
+    content: const Text(
+        "Are you sure you want to remove this player from your team?",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text("Cancel"),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text("Remove"),
+      ),
+    ],
+  );
 }
