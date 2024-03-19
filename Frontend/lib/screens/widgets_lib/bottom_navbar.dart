@@ -26,7 +26,8 @@ Widget bottomNavBar(List<BottomNavigationBarItem> items, int selectedIndex,
 
 BottomNavigationBarItem bottomNavBarItem(String label, IconData icon) {
   return BottomNavigationBarItem(
-    icon: Padding(padding: const EdgeInsets.only(top: 12), child: Icon(icon)),
+    icon: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12), child: Icon(icon)),
     label: label,
   );
 }
@@ -34,7 +35,7 @@ BottomNavigationBarItem bottomNavBarItem(String label, IconData icon) {
 BottomNavigationBarItem bottomNavBarItemCircle(String label, IconData icon) {
   return BottomNavigationBarItem(
     icon: Padding(
-        padding: const EdgeInsets.only(top: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Align(
           alignment: Alignment.bottomCenter,
           child: Container(
