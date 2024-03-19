@@ -267,6 +267,18 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                                 recieverUserRole:
                                                     UserRole.player,
                                                 type: NotificationType.injury);
+
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${selectedInjury!.nameAndGrade}",
+                                                desc:
+                                                    "Injury location: ${selectedInjury!.location}\n"
+                                                    "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.physio,
+                                                type: NotificationType.injury);
                                           }
 
                                           addPlayerInjury(

@@ -552,6 +552,7 @@ Widget injuriesSection(
                         context,
                         MaterialPageRoute(
                             builder: (context) => EditInjuryScreen(
+                                  teamId: ref.read(teamIdProvider),
                                   physioId: injury.physioId,
                                   playerId: injury.playerId,
                                   playerInjuryId: injury.playerInjuryId,

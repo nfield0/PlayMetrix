@@ -3,9 +3,11 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/injury_api_client.dart';
+import 'package:play_metrix/api_clients/notification_api_client.dart';
 import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
+import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/injury/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
@@ -16,12 +18,14 @@ class EditInjuryScreen extends StatefulWidget {
   final int playerId;
   final int physioId;
   final int playerInjuryId;
+  final int teamId;
 
   const EditInjuryScreen({
     super.key,
     required this.playerId,
     required this.physioId,
     required this.playerInjuryId,
+    required this.teamId,
   });
 
   @override
@@ -253,6 +257,51 @@ class EditInjuryScreenState extends State<EditInjuryScreen> {
                                               playerId: widget.playerId,
                                               injuryReport:
                                                   injuryReportFile?.bytes);
+
+                                          addNotification(
+                                              title:
+                                                  "$playerName injury update: ${selectedInjury!.nameAndGrade}",
+                                              desc:
+                                                  "Injury location: ${selectedInjury!.location}\n"
+                                                  "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
+                                              date: DateTime.now(),
+                                              teamId: widget.teamId,
+                                              recieverUserRole:
+                                                  UserRole.manager,
+                                              type: NotificationType.injury);
+
+                                          addNotification(
+                                              title:
+                                                  "$playerName injury update: ${selectedInjury!.nameAndGrade}",
+                                              desc:
+                                                  "Injury location: ${selectedInjury!.location}\n"
+                                                  "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
+                                              date: DateTime.now(),
+                                              teamId: widget.teamId,
+                                              recieverUserRole: UserRole.coach,
+                                              type: NotificationType.injury);
+
+                                          addNotification(
+                                              title:
+                                                  "$playerName injury update: ${selectedInjury!.nameAndGrade}",
+                                              desc:
+                                                  "Injury location: ${selectedInjury!.location}\n"
+                                                  "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
+                                              date: DateTime.now(),
+                                              teamId: widget.teamId,
+                                              recieverUserRole: UserRole.player,
+                                              type: NotificationType.injury);
+
+                                          addNotification(
+                                              title:
+                                                  "$playerName injury update: ${selectedInjury!.nameAndGrade}",
+                                              desc:
+                                                  "Injury location: ${selectedInjury!.location}\n"
+                                                  "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
+                                              date: DateTime.now(),
+                                              teamId: widget.teamId,
+                                              recieverUserRole: UserRole.physio,
+                                              type: NotificationType.injury);
 
                                           Navigator.push(
                                               context,
