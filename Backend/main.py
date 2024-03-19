@@ -15,7 +15,7 @@ import os
 from fastapi.security import OAuth2PasswordBearer
 import requests
 import jwt
-from Crud.user import get_user_details_by_email, check_user_exists_by_email
+from Crud.user import get_user_details_by_email, check_user_exists_by_email, change_2fa_option
 
 Base.metadata.create_all(bind=engine)
 
@@ -143,6 +143,10 @@ def login_user(user: User, db: Session = Depends(get_db)):
 @app.put("/change_password")
 def change_password(user: ChangeUserPassword, db: Session = Depends(get_db)):
     return crud.change_password(db, user)    
+
+@app.put("/update_two_factor")
+def change_2fa_opt(user: User2FA, db: Session = Depends(get_db)):
+    return crud.change_2fa_option(db, user)
 
 
 @app.get("/logout")

@@ -25,6 +25,10 @@ class User(BaseModel):
     user_email: str
     user_password: str
 
+class User2FA(BaseModel):
+    user_email: str
+    user_2fa: bool
+
 class ChangeUserPassword(BaseModel):
     user_email: str
     old_user_password: str

@@ -27,6 +27,7 @@ def get_players(db: Session):
 def get_player_by_id(db: Session, id: int):
     try:
         player = db.query(player_login).filter_by(player_id=id).first()
+        player = PlayerBase(player_id=player.player_id, player_email=player.player_email, player_password="Hidden", player_2fa=player.player_2fa)
         return player
     except Exception as e:
         return(f"Error retrieving player: {e}")
