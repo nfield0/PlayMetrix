@@ -16,6 +16,7 @@ def get_all_coaches(db: Session):
 def get_coach_login_by_id(db: Session, id: int):
     try:
         result = db.query(coach_login).filter_by(coach_id=id).first()
+        result = Coach(coach_id=result.coach_id, coach_email=result.coach_email, coach_password="Hidden", coach_2fa=result.coach_2fa)
         return result
     except Exception as e:
         return(f"Error retrieving coach: {e}")
@@ -58,6 +59,7 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
             raise HTTPException(status_code=404, detail="Coach not found")
         coach_to_update.coach_email = coach.coach_email
         coach_to_update.coach_password = encrypt_password(coach.coach_password)
+        coach_to_update.coach_2fa = coach.coach_2fa
         #coach info section
         coach_info_to_update = db.query(coach_info).filter_by(coach_id= id).first()
 
@@ -66,8 +68,7 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
                                         coach_firstname=coach.coach_firstname,
                                         coach_surname=encrypt(coach.coach_surname),
                                         coach_contact=coach.coach_contact,
-                                        coach_image=coach.coach_image,
-                                        coach_2fa=coach.coach_2fa)
+                                        coach_image=coach.coach_image)
             db.add(new_coach_info)
         else:
             coach_info_to_update.coach_firstname = coach.coach_firstname
@@ -75,7 +76,6 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
             coach_info_to_update.coach_contact = coach.coach_contact
             if coach.coach_image is not None:
                 coach_info_to_update.coach_image = coach.coach_image
-            coach_info_to_update.coach_2fa = coach.coach_2fa
 
             # raise HTTPException(status_code=404, detail="Coach Info not found")
         
