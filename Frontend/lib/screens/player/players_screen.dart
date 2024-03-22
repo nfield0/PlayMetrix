@@ -259,6 +259,8 @@ Widget playerProfilePill(
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(true);
+                      removePlayerFromTeam(
+                          ref.read(teamIdProvider.notifier).state, playerId);
                     },
                     child: const Text("Remove"),
                   ),
@@ -366,32 +368,4 @@ Widget playerProfilePill(
         )),
     const SizedBox(height: 20),
   ]);
-}
-
-Widget removePlayerDialog(BuildContext context) {
-  return AlertDialog(
-    title: const Text("Remove Player",
-        style: TextStyle(
-            color: AppColours.darkBlue,
-            fontFamily: AppFonts.gabarito,
-            fontSize: 24,
-            fontWeight: FontWeight.bold)),
-    content: const Text(
-        "Are you sure you want to remove this player from your team?",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-    actions: [
-      TextButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text("Cancel"),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text("Remove"),
-      ),
-    ],
-  );
 }

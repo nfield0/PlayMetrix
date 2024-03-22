@@ -683,3 +683,14 @@ Future<void> updatePlayerAttendingStatus(
     }),
   );
 }
+
+Future<void> removePlayerFromTeam(int teamId, int playerId) {
+  final String apiUrl = "$apiBaseUrl/team_player/$teamId/$playerId";
+
+  return http.delete(
+    Uri.parse(apiUrl),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+}
