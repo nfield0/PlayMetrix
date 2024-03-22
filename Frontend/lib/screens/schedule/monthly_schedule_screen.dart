@@ -7,6 +7,7 @@ import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/schedule/add_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/daily_schedule_screen.dart';
+import 'package:play_metrix/screens/schedule/schedule_details_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -79,6 +80,24 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                                     ref
                                         .watch(selectedDateProvider.notifier)
                                         .state = details.date;
+                                    if (details.targetElement ==
+                                            CalendarElement.appointment ||
+                                        details.targetElement ==
+                                            CalendarElement.agenda) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ScheduleDetailsScreen(
+                                            userId: ref.read(userIdProvider),
+                                            userRole: userRole,
+                                            teamId: ref.read(teamIdProvider),
+                                            scheduleId:
+                                                details.appointments![0].id,
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   },
                                   dataSource:
                                       AppointmentDataSource(dataSource!),
@@ -97,6 +116,8 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   monthViewSettings: const MonthViewSettings(
+                                    appointmentDisplayMode:
+                                        MonthAppointmentDisplayMode.appointment,
                                     showAgenda: true,
                                     agendaViewHeight: 110,
                                   ),
@@ -113,7 +134,8 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DailyScheduleScreen()),
+                                  builder: (context) =>
+                                      const DailyScheduleScreen()),
                             );
                           })),
                     ])))),
