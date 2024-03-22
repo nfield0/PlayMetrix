@@ -119,3 +119,14 @@ Future<int> findPhysioIdByEmail(String email) async {
     return -1;
   }
 }
+
+Future<void> removePhysioFromTeam(int teamId, int physioId) {
+  final String apiUrl = "$apiBaseUrl/team_physio/$teamId/$physioId";
+
+  return http.delete(
+    Uri.parse(apiUrl),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+}

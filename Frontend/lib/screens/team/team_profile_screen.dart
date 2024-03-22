@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/manager_api_client.dart';
+import 'package:play_metrix/api_clients/physio_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/coach_data_model.dart';
@@ -313,7 +314,7 @@ class TeamProfileScreen extends ConsumerWidget {
                                                               return AlertDialog(
                                                                 title:
                                                                     const Text(
-                                                                  "Remove Coach",
+                                                                  "Remove Physio",
                                                                   style:
                                                                       TextStyle(
                                                                     color: AppColours
@@ -356,6 +357,11 @@ class TeamProfileScreen extends ConsumerWidget {
                                                                               context)
                                                                           .pop(
                                                                               true);
+                                                                      removePhysioFromTeam(
+                                                                          ref.read(
+                                                                              teamIdProvider),
+                                                                          physio
+                                                                              .id);
                                                                     },
                                                                     child: const Text(
                                                                         "Remove"),
