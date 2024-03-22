@@ -51,7 +51,7 @@ class ProfileScreen extends ConsumerWidget {
               Profile profile = snapshot.data!;
 
               return profileDetails(
-                  profile, context, ref, userId, userRole, "");
+                  profile, context, ref, userId, userRole, "", false);
             } else {
               return const Text('No data available');
             }
@@ -68,7 +68,7 @@ class ProfileScreen extends ConsumerWidget {
               CoachData coachData = snapshot.data!;
 
               return profileDetails(coachData.profile, context, ref, userId,
-                  userRole, coachTeamRoleToText(coachData.role));
+                  userRole, coachTeamRoleToText(coachData.role), false);
             } else {
               return const Text('No data available');
             }
@@ -78,7 +78,7 @@ class ProfileScreen extends ConsumerWidget {
 }
 
 Widget profileDetails(Profile profile, BuildContext context, WidgetRef ref,
-    int userId, UserRole userRole, String teamRole) {
+    int userId, UserRole userRole, String teamRole, bool isViewOnly) {
   return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -195,9 +195,10 @@ Widget profileDetails(Profile profile, BuildContext context, WidgetRef ref,
                             const SizedBox(height: 10),
                             detailWithDivider("Email", profile.email, context),
                             const SizedBox(height: 25),
-                            bigButton("Log Out", () async {
-                              logOut(ref, context);
-                            }),
+                            if (!isViewOnly)
+                              bigButton("Log Out", () async {
+                                logOut(ref, context);
+                              }),
                             const SizedBox(height: 25),
                           ]),
                         )

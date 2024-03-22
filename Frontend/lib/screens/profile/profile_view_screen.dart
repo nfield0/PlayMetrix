@@ -27,7 +27,7 @@ class ProfileViewScreen extends ConsumerWidget {
               Profile profile = snapshot.data!;
 
               return profileDetails(
-                  profile, context, ref, userId, userRole, "");
+                  profile, context, ref, userId, userRole, "", true);
             } else {
               return const Text('No data available');
             }
@@ -44,7 +44,7 @@ class ProfileViewScreen extends ConsumerWidget {
               CoachData coachData = snapshot.data!;
 
               return profileDetails(coachData.profile, context, ref, userId,
-                  userRole, coachTeamRoleToText(coachData.role));
+                  userRole, coachTeamRoleToText(coachData.role), true);
             } else {
               return const Text('No data available');
             }
