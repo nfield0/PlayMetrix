@@ -127,6 +127,7 @@ class CoachesScreen extends ConsumerWidget {
                                           children: [
                                             for (Profile coach in coaches)
                                               Dismissible(
+                                                direction: DismissDirection.endToStart,
                                                 background: Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius:

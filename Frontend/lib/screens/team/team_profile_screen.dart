@@ -261,6 +261,8 @@ class TeamProfileScreen extends ConsumerWidget {
                                             children: [
                                               for (Profile physio in physios)
                                                 Dismissible(
+                                                  direction: DismissDirection
+                                                      .endToStart,
                                                   background: Container(
                                                     decoration: BoxDecoration(
                                                         borderRadius:

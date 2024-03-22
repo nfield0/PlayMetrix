@@ -211,6 +211,7 @@ Widget playerProfilePill(
 
   return Column(children: [
     Dismissible(
+        direction: DismissDirection.endToStart,
         background: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15), color: AppColours.red),

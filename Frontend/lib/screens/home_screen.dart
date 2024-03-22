@@ -120,8 +120,8 @@ class HomeScreen extends ConsumerWidget {
                                 child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.6 <
                                       500
-                                  ? 250
-                                  : MediaQuery.of(context).size.height * 0.4,
+                                  ? 250 
+                                  : MediaQuery.of(context).size.height * 0.4 ,
                               child: SingleChildScrollView(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
