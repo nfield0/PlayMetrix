@@ -9,6 +9,7 @@ from Crud.crud import check_is_valid_name
 def get_injuries(db: Session):
     try:
         result = db.query(injuries).all()
+        result.sort(key=lambda x: x.injury_name_and_grade, reverse=True)
         return result
     except Exception as e:
         return(f"Error retrieving injuries: {e}")
@@ -87,6 +88,7 @@ def delete_injury(db:Session, id: int):
 def get_player_injuries(db: Session):
     try:
         result = db.query(player_injuries).all()
+        result.sort(key=lambda x: x.date_of_injury, reverse=True)
         return result
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
