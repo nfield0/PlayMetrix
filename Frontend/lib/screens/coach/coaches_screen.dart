@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
@@ -127,7 +128,8 @@ class CoachesScreen extends ConsumerWidget {
                                           children: [
                                             for (Profile coach in coaches)
                                               Dismissible(
-                                                direction: DismissDirection.endToStart,
+                                                direction:
+                                                    DismissDirection.endToStart,
                                                 background: Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius:
@@ -198,6 +200,10 @@ class CoachesScreen extends ConsumerWidget {
                                                               Navigator.of(
                                                                       context)
                                                                   .pop(true);
+                                                              removeCoachFromTeam(
+                                                                  ref.read(
+                                                                      teamIdProvider),
+                                                                  coach.id);
                                                             },
                                                             child: const Text(
                                                                 "Remove"),

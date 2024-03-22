@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/manager_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
@@ -495,6 +496,10 @@ class TeamProfileScreen extends ConsumerWidget {
                                                                 Navigator.of(
                                                                         context)
                                                                     .pop(true);
+                                                                removeCoachFromTeam(
+                                                                    ref.read(
+                                                                        teamIdProvider),
+                                                                    coach.id);
                                                               },
                                                               child: const Text(
                                                                   "Remove"),

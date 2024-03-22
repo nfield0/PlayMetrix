@@ -121,3 +121,14 @@ Future<void> addTeamCoach(int teamId, int userId, String role) async {
     print('Error: $error');
   }
 }
+
+Future<void> removeCoachFromTeam(int teamId, int coachId) {
+  final String apiUrl = "$apiBaseUrl/team_coach/$teamId/$coachId";
+
+  return http.delete(
+    Uri.parse(apiUrl),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+}
