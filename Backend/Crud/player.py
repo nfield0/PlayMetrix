@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from models import player_login, player_info, player_stats, player_injuries
+from models import player_login, player_info, player_stats, player_injuries, player_schedule, matches, team_player
 from schema import PlayerBase, PlayerInfo, PlayerStat
 from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt, check_is_valid_name,check_is_valid_contact_number
 
@@ -159,8 +159,11 @@ def delete_player(db: Session, id: int):
         player = db.query(player_login).filter_by(player_id=id).first()
         player_info_result = db.query(player_info).filter_by(player_id=id).first()
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries_result = db.query(player_injuries).filter_by(player_id=id).first()
-
+        player_injuries_result = db.query(player_injuries).filter_by(player_id=id).all()
+        player_schedule_result = db.query(player_schedule).filter_by(player_id=id).all()
+        matches_result = db.query(matches).filter_by(player_id=id).all()
+        player_team_result = db.query(team_player).filter_by(player_id=id).all()
+        
         if player_injuries_result:
             db.delete(player_injuries_result) 
             db.commit()
@@ -170,7 +173,18 @@ def delete_player(db: Session, id: int):
         if player_info_result:
             db.delete(player_info_result)
             db.commit()
-        db.delete(player)
+        if player_schedule_result:
+            db.delete(player_schedule_result)
+            db.commit()
+        if matches_result:
+            db.delete(matches_result)
+            db.commit()
+        if player_team_result:
+            db.delete(player_team_result)
+            db.commit()
+        if player:
+            db.delete(player)
+            db.commit()	
         db.commit()
         db.close()
         return {"message": f"Player with ID {id} has been deleted"}
@@ -184,16 +198,32 @@ def delete_player_by_email(db:Session, email: str):
         player = db.query(player_login).filter_by(player_email=email).first()
         player_info_result = db.query(player_info).filter_by(player_id=id).first()
         player_stats_result = db.query(player_stats).filter_by(player_id=id).first()
-        player_injuries_result = db.query(player_injuries).filter_by(player_id=player.player_id).first()
+        player_injuries_result = db.query(player_injuries).filter_by(player_id=id).all()
+        player_schedule_result = db.query(player_schedule).filter_by(player_id=id).all()
+        matches_result = db.query(matches).filter_by(player_id=id).all()
+        player_team_result = db.query(team_player).filter_by(player_id=id).all()
         
         if player_injuries_result:
             db.delete(player_injuries_result) 
+            db.commit()
         if player_stats_result:
             db.delete(player_stats_result)
+            db.commit()
         if player_info_result:
             db.delete(player_info_result)
-        
-        db.delete(player)
+            db.commit()
+        if player_schedule_result:
+            db.delete(player_schedule_result)
+            db.commit()
+        if matches_result:
+            db.delete(matches_result)
+            db.commit()
+        if player_team_result:
+            db.delete(player_team_result)
+            db.commit()
+        if player:
+            db.delete(player)
+            db.commit()	
         db.commit()
         db.close()
         return {"message": f"Player with Email {email} has been deleted"}

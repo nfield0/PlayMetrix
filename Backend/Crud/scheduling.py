@@ -4,6 +4,8 @@ from models import schedule, team_schedule, player_schedule
 from schema import ScheduleBase, ScheduleBaseNoID, TeamScheduleBase, PlayerScheduleBase
 from Crud.teams import get_team_by_id
 from Crud.player import get_player_by_id
+from Crud.match import matches
+from Crud.announcement import announcements
 
 #region schedules
     
@@ -127,8 +129,21 @@ def delete_schedule_by_id(db:Session, id: int):
     try:        
         schedule_to_delete = db.query(schedule).filter_by(schedule_id=id).first()
         team_schedule_to_delete = db.query(team_schedule).filter_by(schedule_id=id).first()
+        player_schedule_to_delete = db.query(player_schedule).filter_by(schedule_id=id).all()
+        matches_to_delete = db.query(matches).filter_by(schedule_id=id).all()
+        announcements_to_delete = db.query(announcements).filter_by(schedule_id=id).all()
         if team_schedule_to_delete:
             db.delete(team_schedule_to_delete)
+            db.commit()
+        
+        if player_schedule_to_delete:
+            db.delete(player_schedule_to_delete)
+            db.commit()
+        if matches_to_delete:
+            db.delete(matches_to_delete)
+            db.commit()
+        if announcements_to_delete:
+            db.delete(announcements_to_delete)
             db.commit()
         if schedule_to_delete:
             db.delete(schedule_to_delete)
