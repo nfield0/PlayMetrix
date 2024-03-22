@@ -178,9 +178,9 @@ Widget detailWithDivider(String title, String detail, BuildContext context) {
         children: [
           Text(title, style: const TextStyle(fontSize: 16)),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.4 >= 800 * 0.4
-                ? 800 * 0.4
-                : MediaQuery.of(context).size.width * 0.4,
+            width: MediaQuery.of(context).size.width * 0.5 >= 800 * 0.5
+                ? 800 * 0.5
+                : MediaQuery.of(context).size.width * 0.5,
             child: Text(detail,
                 textAlign: TextAlign.end,
                 style: const TextStyle(
