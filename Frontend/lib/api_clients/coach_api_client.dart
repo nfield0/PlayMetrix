@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/coach_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
+import 'package:play_metrix/enums.dart';
 
 Future<Profile> getCoachProfile(int id) async {
   final apiUrl = '$apiBaseUrl/coaches/info/$id';
@@ -23,6 +25,46 @@ Future<Profile> getCoachProfile(int id) async {
           parsed['coach_email'],
           base64Decode((parsed['coach_image'])),
           parsed['coach_2fa']);
+    } else {
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  throw Exception("Profile not found");
+}
+
+Future<CoachData> getCoachDataProfile(int id) async {
+  final apiUrl = '$apiBaseUrl/coaches/info/$id';
+  try {
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    if (response.statusCode == 200) {
+      final parsed = jsonDecode(response.body);
+
+      final teamCoachApiUrl = '$apiBaseUrl/coaches_team/$id';
+
+      final teamCoachResponse =
+          await http.get(Uri.parse(teamCoachApiUrl), headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
+
+      final teamCoachData = jsonDecode(teamCoachResponse.body);
+
+      return CoachData(
+          profile: Profile(
+              id,
+              parsed['coach_firstname'],
+              parsed['coach_surname'],
+              parsed['coach_contact'],
+              parsed['coach_email'],
+              base64Decode((parsed['coach_image'])),
+              parsed['coach_2fa']),
+          role: stringToTeamRole(teamCoachData[0]['team_role']));
     } else {
       print('Error message: ${response.body}');
     }
@@ -95,7 +137,7 @@ Future<int> findCoachIdByEmail(String email) async {
 }
 
 Future<void> addTeamCoach(int teamId, int userId, String role) async {
-  final apiUrl = '$apiBaseUrl/team_coach';
+  const apiUrl = '$apiBaseUrl/team_coach';
   try {
     final response = await http.post(
       Uri.parse(apiUrl),

@@ -28,7 +28,7 @@ class HomeScreenInitial extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FutureBuilder<Profile>(
+    return FutureBuilder<Profile?>(
         future: getProfileDetails(userId, userRole),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

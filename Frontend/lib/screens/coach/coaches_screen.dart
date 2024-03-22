@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
-import 'package:play_metrix/data_models/profile_data_model.dart';
+import 'package:play_metrix/data_models/coach_data_model.dart';
 import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
@@ -121,12 +121,12 @@ class CoachesScreen extends ConsumerWidget {
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else if (snapshot.hasData) {
-                                  List<Profile> coaches =
-                                      snapshot.data as List<Profile>;
+                                  List<CoachData> coaches =
+                                      snapshot.data as List<CoachData>;
                                   return coaches.isNotEmpty
                                       ? Column(
                                           children: [
-                                            for (Profile coach in coaches)
+                                            for (CoachData coach in coaches)
                                               Dismissible(
                                                 direction:
                                                     DismissDirection.endToStart,
@@ -178,7 +178,7 @@ class CoachesScreen extends ConsumerWidget {
                                                           ),
                                                         ),
                                                         content: Text(
-                                                          "Are you sure you want to remove ${coach.firstName} ${coach.surname} from your team?",
+                                                          "Are you sure you want to remove ${coach.profile.firstName} ${coach.profile.surname} from your team?",
                                                           style: const TextStyle(
                                                               fontSize: 16,
                                                               fontWeight:
@@ -203,7 +203,8 @@ class CoachesScreen extends ConsumerWidget {
                                                               removeCoachFromTeam(
                                                                   ref.read(
                                                                       teamIdProvider),
-                                                                  coach.id);
+                                                                  coach.profile
+                                                                      .id);
                                                             },
                                                             child: const Text(
                                                                 "Remove"),
@@ -213,18 +214,22 @@ class CoachesScreen extends ConsumerWidget {
                                                     },
                                                   );
                                                 },
-                                                key: Key(coach.id.toString()),
+                                                key: Key(coach.profile.id
+                                                    .toString()),
                                                 child: profilePill(
-                                                    "${coach.firstName} ${coach.surname}",
-                                                    coach.email,
+                                                    "${coach.profile.firstName} ${coach.profile.surname}",
+                                                    coachTeamRoleToText(
+                                                        coach.role),
                                                     "lib/assets/icons/profile_placeholder.png",
-                                                    coach.imageBytes, () {
+                                                    coach.profile.imageBytes,
+                                                    () {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             ProfileViewScreen(
-                                                              userId: coach.id,
+                                                              userId: coach
+                                                                  .profile.id,
                                                               userRole: UserRole
                                                                   .coach,
                                                             )),
