@@ -130,9 +130,13 @@ def delete_coach_by_id(db:Session, id: int):
         if not coach:
             raise HTTPException(status_code=404, detail="Coach not found")
         coach_info_result = db.query(coach_info).filter_by(coach_id= id).first()
-        
-        db.delete(coach)
-        db.delete(coach_info_result)
+        team_coach_result = db.query(team_coach).filter_by(coach_id= id).first()
+        if team_coach_result:
+            db.delete(team_coach_result)
+        if coach_info_result:
+            db.delete(coach_info_result)
+        if coach:
+            db.delete(coach)
         db.commit()
         db.close()
         return {"message": f"Coach and coach info with ID {id} has been deleted"}

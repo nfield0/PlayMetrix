@@ -132,7 +132,8 @@ def delete_manager_by_id(db:Session, id: int):
             raise HTTPException(status_code=404, detail="Manager not found")
         if manager_info_result:
             db.delete(manager_info_result)
-        db.delete(manager)
+        if manager: 
+            db.delete(manager)
         db.commit()
         db.close()
         return {"message": f"Manager and manager info with ID {id} has been deleted"}
@@ -146,8 +147,10 @@ def delete_manager_by_email(db:Session, email: str):
         manager_info_result = db.query(manager_info).filter_by(manager_id= manager.manager_id).first()
         if not manager:
             raise HTTPException(status_code=404, detail="Manager not found")
-        db.delete(manager)
-        db.delete(manager_info_result)
+        if manager_info_result:
+            db.delete(manager_info_result)
+        if manager: 
+            db.delete(manager)
         db.commit()
         db.close()
         return {"message": f"Manager and manager info with ID {id} has been deleted"}

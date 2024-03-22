@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from models import physio_login, physio_info, player_info
+from models import physio_login, physio_info, team_physio
 from schema import Physio, PhysioInfo, PhysioNoID
 from Crud.security import check_email, check_password_regex, encrypt_password, check_is_valid_name, encrypt, decrypt_hex
 
@@ -125,9 +125,15 @@ def delete_physio_by_id(db:Session, id: int):
         if not physio:
             raise HTTPException(status_code=404, detail="Physio not found")
         physio_info_result = db.query(physio_info).filter_by(physio_id= id).first()
+        team_physio_result = db.query(team_physio).filter_by(physio_id= id).all()  
+
         
-        db.delete(physio)
-        db.delete(physio_info_result)
+        if physio_info_result:
+            db.delete(physio_info_result)
+        if team_physio_result:
+            db.delete(team_physio_result)
+        if physio:
+            db.delete(physio)
         db.commit()
         db.close()
         return {"message": f"Physio and physio info with ID {id} has been deleted"}
