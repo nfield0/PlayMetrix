@@ -493,6 +493,10 @@ def read_team_phyiso(physio_id: int, db:Session = Depends(get_db)):
 def read_team_physio(team_id: int, db:Session = Depends(get_db)):
     return crud.get_physio_by_team_id(db, team_id)
 
+@app.get("/team_physio/{team_id}/physio/{physio_id}")
+def read_team_physio(physio_id, team_id: int, db:Session = Depends(get_db)):
+    return crud.get_physio_by_team_id(db, team_id)
+
 @app.post("/team_physio")
 def insert_team_physio(team_physio: TeamPhysioBase, db:Session = Depends(get_db)):
     return crud.insert_team_physio_by_team_id(db, team_physio)
@@ -506,6 +510,10 @@ def insert_team_physio(team_physio: TeamPhysioBase, db:Session = Depends(get_db)
 @app.delete("/team_physio/{team_id}")
 def delete_physio_team_id(team_id: int, db:Session = Depends(get_db)):
     return crud.delete_physio_team_id(db, team_id)
+
+@app.delete("/team_physio/{team_id}/{physio_id}")
+def delete_physio_team_id(teams_id: int, physios_id:int, db:Session = Depends(get_db)):
+    return crud.delete_physio_from_team(db, teams_id, physios_id)
 
 #endregion
 

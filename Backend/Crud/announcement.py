@@ -17,6 +17,7 @@ def get_announcement(db: Session, id: int):
 def get_announcement(db: Session, id: int):
     try:
         result = db.query(announcements).filter_by(schedule_id=id).all()
+        result.sort(key=lambda x: x.announcements_date, reverse=True)
         return result
     except Exception as e:
         error_message = f"Error retrieving announcement with ID {id}: {e}"
