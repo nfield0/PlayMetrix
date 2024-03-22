@@ -262,111 +262,150 @@ class TeamProfileScreen extends ConsumerWidget {
                                         ? Column(
                                             children: [
                                               for (Profile physio in physios)
-                                                Dismissible(
-                                                  direction: DismissDirection
-                                                      .endToStart,
-                                                  background: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        color: AppColours.red),
-                                                    child: const Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Text(
-                                                            "Remove physio from team",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily: AppFonts
-                                                                    .gabarito)),
-                                                        SizedBox(width: 20),
-                                                        Icon(Icons.delete,
-                                                            color: Colors.white,
-                                                            size: 30),
-                                                        SizedBox(width: 30),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  confirmDismiss:
-                                                      (direction) async {
-                                                    return await showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                            "Remove Coach",
-                                                            style: TextStyle(
+                                                ref.read(userRoleProvider) ==
+                                                        UserRole.manager
+                                                    ? Dismissible(
+                                                        direction:
+                                                            DismissDirection
+                                                                .endToStart,
+                                                        background: Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
                                                               color: AppColours
-                                                                  .darkBlue,
-                                                              fontFamily:
-                                                                  AppFonts
-                                                                      .gabarito,
-                                                              fontSize: 24,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                                  .red),
+                                                          child: const Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                  "Remove physio from team",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppFonts
+                                                                              .gabarito)),
+                                                              SizedBox(
+                                                                  width: 20),
+                                                              Icon(Icons.delete,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 30),
+                                                              SizedBox(
+                                                                  width: 30),
+                                                            ],
                                                           ),
-                                                          content: Text(
-                                                            "Are you sure you want to remove ${physio.firstName} ${physio.surname} from your team?",
-                                                            style: const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(false);
-                                                              },
-                                                              child: const Text(
-                                                                  "Cancel"),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(true);
-                                                              },
-                                                              child: const Text(
-                                                                  "Remove"),
-                                                            ),
-                                                          ],
+                                                        ),
+                                                        confirmDismiss:
+                                                            (direction) async {
+                                                          return await showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title:
+                                                                    const Text(
+                                                                  "Remove Coach",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: AppColours
+                                                                        .darkBlue,
+                                                                    fontFamily:
+                                                                        AppFonts
+                                                                            .gabarito,
+                                                                    fontSize:
+                                                                        24,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                content: Text(
+                                                                  "Are you sure you want to remove ${physio.firstName} ${physio.surname} from your team?",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              false);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Cancel"),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              true);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Remove"),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        key: Key(physio.id
+                                                            .toString()),
+                                                        child: profilePill(
+                                                            "${physio.firstName} ${physio.surname}",
+                                                            physio.email,
+                                                            "lib/assets/icons/profile_placeholder.png",
+                                                            physio.imageBytes,
+                                                            () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ProfileViewScreen(
+                                                                          userId:
+                                                                              physio.id,
+                                                                          userRole:
+                                                                              UserRole.physio,
+                                                                        )),
+                                                          );
+                                                        }),
+                                                      )
+                                                    : profilePill(
+                                                        "${physio.firstName} ${physio.surname}",
+                                                        physio.email,
+                                                        "lib/assets/icons/profile_placeholder.png",
+                                                        physio.imageBytes, () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ProfileViewScreen(
+                                                                    userId:
+                                                                        physio
+                                                                            .id,
+                                                                    userRole:
+                                                                        UserRole
+                                                                            .physio,
+                                                                  )),
                                                         );
-                                                      },
-                                                    );
-                                                  },
-                                                  key:
-                                                      Key(physio.id.toString()),
-                                                  child: profilePill(
-                                                      "${physio.firstName} ${physio.surname}",
-                                                      physio.email,
-                                                      "lib/assets/icons/profile_placeholder.png",
-                                                      physio.imageBytes, () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ProfileViewScreen(
-                                                                userId:
-                                                                    physio.id,
-                                                                userRole:
-                                                                    UserRole
-                                                                        .physio,
-                                                              )),
-                                                    );
-                                                  }),
-                                                )
+                                                      }),
                                             ],
                                           )
                                         : emptySection(Icons.person_off,
@@ -423,116 +462,157 @@ class TeamProfileScreen extends ConsumerWidget {
                                         ? Column(
                                             children: [
                                               for (CoachData coach in coaches)
-                                                Dismissible(
-                                                  background: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        color: AppColours.red),
-                                                    child: const Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Text(
-                                                            "Remove coach from team",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily: AppFonts
-                                                                    .gabarito)),
-                                                        SizedBox(width: 20),
-                                                        Icon(Icons.delete,
-                                                            color: Colors.white,
-                                                            size: 30),
-                                                        SizedBox(width: 30),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  confirmDismiss:
-                                                      (direction) async {
-                                                    return await showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                            "Remove Coach",
-                                                            style: TextStyle(
+                                                ref.read(userRoleProvider) ==
+                                                        UserRole.manager
+                                                    ? Dismissible(
+                                                        background: Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
                                                               color: AppColours
-                                                                  .darkBlue,
-                                                              fontFamily:
-                                                                  AppFonts
-                                                                      .gabarito,
-                                                              fontSize: 24,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                                  .red),
+                                                          child: const Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                  "Remove coach from team",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppFonts
+                                                                              .gabarito)),
+                                                              SizedBox(
+                                                                  width: 20),
+                                                              Icon(Icons.delete,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 30),
+                                                              SizedBox(
+                                                                  width: 30),
+                                                            ],
                                                           ),
-                                                          content: Text(
-                                                            "Are you sure you want to remove ${coach.profile.firstName} ${coach.profile.surname} from your team?",
-                                                            style: const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(false);
-                                                              },
-                                                              child: const Text(
-                                                                  "Cancel"),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(true);
-                                                                removeCoachFromTeam(
-                                                                    ref.read(
-                                                                        teamIdProvider),
-                                                                    coach
+                                                        ),
+                                                        confirmDismiss:
+                                                            (direction) async {
+                                                          return await showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title:
+                                                                    const Text(
+                                                                  "Remove Coach",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: AppColours
+                                                                        .darkBlue,
+                                                                    fontFamily:
+                                                                        AppFonts
+                                                                            .gabarito,
+                                                                    fontSize:
+                                                                        24,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                content: Text(
+                                                                  "Are you sure you want to remove ${coach.profile.firstName} ${coach.profile.surname} from your team?",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              false);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Cancel"),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              true);
+                                                                      removeCoachFromTeam(
+                                                                          ref.read(
+                                                                              teamIdProvider),
+                                                                          coach
+                                                                              .profile
+                                                                              .id);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Remove"),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        key: Key(coach
+                                                            .profile.id
+                                                            .toString()),
+                                                        child: profilePill(
+                                                            "${coach.profile.firstName} ${coach.profile.surname}",
+                                                            coach.profile.email,
+                                                            "lib/assets/icons/profile_placeholder.png",
+                                                            coach.profile
+                                                                .imageBytes,
+                                                            () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ProfileViewScreen(
+                                                                          userId: coach
+                                                                              .profile
+                                                                              .id,
+                                                                          userRole:
+                                                                              UserRole.coach,
+                                                                        )),
+                                                          );
+                                                        }),
+                                                      )
+                                                    : profilePill(
+                                                        "${coach.profile.firstName} ${coach.profile.surname}",
+                                                        coach.profile.email,
+                                                        "lib/assets/icons/profile_placeholder.png",
+                                                        coach.profile
+                                                            .imageBytes, () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ProfileViewScreen(
+                                                                    userId: coach
                                                                         .profile
-                                                                        .id);
-                                                              },
-                                                              child: const Text(
-                                                                  "Remove"),
-                                                            ),
-                                                          ],
+                                                                        .id,
+                                                                    userRole:
+                                                                        UserRole
+                                                                            .coach,
+                                                                  )),
                                                         );
-                                                      },
-                                                    );
-                                                  },
-                                                  key: Key(coach.profile.id
-                                                      .toString()),
-                                                  child: profilePill(
-                                                      "${coach.profile.firstName} ${coach.profile.surname}",
-                                                      coach.profile.email,
-                                                      "lib/assets/icons/profile_placeholder.png",
-                                                      coach.profile.imageBytes,
-                                                      () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ProfileViewScreen(
-                                                                userId: coach
-                                                                    .profile.id,
-                                                                userRole:
-                                                                    UserRole
-                                                                        .coach,
-                                                              )),
-                                                    );
-                                                  }),
-                                                )
+                                                      }),
                                             ],
                                           )
                                         : emptySection(Icons.person_off,
