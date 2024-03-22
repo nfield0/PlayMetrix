@@ -315,13 +315,13 @@ Widget injuryDetails(Injury injury, BuildContext context) {
   return Column(
     children: [
       const SizedBox(height: 10),
-      detailWithDivider("Injury Name", injury.nameAndGrade, context),
+      detailWithDividerSmall("Injury Name", injury.nameAndGrade, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.type, context),
+      detailWithDividerSmall("Injury Type", injury.type, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.location, context),
+      detailWithDividerSmall("Injury Location", injury.location, context),
       const SizedBox(height: 10),
-      detailWithDivider(
+      detailWithDividerSmall(
           "Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
               "${injury.expectedMaxRecoveryTime} weeks",
