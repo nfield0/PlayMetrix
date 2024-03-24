@@ -535,4 +535,35 @@ Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
     print('Error: $error');
     return error.toString();
   }
+
+
+  
+}
+
+Future<String> getDetailsByEmail(String email) async {
+  final apiUrl =
+      '$apiBaseUrl/users?email=${Uri.encodeComponent(email)}';
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+
+    );
+
+    if (response.statusCode == 200) {
+      
+        return response.body;
+      
+    } else {
+      print('Failed to find user. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw Exception('Failed to check email');
 }
