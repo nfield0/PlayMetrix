@@ -63,7 +63,7 @@ def get_db():
 ## For testing
 # python -m pytest
 
-
+2
 GOOGLE_CLIENT_ID =  os.getenv("CLIENT_ID")
 GOOGLE_CLIENT_SECRET =  os.getenv("CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.getenv("REDIRECT_URI")
@@ -97,6 +97,13 @@ async def auth_google(code: str, db: Session = Depends(get_db)):
         return get_user_details_by_email(db, user_info.json().get("email"))
     else:
         return {"error": "User does not exist"}
+
+@app.get("/users")
+async def get_users(email: str, db: Session = Depends(get_db)):
+    return crud.get_user_details_by_email(db, email)
+
+
+
 
 @app.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):
