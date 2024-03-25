@@ -57,22 +57,41 @@ class ProfileScreen extends ConsumerWidget {
             }
           });
     } else {
-      return FutureBuilder<CoachData>(
-          future: getCoachDataProfile(userId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (snapshot.hasData) {
-              CoachData coachData = snapshot.data!;
+      if (ref.watch(teamIdProvider) != -1) {
+        return FutureBuilder<CoachData>(
+            future: getCoachDataProfile(userId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                CoachData coachData = snapshot.data!;
 
-              return profileDetails(coachData.profile, context, ref, userId,
-                  userRole, coachTeamRoleToText(coachData.role), false);
-            } else {
-              return const Text('No data available');
-            }
-          });
+                return profileDetails(coachData.profile, context, ref, userId,
+                    userRole, coachTeamRoleToText(coachData.role), false);
+              } else {
+                return const Text('No data available');
+              }
+            });
+      } else {
+        return FutureBuilder<Profile>(
+            future: getProfileDetails(userId, userRole),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                Profile profile = snapshot.data!;
+
+                return profileDetails(
+                    profile, context, ref, userId, userRole, "", false);
+              } else {
+                return const Text('No data available');
+              }
+            });
+      }
     }
   }
 }
@@ -147,9 +166,10 @@ Widget profileDetails(Profile profile, BuildContext context, WidgetRef ref,
                                     "lib/assets/icons/profile_placeholder.png",
                                     width: 150),
                             const SizedBox(height: 20),
-                            smallPill(userRole == UserRole.coach
-                                ? teamRole
-                                : userRoleText(userRole)),
+                            smallPill(
+                                userRole == UserRole.coach && teamRole != ""
+                                    ? teamRole
+                                    : userRoleText(userRole)),
                             const SizedBox(height: 40),
                             FutureBuilder(
                                 future: getTeamById(

@@ -102,10 +102,16 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                       desc: detailsController.text,
                                       date: DateTime.now(),
                                       teamId: widget.teamId,
-                                      recieverUserRole:
-                                          widget.userRole == UserRole.manager
-                                              ? UserRole.coach
-                                              : UserRole.manager,
+                                      recieverUserRole: UserRole.manager,
+                                      type: NotificationType.event);
+
+                                  addNotification(
+                                      title:
+                                          "$scheduleTitle: ${titleController.text}",
+                                      desc: detailsController.text,
+                                      date: DateTime.now(),
+                                      teamId: widget.teamId,
+                                      recieverUserRole: UserRole.coach,
                                       type: NotificationType.event);
 
                                   addNotification(
