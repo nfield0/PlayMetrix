@@ -1,17 +1,9 @@
 import 'dart:convert';
-import 'dart:html';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
-import 'package:play_metrix/api_clients/coach_api_client.dart';
-import 'package:play_metrix/api_clients/manager_api_client.dart';
-import 'package:play_metrix/api_clients/physio_api_client.dart';
-import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/data_models/authentication_data_model.dart';
-import 'package:play_metrix/data_models/player_data_model.dart';
-import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/push_notification_manager.dart';
@@ -23,7 +15,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:play_metrix/keys.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/authentication/log_in_screen.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -134,63 +125,36 @@ class LandingScreen extends ConsumerWidget {
                       minHeight: 68,
                       maxHeight: 68),
                   child: CupertinoButton(
-                          onPressed: () async {
-                            final GoogleSignIn googleSignIn = GoogleSignIn(
-                              clientId: CLIENT_ID,
-                              
-                            ); 
+                    onPressed: () async {
+                      final GoogleSignIn googleSignIn = GoogleSignIn(
+                        clientId: CLIENT_ID,
+                      );
 
-                            final googleUser = await googleSignIn.signIn();
-                            if (googleUser != null) {
+                      final googleUser = await googleSignIn.signIn();
+                      if (googleUser != null) {
+                        print(googleUser);
+                        getDetailsByEmail(googleUser.email)
+                            .then((response) async {
+                          int userId =
+                              const JsonDecoder().convert(response)['user_id'];
+                          ref.read(userIdProvider.notifier).state = userId;
 
-                              print(googleUser);
-                              getDetailsByEmail(googleUser.email).then((response) async {
+                          UserRole userRole = stringToUserRole(
+                              const JsonDecoder()
+                                  .convert(response)['user_type']);
 
-                                
-                                int userId = const JsonDecoder()
-                                    .convert(response)['user_id'];
-                                ref.read(userIdProvider.notifier).state =
-                                    userId;
-
-                                UserRole userRole = stringToUserRole(
-                                    const JsonDecoder()
-                                        .convert(response)['user_type']);
-
-                                        if (userRole == UserRole.manager) {
-                                  Profile managerProfile =
-                                      await getManagerProfile(userId);
-                                    logInFunctionality(
-                                        context, ref, userRole, userId);
-                                  
-                                } else if (userRole == UserRole.physio) {
-                                  Profile physioProfile =
-                                      await getPhysioProfile(userId);
-                                  
-                                    logInFunctionality(
-                                        context, ref, userRole, userId);
-                                  
-                                } else if (userRole == UserRole.player) {
-                                  PlayerLogin playerProfile =
-                                      await getPlayerLogin(userId);
-
-                                  PlayerData playerData =
-                                      await getPlayerData(userId);
-
-                                  
-                                    logInFunctionality(
-                                        context, ref, userRole, userId);
-                                  
-                                } else {
-                                  Profile coachProfile =
-                                      await getCoachProfile(userId);
-
-                                  
-                                    logInFunctionality(
-                                        context, ref, userRole, userId);
-                                      
-                              }} );
-                              
-                            }},                  
+                          if (userRole == UserRole.manager) {
+                            logInFunctionality(context, ref, userRole, userId);
+                          } else if (userRole == UserRole.physio) {
+                            logInFunctionality(context, ref, userRole, userId);
+                          } else if (userRole == UserRole.player) {
+                            logInFunctionality(context, ref, userRole, userId);
+                          } else {
+                            logInFunctionality(context, ref, userRole, userId);
+                          }
+                        });
+                      }
+                    },
                     borderRadius: BorderRadius.circular(25),
                     padding: const EdgeInsets.symmetric(
                       vertical: 20,
@@ -213,7 +177,6 @@ class LandingScreen extends ConsumerWidget {
                               fontFamily: 'Open Sans',
                               fontSize: 20.0,
                               fontWeight: FontWeight.w400,
-                              
                             ),
                           )
                         ]),
@@ -259,6 +222,5 @@ class LandingScreen extends ConsumerWidget {
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
     );
-    
   }
 }
