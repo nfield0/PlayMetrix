@@ -102,7 +102,7 @@ def insert_new_schedule(db:Session, req_schedule: ScheduleBaseNoID):
 
             team_res = db.query(team_player).filter(team_player.team_id == req_schedule.team_id).all()
             for player in team_res:
-                new_player_schedule = player_schedule(schedule_id=new_schedule.schedule_id, player_id=player.player_id, player_attending=False)
+                new_player_schedule = player_schedule(schedule_id=new_schedule.schedule_id, player_id=player.player_id, player_attending=None)
                 db.add(new_player_schedule)
 
             
