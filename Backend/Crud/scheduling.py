@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from models import schedule, team_schedule, player_schedule
+from models import schedule, team_schedule, player_schedule, team_player
 from schema import ScheduleBase, ScheduleBaseNoID, TeamScheduleBase, PlayerScheduleBase
 from Crud.teams import get_team_by_id
 from Crud.player import get_player_by_id
@@ -98,6 +98,14 @@ def insert_new_schedule(db:Session, req_schedule: ScheduleBaseNoID):
             db.refresh(new_schedule)
             new_team_schedule = team_schedule(schedule_id=new_schedule.schedule_id, team_id=req_schedule.team_id)
             db.add(new_team_schedule)
+            db.commit()
+
+            team_res = db.query(team_player).filter(team_player.team_id == req_schedule.team_id).all()
+            for player in team_res:
+                new_player_schedule = player_schedule(schedule_id=new_schedule.schedule_id, player_id=player.player_id, player_attending=False)
+                db.add(new_player_schedule)
+
+            
             db.commit()
             db.refresh(new_team_schedule)
             return {"message": "Schedule inserted successfully", "id": new_schedule.schedule_id}
