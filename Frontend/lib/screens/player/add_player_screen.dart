@@ -228,7 +228,7 @@ class AddPlayerScreen extends ConsumerWidget {
                                           ]),
                                       const SizedBox(height: 10),
                                       formFieldBottomBorderController(
-                                          "Reason for Playing Status",
+                                          "Reason for Playing Status (optional)",
                                           _reasonController, (value) {
                                         return null;
                                       }, context),
