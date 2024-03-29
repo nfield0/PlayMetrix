@@ -234,102 +234,105 @@ Widget playerProfilePill(
       break;
   }
 
-  return Stack(
-    clipBehavior: Clip.none,
-    children: [
-      InkWell(
-          onTap: () {
-            ref.read(playerIdProvider.notifier).state = playerId;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      PlayerProfileViewScreen(playerId: playerId)),
-            );
-          },
-          child: Container(
-            // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
-            decoration: BoxDecoration(
-              border: Border.all(color: statusColour, width: 4),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              children: [
-                imageBytes != null && imageBytes.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(75),
-                        child: Image.memory(
-                          imageBytes,
+  return Column(children: [
+    Stack(
+      clipBehavior: Clip.none,
+      children: [
+        InkWell(
+            onTap: () {
+              ref.read(playerIdProvider.notifier).state = playerId;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        PlayerProfileViewScreen(playerId: playerId)),
+              );
+            },
+            child: Container(
+              // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
+              decoration: BoxDecoration(
+                border: Border.all(color: statusColour, width: 4),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  imageBytes != null && imageBytes.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(75),
+                          child: Image.memory(
+                            imageBytes,
+                            width: 65,
+                            height: 65,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Image.asset(
+                          "lib/assets/icons/profile_placeholder.png",
                           width: 65,
-                          height: 65,
-                          fit: BoxFit.cover,
                         ),
-                      )
-                    : Image.asset(
-                        "lib/assets/icons/profile_placeholder.png",
-                        width: 65,
-                      ),
-                const SizedBox(
-                  width: 25,
-                ),
-                Text(
-                  "#$playerNum",
-                  style: TextStyle(
-                    color: statusColour,
-                    fontSize: 36,
-                    fontFamily: AppFonts.gabarito,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(
+                    width: 25,
                   ),
-                ),
-                const SizedBox(
-                  width: 25,
-                ),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        firstName,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontFamily: AppFonts.gabarito,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        surname,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontFamily: AppFonts.gabarito,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  Text(
+                    "#$playerNum",
+                    style: TextStyle(
+                      color: statusColour,
+                      fontSize: 36,
+                      fontFamily: AppFonts.gabarito,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          firstName,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontFamily: AppFonts.gabarito,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          surname,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontFamily: AppFonts.gabarito,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )),
+        Positioned(
+          top: -10,
+          right: -10,
+          child: Container(
+            padding: EdgeInsets.zero,
+            decoration: const BoxDecoration(
+              color: Color(0XFFfafafa),
+              shape: BoxShape.circle,
             ),
-          )),
-      Positioned(
-        top: -10,
-        right: -10,
-        child: Container(
-          padding: EdgeInsets.zero,
-          decoration: const BoxDecoration(
-            color: Color(0XFFfafafa),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            statusIcon,
-            color: statusColour,
-            size: 40,
+            child: Icon(
+              statusIcon,
+              color: statusColour,
+              size: 40,
+            ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    ),
+    const SizedBox(height: 20),
+  ]);
 }
 
 Widget dismissablePlayerProfilePill(
