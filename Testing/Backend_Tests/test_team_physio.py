@@ -192,7 +192,7 @@ def test_delete_team_physio():
     assert response.headers['Content-Type'] == 'application/json'
     try:
         response_json = response.json()
-        assert response_json.get("message") == "Physio from Team with ID 1 has been deleted"
+        assert response_json.get("message") == "Physios from Team with ID 1 has been deleted"
     
     except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
