@@ -3,6 +3,10 @@ import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/user_provider.dart';
+import 'package:play_metrix/screens/getting_started/coach.dart';
+import 'package:play_metrix/screens/getting_started/manager.dart';
+import 'package:play_metrix/screens/getting_started/physio.dart';
+import 'package:play_metrix/screens/getting_started/player.dart';
 import 'package:play_metrix/screens/profile/edit_profile_screen.dart';
 import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:play_metrix/screens/settings/change_password_screen.dart';
@@ -19,8 +23,6 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     UserRole userRole = ref.watch(userRoleProvider.notifier).state;
     final Uri contactUsUrl = Uri.parse("https://linktr.ee/playmetrix");
-    final Uri guidebookUrl =
-        Uri.parse("https://online.fliphtml5.com/shnzj/gdnt/index.html#p=1");
 
     return Scaffold(
         appBar: AppBar(
@@ -107,9 +109,40 @@ class SettingsScreen extends ConsumerWidget {
                               const SizedBox(height: 10),
                               sectionHeader("About PlayMetrix"),
                               const SizedBox(height: 15),
-                              settingsRow("Online guidebook", Icons.book_online,
+                              settingsRow("Getting started", Icons.book_online,
                                   () {
-                                _launchUrl(guidebookUrl);
+                                if (userRole == UserRole.manager) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedManager()),
+                                  );
+                                } else if (userRole == UserRole.physio) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedPhysio()),
+                                  );
+                                } else if (userRole == UserRole.player) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedPlayer(
+                                              playerId:
+                                                  ref.read(userIdProvider),
+                                            )),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedCoach()),
+                                  );
+                                }
                               }),
                               settingsRow("Contact us", Icons.contacts, () {
                                 _launchUrl(contactUsUrl);
