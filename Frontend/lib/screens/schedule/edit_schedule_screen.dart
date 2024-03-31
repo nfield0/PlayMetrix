@@ -124,41 +124,17 @@ class EditScheduleScreenState extends State<EditScheduleScreen> {
                                   dateTimePickerWithDivider(
                                       context, "Starts", selectedStartDate,
                                       (value) {
-                                    if (value.isAfter(DateTime.parse(
-                                        schedule.schedule_end_time))) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              backgroundColor: AppColours.red,
-                                              padding: EdgeInsets.all(20.0),
-                                              content: Text(
-                                                  "Start time cannot be after end time",
-                                                  style: TextStyle(
-                                                      fontSize: 16.0))));
-                                    } else {
-                                      setState(() {
-                                        selectedStartDate = value;
-                                      });
-                                    }
+                                    setState(() {
+                                      selectedStartDate = value;
+                                    });
                                   }),
                                   greyDivider(),
                                   dateTimePickerWithDivider(
                                       context, "Ends", selectedEndDate,
                                       (value) {
-                                    if (value.isBefore(DateTime.parse(
-                                        schedule.schedule_start_time))) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              backgroundColor: AppColours.red,
-                                              padding: EdgeInsets.all(20.0),
-                                              content: Text(
-                                                  "End time cannot be before start time",
-                                                  style: TextStyle(
-                                                      fontSize: 16.0))));
-                                    } else {
-                                      setState(() {
-                                        selectedEndDate = value;
-                                      });
-                                    }
+                                    setState(() {
+                                      selectedEndDate = value;
+                                    });
                                   }),
                                 ]),
                               ),

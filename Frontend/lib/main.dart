@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/push_notification_manager.dart';
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PlayMetrix',
-
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         tooltipTheme: const TooltipThemeData(
             margin: EdgeInsets.symmetric(horizontal: 10)),
