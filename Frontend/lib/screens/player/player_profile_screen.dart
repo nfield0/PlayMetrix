@@ -699,8 +699,6 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
       const SizedBox(
         height: 7,
       ),
-      statisticsDetailWithDivider(
-          "Injury Prone", statistics.injuryProne ? "Yes" : "No", null)
     ],
   );
 }

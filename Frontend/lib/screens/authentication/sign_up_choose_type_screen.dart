@@ -5,9 +5,10 @@ import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
 import 'package:play_metrix/providers/sign_up_form_provider.dart';
-import 'package:play_metrix/screens/home_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_set_up_screen.dart';
-import 'package:play_metrix/screens/team/team_set_up_screen.dart';
+import 'package:play_metrix/screens/getting_started/coach.dart';
+import 'package:play_metrix/screens/getting_started/manager.dart';
+import 'package:play_metrix/screens/getting_started/physio.dart';
+import 'package:play_metrix/screens/getting_started/player.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
@@ -143,11 +144,11 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      PlayerProfileSetUpScreen(
-                                          playerId: ref
-                                              .read(userIdProvider.notifier)
-                                              .state),
+                                  builder: (context) => GettingStartedPlayer(
+                                      isOnSignUp: true,
+                                      playerId: ref
+                                          .read(userIdProvider.notifier)
+                                          .state),
                                 ),
                               );
                             } else if (userRole == UserRole.manager) {
@@ -155,14 +156,24 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => TeamSetUpScreen()),
+                                    builder: (context) => GettingStartedManager(
+                                        isOnSignUp: true)),
+                              );
+                            } else if (userRole == UserRole.physio) {
+                              clearSignUpForm(ref);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        GettingStartedPhysio()),
                               );
                             } else {
                               clearSignUpForm(ref);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomeScreen()),
+                                    builder: (context) =>
+                                        GettingStartedCoach()),
                               );
                             }
                           },
