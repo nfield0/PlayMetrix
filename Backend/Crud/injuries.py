@@ -88,7 +88,7 @@ def delete_injury(db:Session, id: int):
 def get_player_injuries(db: Session):
     try:
         result = db.query(player_injuries).all()
-        result.sort(key=lambda x: x.date_of_injury, reverse=True)
+        result.sort(key=lambda x: x.date_of_injury, reverse=False)
         return result
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
