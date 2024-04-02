@@ -96,6 +96,7 @@ def get_player_injuries(db: Session):
 def get_player_injury_by_id(db: Session, id: int):
     try:
         result = db.query(player_injuries).filter_by(player_id=id).all()
+        result.sort(key=lambda x: x.date_of_injury, reverse=True)
         return result
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
@@ -103,6 +104,7 @@ def get_player_injury_by_id(db: Session, id: int):
 def get_player_injury_by_player_injury_id(db: Session, id: int):
     try:
         result = db.query(player_injuries).filter_by(player_injury_id=id).all()
+        result.sort(key=lambda x: x.date_of_injury, reverse=True)
         return result
     except Exception as e:
         return(f"Error retrieving player injuries: {e}")
