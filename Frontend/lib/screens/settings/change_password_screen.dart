@@ -53,246 +53,254 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Form(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.always,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 15),
-                          sectionHeader("Current Password"),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 15),
-                            child: TextFormField(
-                              controller: _oldPasswordController,
-                              obscureText: _oldPasswordIsObscure,
-                              cursorColor: AppColours.darkBlue,
-                              decoration: InputDecoration(
-                                focusedErrorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                errorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppColours
-                                          .darkBlue), // Set border color
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppColours
-                                          .darkBlue), // Set focused border color
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _oldPasswordIsObscure
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: AppColours.darkBlue,
-                                  ),
-                                  onPressed: () {
-                                    // Toggle the visibility of the password
-                                    setState(() {
-                                      _oldPasswordIsObscure =
-                                          !_oldPasswordIsObscure;
-                                    });
-                                  },
-                                ),
-                                labelText: 'Enter your current password',
-                                labelStyle: const TextStyle(
-                                    color: AppColours.darkBlue,
-                                    fontFamily: AppFonts.openSans),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            child: greyDividerThick(),
-                          ),
-                          sectionHeader("New Password"),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 15),
-                            child: TextFormField(
-                              controller: _newPasswordController,
-                              obscureText: _newPasswordIsObscure,
-                              cursorColor: AppColours.darkBlue,
-                              decoration: InputDecoration(
-                                focusedErrorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                errorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppColours
-                                          .darkBlue), // Set border color
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppColours
-                                          .darkBlue), // Set focused border color
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _newPasswordIsObscure
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: AppColours.darkBlue,
-                                  ),
-                                  onPressed: () {
-                                    // Toggle the visibility of the password
-                                    setState(() {
-                                      _newPasswordIsObscure =
-                                          !_newPasswordIsObscure;
-                                    });
-                                  },
-                                ),
-                                labelText: 'Enter your new password',
-                                labelStyle: const TextStyle(
-                                    color: AppColours.darkBlue,
-                                    fontFamily: AppFonts.openSans),
-                              ),
-                              validator: (String? value) {
-                                return (value != null &&
-                                        !_passwordRegex.hasMatch(value))
-                                    ? 'Password must contain at least 8 characters,\na number, and a symbol.'
-                                    : null;
-                              },
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 5),
-                            child: TextFormField(
-                              controller: _confirmPasswordController,
-                              obscureText: _confirmPasswordIsObscure,
-                              cursorColor: AppColours.darkBlue,
-                              decoration: InputDecoration(
-                                focusedErrorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                errorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppColours
-                                          .darkBlue), // Set border color
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppColours
-                                          .darkBlue), // Set focused border color
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _confirmPasswordIsObscure
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: AppColours.darkBlue,
-                                  ),
-                                  onPressed: () {
-                                    // Toggle the visibility of the password
-                                    setState(() {
-                                      _confirmPasswordIsObscure =
-                                          !_confirmPasswordIsObscure;
-                                    });
-                                  },
-                                ),
-                                labelText: 'Confirm new password',
-                                labelStyle: const TextStyle(
-                                    color: AppColours.darkBlue,
-                                    fontFamily: AppFonts.openSans),
-                              ),
-                              validator: (String? value) {
-                                return (value != null &&
-                                        _newPasswordController.text != value)
-                                    ? 'Password does not match.'
-                                    : null;
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-                          Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 25, vertical: 15),
-                              child: bigButton("Change Password", () async {
-                                if (_formKey.currentState!.validate()) {
-                                  String passwordChanged = await changePassword(
-                                      widget.userId,
-                                      widget.userRole,
-                                      _oldPasswordController.text,
-                                      _newPasswordController.text);
-
-                                  if (passwordChanged.isEmpty) {
-                                    _oldPasswordController.clear();
-                                    _newPasswordController.clear();
-                                    _confirmPasswordController.clear();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Password changed successfully')));
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SettingsScreen()));
-                                  } else {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                                'Password not changed',
-                                                style: TextStyle(
-                                                    color: AppColours.darkBlue,
-                                                    fontFamily:
-                                                        AppFonts.gabarito,
-                                                    fontSize: 24,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            content: Text(
-                                              passwordChanged,
-                                              style:
-                                                  const TextStyle(fontSize: 16),
-                                            ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text('OK'),
-                                              ),
-                                            ],
-                                          );
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Form(
+                          key: _formKey,
+                          autovalidateMode: AutovalidateMode.always,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 15),
+                              sectionHeader("Current Password"),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 15),
+                                child: TextFormField(
+                                  controller: _oldPasswordController,
+                                  obscureText: _oldPasswordIsObscure,
+                                  cursorColor: AppColours.darkBlue,
+                                  decoration: InputDecoration(
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColours
+                                              .darkBlue), // Set border color
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColours
+                                              .darkBlue), // Set focused border color
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _oldPasswordIsObscure
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColours.darkBlue,
+                                      ),
+                                      onPressed: () {
+                                        // Toggle the visibility of the password
+                                        setState(() {
+                                          _oldPasswordIsObscure =
+                                              !_oldPasswordIsObscure;
                                         });
-                                  }
-                                }
-                              }))
-                        ],
-                      ),
-                    )))),
+                                      },
+                                    ),
+                                    labelText: 'Enter your current password',
+                                    labelStyle: const TextStyle(
+                                        color: AppColours.darkBlue,
+                                        fontFamily: AppFonts.openSans),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 15),
+                                child: greyDividerThick(),
+                              ),
+                              sectionHeader("New Password"),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 15),
+                                child: TextFormField(
+                                  controller: _newPasswordController,
+                                  obscureText: _newPasswordIsObscure,
+                                  cursorColor: AppColours.darkBlue,
+                                  decoration: InputDecoration(
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColours
+                                              .darkBlue), // Set border color
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColours
+                                              .darkBlue), // Set focused border color
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _newPasswordIsObscure
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColours.darkBlue,
+                                      ),
+                                      onPressed: () {
+                                        // Toggle the visibility of the password
+                                        setState(() {
+                                          _newPasswordIsObscure =
+                                              !_newPasswordIsObscure;
+                                        });
+                                      },
+                                    ),
+                                    labelText: 'Enter your new password',
+                                    labelStyle: const TextStyle(
+                                        color: AppColours.darkBlue,
+                                        fontFamily: AppFonts.openSans),
+                                  ),
+                                  validator: (String? value) {
+                                    return (value != null &&
+                                            !_passwordRegex.hasMatch(value))
+                                        ? 'Password must contain at least 8 characters,\na number, and a symbol.'
+                                        : null;
+                                  },
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 5),
+                                child: TextFormField(
+                                  controller: _confirmPasswordController,
+                                  obscureText: _confirmPasswordIsObscure,
+                                  cursorColor: AppColours.darkBlue,
+                                  decoration: InputDecoration(
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColours
+                                              .darkBlue), // Set border color
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: AppColours
+                                              .darkBlue), // Set focused border color
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _confirmPasswordIsObscure
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColours.darkBlue,
+                                      ),
+                                      onPressed: () {
+                                        // Toggle the visibility of the password
+                                        setState(() {
+                                          _confirmPasswordIsObscure =
+                                              !_confirmPasswordIsObscure;
+                                        });
+                                      },
+                                    ),
+                                    labelText: 'Confirm new password',
+                                    labelStyle: const TextStyle(
+                                        color: AppColours.darkBlue,
+                                        fontFamily: AppFonts.openSans),
+                                  ),
+                                  validator: (String? value) {
+                                    return (value != null &&
+                                            _newPasswordController.text !=
+                                                value)
+                                        ? 'Password does not match.'
+                                        : null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25, vertical: 15),
+                                  child: bigButton("Change Password", () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      String passwordChanged =
+                                          await changePassword(
+                                              widget.userId,
+                                              widget.userRole,
+                                              _oldPasswordController.text,
+                                              _newPasswordController.text);
+
+                                      if (passwordChanged.isEmpty) {
+                                        _oldPasswordController.clear();
+                                        _newPasswordController.clear();
+                                        _confirmPasswordController.clear();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    'Password changed successfully')));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const SettingsScreen()));
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Password not changed',
+                                                    style: TextStyle(
+                                                        color:
+                                                            AppColours.darkBlue,
+                                                        fontFamily:
+                                                            AppFonts.gabarito,
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                content: Text(
+                                                  passwordChanged,
+                                                  style: const TextStyle(
+                                                      fontSize: 16),
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      }
+                                    }
+                                  }))
+                            ],
+                          ),
+                        ))))),
         bottomNavigationBar:
             roleBasedBottomNavBar(widget.userRole, context, 4));
   }
