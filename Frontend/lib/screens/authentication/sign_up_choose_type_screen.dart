@@ -21,173 +21,183 @@ class SignUpChooseTypeScreen extends ConsumerWidget {
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          'lib/assets/logo.png',
-          width: 150,
-          fit: BoxFit.contain,
+        appBar: AppBar(
+          title: Image.asset(
+            'lib/assets/logo.png',
+            width: 150,
+            fit: BoxFit.contain,
+          ),
+          iconTheme: const IconThemeData(
+            color: AppColours.darkBlue,
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
         ),
-        iconTheme: const IconThemeData(
-          color: AppColours.darkBlue,
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          autovalidateMode: AutovalidateMode.always,
-          child: Container(
-            padding: const EdgeInsets.all(40.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    color: AppColours.darkBlue,
-                    fontFamily: AppFonts.gabarito,
-                    fontSize: 36.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const Divider(
-                  color: AppColours.darkBlue,
-                  thickness: 1.0,
-                  height: 40.0,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 40.0, bottom: 15),
-                  child: Text(
-                    'Are you using this app as a...',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: AppFonts.openSans,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w600,
+        body: SingleChildScrollView(
+            child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: Form(
+              key: formKey,
+              autovalidateMode: AutovalidateMode.always,
+              child: Container(
+                padding: const EdgeInsets.all(40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: AppColours.darkBlue,
+                        fontFamily: AppFonts.gabarito,
+                        fontSize: 36.0,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    radioUserTypeOption<UserRole>(
-                      "Manager",
-                      "lib/assets/icons/manager.png",
-                      UserRole.manager,
-                      ref.watch(userRoleProvider),
-                      ref,
+                    const Divider(
+                      color: AppColours.darkBlue,
+                      thickness: 1.0,
+                      height: 40.0,
                     ),
-                    radioUserTypeOption<UserRole>(
-                      "Player",
-                      "lib/assets/icons/player.png",
-                      UserRole.player,
-                      ref.watch(userRoleProvider),
-                      ref,
+                    const Padding(
+                      padding: EdgeInsets.only(top: 40.0, bottom: 15),
+                      child: Text(
+                        'Are you using this app as a...',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: AppFonts.openSans,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    radioUserTypeOption<UserRole>(
-                      "Physio",
-                      "lib/assets/icons/physio.png",
-                      UserRole.physio,
-                      ref.watch(userRoleProvider),
-                      ref,
-                    ),
-                    radioUserTypeOption<UserRole>(
-                      "Coach",
-                      "lib/assets/icons/whistle.png",
-                      UserRole.coach,
-                      ref.watch(userRoleProvider),
-                      ref,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 45.0),
-                      child: bigButton("Sign up", () async {
-                        UserRole userRole =
-                            ref.read(userRoleProvider.notifier).state;
-                        String firstName =
-                            ref.read(firstNameProvider.notifier).state;
-                        String surname =
-                            ref.read(surnameProvider.notifier).state;
-                        String email = ref.read(emailProvider.notifier).state;
-                        String password =
-                            ref.read(passwordProvider.notifier).state;
-                        String contactNumber =
-                            ref.read(phoneProvider.notifier).state;
-                        Uint8List? image =
-                            ref.read(profilePictureProvider.notifier).state;
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        radioUserTypeOption<UserRole>(
+                          "Manager",
+                          "lib/assets/icons/manager.png",
+                          UserRole.manager,
+                          ref.watch(userRoleProvider),
+                          ref,
+                        ),
+                        radioUserTypeOption<UserRole>(
+                          "Player",
+                          "lib/assets/icons/player.png",
+                          UserRole.player,
+                          ref.watch(userRoleProvider),
+                          ref,
+                        ),
+                        radioUserTypeOption<UserRole>(
+                          "Physio",
+                          "lib/assets/icons/physio.png",
+                          UserRole.physio,
+                          ref.watch(userRoleProvider),
+                          ref,
+                        ),
+                        radioUserTypeOption<UserRole>(
+                          "Coach",
+                          "lib/assets/icons/whistle.png",
+                          UserRole.coach,
+                          ref.watch(userRoleProvider),
+                          ref,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 45.0),
+                          child: bigButton("Sign up", () async {
+                            UserRole userRole =
+                                ref.read(userRoleProvider.notifier).state;
+                            String firstName =
+                                ref.read(firstNameProvider.notifier).state;
+                            String surname =
+                                ref.read(surnameProvider.notifier).state;
+                            String email =
+                                ref.read(emailProvider.notifier).state;
+                            String password =
+                                ref.read(passwordProvider.notifier).state;
+                            String contactNumber =
+                                ref.read(phoneProvider.notifier).state;
+                            Uint8List? image =
+                                ref.read(profilePictureProvider.notifier).state;
 
-                        await signUpHandler(
-                          userRole,
-                          firstName,
-                          surname,
-                          email,
-                          password,
-                          contactNumber,
-                          image,
-                          (userId) =>
-                              ref.read(userIdProvider.notifier).state = userId,
-                          (userRole) => ref
-                              .read(userRoleProvider.notifier)
-                              .state = userRole,
-                          (value) => ref
-                              .read(firstNameProvider.notifier)
-                              .state = value,
-                          (value) =>
-                              ref.read(surnameProvider.notifier).state = value,
-                          (value) =>
-                              ref.read(emailProvider.notifier).state = value,
-                          (value) =>
-                              ref.read(passwordProvider.notifier).state = value,
-                          (userRole) {
-                            if (userRole == UserRole.player) {
-                              clearSignUpForm(ref);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => GettingStartedPlayer(
-                                      isOnSignUp: true,
-                                      playerId: ref
-                                          .read(userIdProvider.notifier)
-                                          .state),
-                                ),
-                              );
-                            } else if (userRole == UserRole.manager) {
-                              clearSignUpForm(ref);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => GettingStartedManager(
-                                        isOnSignUp: true)),
-                              );
-                            } else if (userRole == UserRole.physio) {
-                              clearSignUpForm(ref);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        GettingStartedPhysio()),
-                              );
-                            } else {
-                              clearSignUpForm(ref);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        GettingStartedCoach()),
-                              );
-                            }
-                          },
-                        );
-                      }),
+                            await signUpHandler(
+                              userRole,
+                              firstName,
+                              surname,
+                              email,
+                              password,
+                              contactNumber,
+                              image,
+                              (userId) => ref
+                                  .read(userIdProvider.notifier)
+                                  .state = userId,
+                              (userRole) => ref
+                                  .read(userRoleProvider.notifier)
+                                  .state = userRole,
+                              (value) => ref
+                                  .read(firstNameProvider.notifier)
+                                  .state = value,
+                              (value) => ref
+                                  .read(surnameProvider.notifier)
+                                  .state = value,
+                              (value) => ref
+                                  .read(emailProvider.notifier)
+                                  .state = value,
+                              (value) => ref
+                                  .read(passwordProvider.notifier)
+                                  .state = value,
+                              (userRole) {
+                                if (userRole == UserRole.player) {
+                                  clearSignUpForm(ref);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          GettingStartedPlayer(
+                                              isOnSignUp: true,
+                                              playerId: ref
+                                                  .read(userIdProvider.notifier)
+                                                  .state),
+                                    ),
+                                  );
+                                } else if (userRole == UserRole.manager) {
+                                  clearSignUpForm(ref);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedManager(
+                                                isOnSignUp: true)),
+                                  );
+                                } else if (userRole == UserRole.physio) {
+                                  clearSignUpForm(ref);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedPhysio()),
+                                  );
+                                } else {
+                                  clearSignUpForm(ref);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            GettingStartedCoach()),
+                                  );
+                                }
+                              },
+                            );
+                          }),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        )));
   }
 }
 
