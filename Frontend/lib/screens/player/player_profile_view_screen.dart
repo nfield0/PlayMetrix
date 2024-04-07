@@ -213,6 +213,59 @@ class PlayerProfileViewScreen extends ConsumerWidget {
                                         Icons.group_off, "No team yet");
                                   }
                                 }),
+                            if (userRole == UserRole.manager)
+                              Column(children: [
+                                const SizedBox(height: 20),
+                                underlineButtonTransparentRed(
+                                    "Remove from team", () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                          "Remove Player",
+                                          style: TextStyle(
+                                            color: AppColours.darkBlue,
+                                            fontFamily: AppFonts.gabarito,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        content: const Text(
+                                          "Are you sure you want to remove player from your team?",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: const Text("Cancel"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true);
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PlayersScreen()),
+                                              );
+
+                                              removePlayerFromTeam(
+                                                  ref.read(teamIdProvider),
+                                                  playerId);
+                                            },
+                                            child: const Text("Remove"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }),
+                              ]),
                             const SizedBox(height: 20),
                             divider(),
                             const SizedBox(height: 20),
