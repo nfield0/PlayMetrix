@@ -375,15 +375,17 @@ VALUES
 /*('Overuse Injuries','Anywhere','Rest, Physiotherapy', 'Weeks to Months (Depending on Serverity)'),*/
 
 
+/*Have a Default Physio in the database so when a physio is deleted they constraint doesn't break*/
+INSERT INTO physio_login(physio_email, physio_password, physio_2fa)
+VALUES
+('defaultphysio@gmail.com', 'password', FALSE);
+
+INSERT INTO physio_info(physio_id, physio_firstname, physio_surname, physio_contact_number, physio_image)
+VALUES
+(1 ,'Default', 'Physio', '0871234567', NULL);
 
 
-
-
-
-
-
-
-
+/*UPDATE player_injuries SET physio_id = 2 WHERE physio_id = 1;*/
 
 
 

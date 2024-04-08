@@ -344,9 +344,19 @@ JOIN player_login USING (player_id)
 JOIN player_stats USING (player_id);
 
 
-INSERT INTO injuries (injury_type, injury_location, recovery_method, expected_recovery_time) 
+CREATE TABLE IF NOT EXISTS  old_injuries
+(
+	injury_id serial PRIMARY KEY,
+	injury_type VARCHAR(250),
+	injury_location VARCHAR(250),
+	expected_recovery_time VARCHAR(250),
+	recovery_method VARCHAR(255)
+);
+
+
+INSERT INTO old_injuries (injury_type, injury_location, recovery_method, expected_recovery_time) 
 VALUES
-('Rotar Cuff','Shoulder','Rest, Physiotherapy, Surgery Depedning on Severity', '6 Weeks - 9 Months'),
+('Rotator Cuff','Shoulder','Rest, Physiotherapy, Surgery Depending on Severity', '6 Weeks - 9 Months'),
 ('Shoulder Impingement','Shoulder','Physiotherapy', '3- 6 Months'),
 ('Instability','Shoulder','Physiotherapy', '3-6 Months Should not lift heavy weight between 6 weeks - 3 Months'),
 ('Shoulder Dislocation','Shoulder','Closed Reduction & Rest', '12-16 Weeks'),
@@ -369,4 +379,4 @@ VALUES
 ('Broken Leg','Leg','Rest, Immobilisation, Potential for Surgery if Serere', '6-8 Weeks More serious fracture 3-6 Months'),
 ('Torn Quad Muscle','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '3-6 Months for a Full Recovery 10-12 Weeks before healing begins'),
 ('Torn Calf Muscle','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '2-4 Weeks'),
-('Torn Abbuctor ','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '12-16 Weeks');
+('Torn Abductor ','Leg','Rest, Ice, Compression, Elevation, Physiotherapy', '12-16 Weeks');
