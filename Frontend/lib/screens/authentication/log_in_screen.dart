@@ -186,54 +186,65 @@ class LogInScreen extends ConsumerWidget {
                                   Profile managerProfile =
                                       await getManagerProfile(userId);
 
-                                  // show2faPopUp(
-                                  //     context,
-                                  //     ref,
-                                  //     managerProfile.contactNumber,
-                                  //     userRole,
-                                  //     userId);
-
-                                  logInFunctionality(
-                                      context, ref, userRole, userId);
+                                  if (managerProfile.twoFactorAuthEnabled) {
+                                    show2faPopUp(
+                                        context,
+                                        ref,
+                                        managerProfile.contactNumber,
+                                        userRole,
+                                        userId);
+                                  } else {
+                                    logInFunctionality(
+                                        context, ref, userRole, userId);
+                                  }
                                 } else if (userRole == UserRole.physio) {
                                   Profile physioProfile =
                                       await getPhysioProfile(userId);
 
-                                  // show2faPopUp(
-                                  //     context,
-                                  //     ref,
-                                  //     physioProfile.contactNumber,
-                                  //     userRole,
-                                  //     userId);
-
-                                  logInFunctionality(
-                                      context, ref, userRole, userId);
+                                  if (physioProfile.twoFactorAuthEnabled) {
+                                    show2faPopUp(
+                                        context,
+                                        ref,
+                                        physioProfile.contactNumber,
+                                        userRole,
+                                        userId);
+                                  } else {
+                                    logInFunctionality(
+                                        context, ref, userRole, userId);
+                                  }
                                 } else if (userRole == UserRole.player) {
-                                  PlayerData playerProfile =
-                                      await getPlayerById(userId);
+                                  PlayerLogin playerProfile =
+                                      await getPlayerLogin(userId);
 
-                                  // show2faPopUp(
-                                  //     context,
-                                  //     ref,
-                                  //     playerProfile.player_contact_number,
-                                  //     userRole,
-                                  //     userId);
+                                  PlayerData playerData =
+                                      await getPlayerData(userId);
 
-                                  logInFunctionality(
-                                      context, ref, userRole, userId);
+                                  if (playerProfile.twoFactorAuthEnabled) {
+                                    show2faPopUp(
+                                        context,
+                                        ref,
+                                        playerData.contactNumber,
+                                        userRole,
+                                        userId);
+                                  } else {
+                                    logInFunctionality(
+                                        context, ref, userRole, userId);
+                                  }
                                 } else {
                                   Profile coachProfile =
                                       await getCoachProfile(userId);
 
-                                  // show2faPopUp(
-                                  //     context,
-                                  //     ref,
-                                  //     coachProfile.contactNumber,
-                                  //     userRole,
-                                  //     userId);
-
-                                  logInFunctionality(
-                                      context, ref, userRole, userId);
+                                  if (coachProfile.twoFactorAuthEnabled) {
+                                    show2faPopUp(
+                                        context,
+                                        ref,
+                                        coachProfile.contactNumber,
+                                        userRole,
+                                        userId);
+                                  } else {
+                                    logInFunctionality(
+                                        context, ref, userRole, userId);
+                                  }
                                 }
                               }
                             }

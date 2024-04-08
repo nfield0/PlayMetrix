@@ -9,7 +9,7 @@ class NameSignUpScreen extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
-  final _nameRegex = RegExp(r'^[A-Za-z]+$');
+  final _nameRegex = RegExp(r"^[A-Za-z\s\’\'\-]+$");
 
   NameSignUpScreen({super.key});
 

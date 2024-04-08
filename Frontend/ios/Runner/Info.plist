@@ -47,5 +47,18 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Your description here</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string></string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.224381066032-ddtklqt7de62h9pkq564v8pmpc0f06ts</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

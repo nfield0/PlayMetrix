@@ -171,7 +171,6 @@ class PlayersAttendingScreen extends ConsumerWidget {
                                                 player.surname,
                                                 player.teamNumber,
                                                 player.status),
-                                            const SizedBox(height: 10),
                                           ])
                                     ]);
                                   } else {

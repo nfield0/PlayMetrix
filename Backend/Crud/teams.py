@@ -194,6 +194,16 @@ def delete_physio_team_id(db:Session, id: int):
         if team_to_delete:
             db.delete(team_to_delete)
             db.commit()
+        return {"message": f"Physios from Team with ID {id} has been deleted"}
+    except Exception as e:
+        return(f"Error deleting team physio: {e}")
+    
+def delete_physio_from_team(db: Session, teams_id: int, physios_id:int):
+    try:        
+        team_to_delete = db.query(team_physio).filter_by(team_id=teams_id,physio_id=physios_id).first()
+        if team_to_delete:
+            db.delete(team_to_delete)
+            db.commit()
         return {"message": f"Physio from Team with ID {id} has been deleted"}
     except Exception as e:
         return(f"Error deleting team physio: {e}")

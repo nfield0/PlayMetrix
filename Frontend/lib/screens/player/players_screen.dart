@@ -144,31 +144,55 @@ class PlayersScreen extends ConsumerWidget {
                                               runSpacing: 20.0,
                                               children: players
                                                   .map((PlayerProfile player) {
-                                                return playerProfilePill(
-                                                  context,
-                                                  ref,
-                                                  player.imageBytes,
-                                                  player.playerId,
-                                                  player.firstName,
-                                                  player.surname,
-                                                  player.teamNumber,
-                                                  player.status,
-                                                );
+                                                return userRole ==
+                                                        UserRole.manager
+                                                    ? dismissablePlayerProfilePill(
+                                                        context,
+                                                        ref,
+                                                        player.imageBytes,
+                                                        player.playerId,
+                                                        player.firstName,
+                                                        player.surname,
+                                                        player.teamNumber,
+                                                        player.status,
+                                                      )
+                                                    : playerProfilePill(
+                                                        context,
+                                                        ref,
+                                                        player.imageBytes,
+                                                        player.playerId,
+                                                        player.firstName,
+                                                        player.surname,
+                                                        player.teamNumber,
+                                                        player.status,
+                                                      );
                                               }).toList(),
                                             )
                                           : Column(
                                               children: players
                                                   .map((PlayerProfile player) {
-                                                return playerProfilePill(
-                                                  context,
-                                                  ref,
-                                                  player.imageBytes,
-                                                  player.playerId,
-                                                  player.firstName,
-                                                  player.surname,
-                                                  player.teamNumber,
-                                                  player.status,
-                                                );
+                                                return userRole ==
+                                                        UserRole.manager
+                                                    ? dismissablePlayerProfilePill(
+                                                        context,
+                                                        ref,
+                                                        player.imageBytes,
+                                                        player.playerId,
+                                                        player.firstName,
+                                                        player.surname,
+                                                        player.teamNumber,
+                                                        player.status,
+                                                      )
+                                                    : playerProfilePill(
+                                                        context,
+                                                        ref,
+                                                        player.imageBytes,
+                                                        player.playerId,
+                                                        player.firstName,
+                                                        player.surname,
+                                                        player.teamNumber,
+                                                        player.status,
+                                                      );
                                               }).toList(),
                                             )
                                       : emptySection(Icons.person_off,
@@ -184,14 +208,15 @@ class PlayersScreen extends ConsumerWidget {
 }
 
 Widget playerProfilePill(
-    BuildContext context,
-    WidgetRef ref,
-    Uint8List? imageBytes,
-    int playerId,
-    String firstName,
-    String surname,
-    int playerNum,
-    AvailabilityStatus status) {
+  BuildContext context,
+  WidgetRef ref,
+  Uint8List? imageBytes,
+  int playerId,
+  String firstName,
+  String surname,
+  int playerNum,
+  AvailabilityStatus status,
+) {
   Color statusColour = AppColours.green;
   IconData statusIcon = Icons.check_circle;
   switch (status) {
@@ -306,6 +331,193 @@ Widget playerProfilePill(
         ),
       ],
     ),
+    const SizedBox(height: 20),
+  ]);
+}
+
+Widget dismissablePlayerProfilePill(
+    BuildContext context,
+    WidgetRef ref,
+    Uint8List? imageBytes,
+    int playerId,
+    String firstName,
+    String surname,
+    int playerNum,
+    AvailabilityStatus status) {
+  Color statusColour = AppColours.green;
+  IconData statusIcon = Icons.check_circle;
+  switch (status) {
+    case AvailabilityStatus.available:
+      statusColour = AppColours.green;
+      statusIcon = Icons.check_circle;
+      break;
+    case AvailabilityStatus.unavailable:
+      statusColour = AppColours.red;
+      statusIcon = Icons.cancel;
+      break;
+    case AvailabilityStatus.limited:
+      statusColour = AppColours.yellow;
+      statusIcon = Icons.warning;
+      break;
+  }
+
+  return Column(children: [
+    Dismissible(
+        direction: DismissDirection.endToStart,
+        background: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15), color: AppColours.red),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text("Remove player from team",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppFonts.gabarito)),
+              SizedBox(width: 20),
+              Icon(Icons.delete, color: Colors.white, size: 30),
+              SizedBox(width: 30),
+            ],
+          ),
+        ),
+        confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text(
+                  "Remove Player",
+                  style: TextStyle(
+                    color: AppColours.darkBlue,
+                    fontFamily: AppFonts.gabarito,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Text(
+                  "Are you sure you want to remove #$playerNum $firstName $surname from your team?",
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                      removePlayerFromTeam(
+                          ref.read(teamIdProvider.notifier).state, playerId);
+                    },
+                    child: const Text("Remove"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        key: Key(playerId.toString()),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            InkWell(
+                onTap: () {
+                  ref.read(playerIdProvider.notifier).state = playerId;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PlayerProfileViewScreen(playerId: playerId)),
+                  );
+                },
+                child: Container(
+                  // width: MediaQuery.of(context).size.longestSide >= 900 ? 500 : null,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: statusColour, width: 4),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    children: [
+                      imageBytes != null && imageBytes.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(75),
+                              child: Image.memory(
+                                imageBytes,
+                                width: 65,
+                                height: 65,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              "lib/assets/icons/profile_placeholder.png",
+                              width: 65,
+                            ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      Text(
+                        "#$playerNum",
+                        style: TextStyle(
+                          color: statusColour,
+                          fontSize: 36,
+                          fontFamily: AppFonts.gabarito,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              firstName,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontFamily: AppFonts.gabarito,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              surname,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontFamily: AppFonts.gabarito,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            Positioned(
+              top: -10,
+              right: -10,
+              child: Container(
+                padding: EdgeInsets.zero,
+                decoration: const BoxDecoration(
+                  color: Color(0XFFfafafa),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  statusIcon,
+                  color: statusColour,
+                  size: 40,
+                ),
+              ),
+            ),
+          ],
+        )),
     const SizedBox(height: 20),
   ]);
 }

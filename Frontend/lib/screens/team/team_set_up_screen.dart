@@ -27,6 +27,24 @@ class TeamSetUpScreen extends ConsumerWidget {
       if (pickedFile != null) {
         List<int> imageBytes = await pickedFile.readAsBytes();
 
+        if (imageBytes.length > 5000000) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Image size should be less than 5MB',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: AppFonts.gabarito,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              backgroundColor: AppColours.red,
+            ),
+          );
+          return;
+        }
+
         ref.read(teamLogoProvider.notifier).state =
             Uint8List.fromList(imageBytes);
       }

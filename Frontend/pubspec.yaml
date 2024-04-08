@@ -52,7 +52,7 @@ dependencies:
   file_picker: ^6.1.1
   syncfusion_flutter_pdfviewer: ^24.2.7
   dropdown_search: ^5.0.6
-  google_sign_in: ^5.0.0
+  google_sign_in: ^6.2.1
   flutter_signin_button: ^2.0.0
   url_launcher: ^6.0.3
   duration_picker: ^1.1.1
@@ -99,6 +99,33 @@ flutter:
     - lib/assets/intro/intro_1.png
     - lib/assets/intro/intro_2.png
     - lib/assets/intro/intro_3.png
+    - lib/assets/manager_showcase/1.png
+    - lib/assets/manager_showcase/2.png
+    - lib/assets/manager_showcase/3.png
+    - lib/assets/manager_showcase/4.png
+    - lib/assets/manager_showcase/5.png
+    - lib/assets/manager_showcase/6.png
+    - lib/assets/manager_showcase/7.png
+    - lib/assets/manager_showcase/8.png
+    - lib/assets/manager_showcase/9.png
+    - lib/assets/manager_showcase/10.png
+    - lib/assets/physio_showcase/1.png
+    - lib/assets/physio_showcase/2.png
+    - lib/assets/physio_showcase/3.png
+    - lib/assets/physio_showcase/4.png
+    - lib/assets/physio_showcase/5.png
+    - lib/assets/physio_showcase/6.png
+    - lib/assets/player_showcase/1.png
+    - lib/assets/player_showcase/2.png
+    - lib/assets/player_showcase/3.png
+    - lib/assets/player_showcase/4.png
+    - lib/assets/player_showcase/5.png
+    - lib/assets/player_showcase/6.png
+    - lib/assets/coach_showcase/1.png
+    - lib/assets/coach_showcase/2.png
+    - lib/assets/coach_showcase/3.png
+    - lib/assets/coach_showcase/4.png
+    - lib/assets/coach_showcase/5.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

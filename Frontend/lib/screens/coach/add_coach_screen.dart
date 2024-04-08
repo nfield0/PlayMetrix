@@ -5,7 +5,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/providers/team_set_up_provider.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/team/team_profile_screen.dart';
+import 'package:play_metrix/screens/coach/coaches_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -126,14 +126,16 @@ class AddCoachScreen extends ConsumerWidget {
                                             navigator.push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      TeamProfileScreen()),
+                                                      const CoachesScreen()),
                                             );
+                                            _emailController.clear();
                                           } else {
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: Text('Coach Not Found',
+                                                  title: const Text(
+                                                      'Coach Not Found',
                                                       style: TextStyle(
                                                           color: AppColours
                                                               .darkBlue,
@@ -142,7 +144,7 @@ class AddCoachScreen extends ConsumerWidget {
                                                           fontSize: 24,
                                                           fontWeight:
                                                               FontWeight.bold)),
-                                                  content: Text(
+                                                  content: const Text(
                                                       'Sorry, coach with that email does not exist. Please enter a different email address and try again.',
                                                       style: TextStyle(
                                                           fontSize: 16)),
@@ -152,7 +154,7 @@ class AddCoachScreen extends ConsumerWidget {
                                                         Navigator.of(context)
                                                             .pop();
                                                       },
-                                                      child: Text('OK'),
+                                                      child: const Text('OK'),
                                                     ),
                                                   ],
                                                 );

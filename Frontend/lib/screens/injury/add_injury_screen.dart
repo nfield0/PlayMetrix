@@ -8,7 +8,7 @@ import 'package:play_metrix/api_clients/player_api_client.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/enums.dart';
-import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -46,8 +46,8 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
 
     getPlayerById(widget.playerId).then((player) {
       setState(() {
-        playerName = "${player.player_firstname} ${player.player_surname}";
-        playerImage = player.player_image;
+        playerName = "${player.firstName} ${player.surname}";
+        playerImage = player.image;
       });
     });
   }
@@ -267,6 +267,18 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                                 recieverUserRole:
                                                     UserRole.player,
                                                 type: NotificationType.injury);
+
+                                            addNotification(
+                                                title:
+                                                    "$playerName has been injured: ${selectedInjury!.nameAndGrade}",
+                                                desc:
+                                                    "Injury location: ${selectedInjury!.location}\n"
+                                                    "Expected recovery time: ${selectedInjury!.expectedMinRecoveryTime}-${selectedInjury!.expectedMaxRecoveryTime} weeks\n",
+                                                date: DateTime.now(),
+                                                teamId: widget.teamId,
+                                                recieverUserRole:
+                                                    UserRole.physio,
+                                                type: NotificationType.injury);
                                           }
 
                                           addPlayerInjury(
@@ -284,15 +296,12 @@ class AddInjuryScreenState extends State<AddInjuryScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      EditPlayerProfileScreen(
-                                                          physioId:
-                                                              widget.physioId,
-                                                          playerId:
-                                                              widget.playerId,
-                                                          userRole:
-                                                              widget.userRole,
-                                                          teamId:
-                                                              widget.teamId)));
+                                                      PlayerProfileViewScreen(
+                                                        playerId:
+                                                            widget.playerId,
+                                                      ))).then((value) {
+                                            setState(() {});
+                                          });
                                         }
                                       })
                                     ]),
@@ -306,13 +315,13 @@ Widget injuryDetails(Injury injury, BuildContext context) {
   return Column(
     children: [
       const SizedBox(height: 10),
-      detailWithDivider("Injury Name", injury.nameAndGrade, context),
+      detailWithDividerSmall("Injury Name", injury.nameAndGrade, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.type, context),
+      detailWithDividerSmall("Injury Type", injury.type, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.location, context),
+      detailWithDividerSmall("Injury Location", injury.location, context),
       const SizedBox(height: 10),
-      detailWithDivider(
+      detailWithDividerSmall(
           "Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
               "${injury.expectedMaxRecoveryTime} weeks",

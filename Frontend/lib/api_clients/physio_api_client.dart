@@ -21,7 +21,8 @@ Future<Profile> getPhysioProfile(int id) async {
           parsed['physio_surname'],
           parsed['physio_contact_number'],
           parsed['physio_email'],
-          base64Decode((parsed['physio_image'])));
+          base64Decode((parsed['physio_image'])),
+          parsed['physio_2fa']);
     } else {
       print('Error message: ${response.body}');
     }
@@ -117,4 +118,15 @@ Future<int> findPhysioIdByEmail(String email) async {
     print('Error: $error');
     return -1;
   }
+}
+
+Future<void> removePhysioFromTeam(int teamId, int physioId) {
+  final String apiUrl = "$apiBaseUrl/team_physio/$teamId/physio/$physioId";
+
+  return http.delete(
+    Uri.parse(apiUrl),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
 }

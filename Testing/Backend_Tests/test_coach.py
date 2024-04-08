@@ -18,7 +18,8 @@ def test_add_coach():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": "h"
+        "coach_image": "h",
+        "coach_2fa": True   
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -48,7 +49,8 @@ def test_get_coach():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": "h"
+        "coach_image": "h",
+        "coach_2fa": True   
     
     }
     try:
@@ -117,7 +119,8 @@ def test_update_coach():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": "h"
+        "coach_image": "h",
+        "coach_2fa": True   
         
     }
 
@@ -140,6 +143,7 @@ def test_update_coach_login():
         "coach_id": 1,   
         "coach_email": "updatetestcoach@gmail.com",
         "coach_password": "Testpassword1!",
+        "coach_2fa": True   
         
     }
 
@@ -163,7 +167,8 @@ def test_update_coach_info():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": "h"        
+        "coach_image": "h",
+        "coach_2fa": True           
     }
 
     response = requests.put(url, headers=headers, json=json)
@@ -188,7 +193,8 @@ def test_update_coach_invalid_email():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": "h"
+        "coach_image": "h",
+        "coach_2fa": True   
         
     }
 

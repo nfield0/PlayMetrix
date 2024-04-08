@@ -274,6 +274,38 @@ String teamRoleToText(TeamRole role) {
   }
 }
 
+TeamRole stringToTeamRole(String role) {
+  switch (role) {
+    case 'Defense':
+      return TeamRole.defense;
+    case 'Attack':
+      return TeamRole.attack;
+    case 'Midfield':
+      return TeamRole.midfield;
+    case 'Goalkeeper':
+      return TeamRole.goalkeeper;
+    case 'Head Coach':
+      return TeamRole.headCoach;
+    default:
+      return TeamRole.defense;
+  }
+}
+
+String coachTeamRoleToText(TeamRole role) {
+  switch (role) {
+    case TeamRole.defense:
+      return 'Defense Coach';
+    case TeamRole.attack:
+      return 'Attack Coach';
+    case TeamRole.midfield:
+      return 'Midfield Coach';
+    case TeamRole.goalkeeper:
+      return 'Goalkeeper Coach';
+    case TeamRole.headCoach:
+      return 'Head Coach';
+  }
+}
+
 // Notification Type
 
 enum NotificationType { injury, event }

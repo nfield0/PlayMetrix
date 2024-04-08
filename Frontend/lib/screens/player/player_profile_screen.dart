@@ -99,14 +99,12 @@ class PlayerProfileScreen extends ConsumerWidget {
                                     } else if (snapshot.hasData) {
                                       // Data has been successfully fetched, use it here
                                       PlayerData player = snapshot.data!;
-                                      String firstName =
-                                          player.player_firstname;
-                                      String surname = player.player_surname;
-                                      DateTime dob = player.player_dob;
-                                      String height = player.player_height;
-                                      String gender = player.player_gender;
-                                      Uint8List? profilePicture =
-                                          player.player_image;
+                                      String firstName = player.firstName;
+                                      String surname = player.surname;
+                                      DateTime dob = player.dob;
+                                      String height = player.height;
+                                      String gender = player.gender;
+                                      Uint8List? profilePicture = player.image;
 
                                       String formattedDate =
                                           "${dob.toLocal()}".split(' ')[0];
@@ -554,6 +552,7 @@ Widget injuriesSection(
                         context,
                         MaterialPageRoute(
                             builder: (context) => EditInjuryScreen(
+                                  teamId: ref.read(teamIdProvider),
                                   physioId: injury.physioId,
                                   playerId: injury.playerId,
                                   playerInjuryId: injury.playerInjuryId,
@@ -576,21 +575,21 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
     children: [
       greyDivider(),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Name", injury.nameAndGrade, context),
+      detailWithDividerSmall("Injury Name", injury.nameAndGrade, context),
       const SizedBox(height: 10),
-      detailWithDivider("Date of Injury",
+      detailWithDividerSmall("Date of Injury",
           DateFormat('yyyy-MM-dd').format(injury.dateOfInjury), context),
       const SizedBox(height: 10),
-      detailWithDivider(
+      detailWithDividerSmall(
           "Date of Recovery",
           DateFormat('yyyy-MM-dd').format(injury.expectedDateOfRecovery),
           context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Type", injury.type, context),
+      detailWithDividerSmall("Injury Type", injury.type, context),
       const SizedBox(height: 10),
-      detailWithDivider("Injury Location", injury.location, context),
+      detailWithDividerSmall("Injury Location", injury.location, context),
       const SizedBox(height: 10),
-      detailWithDivider(
+      detailWithDividerSmall(
           "Recovery Time",
           "${injury.expectedMinRecoveryTime}-"
               "${injury.expectedMaxRecoveryTime} weeks",
@@ -670,16 +669,21 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
           ? available
           : limited;
 
-  // AvailabilityData totalMinutesPlayed =
-  //     statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
-  //             statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
-  //         ? limited
-  //         : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
-  //             ? unavailable
-  //             : available;
+  AvailabilityData totalMinutesPlayed =
+      statistics.totalMinutesPlayed >= totalMinutesPlayedLimit[0] &&
+              statistics.totalMinutesPlayed <= totalMinutesPlayedLimit[1]
+          ? limited
+          : statistics.totalMinutesPlayed > totalMinutesPlayedLimit[1]
+              ? unavailable
+              : available;
 
   return Column(
     children: [
+      statisticsDetailWithDivider("Total minutes played",
+          statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
+      const SizedBox(
+        height: 7,
+      ),
       statisticsDetailWithDivider(
           "Matches played", statistics.matchesPlayed.toString(), matchesPlayed),
       const SizedBox(
@@ -695,13 +699,6 @@ Widget statisticsSection(StatisticsData statistics, AvailabilityData available,
       const SizedBox(
         height: 7,
       ),
-      // statisticsDetailWithDivider("Total minutes played",
-      //     statistics.totalMinutesPlayed.toString(), totalMinutesPlayed),
-      // const SizedBox(
-      //   height: 7,
-      // ),
-      statisticsDetailWithDivider(
-          "Injury Prone", statistics.injuryProne ? "Yes" : "No", null)
     ],
   );
 }

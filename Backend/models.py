@@ -14,6 +14,7 @@ class player_login(Base):
 	player_id = Column(Integer, primary_key = True, index = True)
 	player_email = Column(String(280), index = True, unique = True)
 	player_password = Column(String(150), index = True)
+	player_2fa = Column(Boolean, index = True)
 
 class player_info(Base): 
 	__tablename__ = "player_info"
@@ -61,6 +62,7 @@ class manager_login(Base):
     manager_id = Column(Integer, primary_key = True, index = True)
     manager_email = Column(String(50), index= True)
     manager_password = Column(String(150), index= True)
+    manager_2fa = Column(Boolean, index = True)
 
 class manager_info(Base):
     __tablename__ = "manager_info"
@@ -97,6 +99,7 @@ class physio_login(Base):
 	physio_id = Column(Integer, primary_key = True, index = True)
 	physio_email = Column(String(280), index = True, unique = True)
 	physio_password = Column(String(150), index = True)
+	physio_2fa = Column(Boolean, index = True)
  
 class physio_info(Base):
 	__tablename__ = "physio_info"
@@ -139,6 +142,7 @@ class coach_login(Base):
 	coach_id = Column(Integer, primary_key = True, index = True)
 	coach_email = Column(String(280), index = True, unique = True)
 	coach_password = Column(String(150), index = True)
+	coach_2fa = Column(Boolean, index = True)
 
 class coach_info(Base):
 	__tablename__ = "coach_info"

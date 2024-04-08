@@ -24,7 +24,8 @@ def get_all_manager_info_by_id(db:Session, id: int):
         if manager_info_result:
             manager = ManagerNoID(manager_email=login_info.manager_email,manager_password="Hidden",
                                   manager_firstname=manager_info_result.manager_firstname,manager_surname=decrypt_hex(manager_info_result.manager_surname),
-                                  manager_contact_number=decrypt_hex(manager_info_result.manager_contact_number),manager_image=manager_info_result.manager_image)
+                                  manager_contact_number=decrypt_hex(manager_info_result.manager_contact_number),manager_image=manager_info_result.manager_image,
+                                  manager_2fa=login_info.manager_2fa)
             
         else:
             manager = Manager(manager_id=login_info.manager_id,manager_email=login_info.manager_email,manager_password="Hidden")
@@ -64,13 +65,15 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
                                         manager_firstname=manager.manager_firstname,
                                         manager_surname=encrypt(manager.manager_surname),
                                         manager_contact_number=encrypt(manager.manager_contact_number),
-                                        manager_image = manager.manager_image)
+                                        manager_image = manager.manager_image,
+                                        manager_2fa=manager_to_update.manager_2fa)
             db.add(new_manager_info)
         else:
             manager_info_to_update.manager_firstname = manager.manager_firstname
             manager_info_to_update.manager_surname = encrypt(manager.manager_surname)
             manager_info_to_update.manager_contact_number = encrypt(manager.manager_contact_number)
             manager_info_to_update.manager_image = manager.manager_image
+            manager_info_to_update.manager_2fa = manager_to_update.manager_2fa
 
             # raise HTTPException(status_code=404, detail="Manager Info not found")
         
@@ -94,6 +97,7 @@ def update_manager_login_by_id(db:Session, manager: Manager, id: int):
         if not check_password_regex(str(manager.manager_password)):
             raise HTTPException(status_code=400, detail="Password format invalid")
         manager_to_update.manager_password = encrypt_password(manager.manager_password)
+        manager_to_update.manager_2fa = manager.manager_2fa
         
         db.commit()
 
@@ -128,7 +132,8 @@ def delete_manager_by_id(db:Session, id: int):
             raise HTTPException(status_code=404, detail="Manager not found")
         if manager_info_result:
             db.delete(manager_info_result)
-        db.delete(manager)
+        if manager: 
+            db.delete(manager)
         db.commit()
         db.close()
         return {"message": f"Manager and manager info with ID {id} has been deleted"}
@@ -142,8 +147,10 @@ def delete_manager_by_email(db:Session, email: str):
         manager_info_result = db.query(manager_info).filter_by(manager_id= manager.manager_id).first()
         if not manager:
             raise HTTPException(status_code=404, detail="Manager not found")
-        db.delete(manager)
-        db.delete(manager_info_result)
+        if manager_info_result:
+            db.delete(manager_info_result)
+        if manager: 
+            db.delete(manager)
         db.commit()
         db.close()
         return {"message": f"Manager and manager info with ID {id} has been deleted"}

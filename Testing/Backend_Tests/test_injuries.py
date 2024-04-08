@@ -136,7 +136,8 @@ def test_add_player():
         "player_gender": "Male",
         "player_dob": "1999-05-31",
         "player_contact_number": "30888802",
-        "player_image" : "001231"
+        "player_image" : "001231",
+        "player_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     

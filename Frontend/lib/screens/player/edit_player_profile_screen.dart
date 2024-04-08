@@ -7,6 +7,7 @@ import 'package:play_metrix/screens/injury/add_injury_screen.dart';
 import 'package:play_metrix/screens/player/player_profile_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/settings/settings_screen.dart';
+import 'package:play_metrix/screens/statistics/statistics_constants.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
 import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 import 'package:play_metrix/screens/widgets_lib/common_widgets.dart';
@@ -72,15 +73,14 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
     getPlayerData(widget.playerId).then((value) {
       setState(() {
         playerData = value;
-        _firstNameController.text = playerData.player_firstname;
-        _surnameController.text = playerData.player_surname;
-        _contactNumberController.text = playerData.player_contact_number;
-        _heightController.text = playerData.player_height;
-        _selectedDob = playerData.player_dob;
-        _profilePicture = playerData.player_image;
-        _selectedGender = playerData.player_gender;
-        playerName =
-            "${playerData.player_firstname} ${playerData.player_surname}";
+        _firstNameController.text = playerData.firstName;
+        _surnameController.text = playerData.surname;
+        _contactNumberController.text = playerData.contactNumber;
+        _heightController.text = playerData.height;
+        _selectedDob = playerData.dob;
+        _profilePicture = playerData.image;
+        _selectedGender = playerData.gender;
+        playerName = "${playerData.firstName} ${playerData.surname}";
       });
     });
 
@@ -109,7 +109,7 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
 
-    final nameRegex = RegExp(r'^[A-Za-z]+$');
+    final nameRegex = RegExp(r"^[A-Za-z\s\’\'\-]+$");
     final phoneRegex = RegExp(r'^(?:\+\d{1,3}\s?)?\d{9,15}$');
     final heightRegex = RegExp(r'^[1-9]\d{0,2}(\.\d{1,2})?$');
 
@@ -119,6 +119,24 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
 
       if (pickedFile != null) {
         List<int> imageBytes = await pickedFile.readAsBytes();
+
+        if (imageBytes.length > 5000000) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Image size should be less than 5MB',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: AppFonts.gabarito,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              backgroundColor: AppColours.red,
+            ),
+          );
+          return;
+        }
 
         setState(() {
           _profilePicture = Uint8List.fromList(imageBytes);
@@ -407,10 +425,8 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                             const SizedBox(height: 15),
                                             sectionHeader("Statistics"),
                                             const SizedBox(height: 35),
-                                            inputQuantity("Matches played",
-                                                _matchesPlayed!, (value) {
-                                              _matchesPlayed = value;
-                                            }),
+                                            matchPlayedStatisticsDetail(
+                                                _matchesPlayed!),
                                             const SizedBox(height: 35),
                                             inputQuantity("Matches started",
                                                 _matchesStarted!, (value) {
@@ -422,12 +438,6 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                                 _matchesOffTheBench!, (value) {
                                               _matchesOffTheBench = value;
                                             }),
-                                            // const SizedBox(height: 35),
-                                            // inputQuantity(
-                                            //     "Total minutes played",
-                                            //     _totalMinutesPlayed!, (value) {
-                                            //   _totalMinutesPlayed = value;
-                                            // }),
                                             const SizedBox(height: 30),
                                           ],
                                         ),
@@ -530,6 +540,50 @@ Widget inputQuantity(
                 btnColor: AppColours.darkBlue),
             onQtyChanged: onChanged,
           )
+        ],
+      )
+    ],
+  );
+}
+
+Widget matchPlayedStatisticsDetail(int matchesPlayed) {
+  final AvailabilityData available = AvailabilityData(
+      AvailabilityStatus.available,
+      "Available",
+      Icons.check_circle,
+      AppColours.green);
+  final AvailabilityData limited = AvailabilityData(
+      AvailabilityStatus.limited, "Limited", Icons.warning, AppColours.yellow);
+  final AvailabilityData unavailable = AvailabilityData(
+      AvailabilityStatus.unavailable,
+      "Unavailable",
+      Icons.cancel,
+      AppColours.red);
+
+  AvailabilityData matchesPlayedAvailability =
+      matchesPlayed > matchesPlayedLimit
+          ? unavailable
+          : matchesPlayed < matchesPlayedLimit
+              ? available
+              : limited;
+
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Matches played",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              Text(matchesPlayed.toString(),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 25),
+              Icon(matchesPlayedAvailability.icon,
+                  color: matchesPlayedAvailability.color, size: 20)
+            ],
+          ),
         ],
       )
     ],

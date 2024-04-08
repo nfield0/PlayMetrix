@@ -4,37 +4,68 @@ import 'package:flutter/material.dart';
 import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/enums.dart';
 
+class PlayerLogin {
+  final int id;
+  final String email;
+  final String password;
+  final bool twoFactorAuthEnabled;
+
+  PlayerLogin(
+      {required this.id,
+      required this.email,
+      required this.password,
+      required this.twoFactorAuthEnabled});
+
+  factory PlayerLogin.fromJson(Map<String, dynamic> json) {
+    return PlayerLogin(
+      id: json['player_id'],
+      email: json['player_email'],
+      password: json['player_password'],
+      twoFactorAuthEnabled: json['player_2fa'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'player_id': id,
+      'player_email': email,
+      'player_password': password,
+      'player_2fa': twoFactorAuthEnabled,
+    };
+  }
+}
+
 class PlayerData {
-  final int player_id;
-  final String player_firstname;
-  final String player_surname;
-  final DateTime player_dob;
-  final String player_contact_number;
-  final Uint8List player_image;
-  final String player_height;
-  final String player_gender;
+  final int id;
+  final String firstName;
+  final String surname;
+  final DateTime dob;
+  final String contactNumber;
+  final Uint8List image;
+  final String height;
+  final String gender;
 
   PlayerData({
-    required this.player_id,
-    required this.player_firstname,
-    required this.player_surname,
-    required this.player_dob,
-    required this.player_contact_number,
-    required this.player_image,
-    required this.player_height,
-    required this.player_gender,
+    required this.id,
+    required this.firstName,
+    required this.surname,
+    required this.dob,
+    required this.contactNumber,
+    required this.image,
+    required this.height,
+    required this.gender,
   });
 
   factory PlayerData.fromJson(Map<String, dynamic> json) {
     return PlayerData(
-      player_id: json['player_id'],
-      player_firstname: json['player_firstname'],
-      player_surname: json['player_surname'],
-      player_dob: DateTime.parse(json['player_dob']),
-      player_contact_number: json['player_contact_number'],
-      player_image: base64.decode(json['player_image']),
-      player_height: json['player_height'],
-      player_gender: json['player_gender'],
+      id: json['player_id'],
+      firstName: json['player_firstname'],
+      surname: json['player_surname'],
+      dob: DateTime.parse(json['player_dob']),
+      contactNumber: json['player_contact_number'],
+      image: base64.decode(json['player_image']),
+      height: json['player_height'],
+      gender: json['player_gender'],
     );
   }
 }
@@ -107,25 +138,12 @@ final List<AvailabilityData> availabilityData = [
 class StatisticsData {
   final int matchesPlayed;
   final int matchesStarted;
+  final int totalMinutesPlayed;
   final int matchesOffTheBench;
   final bool injuryProne;
 
   StatisticsData(this.matchesPlayed, this.matchesStarted,
-      this.matchesOffTheBench, this.injuryProne);
-}
-
-class PlayerMatchData {
-  final int id;
-  final int playerId;
-  final int scheduleId;
-  final int minutesPlayed;
-
-  PlayerMatchData({
-    required this.id,
-    required this.playerId,
-    required this.scheduleId,
-    required this.minutesPlayed,
-  });
+      this.totalMinutesPlayed, this.matchesOffTheBench, this.injuryProne);
 }
 
 class Injury {
@@ -238,4 +256,32 @@ String formatBytes(int bytes) {
     i++;
   }
   return '${size.toStringAsFixed(2)} ${suffixes[i]}';
+}
+
+class MatchData {
+  final int playerId;
+  final int scheduleId;
+  Duration minutesPlayed;
+
+  MatchData({
+    required this.playerId,
+    required this.scheduleId,
+    required this.minutesPlayed,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'player_id': playerId,
+      'schedule_id': scheduleId,
+      'minutes_played': minutesPlayed.inMinutes,
+    };
+  }
+
+  factory MatchData.fromJson(Map<String, dynamic> json) {
+    return MatchData(
+      playerId: json['player_id'],
+      scheduleId: json['schedule_id'],
+      minutesPlayed: Duration(minutes: json['minutes_played']),
+    );
+  }
 }

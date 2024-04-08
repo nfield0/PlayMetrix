@@ -14,7 +14,8 @@ class Profile {
   final String contactNumber;
   final String email;
   final Uint8List? imageBytes;
+  final bool twoFactorAuthEnabled;
 
   Profile(this.id, this.firstName, this.surname, this.contactNumber, this.email,
-      this.imageBytes);
+      this.imageBytes, this.twoFactorAuthEnabled);
 }

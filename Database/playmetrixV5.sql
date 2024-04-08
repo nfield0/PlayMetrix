@@ -386,6 +386,22 @@ VALUES
 
 
 /*UPDATE player_injuries SET physio_id = 2 WHERE physio_id = 1;*/
+INSERT INTO physio_login(physio_email, physio_password, physio_2fa)
+VALUES
+('Physio Removed', 'default_physio', TRUE);
+
+INSERT INTO physio_info(physio_firstname, physio_surname, physio_contact_number, physio_image)
+VALUES
+('No', 'Physio', '0123456789','');
+
+
+
+
+
+
+
+
+
 
 
 

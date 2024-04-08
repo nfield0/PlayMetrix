@@ -14,7 +14,8 @@ def test_adc_manager():
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": True
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -107,7 +108,8 @@ def test_add_physio():
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345",
-        "physio_image": ""
+        "physio_image": "",
+        "physio_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -190,7 +192,7 @@ def test_delete_team_physio():
     assert response.headers['Content-Type'] == 'application/json'
     try:
         response_json = response.json()
-        assert response_json.get("message") == "Physio from Team with ID 1 has been deleted"
+        assert response_json.get("message") == "Physios from Team with ID 1 has been deleted"
     
     except(ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"

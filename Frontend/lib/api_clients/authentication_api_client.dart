@@ -16,7 +16,6 @@ import 'package:play_metrix/screens/profile/profile_screen.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 void logOut(WidgetRef ref, BuildContext context) async {
   final navigator = Navigator.of(context);
@@ -62,6 +61,7 @@ Future<String> registerUser({
           'manager_password': password,
           'manager_contact_number': contactNumber,
           'manager_image': image != null ? base64.encode(image) : "",
+          'manager_2fa': true
         }),
       );
 
@@ -100,6 +100,7 @@ Future<String> registerUser({
           'player_gender': "",
           'player_contact_number': contactNumber,
           'player_image': image != null ? base64.encode(image) : "",
+          'player_2fa': true
         }),
       );
 
@@ -136,6 +137,7 @@ Future<String> registerUser({
           'coach_surname': surname,
           'coach_contact': contactNumber,
           'coach_image': image != null ? base64.encode(image) : "",
+          'coach_2fa': true
         }),
       );
 
@@ -172,6 +174,7 @@ Future<String> registerUser({
           'physio_surname': surname,
           'physio_contact_number': contactNumber,
           'physio_image': image != null ? base64.encode(image) : "",
+          'physio_2fa': true
         }),
       );
 
@@ -472,6 +475,28 @@ Future<void> _handleGoogleSignIn() async {
   }
 }
 
+Future<void> updateTwoFactor(
+    int userId, UserRole userRole, bool twoFactorEnabled) async {
+  Profile user = await getProfileDetails(userId, userRole);
+
+  const apiUrl = '$apiBaseUrl/update_two_factor';
+
+  try {
+    http.put(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'user_email': user.email,
+        'user_2fa': twoFactorEnabled,
+      }),
+    );
+  } catch (error) {
+    throw Exception('Failed to update 2FA');
+  }
+}
+
 Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
     String newPassword) async {
   Profile user = await getProfileDetails(userId, userRole);
@@ -502,7 +527,7 @@ Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
       Map<String, dynamic> responseBody = jsonDecode(response.body);
 
       String detail = responseBody['detail'] ?? 'Unknown error';
-      
+
       return detail;
     }
   } catch (error) {
@@ -510,4 +535,35 @@ Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
     print('Error: $error');
     return error.toString();
   }
+
+
+  
+}
+
+Future<String> getDetailsByEmail(String email) async {
+  final apiUrl =
+      '$apiBaseUrl/users?email=${Uri.encodeComponent(email)}';
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+
+    );
+
+    if (response.statusCode == 200) {
+      
+        return response.body;
+      
+    } else {
+      print('Failed to find user. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+    }
+  } catch (error) {
+    // Handle any network or other errors
+    print('Error: $error');
+  }
+  throw Exception('Failed to check email');
 }

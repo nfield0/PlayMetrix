@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import matches
 from schema import MatchBase
+from models import player_stats
+from sqlalchemy import and_
 
 def get_match(db: Session, id: int):
     try:
@@ -55,10 +57,15 @@ def update_match(db: Session, match: MatchBase, pid: int, sid: int):
     
 def update_minutes(db: Session, minutes: int, pid: int, sid: int):
     try:
-        result = db.query(matches).filter(matches.player_id==pid, matches.schedule_id==sid)
+        result = db.query(matches).filter_by(player_id=pid, schedule_id=sid).first()
+        print(result.minutes_played)
+
         result.minutes_played = minutes
         db.commit()
-        return {"message": "Minutes Updated Successfully to " + str(minutes)}
+        db.refresh(result)
+        print(result.minutes_played)
+
+        return {"message": "Minutes Updated Successfully to " + str(result.minutes_played)}
     except Exception as e:
         return(f"Error updating matches: {e}")
 
@@ -69,4 +76,21 @@ def delete_match(db: Session, id: int):
         return {"message": "Match deleted successfully"}
     except Exception as e:
         return(f"Error deleting matches: {e}")
-    
+
+def calculate_matches_played(db: Session, id: int):
+    try:
+        condition = and_(matches.player_id == id, matches.minutes_played > 0)
+        
+        matches_played = db.query(matches).filter(condition).all()
+        return len(matches_played)
+    except Exception as e:
+        return(f"Error retrieving matches: {e}")
+
+def update_matches_played(db: Session, player_id: int):
+    try:
+        result = db.query(player_stats).filter_by(player_id=player_id).first()
+        result.matches_played = calculate_matches_played(db, player_id)
+        db.commit()
+        return {"message": "Matches Played Updated Successfully"}
+    except Exception as e:
+        return(f"Error updating matches: {e}")

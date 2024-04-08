@@ -106,6 +106,8 @@ class AddScheduleScreen extends ConsumerWidget {
                                       (value) {
                                     ref.read(startTimeProvider.notifier).state =
                                         value;
+                                    ref.read(endTimeProvider.notifier).state =
+                                        value.add(const Duration(hours: 1));
                                   }),
                                   greyDivider(),
                                   dateTimePickerWithDivider(
@@ -113,6 +115,9 @@ class AddScheduleScreen extends ConsumerWidget {
                                       (value) {
                                     ref.read(endTimeProvider.notifier).state =
                                         value;
+                                    ref.read(startTimeProvider.notifier).state =
+                                        value
+                                            .subtract(const Duration(hours: 1));
                                   }),
                                 ]),
                               ),

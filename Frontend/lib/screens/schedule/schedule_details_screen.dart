@@ -6,8 +6,8 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/announcement_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/schedule/add_announcement_screen.dart';
+import 'package:play_metrix/screens/schedule/duration_played_screen.dart';
 import 'package:play_metrix/screens/schedule/edit_schedule_screen.dart';
-import 'package:play_metrix/screens/schedule/match_line_up_screen.dart';
 import 'package:play_metrix/screens/schedule/monthly_schedule_screen.dart';
 import 'package:play_metrix/screens/schedule/players_attending_screen.dart';
 import 'package:play_metrix/screens/widgets_lib/bottom_navbar.dart';
@@ -33,8 +33,8 @@ class ScheduleDetailsScreen extends StatefulWidget {
 }
 
 class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
-  late PlayerAttendingStatus playerAttendingStatus;
-  late List<Announcement> announcements;
+  PlayerAttendingStatus playerAttendingStatus = PlayerAttendingStatus.undecided;
+  List<Announcement> announcements = [];
 
   @override
   void initState() {
@@ -153,9 +153,11 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  MatchLineUpScreen(
+                                                  DurationPlayedScreen(
                                                     userRole: widget.userRole,
                                                     teamId: widget.teamId,
+                                                    scheduleId:
+                                                        widget.scheduleId,
                                                     schedule: sch,
                                                   )),
                                         );
@@ -336,6 +338,11 @@ Widget _announcementsSection(BuildContext context, UserRole userRole,
           })
       ]),
       const SizedBox(height: 15),
+      if (announcements.isEmpty)
+        Column(children: [
+          const SizedBox(height: 20),
+          emptySection(Icons.announcement, "No announcements yet")
+        ]),
       for (Announcement announcement in announcements)
         announcementBox(
             icon: Icons.announcement,

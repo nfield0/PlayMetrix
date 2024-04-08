@@ -17,7 +17,8 @@ def test_add_physio():
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345",
-        "physio_image": "something"
+        "physio_image": "something",
+        "physio_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     #assert response.status_code == 200
@@ -41,7 +42,8 @@ def test_add_physio_incorrect_email():
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345",
-        "physio_image": "0"
+        "physio_image": "0",
+        "physio_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 400
@@ -63,7 +65,8 @@ def test_add_physio_incorrect_name():
         "physio_firstname": "123",
         "physio_surname": "tester",
         "physio_contact_number": "012345",
-        "physio_image": "0"
+        "physio_image": "0",
+        "physio_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 400
@@ -91,7 +94,8 @@ def test_get_physio():
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345",
-        "physio_image": "something"
+        "physio_image": "something",
+        "physio_2fa": True
     }
         assert response_json == expected_data
     except(ValueError, AssertionError) as e:
@@ -157,7 +161,8 @@ def test_update_physio():
             "physio_firstname": "test",
             "physio_surname": "tester",
             "physio_contact_number": "012345",
-        "physio_image": "0"
+        "physio_image": "0",
+        "physio_2fa": True
         
     }
 
@@ -179,7 +184,8 @@ def test_update_physio_login():
     json = {
             "physio_id": 1,
             "physio_email": "testphysioupdate@gmail.com",
-            "physio_password": "Password123!"
+            "physio_password": "Password123!",
+            "physio_2fa": True
     }
 
     response = requests.put(url, headers=headers, json=json)
@@ -202,7 +208,8 @@ def test_update_physio_info():
             "physio_firstname": "test",
             "physio_surname": "tester",
             "physio_contact_number": "012345",
-        "physio_image": "0"
+        "physio_image": "0",
+        "physio_2fa": True
     }
 
     response = requests.put(url, headers=headers, json=json)
@@ -226,7 +233,8 @@ def test_update_physio_fail():
             "physio_firstname": "123",
             "physio_surname": "456",
             "physio_contact_number": "012345",
-        "physio_image": "0"
+        "physio_image": "0",
+        "physio_2fa": True
         
     }
 
@@ -271,7 +279,8 @@ def test_add_team_manager():
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": True
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -363,7 +372,8 @@ def test_add_physio_2():
         "physio_firstname": "test",
         "physio_surname": "tester",
         "physio_contact_number": "012345",
-        "physio_image": "0"
+        "physio_image": "0",
+        "physio_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200

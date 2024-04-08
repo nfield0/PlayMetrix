@@ -22,7 +22,8 @@ def test_add_coach():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": image_bytes
+        "coach_image": image_bytes,
+        "coach_2fa": True  
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -53,7 +54,8 @@ def test_add_coach2():
         "coach_firstname": "test",
         "coach_surname": "tester",
         "coach_contact": "012345",
-        "coach_image": image_bytes2
+        "coach_image": image_bytes2,
+        "coach_2fa": True  
     
     }
     response = requests.post(url, headers=headers, json=json)

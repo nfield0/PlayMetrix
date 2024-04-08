@@ -9,6 +9,8 @@ import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/authentication/landing_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:play_metrix/screens/home_screen_initial.dart';
+import 'package:play_metrix/screens/widgets_lib/buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnBoardingScreen extends ConsumerWidget {
   final introKey = GlobalKey<IntroductionScreenState>();
@@ -33,11 +35,11 @@ class OnBoardingScreen extends ConsumerWidget {
     const bodyStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500);
 
     const pageDecoration = PageDecoration(
-      pageMargin: EdgeInsets.only(top: 120),
+      pageMargin: EdgeInsets.only(top: 50),
       imageAlignment: Alignment.bottomCenter,
       bodyAlignment: Alignment.topCenter,
       titleTextStyle: TextStyle(
-          fontSize: 36.0,
+          fontSize: 32.0,
           fontWeight: FontWeight.w700,
           color: AppColours.darkBlue,
           fontFamily: AppFonts.gabarito),
@@ -124,27 +126,6 @@ class OnBoardingScreen extends ConsumerWidget {
               allowImplicitScrolling: true,
               autoScrollDuration: 3000,
               infiniteAutoScroll: true,
-              globalHeader: Align(
-                alignment: Alignment.topCenter,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16, right: 16),
-                    child: _buildImage('logo.png', 150),
-                  ),
-                ),
-              ),
-              globalFooter: SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  child: const Text(
-                    'Let\'s go right away!',
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () => _onIntroEnd(context),
-                ),
-              ),
               pages: [
                 PageViewModel(
                   title: "Welcome to PlayMetrix!",
@@ -155,8 +136,18 @@ class OnBoardingScreen extends ConsumerWidget {
                 ),
                 PageViewModel(
                   title: "Before you get started...",
-                  body:
-                      "Make sure to check out our guidebook for more details on using our app by clicking here.",
+                  bodyWidget: Column(
+                    children: [
+                      const Text(
+                        "Make sure to check out our socials and guidebook to know more about our app.",
+                        textAlign: TextAlign.center,
+                        style: bodyStyle,
+                      ),
+                      underlineButtonTransparent("Check us out!", () {
+                        _launchUrl(Uri.parse("https://linktr.ee/playmetrix"));
+                      })
+                    ],
+                  ),
                   image: _buildImage('intro/intro_2.png'),
                   decoration: pageDecoration,
                 ),
@@ -205,5 +196,11 @@ class OnBoardingScreen extends ConsumerWidget {
         }
       },
     );
+  }
+}
+
+Future<void> _launchUrl(url) async {
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch $url');
   }
 }

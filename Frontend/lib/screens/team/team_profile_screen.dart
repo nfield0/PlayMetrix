@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/manager_api_client.dart';
+import 'package:play_metrix/api_clients/physio_api_client.dart';
 import 'package:play_metrix/api_clients/team_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/coach_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/data_models/team_data_model.dart';
 import 'package:play_metrix/enums.dart';
@@ -260,22 +263,155 @@ class TeamProfileScreen extends ConsumerWidget {
                                         ? Column(
                                             children: [
                                               for (Profile physio in physios)
-                                                profilePill(
-                                                    "${physio.firstName} ${physio.surname}",
-                                                    physio.email,
-                                                    "lib/assets/icons/profile_placeholder.png",
-                                                    physio.imageBytes, () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProfileViewScreen(
-                                                              userId: physio.id,
-                                                              userRole: UserRole
-                                                                  .physio,
-                                                            )),
-                                                  );
-                                                }),
+                                                ref.read(userRoleProvider) ==
+                                                        UserRole.manager
+                                                    ? Dismissible(
+                                                        direction:
+                                                            DismissDirection
+                                                                .endToStart,
+                                                        background: Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                              color: AppColours
+                                                                  .red),
+                                                          child: const Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                  "Remove physio from team",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppFonts
+                                                                              .gabarito)),
+                                                              SizedBox(
+                                                                  width: 20),
+                                                              Icon(Icons.delete,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 30),
+                                                              SizedBox(
+                                                                  width: 30),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        confirmDismiss:
+                                                            (direction) async {
+                                                          return await showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title:
+                                                                    const Text(
+                                                                  "Remove Physio",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: AppColours
+                                                                        .darkBlue,
+                                                                    fontFamily:
+                                                                        AppFonts
+                                                                            .gabarito,
+                                                                    fontSize:
+                                                                        24,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                content: Text(
+                                                                  "Are you sure you want to remove ${physio.firstName} ${physio.surname} from your team?",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              false);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Cancel"),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              true);
+                                                                      removePhysioFromTeam(
+                                                                          ref.read(
+                                                                              teamIdProvider),
+                                                                          physio
+                                                                              .id);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Remove"),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        key: Key(physio.id
+                                                            .toString()),
+                                                        child: profilePill(
+                                                            "${physio.firstName} ${physio.surname}",
+                                                            physio.email,
+                                                            "lib/assets/icons/profile_placeholder.png",
+                                                            physio.imageBytes,
+                                                            () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ProfileViewScreen(
+                                                                          userId:
+                                                                              physio.id,
+                                                                          userRole:
+                                                                              UserRole.physio,
+                                                                        )),
+                                                          );
+                                                        }),
+                                                      )
+                                                    : profilePill(
+                                                        "${physio.firstName} ${physio.surname}",
+                                                        physio.email,
+                                                        "lib/assets/icons/profile_placeholder.png",
+                                                        physio.imageBytes, () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ProfileViewScreen(
+                                                                    userId:
+                                                                        physio
+                                                                            .id,
+                                                                    userRole:
+                                                                        UserRole
+                                                                            .physio,
+                                                                  )),
+                                                        );
+                                                      }),
                                             ],
                                           )
                                         : emptySection(Icons.person_off,
@@ -327,28 +463,162 @@ class TeamProfileScreen extends ConsumerWidget {
                                   } else if (snapshot.hasError) {
                                     return Text('Error: ${snapshot.error}');
                                   } else if (snapshot.hasData) {
-                                    List<Profile> coaches =
-                                        snapshot.data as List<Profile>;
+                                    List<CoachData> coaches = snapshot.data!;
                                     return coaches.isNotEmpty
                                         ? Column(
                                             children: [
-                                              for (Profile coach in coaches)
-                                                profilePill(
-                                                    "${coach.firstName} ${coach.surname}",
-                                                    coach.email,
-                                                    "lib/assets/icons/profile_placeholder.png",
-                                                    coach.imageBytes, () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProfileViewScreen(
-                                                              userId: coach.id,
-                                                              userRole: UserRole
-                                                                  .coach,
-                                                            )),
-                                                  );
-                                                }),
+                                              for (CoachData coach in coaches)
+                                                ref.read(userRoleProvider) ==
+                                                        UserRole.manager
+                                                    ? Dismissible(
+                                                        background: Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                              color: AppColours
+                                                                  .red),
+                                                          child: const Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                  "Remove coach from team",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          AppFonts
+                                                                              .gabarito)),
+                                                              SizedBox(
+                                                                  width: 20),
+                                                              Icon(Icons.delete,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 30),
+                                                              SizedBox(
+                                                                  width: 30),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        confirmDismiss:
+                                                            (direction) async {
+                                                          return await showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title:
+                                                                    const Text(
+                                                                  "Remove Coach",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: AppColours
+                                                                        .darkBlue,
+                                                                    fontFamily:
+                                                                        AppFonts
+                                                                            .gabarito,
+                                                                    fontSize:
+                                                                        24,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                content: Text(
+                                                                  "Are you sure you want to remove ${coach.profile.firstName} ${coach.profile.surname} from your team?",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              false);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Cancel"),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(
+                                                                              true);
+                                                                      removeCoachFromTeam(
+                                                                          ref.read(
+                                                                              teamIdProvider),
+                                                                          coach
+                                                                              .profile
+                                                                              .id);
+                                                                    },
+                                                                    child: const Text(
+                                                                        "Remove"),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        key: Key(coach
+                                                            .profile.id
+                                                            .toString()),
+                                                        child: profilePill(
+                                                            "${coach.profile.firstName} ${coach.profile.surname}",
+                                                            coach.profile.email,
+                                                            "lib/assets/icons/profile_placeholder.png",
+                                                            coach.profile
+                                                                .imageBytes,
+                                                            () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ProfileViewScreen(
+                                                                          userId: coach
+                                                                              .profile
+                                                                              .id,
+                                                                          userRole:
+                                                                              UserRole.coach,
+                                                                        )),
+                                                          );
+                                                        }),
+                                                      )
+                                                    : profilePill(
+                                                        "${coach.profile.firstName} ${coach.profile.surname}",
+                                                        coach.profile.email,
+                                                        "lib/assets/icons/profile_placeholder.png",
+                                                        coach.profile
+                                                            .imageBytes, () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ProfileViewScreen(
+                                                                    userId: coach
+                                                                        .profile
+                                                                        .id,
+                                                                    userRole:
+                                                                        UserRole
+                                                                            .coach,
+                                                                  )),
+                                                        );
+                                                      }),
                                             ],
                                           )
                                         : emptySection(Icons.person_off,

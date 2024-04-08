@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:play_metrix/api_clients/coach_api_client.dart';
 import 'package:play_metrix/api_clients/physio_api_client.dart';
 import 'package:play_metrix/constants.dart';
+import 'package:play_metrix/data_models/coach_data_model.dart';
 import 'package:play_metrix/data_models/profile_data_model.dart';
 import 'package:play_metrix/data_models/team_data_model.dart';
 
@@ -207,7 +208,7 @@ Future<List<Profile>> getPhysiosForTeam(int teamId) async {
   }
 }
 
-Future<List<Profile>> getCoachesForTeam(int teamId) async {
+Future<List<CoachData>> getCoachesForTeam(int teamId) async {
   final apiUrl = '$apiBaseUrl/team_coach/$teamId';
 
   try {
@@ -225,10 +226,10 @@ Future<List<Profile>> getCoachesForTeam(int teamId) async {
       final List<Map<String, dynamic>> coachesJsonList =
           List<Map<String, dynamic>>.from(data);
 
-      List<Profile> coaches = [];
+      List<CoachData> coaches = [];
 
       for (Map<String, dynamic> coachJson in coachesJsonList) {
-        Profile coach = await getCoachProfile(coachJson['coach_id']);
+        CoachData coach = await getCoachDataProfile(coachJson['coach_id']);
         coaches.add(coach);
       }
 

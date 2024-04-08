@@ -15,7 +15,8 @@ def test_add_player():
         "player_gender": "Male",
         "player_dob": "1999-05-31",
         "player_contact_number": "30888802",
-        "player_image" : "001231"
+        "player_image" : "001231",
+        "player_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -94,7 +95,8 @@ def test_add_player_incorrect_email():
         "player_gender": "Male",
         "player_dob": "1999-05-31",
         "player_contact_number": "30888802",
-        "player_image" : "001231"
+        "player_image" : "001231",
+        "player_2fa": True
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 400
@@ -142,7 +144,8 @@ def test_update_player_info():
             "player_contact_number": "0878881802",
             "player_image" : "001231",
             "player_height": "1.80m", 
-            "player_gender": "Male"
+            "player_gender": "Male",
+            "player_2fa": True
             
         }
     
@@ -165,6 +168,7 @@ def test_update_player_login():
             "player_id": 1,
             "player_email": "testplayergmailcom",
         "player_password": "test_password",
+        "player_2fa": True
             
         }
     

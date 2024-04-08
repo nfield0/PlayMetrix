@@ -15,7 +15,7 @@ import os
 from fastapi.security import OAuth2PasswordBearer
 import requests
 import jwt
-from Crud.user import get_user_details_by_email, check_user_exists_by_email
+from Crud.user import get_user_details_by_email, check_user_exists_by_email, change_2fa_option
 
 Base.metadata.create_all(bind=engine)
 
@@ -63,7 +63,7 @@ def get_db():
 ## For testing
 # python -m pytest
 
-
+2
 GOOGLE_CLIENT_ID =  os.getenv("CLIENT_ID")
 GOOGLE_CLIENT_SECRET =  os.getenv("CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.getenv("REDIRECT_URI")
@@ -97,6 +97,13 @@ async def auth_google(code: str, db: Session = Depends(get_db)):
         return get_user_details_by_email(db, user_info.json().get("email"))
     else:
         return {"error": "User does not exist"}
+
+@app.get("/users")
+async def get_users(email: str, db: Session = Depends(get_db)):
+    return crud.get_user_details_by_email(db, email)
+
+
+
 
 @app.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):
@@ -143,6 +150,10 @@ def login_user(user: User, db: Session = Depends(get_db)):
 @app.put("/change_password")
 def change_password(user: ChangeUserPassword, db: Session = Depends(get_db)):
     return crud.change_password(db, user)    
+
+@app.put("/update_two_factor")
+def change_2fa_opt(user: User2FA, db: Session = Depends(get_db)):
+    return crud.change_2fa_option(db, user)
 
 
 @app.get("/logout")
@@ -489,6 +500,10 @@ def read_team_phyiso(physio_id: int, db:Session = Depends(get_db)):
 def read_team_physio(team_id: int, db:Session = Depends(get_db)):
     return crud.get_physio_by_team_id(db, team_id)
 
+# @app.get("/team_physio/{team_id}/physio/{physio_id}")
+# def read_team_physio(physio_id, team_id: int, db:Session = Depends(get_db)):
+#     return crud.get_physio_by_team_id(db, team_id, physio_id)
+
 @app.post("/team_physio")
 def insert_team_physio(team_physio: TeamPhysioBase, db:Session = Depends(get_db)):
     return crud.insert_team_physio_by_team_id(db, team_physio)
@@ -502,6 +517,10 @@ def insert_team_physio(team_physio: TeamPhysioBase, db:Session = Depends(get_db)
 @app.delete("/team_physio/{team_id}")
 def delete_physio_team_id(team_id: int, db:Session = Depends(get_db)):
     return crud.delete_physio_team_id(db, team_id)
+
+@app.delete("/team_physio/{teams_id}/physio/{physios_id}")
+def delete_physio_team_id(teams_id: int, physios_id:int, db:Session = Depends(get_db)):
+    return crud.delete_physio_from_team(db, teams_id, physios_id)
 
 #endregion
 
@@ -720,6 +739,9 @@ def delete_match(id: int, db:Session = Depends(get_db)):
     return crud.delete_match(db, id)
 
 
+@app.put("/calculate_matches_played/{player_id}")
+def calculate_matches_played(player_id: int, db:Session = Depends(get_db)):
+    return crud.update_matches_played(db, player_id)
 
 
 #endregion

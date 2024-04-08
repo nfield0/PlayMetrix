@@ -62,6 +62,33 @@ def change_password(db, user):
     return {"detail": "Password Changed Successfully"}
 
 
+def change_2fa_option(db, user):
+    user.user_email = user.user_email.lower()
+    #existing_user = get_user_details_by_email(db, user.user_email)
+    
+    
+    manager_result = db.query(manager_login).filter_by(manager_email=user.user_email).first()
+    player_result = db.query(player_login).filter_by(player_email=user.user_email).first()
+    physio_result = db.query(physio_login).filter_by(physio_email=user.user_email).first()
+    coach_result = db.query(coach_login).filter_by(coach_email=user.user_email).first()
+    if manager_result:
+        user_to_update = get_user_by_id_type(db, manager_result.manager_id, "manager")
+        user_to_update.manager_2fa = user.user_2fa  
+    elif player_result:
+        user_to_update = get_user_by_id_type(db, player_result.player_id, "player")
+        user_to_update.player_2fa = user.user_2fa  
+    elif physio_result:
+        user_to_update = get_user_by_id_type(db, physio_result.physio_id, "physio")
+        user_to_update.physio_2fa = user.user_2fa  
+    elif coach_result:
+        user_to_update = get_user_by_id_type(db, coach_result.coach_id, "coach")
+        user_to_update.coach_2fa = user.user_2fa  
+    else:
+        raise HTTPException(status_code=400, detail="No user found")
+
+    db.commit()
+    return {"detail": "2FA Option Changed Successfully"}
+
 
 #20MB encodes larger so allow some excess
 max_image_size_bytes = 23087450
@@ -85,8 +112,8 @@ def register_player(db, user):
     if len(user.player_image) > max_image_size_bytes:
         raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
     
-    new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password))
-    
+    new_user = player_login(player_email=user.player_email, player_password=encrypt_password(user.player_password), player_2fa=user.player_2fa)
+
     db.add(new_user)
     
     db.commit()
@@ -121,7 +148,7 @@ def register_manager(db, user):
     if len(user.manager_image) > max_image_size_bytes:
         raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
 
-    new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password))
+    new_user = manager_login(manager_email=user.manager_email, manager_password=encrypt_password(user.manager_password), manager_2fa=user.manager_2fa)
     
     db.add(new_user)
     
@@ -155,7 +182,7 @@ def register_physio(db, user):
         raise HTTPException(status_code=400, detail="Surname format invalid")
     if len(user.physio_image) > max_image_size_bytes:
         raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
-    new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password))
+    new_user = physio_login(physio_email=user.physio_email, physio_password=encrypt_password(user.physio_password), physio_2fa=user.physio_2fa)
     
     db.add(new_user)
     
@@ -185,7 +212,7 @@ def register_coach(db, user):
         print(len(user.coach_image))
         if len(user.coach_image) > max_image_size_bytes:
             raise HTTPException(status_code=400, detail="Image size exceeds the maximum allowed size")
-        new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password))
+        new_user = coach_login(coach_email=user.coach_email, coach_password=encrypt_password(user.coach_password), coach_2fa=user.coach_2fa)
         
         db.add(new_user)
         

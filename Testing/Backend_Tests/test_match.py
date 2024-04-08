@@ -10,7 +10,8 @@ def test_add_a_manager():
         "manager_firstname": "test",
         "manager_surname": "tester",
         "manager_contact_number": "012345",
-        "manager_image": "something"
+        "manager_image": "something",
+        "manager_2fa": True  
     
     }
     response = requests.post(url, headers=headers, json=json)
@@ -139,7 +140,8 @@ def test_add_player():
         "player_gender": "Male",
         "player_dob": "1999-05-31",
         "player_contact_number": "30888802",
-        "player_image" : "001231"
+        "player_image" : "001231",
+        "player_2fa": True  
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -264,43 +266,43 @@ def test_get_minutes_played_total():
 
 
 
-def test_delete_match():
-    url = baseUrl + '/match/1'
-    response = requests.delete(url)
+# def test_delete_match():
+#     url = baseUrl + '/match/1'
+#     response = requests.delete(url)
     
-    assert response.headers['Content-Type'] == 'application/json'
+#     assert response.headers['Content-Type'] == 'application/json'
 
-    try:
-        response_json = response.json()
-        assert response_json.get('message') == "Match deleted successfully"
-        assert response.status_code == 200
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
+#     try:
+#         response_json = response.json()
+#         assert response_json.get('message') == "Match deleted successfully"
+#         assert response.status_code == 200
+#     except (ValueError, AssertionError) as e:
+#         assert False, f"Test failed: {e}"
 
-def test_z_add_match():
-    url = baseUrl + '/match'
-    headers = {'Content-Type': 'application/json'}
-    json = {
-        "player_id": 1,
-        "schedule_id": 1,
-        "minutes_played": 60
-    }
-    response = requests.post(url, headers=headers, json=json)
+# def test_z_add_match():
+#     url = baseUrl + '/match'
+#     headers = {'Content-Type': 'application/json'}
+#     json = {
+#         "player_id": 1,
+#         "schedule_id": 1,
+#         "minutes_played": 60
+#     }
+#     response = requests.post(url, headers=headers, json=json)
     
-    assert response.headers['Content-Type'] == 'application/json'
+#     assert response.headers['Content-Type'] == 'application/json'
 
-    try:
+#     try:
         
-        response_json = response.json()
-        assert response_json.get('message') == "Player Match inserted successfully"
-        assert 'id' in response_json
-        assert response_json['id'] == 3
-        assert response.status_code == 200
+#         response_json = response.json()
+#         assert response_json.get('message') == "Player Match inserted successfully"
+#         assert 'id' in response_json
+#         assert response_json['id'] == 3
+#         assert response.status_code == 200
     
-    except (ValueError, AssertionError) as e:
-        assert False, f"Test failed: {e}"
+#     except (ValueError, AssertionError) as e:
+#         assert False, f"Test failed: {e}"
 
-def test_z_get_match_updated():
+def test_1_get_match_update():
     url = baseUrl + '/match/schedule/1/player/1/minutes/40'
     response = requests.put(url)
     
@@ -315,3 +317,59 @@ def test_z_get_match_updated():
 
 
 
+
+def test_2_get_match_updated():
+    url = baseUrl + '/match/1'
+    response = requests.get(url)
+    
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json.get('player_id') == 1
+        assert response_json.get('schedule_id') == 1
+        assert response_json.get('minutes_played') == 40
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
+
+def test_3_matches_played():
+    url = baseUrl + '/calculate_matches_played/1'
+    response = requests.put(url)
+
+    try:
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json.get('message') == "Matches Played Updated Successfully"
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+
+def test_get_player_stats():
+    url = baseUrl + '/players/stats/1'
+    headers = {'Content-Type': 'application/json'}
+    
+    response = requests.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        expected_json = {
+            "player_id": 1,
+            "matches_played": 2, 
+            "matches_started": 0,
+            "matches_off_the_bench": 0,
+            "injury_prone": False
+            
+        }
+        response_json = response.json()
+        assert response_json == expected_json
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"

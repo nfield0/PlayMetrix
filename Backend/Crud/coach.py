@@ -16,6 +16,7 @@ def get_all_coaches(db: Session):
 def get_coach_login_by_id(db: Session, id: int):
     try:
         result = db.query(coach_login).filter_by(coach_id=id).first()
+        result = Coach(coach_id=result.coach_id, coach_email=result.coach_email, coach_password="Hidden", coach_2fa=result.coach_2fa)
         return result
     except Exception as e:
         return(f"Error retrieving coach: {e}")
@@ -29,7 +30,8 @@ def get_coach_with_info_by_id(db: Session, id: int):
             print(type(info_result.coach_surname))
             coach = CoachCreate(coach_email=result.coach_email,coach_password="Hidden",
                                   coach_firstname=info_result.coach_firstname,coach_surname=decrypt_hex(info_result.coach_surname),
-                                  coach_contact=decrypt_hex(info_result.coach_contact), coach_image=info_result.coach_image)
+                                  coach_contact=decrypt_hex(info_result.coach_contact), coach_image=info_result.coach_image,
+                                  coach_2fa=result.coach_2fa)
             return coach
         else:
             raise HTTPException(status_code=404, detail="Coach Info not found")
@@ -57,6 +59,7 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
             raise HTTPException(status_code=404, detail="Coach not found")
         coach_to_update.coach_email = coach.coach_email
         coach_to_update.coach_password = encrypt_password(coach.coach_password)
+        coach_to_update.coach_2fa = coach.coach_2fa
         #coach info section
         coach_info_to_update = db.query(coach_info).filter_by(coach_id= id).first()
 
@@ -64,12 +67,15 @@ def update_coach_by_id(db:Session, coach: CoachCreate, id: int):
             new_coach_info = coach_info(coach_id=id,
                                         coach_firstname=coach.coach_firstname,
                                         coach_surname=encrypt(coach.coach_surname),
-                                        coach_contact=coach.coach_contact)
+                                        coach_contact=coach.coach_contact,
+                                        coach_image=coach.coach_image)
             db.add(new_coach_info)
         else:
             coach_info_to_update.coach_firstname = coach.coach_firstname
             coach_info_to_update.coach_surname = coach.coach_surname
             coach_info_to_update.coach_contact = coach.coach_contact
+            if coach.coach_image is not None:
+                coach_info_to_update.coach_image = coach.coach_image
 
             # raise HTTPException(status_code=404, detail="Coach Info not found")
         
@@ -92,6 +98,7 @@ def update_coach_login_by_id(db:Session, coach: Coach, id: int):
         if not check_password_regex(str(coach.coach_password)):
             raise HTTPException(status_code=400, detail="Password format invalid")
         coach_to_update.coach_password = encrypt_password(coach.coach_password)
+        coach_to_update.coach_2fa = coach.coach_2fa
         
         db.commit()
 
@@ -109,7 +116,6 @@ def update_coach_info_by_id(db:Session, coach: CoachInfo, id: int):
         coach_info_to_update.coach_contact = coach.coach_contact
         if coach.coach_image is not None:
             coach_info_to_update.coach_image = coach.coach_image
-
         
         db.commit()
 
@@ -124,9 +130,13 @@ def delete_coach_by_id(db:Session, id: int):
         if not coach:
             raise HTTPException(status_code=404, detail="Coach not found")
         coach_info_result = db.query(coach_info).filter_by(coach_id= id).first()
-        
-        db.delete(coach)
-        db.delete(coach_info_result)
+        team_coach_result = db.query(team_coach).filter_by(coach_id= id).first()
+        if team_coach_result:
+            db.delete(team_coach_result)
+        if coach_info_result:
+            db.delete(coach_info_result)
+        if coach:
+            db.delete(coach)
         db.commit()
         db.close()
         return {"message": f"Coach and coach info with ID {id} has been deleted"}
