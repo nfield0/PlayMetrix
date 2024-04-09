@@ -253,6 +253,7 @@ CREATE TABLE IF NOT EXISTS schedule
 
 CREATE TABLE IF NOT EXISTS player_schedule
 (
+	player_schedule_id serial PRIMARY KEY,
 	schedule_id INT NOT NULL,
 	player_id INT NOT NULL,
 	player_attending BOOLEAN,
@@ -265,6 +266,7 @@ CREATE TABLE IF NOT EXISTS player_schedule
 
 CREATE TABLE IF NOT EXISTS team_schedule
 (
+	team_schedule_id serial PRIMARY KEY,
     schedule_id INT NOT NULL,
     team_id INT NOT NULL,
     FOREIGN KEY (schedule_id)
