@@ -112,16 +112,17 @@ Widget profileDetails(Profile profile, BuildContext context, WidgetRef ref,
                 fontSize: 24,
               ),
             ),
-            smallButton(Icons.edit, "Edit", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditProfileScreen(
-                          userId: userId,
-                          userRole: userRole,
-                        )),
-              );
-            }),
+            if (!isViewOnly)
+              smallButton(Icons.edit, "Edit", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditProfileScreen(
+                            userId: userId,
+                            userRole: userRole,
+                          )),
+                );
+              }),
           ],
         ),
         iconTheme: const IconThemeData(
@@ -199,6 +200,76 @@ Widget profileDetails(Profile profile, BuildContext context, WidgetRef ref,
                                         Icons.group_off, "No team yet");
                                   }
                                 }),
+                            if (isViewOnly &&
+                                ref.watch(userRoleProvider.notifier).state ==
+                                    UserRole.manager &&
+                                userRole != UserRole.manager)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 20),
+                                  underlineButtonTransparentRed(
+                                      "Remove from team", () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            userRole == UserRole.coach
+                                                ? "Remove Coach"
+                                                : userRole == UserRole.physio
+                                                    ? "Remove Physio"
+                                                    : "",
+                                            style: const TextStyle(
+                                              color: AppColours.darkBlue,
+                                              fontFamily: AppFonts.gabarito,
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          content: Text(
+                                            "Are you sure you want to remove ${profile.firstName} ${profile.surname} from your team?",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(false);
+                                              },
+                                              child: const Text("Cancel"),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop(true);
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          TeamProfileScreen()),
+                                                );
+                                                if (userRole ==
+                                                    UserRole.player) {
+                                                  removePlayerFromTeam(
+                                                      ref.read(teamIdProvider),
+                                                      profile.id);
+                                                } else if (userRole ==
+                                                    UserRole.coach) {
+                                                  removeCoachFromTeam(
+                                                      ref.read(teamIdProvider),
+                                                      profile.id);
+                                                }
+                                              },
+                                              child: const Text("Remove"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }),
+                                ],
+                              ),
                             const SizedBox(height: 20),
                             divider(),
                             const SizedBox(height: 20),
