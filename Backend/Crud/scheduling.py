@@ -256,7 +256,7 @@ def insert_new_player_schedule(db: Session, new_player_schedule: PlayerScheduleB
     
 def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, player_id: int):
     try:        
-        player_schedule_to_update = db.query(player_schedule).filter_by(player_id=player_id).first()
+        player_schedule_to_update = db.query(player_schedule).filter_by(player_id=player_id, schedule_id=updated_player_schedule.schedule_id()).first()
         
         if not player_schedule_to_update:
             raise HTTPException(status_code=404, detail="Player Schedule not found")
@@ -264,6 +264,7 @@ def update_player_schedule(db, updated_player_schedule: PlayerScheduleBase, play
         player_schedule_to_update.schedule_id = updated_player_schedule.schedule_id
         player_schedule_to_update.player_id = updated_player_schedule.player_id
         player_schedule_to_update.player_attending = updated_player_schedule.player_attending
+        print(player_schedule_to_update.player_attending)
         
         db.commit()
         return {"message": f"Player with ID {player_id} Schedule has been updated"}
