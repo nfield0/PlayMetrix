@@ -4,7 +4,7 @@ import 'package:play_metrix/constants.dart';
 import 'package:play_metrix/data_models/player_data_model.dart';
 import 'package:play_metrix/enums.dart';
 import 'package:play_metrix/screens/injury/add_injury_screen.dart';
-import 'package:play_metrix/screens/player/player_profile_screen.dart';
+import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/player/players_screen.dart';
 import 'package:play_metrix/screens/settings/settings_screen.dart';
 import 'package:play_metrix/screens/statistics/statistics_constants.dart';
@@ -479,7 +479,10 @@ class EditPlayerProfileScreenState extends State<EditPlayerProfileScreen> {
                                                             .userRole ==
                                                         UserRole.manager
                                                     ? PlayersScreen()
-                                                    : PlayerProfileScreen()),
+                                                    : PlayerProfileViewScreen(
+                                                        playerId:
+                                                            widget.playerId,
+                                                      )),
                                           );
                                         }
                                       })
