@@ -240,6 +240,7 @@ Widget playerProfilePill(
       children: [
         InkWell(
             onTap: () {
+              ref.read(playerIdProvider.notifier).state = playerId;
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -426,6 +427,7 @@ Widget dismissablePlayerProfilePill(
           children: [
             InkWell(
                 onTap: () {
+                  ref.read(playerIdProvider.notifier).state = playerId;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
