@@ -253,10 +253,10 @@ CREATE TABLE IF NOT EXISTS schedule
 
 CREATE TABLE IF NOT EXISTS player_schedule
 (
+	player_schedule_id serial PRIMARY KEY,
 	schedule_id INT NOT NULL,
 	player_id INT NOT NULL,
 	player_attending BOOLEAN,
-	PRIMARY KEY (schedule_id, player_id),
 	FOREIGN KEY (schedule_id)
 		REFERENCES schedule(schedule_id),
 	FOREIGN KEY (player_id)
@@ -266,9 +266,9 @@ CREATE TABLE IF NOT EXISTS player_schedule
 
 CREATE TABLE IF NOT EXISTS team_schedule
 (
+	team_schedule_id serial PRIMARY KEY,
     schedule_id INT NOT NULL,
     team_id INT NOT NULL,
-    PRIMARY KEY (schedule_id, team_id),
     FOREIGN KEY (schedule_id)
         REFERENCES schedule(schedule_id),
     FOREIGN KEY (team_id)
@@ -374,7 +374,13 @@ VALUES
 /*Not added yet because i don't know where it best fits */
 /*('Overuse Injuries','Anywhere','Rest, Physiotherapy', 'Weeks to Months (Depending on Serverity)'),*/
 
+INSERT INTO physio_login(physio_email, physio_password, physio_2fa)
+VALUES
+('Physio Removed', 'default_physio', TRUE);
 
+INSERT INTO physio_info(physio_firstname, physio_surname, physio_contact_number, physio_image)
+VALUES
+('No', 'Physio', '0123456789','');
 
 
 

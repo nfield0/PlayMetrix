@@ -17,16 +17,23 @@ WORKDIR /app
 
 # Copy project files to container
 COPY . .
+# Specify Flutter version and channel
+ARG FLUTTER_VERSION="3.19.4"  
+RUN flutter channel stable && \
+    flutter upgrade && \
+    flutter --version
 
-RUN flutter upgrade
+# Upgrade dependencies
+RUN flutter pub get
 
-RUN flutter config --enable-web && \
-    flutter precache && \
-    flutter clean && \
-    flutter pub outdated && \
-    flutter pub upgrade && \  
-    flutter pub get && \
-    flutter build web --release -v
+# Build the app for web
+RUN flutter build web --release -v
+# RUN flutter upgrade
+
+# RUN flutter pub get && \
+#     flutter pub outdated && \
+#     flutter build web --release -v
+
 
 # Stage 2 - Create the run-time image
 FROM nginx:1.21.1-alpine

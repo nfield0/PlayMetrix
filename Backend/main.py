@@ -62,6 +62,9 @@ def get_db():
 
 ## For testing
 # python -m pytest
+# python -m pytest .\Testing\Backend_Tests\test_generate.py Generate dummy data
+
+
 
 2
 GOOGLE_CLIENT_ID =  os.getenv("CLIENT_ID")
