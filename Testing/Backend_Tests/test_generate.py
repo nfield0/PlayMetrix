@@ -30,6 +30,20 @@ image_bytes_physio = image_to_base64(image_path)
 image_path = "Testing/Backend_Tests/test_images/p4.jpg"
 image_bytes_6 = image_to_base64(image_path)
 
+image_path = "Testing/Backend_Tests/test_images/p5.avif"
+image_bytes_7 = image_to_base64(image_path)
+
+image_path = "Testing/Backend_Tests/test_images/p6.jpg"
+image_bytes_8 = image_to_base64(image_path)
+
+image_path = "Testing/Backend_Tests/test_images/p7.jpg"
+image_bytes_9 = image_to_base64(image_path)
+
+image_path = "Testing/Backend_Tests/test_images/p8.jpg"
+image_bytes_10 = image_to_base64(image_path)
+
+
+
 def test_add_manager():
     url = baseUrl + '/register_manager'
     headers = {'Content-Type': 'application/json'}
@@ -186,16 +200,16 @@ def test_add_player():
     url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "player_email": "nigel@gmail.com",
+        "player_email": "niall@gmail.com",
         "player_password": "Testpassword123!",
-        "player_firstname": "Nigel",
-        "player_surname": "Farage",
+        "player_firstname": "Niall",
+        "player_surname": "Dunne",
         "player_height": "1.80m",
         "player_gender": "Male",
         "player_dob": "1999-05-31",
-        "player_contact_number": "30888802",
+        "player_contact_number": "12345678",
         "player_image" : image_bytes_3,
-        "player_2fa": True
+        "player_2fa": False
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -219,11 +233,11 @@ def test_add_team_player():
     json = {
             "team_id": 1,
             "player_id": 1,
-            "team_position": "Full Back",
+            "team_position": "Defense",
             "player_team_number": 1,
             "playing_status": "Playing",
             "reason_for_status": "Fit to play",
-            "lineup_status": "Starting 15"
+            "lineup_status": "Substitute"
         }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -252,9 +266,9 @@ def test_add_player_2():
         "player_height": "1.80m",
         "player_gender": "Male",
         "player_dob": "1999-05-31",
-        "player_contact_number": "30888802",
+        "player_contact_number": "12345678",
         "player_image" : image_bytes_4,
-        "player_2fa": True
+        "player_2fa": False
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -278,11 +292,11 @@ def test_add_team_player_2():
     json = {
             "team_id": 1,
             "player_id": 2,
-            "team_position": "Full Back",
+            "team_position": "Midfield",
             "player_team_number": 2,
             "playing_status": "Playing",
             "reason_for_status": "Fit to play",
-            "lineup_status": "Starting 15"
+            "lineup_status": "Starter"
         }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -311,9 +325,9 @@ def test_add_player_3():
         "player_height": "1.80m",
         "player_gender": "Male",
         "player_dob": "1999-05-31",
-        "player_contact_number": "30888802",
+        "player_contact_number": "12345678",
         "player_image" : image_bytes_5,
-        "player_2fa": True
+        "player_2fa": False
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -341,7 +355,7 @@ def test_add_team_player_3():
             "player_team_number": 3,
             "playing_status": "Playing",
             "reason_for_status": "Fit to play",
-            "lineup_status": "Starting 15"
+            "lineup_status": "Reserve"
         }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -368,9 +382,9 @@ def test_add_player_4():
         "player_height": "1.80m",
         "player_gender": "Male",
         "player_dob": "1999-05-31",
-        "player_contact_number": "30888802",
+        "player_contact_number": "12345678",
         "player_image" : image_bytes_6,
-        "player_2fa": True
+        "player_2fa": False
     }
     response = requests.post(url, headers=headers, json=json)
     
@@ -398,7 +412,7 @@ def test_add_team_player_4():
             "player_team_number": 4,
             "playing_status": "Playing",
             "reason_for_status": "Fit to play",
-            "lineup_status": "Starting 15"
+            "lineup_status": "Starter"
         }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
@@ -414,234 +428,234 @@ def test_add_team_player_4():
     except (ValueError, AssertionError) as e:
         assert False, f"Test failed: {e}"
 
-# def test_add_player_5():
-#     url = baseUrl + '/register_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#         "player_email": "richard@gmail.com",
-#         "player_password": "Testpassword123!",
-#         "player_firstname": "Richard",
-#         "player_surname": "Oliver",
-#         "player_height": "1.80m",
-#         "player_gender": "Male",
-#         "player_dob": "1999-05-31",
-#         "player_contact_number": "30888802",
-#         "player_image" : None,
-#         "player_2fa": True
-#     }
-#     response = requests.post(url, headers=headers, json=json)
+def test_add_player_5():
+    url = baseUrl + '/register_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "player_email": "richard@gmail.com",
+        "player_password": "Testpassword123!",
+        "player_firstname": "Richard",
+        "player_surname": "Oliver",
+        "player_height": "1.80m",
+        "player_gender": "Male",
+        "player_dob": "1999-05-31",
+        "player_contact_number": "30888802",
+        "player_image" : image_bytes_7,
+        "player_2fa": False
+    }
+    response = requests.post(url, headers=headers, json=json)
     
 
-#     assert response.headers['Content-Type'] == 'application/json'
+    assert response.headers['Content-Type'] == 'application/json'
 
-#     try:
+    try:
         
-#         response_json = response.json()
-#         assert response_json.get('detail') == "Player Registered Successfully"
-#         assert 'id' in response_json
-#         assert response_json['id'] == 5
-#         assert response.status_code == 200
+        response_json = response.json()
+        assert response_json.get('detail') == "Player Registered Successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 5
+        assert response.status_code == 200
     
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
-# def test_add_team_player_5():
-#     url = baseUrl + '/team_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#             "team_id": 1,
-#             "player_id": 5,
-#             "team_position": "Full Back",
-#             "player_team_number": 5,
-#             "playing_status": "Playing",
-#             "reason_for_status": "Fit to play",
-#             "lineup_status": "Starting 15"
-#         }
-#     response = requests.post(url, headers=headers, json=json)
-#     assert response.status_code == 200
-#     assert response.headers['Content-Type'] == 'application/json'
-#     try:
-#         response_json = response.json()
-#         expected_data = {
-#             "message":"Player with ID 5 has been added to team with ID 1"
-#         }
+def test_add_team_player_5():
+    url = baseUrl + '/team_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "team_id": 1,
+            "player_id": 5,
+            "team_position": "Full Back",
+            "player_team_number": 5,
+            "playing_status": "Playing",
+            "reason_for_status": "Fit to play",
+            "lineup_status": "Starting 15"
+        }
+    response = requests.post(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "message":"Player with ID 5 has been added to team with ID 1"
+        }
         
-#         assert response_json == expected_data
+        assert response_json == expected_data
 
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
-# def test_add_player_6():
-#     url = baseUrl + '/register_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#         "player_email": "stephen@gmail.com",
-#         "player_password": "Testpassword123!",
-#         "player_firstname": "Stephen",
-#         "player_surname": "Murphy",
-#         "player_height": "1.80m",
-#         "player_gender": "Male",
-#         "player_dob": "1999-05-31",
-#         "player_contact_number": "30888802",
-#         "player_image" : None,
-#         "player_2fa": True
-#     }
-#     response = requests.post(url, headers=headers, json=json)
-    
-
-#     assert response.headers['Content-Type'] == 'application/json'
-
-#     try:
-        
-#         response_json = response.json()
-#         assert response_json.get('detail') == "Player Registered Successfully"
-#         assert 'id' in response_json
-#         assert response_json['id'] == 6
-#         assert response.status_code == 200
-    
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
-
-# def test_add_team_player_6():
-#     url = baseUrl + '/team_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#             "team_id": 1,
-#             "player_id": 6,
-#             "team_position": "Full Back",
-#             "player_team_number": 6,
-#             "playing_status": "Playing",
-#             "reason_for_status": "Fit to play",
-#             "lineup_status": "Starting 15"
-#         }
-#     response = requests.post(url, headers=headers, json=json)
-#     assert response.status_code == 200
-#     assert response.headers['Content-Type'] == 'application/json'
-#     try:
-#         response_json = response.json()
-#         expected_data = {
-#             "message":"Player with ID 6 has been added to team with ID 1"
-#         }
-        
-#         assert response_json == expected_data
-
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
-
-
-# def test_add_player_7():
-#     url = baseUrl + '/register_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#         "player_email": "david@gmail.com",
-#         "player_password": "Testpassword123!",
-#         "player_firstname": "David",
-#         "player_surname": "Boyd",
-#         "player_height": "1.80m",
-#         "player_gender": "Male",
-#         "player_dob": "1999-05-31",
-#         "player_contact_number": "30888802",
-#         "player_image" : None,
-#         "player_2fa": True
-#     }
-#     response = requests.post(url, headers=headers, json=json)
+def test_add_player_6():
+    url = baseUrl + '/register_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "player_email": "stephen@gmail.com",
+        "player_password": "Testpassword123!",
+        "player_firstname": "Stephen",
+        "player_surname": "Murphy",
+        "player_height": "1.80m",
+        "player_gender": "Male",
+        "player_dob": "1999-05-31",
+        "player_contact_number": "30888802",
+        "player_image" : image_bytes_8,
+        "player_2fa": False
+    }
+    response = requests.post(url, headers=headers, json=json)
     
 
-#     assert response.headers['Content-Type'] == 'application/json'
+    assert response.headers['Content-Type'] == 'application/json'
 
-#     try:
+    try:
         
-#         response_json = response.json()
-#         assert response_json.get('detail') == "Player Registered Successfully"
-#         assert 'id' in response_json
-#         assert response_json['id'] == 7
-#         assert response.status_code == 200
+        response_json = response.json()
+        assert response_json.get('detail') == "Player Registered Successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 6
+        assert response.status_code == 200
     
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
-# def test_add_team_player_7():
-#     url = baseUrl + '/team_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#             "team_id": 1,
-#             "player_id": 7,
-#             "team_position": "Full Back",
-#             "player_team_number": 7,
-#             "playing_status": "Playing",
-#             "reason_for_status": "Fit to play",
-#             "lineup_status": "Starting 15"
-#         }
-#     response = requests.post(url, headers=headers, json=json)
-#     assert response.status_code == 200
-#     assert response.headers['Content-Type'] == 'application/json'
-#     try:
-#         response_json = response.json()
-#         expected_data = {
-#             "message":"Player with ID 7 has been added to team with ID 1"
-#         }
+def test_add_team_player_6():
+    url = baseUrl + '/team_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "team_id": 1,
+            "player_id": 6,
+            "team_position": "Full Back",
+            "player_team_number": 6,
+            "playing_status": "Playing",
+            "reason_for_status": "Fit to play",
+            "lineup_status": "Starting 15"
+        }
+    response = requests.post(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "message":"Player with ID 6 has been added to team with ID 1"
+        }
         
-#         assert response_json == expected_data
+        assert response_json == expected_data
 
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
-# def test_add_player_8():
-#     url = baseUrl + '/register_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#         "player_email": "steve@gmail.com",
-#         "player_password": "Testpassword123!",
-#         "player_firstname": "Steve",
-#         "player_surname": "O'Rourke",
-#         "player_height": "1.80m",
-#         "player_gender": "Male",
-#         "player_dob": "1999-05-31",
-#         "player_contact_number": "30888802",
-#         "player_image" : None,
-#         "player_2fa": True
-#     }
-#     response = requests.post(url, headers=headers, json=json)
+
+def test_add_player_7():
+    url = baseUrl + '/register_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "player_email": "david@gmail.com",
+        "player_password": "Testpassword123!",
+        "player_firstname": "David",
+        "player_surname": "Boyd",
+        "player_height": "1.80m",
+        "player_gender": "Male",
+        "player_dob": "1999-05-31",
+        "player_contact_number": "30888802",
+        "player_image" : image_bytes_9,
+        "player_2fa": False
+    }
+    response = requests.post(url, headers=headers, json=json)
     
 
-#     assert response.headers['Content-Type'] == 'application/json'
+    assert response.headers['Content-Type'] == 'application/json'
 
-#     try:
+    try:
         
-#         response_json = response.json()
-#         assert response_json.get('detail') == "Player Registered Successfully"
-#         assert 'id' in response_json
-#         assert response_json['id'] == 7
-#         assert response.status_code == 200
+        response_json = response.json()
+        assert response_json.get('detail') == "Player Registered Successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 7
+        assert response.status_code == 200
     
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
-# def test_add_team_player_8():
-#     url = baseUrl + '/team_player'
-#     headers = {'Content-Type': 'application/json'}
-#     json = {
-#             "team_id": 1,
-#             "player_id": 8,
-#             "team_position": "Full Back",
-#             "player_team_number": 8,
-#             "playing_status": "Playing",
-#             "reason_for_status": "Fit to play",
-#             "lineup_status": "Starting 15"
-#         }
-#     response = requests.post(url, headers=headers, json=json)
-#     assert response.status_code == 200
-#     assert response.headers['Content-Type'] == 'application/json'
-#     try:
-#         response_json = response.json()
-#         expected_data = {
-#             "message":"Player with ID 8 has been added to team with ID 1"
-#         }
+def test_add_team_player_7():
+    url = baseUrl + '/team_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "team_id": 1,
+            "player_id": 7,
+            "team_position": "Full Back",
+            "player_team_number": 7,
+            "playing_status": "Playing",
+            "reason_for_status": "Fit to play",
+            "lineup_status": "Starting 15"
+        }
+    response = requests.post(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "message":"Player with ID 7 has been added to team with ID 1"
+        }
         
-#         assert response_json == expected_data
+        assert response_json == expected_data
 
-#     except (ValueError, AssertionError) as e:
-#         assert False, f"Test failed: {e}"
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_add_player_8():
+    url = baseUrl + '/register_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+        "player_email": "steve@gmail.com",
+        "player_password": "Testpassword123!",
+        "player_firstname": "Steve",
+        "player_surname": "O'Rourke",
+        "player_height": "1.80m",
+        "player_gender": "Male",
+        "player_dob": "1999-05-31",
+        "player_contact_number": "30888802",
+        "player_image" : image_bytes_10,
+        "player_2fa": False
+    }
+    response = requests.post(url, headers=headers, json=json)
+    
+
+    assert response.headers['Content-Type'] == 'application/json'
+
+    try:
+        
+        response_json = response.json()
+        assert response_json.get('detail') == "Player Registered Successfully"
+        assert 'id' in response_json
+        assert response_json['id'] == 8
+        assert response.status_code == 200
+    
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
+
+def test_add_team_player_8():
+    url = baseUrl + '/team_player'
+    headers = {'Content-Type': 'application/json'}
+    json = {
+            "team_id": 1,
+            "player_id": 8,
+            "team_position": "Full Back",
+            "player_team_number": 8,
+            "playing_status": "Playing",
+            "reason_for_status": "Fit to play",
+            "lineup_status": "Starting 15"
+        }
+    response = requests.post(url, headers=headers, json=json)
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json'
+    try:
+        response_json = response.json()
+        expected_data = {
+            "message":"Player with ID 8 has been added to team with ID 1"
+        }
+        
+        assert response_json == expected_data
+
+    except (ValueError, AssertionError) as e:
+        assert False, f"Test failed: {e}"
 
 # def test_add_player_9():
 #     url = baseUrl + '/register_player'
@@ -767,7 +781,7 @@ def test_add_physio():
         "physio_surname": "Long",
         "physio_contact_number": "012345",
         "physio_image": image_bytes_physio,
-        "physio_2fa": True
+        "physio_2fa": False
     }
     response = requests.post(url, headers=headers, json=json)
     assert response.status_code == 200
