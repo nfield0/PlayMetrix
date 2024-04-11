@@ -186,10 +186,10 @@ def test_add_player():
     url = baseUrl + '/register_player'
     headers = {'Content-Type': 'application/json'}
     json = {
-        "player_email": "nigel@gmail.com",
+        "player_email": "niall@gmail.com",
         "player_password": "Testpassword123!",
-        "player_firstname": "Nigel",
-        "player_surname": "Farage",
+        "player_firstname": "Niall",
+        "player_surname": "Dunne",
         "player_height": "1.80m",
         "player_gender": "Male",
         "player_dob": "1999-05-31",
