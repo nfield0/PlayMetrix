@@ -30,7 +30,7 @@ image_bytes_physio = image_to_base64(image_path)
 image_path = "Testing/Backend_Tests/test_images/p4.jpg"
 image_bytes_6 = image_to_base64(image_path)
 
-image_path = "Testing/Backend_Tests/test_images/p5.avif"
+image_path = "Testing/Backend_Tests/test_images/p5.jpg"
 image_bytes_7 = image_to_base64(image_path)
 
 image_path = "Testing/Backend_Tests/test_images/p6.jpg"
