@@ -187,9 +187,21 @@ def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
     except Exception as e:  
         raise HTTPException(status_code=500, detail=f"Error updating player injury: {e}")
     
-def delete_player_injury(db:Session, id: int): 
+def delete_all_player_injury(db:Session, id: int): 
     try:        
-        player_injury_to_delete = db.query(player_injuries).filter_by(injury_id=id).first()
+        player_injury_to_delete = db.query(player_injuries).filter_by(player_id=id).first()
+        if player_injury_to_delete:
+            db.delete(player_injury_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Player Injury deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting player injury: {e}")
+    
+def delete_player_injury_by_injury_id(db:Session, pid: int, iid: int): 
+    try:        
+        player_injury_to_delete = db.query(player_injuries).filter_by(player_id=pid, injury_id=iid).first()
         if player_injury_to_delete:
             db.delete(player_injury_to_delete)
             db.commit()
