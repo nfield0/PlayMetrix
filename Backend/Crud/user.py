@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from models import *
 from schema import *
 import Crud.crud as crud
-from Crud.security import *
+from security import *
 #region user
 # def register_user(db, user):
 #     # if user.user_type != "player" or "manager" or "coach" or "physio":

@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from models import announcements
 from schema import AnnouncementBase, AnnouncementBaseNoID
 from Crud.user import get_user_by_id_type
-
+from security import check_is_valid_team_name
 #region announcements
     
 def get_announcement(db: Session, id: int):
@@ -27,6 +27,8 @@ def insert_new_announcement(db:Session, new_announcement: AnnouncementBaseNoID):
     try:
         if new_announcement is None:
             raise HTTPException(status_code=400, detail="Announcement is empty or invalid")
+        if not check_is_valid_team_name(new_announcement.announcements_title):
+            raise HTTPException(status_code=400, detail="Invalid Announcement Title")
         
         if get_user_by_id_type(db, new_announcement.poster_id, new_announcement.poster_type) is None:
             raise HTTPException(status_code=400, detail="{new_announcement.poster_type} ID Does not Exist")
@@ -54,6 +56,10 @@ def update_announcement(db, updated_announcement: AnnouncementBase, id: int):
         
         if not announcement_to_update:
             raise HTTPException(status_code=404, detail="Announcement not found")
+        if not check_is_valid_team_name(updated_announcement.announcements_title):
+            raise HTTPException(status_code=400, detail="Invalid Announcement Title")
+        if get_user_by_id_type(db, updated_announcement.poster_id, updated_announcement.poster_type) is None:
+            raise HTTPException(status_code=400, detail="{updated_announcement.poster_type} ID Does not Exist")
         
         announcement_to_update.announcements_title = updated_announcement.announcements_title
         announcement_to_update.announcements_desc = updated_announcement.announcements_desc

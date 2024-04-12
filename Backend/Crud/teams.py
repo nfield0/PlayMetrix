@@ -120,6 +120,13 @@ def update_player_on_team(db:Session, team_player_obj: TeamPlayerBase):
         player_to_update = db.query(team_player).filter_by(team_id=team_player_obj.team_id, player_id=team_player_obj.player_id).first()
         if not player_to_update:
             raise HTTPException(status_code=404, detail="Player not found")
+        if not check_is_valid_title(team_player_obj.team_position):
+            raise HTTPException(status_code=400, detail="Team position is incorrect")
+        if not check_is_valid_title(team_player_obj.playing_status):
+            raise HTTPException(status_code=400, detail="Playing status is incorrect")
+        if not check_is_valid_title(team_player_obj.lineup_status):
+            raise HTTPException(status_code=400, detail="Lineup status is incorrect")
+
         player_to_update.team_position = team_player_obj.team_position
         player_to_update.player_team_number = team_player_obj.player_team_number
         player_to_update.playing_status = team_player_obj.playing_status

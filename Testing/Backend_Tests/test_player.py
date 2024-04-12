@@ -166,8 +166,8 @@ def test_update_player_login():
     headers = {'Content-Type': 'application/json'}
     json = {
             "player_id": 1,
-            "player_email": "testplayergmailcom",
-        "player_password": "test_password",
+            "player_email": "testplayer@gmail.com",
+        "player_password": "Testpassword1!",
         "player_2fa": True
             
         }

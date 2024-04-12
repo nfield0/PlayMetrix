@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import player_login, player_info, player_stats, player_injuries, player_schedule, matches, team_player
 from schema import PlayerBase, PlayerInfo, PlayerStat
-from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt, check_is_valid_name,check_is_valid_contact_number
+from security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt, check_is_valid_name,check_is_valid_contact_number
 
 #region players
 
@@ -66,6 +66,8 @@ def update_player_info_by_id(db:Session, player: PlayerInfo, id: int):
             raise HTTPException(status_code=400, detail="Invalid name")
         if not check_is_valid_contact_number(player.player_contact_number):
             raise HTTPException(status_code=400, detail="Invalid contact number")
+        if not check_is_valid_name(player.player_gender):
+            raise HTTPException(status_code=400, detail="Invalid gender")
         player_info_to_update = db.query(player_info).filter_by(player_id=id).first()
         new_player_info = player_info(player_id=player.player_id,
                                       player_firstname=player.player_firstname,
@@ -101,8 +103,6 @@ def update_player_info_by_id(db:Session, player: PlayerInfo, id: int):
 def update_player_stat_by_id(db:Session, player: PlayerStat,id: int ):
     try:
         player_stat_to_update = db.query(player_stats).filter_by(player_id=id).first()
-
-        
         
         if not player_stat_to_update:
             new_player_stat = player_stats(player_id = player.player_id,
@@ -142,6 +142,10 @@ def update_player_stat_by_id(db:Session, player: PlayerStat,id: int ):
 def update_player_by_id(db:Session,  player: PlayerBase, id: int):
     try:
         player_to_update = db.query(player_login).filter_by(player_id=id).first()
+        if not check_email(player.player_email):
+            raise HTTPException(status_code=400, detail="Email format invalid")
+        if not check_password_regex(player.player_password):
+            raise HTTPException(status_code=400, detail="Password format invalid")
         if not player_to_update:
             raise HTTPException(status_code=404, detail="Player Login not found")
         player_to_update.player_email = player.player_email

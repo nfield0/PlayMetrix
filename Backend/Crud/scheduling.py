@@ -6,7 +6,7 @@ from Crud.teams import get_team_by_id
 from Crud.player import get_player_by_id
 from Crud.match import matches
 from Crud.announcement import announcements
-
+from security import check_is_valid_title
 #region schedules
     
 
@@ -86,6 +86,12 @@ def get_schedule_by_team_id_and_type(db: Session, id: int, type: str):
 def insert_new_schedule(db:Session, req_schedule: ScheduleBaseNoID):
     try:
         if req_schedule is not None:
+            if not check_is_valid_title(req_schedule.schedule_type):
+                raise HTTPException(status_code=400, detail="Schedule Type is invalid")
+            if not check_is_valid_title(req_schedule.schedule_location):
+                raise HTTPException(status_code=400, detail="Schedule Location is invalid")
+            if not check_is_valid_title(req_schedule.schedule_title):
+                raise HTTPException(status_code=400, detail="Schedule Title is invalid")
             new_schedule = schedule(
                                     schedule_type=req_schedule.schedule_type,
                                     schedule_location=req_schedule.schedule_location,
@@ -117,7 +123,12 @@ def insert_new_schedule(db:Session, req_schedule: ScheduleBaseNoID):
 def update_schedule(db, updated_schedule: ScheduleBase, id):
     try:        
         schedule_to_update = db.query(schedule).filter_by(schedule_id= id).first()
-        
+        if not check_is_valid_title(updated_schedule.schedule_type):
+            raise HTTPException(status_code=400, detail="Schedule Type is invalid")
+        if not check_is_valid_title(updated_schedule.schedule_location):
+            raise HTTPException(status_code=400, detail="Schedule Location is invalid")
+        if not check_is_valid_title(updated_schedule.schedule_title):
+            raise HTTPException(status_code=400, detail="Schedule Title is invalid")
         if not schedule_to_update:
             raise HTTPException(status_code=404, detail="Schedule not found")
         
