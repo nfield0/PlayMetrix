@@ -393,6 +393,6 @@ def get_user_details_by_email(db: Session, email :str):
             raise HTTPException(status_code=400, detail="No user found")
         
     except Exception as e:
-        return(f"Error retrieving user: {e}") 
+        return(f"Error retrieving user") 
 
 #endregion
