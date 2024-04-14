@@ -562,7 +562,7 @@ Widget injuriesSection(
                 ]));
           },
           body: ListTile(
-            title: playerInjuryDetails(injury, context),
+            title: playerInjuryDetails(injury, context, ref),
           ),
         );
       }).toList(),
@@ -570,7 +570,8 @@ Widget injuriesSection(
   ]);
 }
 
-Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
+Widget playerInjuryDetails(
+    AllPlayerInjuriesData injury, BuildContext context, WidgetRef ref) {
   return Column(
     children: [
       greyDivider(),
@@ -639,6 +640,12 @@ Widget playerInjuryDetails(AllPlayerInjuriesData injury, BuildContext context) {
                               data: injury.playerInjuryReport)),
                     )
                   : null;
+            })
+          : const SizedBox(),
+      const SizedBox(height: 10),
+      ref.read(userRoleProvider.notifier).state == UserRole.physio
+          ? underlineButtonTransparentRed("Delete player injury", () {
+              deletePlayerInjury(injury.playerInjuryId);
             })
           : const SizedBox(),
     ],

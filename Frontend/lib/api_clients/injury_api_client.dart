@@ -227,3 +227,14 @@ void printList(List<dynamic> list) {
     print(item);
   }
 }
+
+Future<void> deletePlayerInjury(int playerInjuryId) async {
+  final apiUrl = '$apiBaseUrl/player_injuries/$playerInjuryId';
+
+  await http.delete(
+    Uri.parse(apiUrl),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+}
