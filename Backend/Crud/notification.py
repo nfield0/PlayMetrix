@@ -30,12 +30,9 @@ def get_notification_by_team_id_type(db: Session, team_id_obj: int, user_type_ob
     
 def insert_notification(db: Session, new_notification: NotificationBase):
     try:
-        if not check_is_valid_title(new_notification.notification_title):
-            raise HTTPException(status_code=400, detail="Notification title invalid")
         if not check_is_valid_title(new_notification.notification_type):
             raise HTTPException(status_code=400, detail="Notification type invalid")
-        if not check_is_valid_title(new_notification.notification_desc):
-            raise HTTPException(status_code=400, detail="Notification description invalid")
+
         if new_notification is not None:
             new_notification_obj = notifications(
                 notification_title=new_notification.notification_title,
@@ -55,12 +52,8 @@ def insert_notification(db: Session, new_notification: NotificationBase):
 
 def update_notification(db, updated_notification: NotificationBase, id):
     try:
-        if not check_is_valid_title(updated_notification.notification_title):
-            raise HTTPException(status_code=400, detail="Notification title invalid")
         if not check_is_valid_title(updated_notification.notification_type):
             raise HTTPException(status_code=400, detail="Notification type invalid")
-        if not check_is_valid_title(updated_notification.notification_desc):
-            raise HTTPException(status_code=400, detail="Notification description invalid")
         notification_to_update = db.query(notifications).filter_by(notification_id = id).first()
         if notification_to_update:
             notification_to_update.notification_title = updated_notification.notification_title
