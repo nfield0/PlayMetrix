@@ -84,19 +84,22 @@ class MonthlyScheduleScreen extends ConsumerWidget {
                                             CalendarElement.appointment ||
                                         details.targetElement ==
                                             CalendarElement.agenda) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ScheduleDetailsScreen(
-                                            userId: ref.read(userIdProvider),
-                                            userRole: userRole,
-                                            teamId: ref.read(teamIdProvider),
-                                            scheduleId:
-                                                details.appointments![0].id,
+                                      if (details.appointments![0].id != null &&
+                                          details.appointments![0].id != 0) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ScheduleDetailsScreen(
+                                              userId: ref.read(userIdProvider),
+                                              userRole: userRole,
+                                              teamId: ref.read(teamIdProvider),
+                                              scheduleId:
+                                                  details.appointments![0].id,
+                                            ),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
                                     }
                                   },
                                   dataSource:
