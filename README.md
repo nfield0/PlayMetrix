@@ -1,6 +1,8 @@
 ![playmetrix logo](https://github.com/nfield0/PlayMetrix/assets/92158821/e4b55b7b-811a-4d42-a085-07eb40b67c6b)
 
+# Project Links
 
+Hosted Website: www.playmetrix.org
 
 All-in-one player tracking App (Recovery, Statistics &amp; Scheduling)
 
@@ -163,9 +165,7 @@ flutter run
 
 
 
-# Project Links
 
-Hosted Website: www.playmetrix.org
 
 # Contributors (Team Pesado):
 
