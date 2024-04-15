@@ -34,8 +34,6 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final navigator = Navigator.of(context);
-
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -139,18 +137,17 @@ class AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                       posterId: widget.userId,
                                       posterType: widget.userRole);
 
-                                  navigator
-                                      .push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ScheduleDetailsScreen(
-                                                  scheduleId: widget.scheduleId,
-                                                  userRole: widget.userRole,
-                                                  userId: widget.userId,
-                                                  teamId: widget.teamId,
-                                                )),
-                                      )
-                                      .then((_) => setState(() {}));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ScheduleDetailsScreen(
+                                              scheduleId: widget.scheduleId,
+                                              userRole: widget.userRole,
+                                              userId: widget.userId,
+                                              teamId: widget.teamId,
+                                            )),
+                                  ).then((_) => setState(() {}));
                                 }
                               }),
                             ]),
