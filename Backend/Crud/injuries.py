@@ -211,5 +211,17 @@ def delete_player_injury_by_injury_id(db:Session, pid: int, iid: int):
     except Exception as e:
         return(f"Error deleting player injury: {e}")
     
+def delete_player_injury_by_player_injury_id(db:Session, pid: int):
+    try:        
+        player_injury_to_delete = db.query(player_injuries).filter_by(player_injury_id=pid).first()
+        if player_injury_to_delete:
+            db.delete(player_injury_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Player Injury deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting player injury: {e}")
+
 
 #endregion

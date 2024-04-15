@@ -625,6 +625,10 @@ def delete_all_player_injury(player_id: int, db:Session = Depends(get_db)):
 def delete_player_injury(injury_id: int, player_id: int, db:Session = Depends(get_db)):
     return crud.delete_player_injury_by_injury_id(db, player_id, injury_id)
 
+@app.delete("/player_injuries/pid/{player_injury_id}")
+def delete_player_injury_by_pid(player_injury_id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_injury_by_player_injury_id(db, player_injury_id)
+
 #endregion
 
 #region leagues
