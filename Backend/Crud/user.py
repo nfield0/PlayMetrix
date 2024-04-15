@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from models import *
 from schema import *
 import Crud.crud as crud
-from Crud.security import *
+from security import *
 #region user
 # def register_user(db, user):
 #     # if user.user_type != "player" or "manager" or "coach" or "physio":
@@ -393,6 +393,6 @@ def get_user_details_by_email(db: Session, email :str):
             raise HTTPException(status_code=400, detail="No user found")
         
     except Exception as e:
-        return(f"Error retrieving user: {e}") 
+        return(f"Error retrieving user") 
 
 #endregion

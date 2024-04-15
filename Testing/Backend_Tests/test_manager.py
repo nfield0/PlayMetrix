@@ -208,8 +208,8 @@ def test_update_manager_info():
     headers = {'Content-Type': 'application/json'}
     json = {
             "manager_id": 1,
-            "manager_firstname": "test1",
-            "manager_surname": "tester1",
+            "manager_firstname": "test",
+            "manager_surname": "tester",
             "manager_contact_number": "012345",
             "manager_image": "something"
         
@@ -240,8 +240,8 @@ def test_get_manager_info():
         expected_data = {
             "manager_email": "testmanager@gmail.com",
             "manager_password": "Hidden",
-            "manager_firstname": "test1",
-            "manager_surname": "tester1",
+            "manager_firstname": "test",
+            "manager_surname": "tester",
             "manager_contact_number": "012345",
             "manager_image": "something",
             "manager_2fa": True

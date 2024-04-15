@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import manager_login, manager_info
 from schema import Manager, ManagerInfo, ManagerNoID
-from Crud.security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt
+from security import check_email, check_password_regex, encrypt_password, decrypt_hex, encrypt, check_is_valid_name
 
 #region managers
 
@@ -56,7 +56,11 @@ def update_manager_by_id(db:Session, manager: ManagerNoID, id: int):
             manager_to_update.manager_password = encrypt_password(manager.manager_password)
         else:
             raise HTTPException(status_code=400, detail="Password format invalid")
-
+        
+        if not check_is_valid_name(manager.manager_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(manager.manager_surname):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
 
         manager_info_to_update = db.query(manager_info).filter_by(manager_id= id).first()
 
@@ -111,6 +115,11 @@ def update_manager_info_by_id(db:Session, manager: ManagerInfo, id: int):
         
         if not manager_info_to_update:
             raise HTTPException(status_code=404, detail="Manager Info not found")
+        
+        if not check_is_valid_name(manager.manager_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(manager.manager_surname):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
         
         manager_info_to_update.manager_firstname = manager.manager_firstname
         manager_info_to_update.manager_surname = encrypt(manager.manager_surname)

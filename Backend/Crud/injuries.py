@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import injuries, player_injuries
 from schema import InjuryBase, PlayerInjuryBase, PlayerInjuryBaseNOID
-from Crud.crud import check_is_valid_name
+from Crud.crud import check_is_valid_title
 
 #region injuries
     
@@ -25,8 +25,18 @@ def insert_injury(db:Session, new_injury: InjuryBase):
     try:
         if new_injury is None:
             raise HTTPException(status_code=404, detail="Injury is empty or invalid")
-        if not check_is_valid_name(new_injury.injury_type):
+        if not check_is_valid_title(new_injury.injury_type):
             raise HTTPException(status_code=400, detail="Injury type is incorrect")
+        if not check_is_valid_title(new_injury.injury_name_and_grade):
+            raise HTTPException(status_code=400, detail="Injury name and grade is incorrect")
+        if not check_is_valid_title(new_injury.injury_location):
+            raise HTTPException(status_code=400, detail="Injury location is incorrect")
+        if not check_is_valid_title(new_injury.potential_recovery_method_1):
+            raise HTTPException(status_code=400, detail="Recovery method 1 is incorrect")
+        if not check_is_valid_title(new_injury.potential_recovery_method_2):
+            raise HTTPException(status_code=400, detail="Recovery method 2 is incorrect")
+        if not check_is_valid_title(new_injury.potential_recovery_method_3):
+            raise HTTPException(status_code=400, detail="Recovery method 3 is incorrect")
         else:
             new_injury = injuries(injury_type=new_injury.injury_type,
                                   injury_name_and_grade=new_injury.injury_name_and_grade,
@@ -49,6 +59,18 @@ def insert_injury(db:Session, new_injury: InjuryBase):
 def update_injury(db, updated_injury: InjuryBase, id):
     try:
         injury_to_update = db.query(injuries).filter_by(injury_id= id).first()
+        if not check_is_valid_title(updated_injury.injury_type):
+            raise HTTPException(status_code=400, detail="Injury type is incorrect")
+        if not check_is_valid_title(updated_injury.injury_name_and_grade):
+            raise HTTPException(status_code=400, detail="Injury name and grade is incorrect")
+        if not check_is_valid_title(updated_injury.injury_location):
+            raise HTTPException(status_code=400, detail="Injury location is incorrect")
+        if not check_is_valid_title(updated_injury.potential_recovery_method_1):
+            raise HTTPException(status_code=400, detail="Recovery method 1 is incorrect")
+        if not check_is_valid_title(updated_injury.potential_recovery_method_2):
+            raise HTTPException(status_code=400, detail="Recovery method 2 is incorrect")
+        if not check_is_valid_title(updated_injury.potential_recovery_method_3):
+            raise HTTPException(status_code=400, detail="Recovery method 3 is incorrect")
         if injury_to_update:
             injury_to_update.injury_type = updated_injury.injury_type
             injury_to_update.injury_name_and_grade = updated_injury.injury_name_and_grade
@@ -119,6 +141,13 @@ def get_player_injury_by_date(db: Session, date: str, injury:int, id:int):
 def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBaseNOID):
     try:
         if new_player_injury is not None:
+            if new_player_injury.player_id is None or new_player_injury.player_id < 0:
+                raise HTTPException(status_code=400, detail="Player ID is invalid")
+            if new_player_injury.physio_id is None or new_player_injury.physio_id < 0:
+                raise HTTPException(status_code=400, detail="Physio ID is invalid")
+            if new_player_injury.date_of_injury is None:
+                raise HTTPException(status_code=400, detail="Date of injury is invalid")
+            
             new_player_injury = player_injuries(player_id=new_player_injury.player_id,
                                                 physio_id=new_player_injury.physio_id,
                                                 date_of_injury=new_player_injury.date_of_injury,
@@ -134,9 +163,15 @@ def insert_new_player_injury(db:Session, new_player_injury: PlayerInjuryBaseNOID
         return (f"Error inserting player injury: {e}")
 
 def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
-    try:
+    try:    
         player_injury_to_update = db.query(player_injuries).filter_by(player_id= id).first()
         if player_injury_to_update:
+            if player_injury_to_update.player_id is None or player_injury_to_update.player_id < 0:
+                raise HTTPException(status_code=400, detail="Player ID is invalid")
+            if player_injury_to_update.physio_id is None or player_injury_to_update.physio_id < 0:
+                raise HTTPException(status_code=400, detail="Physio ID is invalid")
+            if player_injury_to_update.date_of_injury is None:
+                raise HTTPException(status_code=400, detail="Date of injury is invalid")
             player_injury_to_update.player_id = updated_player_injury.player_id
             player_injury_to_update.physio_id = updated_player_injury.physio_id
             player_injury_to_update.date_of_injury = updated_player_injury.date_of_injury
@@ -152,9 +187,21 @@ def update_player_injury(db, updated_player_injury: PlayerInjuryBase, id):
     except Exception as e:  
         raise HTTPException(status_code=500, detail=f"Error updating player injury: {e}")
     
-def delete_player_injury(db:Session, id: int): 
+def delete_all_player_injury(db:Session, id: int): 
     try:        
-        player_injury_to_delete = db.query(player_injuries).filter_by(injury_id=id).first()
+        player_injury_to_delete = db.query(player_injuries).filter_by(player_id=id).first()
+        if player_injury_to_delete:
+            db.delete(player_injury_to_delete)
+            db.commit()
+        db.close()
+        return {"message": "Player Injury deleted successfully"}
+
+    except Exception as e:
+        return(f"Error deleting player injury: {e}")
+    
+def delete_player_injury_by_injury_id(db:Session, pid: int, iid: int): 
+    try:        
+        player_injury_to_delete = db.query(player_injuries).filter_by(player_id=pid, injury_id=iid).first()
         if player_injury_to_delete:
             db.delete(player_injury_to_delete)
             db.commit()

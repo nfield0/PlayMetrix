@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -558,8 +559,8 @@ Future<String> getDetailsByEmail(String email) async {
         return response.body;
       
     } else {
-      print('Failed to find user. Status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
+      return "Failed";
+      
     }
   } catch (error) {
     // Handle any network or other errors

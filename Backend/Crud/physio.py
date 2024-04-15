@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import physio_login, physio_info, team_physio, player_injuries
 from schema import Physio, PhysioInfo, PhysioNoID
-from Crud.security import check_email, check_password_regex, encrypt_password, check_is_valid_name, encrypt, decrypt_hex
+from security import check_email, check_password_regex, encrypt_password, check_is_valid_name, encrypt, decrypt_hex
 
 
 #region physio
@@ -105,6 +105,10 @@ def update_physio_login_by_id(db:Session, physio: Physio, id: int):
     
 def update_physio_info_by_id(db:Session, physio: PhysioInfo, id: int):
     try:        
+        if not check_is_valid_name(physio.physio_firstname):
+            raise HTTPException(status_code=400, detail="First name format invalid")
+        if not check_is_valid_name(str(physio.physio_surname)):
+            raise HTTPException(status_code=400, detail="Surname format invalid")
         physio_info_to_update = db.query(physio_info).filter_by(physio_id= id).first()
         if not physio_info_to_update:
             raise HTTPException(status_code=404, detail="Physio Info not found")

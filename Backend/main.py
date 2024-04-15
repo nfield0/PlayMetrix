@@ -617,9 +617,13 @@ def insert_player_injury(player_injury: PlayerInjuryBaseNOID, db:Session = Depen
 def update_player_injury(id: int, player_injury: PlayerInjuryBaseNOID, db:Session = Depends(get_db)):
     return crud.update_player_injury(db, player_injury, id)
 
-@app.delete("/player_injuries/{id}")
-def delete_player_injury(id: int, db:Session = Depends(get_db)):
-    return crud.delete_player_injury(db, id)
+@app.delete("/player_injuries/{player_id}")
+def delete_all_player_injury(player_id: int, db:Session = Depends(get_db)):
+    return crud.delete_all_player_injury(db, player_id)
+
+@app.delete("/player_injuries/{player_id}/injury_id/{injury_id}")
+def delete_player_injury(injury_id: int, player_id: int, db:Session = Depends(get_db)):
+    return crud.delete_player_injury_by_injury_id(db, player_id, injury_id)
 
 #endregion
 
