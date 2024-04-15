@@ -67,3 +67,21 @@ Future<void> addAnnouncement({
     throw Exception("Announcement not added");
   }
 }
+
+Future<void> deleteAnnouncement(int announcementId) async {
+  final String apiUrl = "$apiBaseUrl/announcements/$announcementId";
+
+  try {
+    final response = await http.delete(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      print("Announcement deleted. Response: ${response.body}");
+    } else {
+      print("Announcement not deleted");
+      throw Exception("Announcement not deleted");
+    }
+  } catch (e) {
+    print(e);
+    throw Exception("Announcement not deleted");
+  }
+}

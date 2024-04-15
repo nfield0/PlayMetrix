@@ -344,12 +344,24 @@ Widget _announcementsSection(BuildContext context, UserRole userRole,
           emptySection(Icons.announcement, "No announcements yet")
         ]),
       for (Announcement announcement in announcements)
-        announcementBox(
+        if (announcement.posterId == userId &&
+            announcement.posterRole == userRole)
+          dismissableAnnouncementBox(
             icon: Icons.announcement,
             iconColor: AppColours.darkBlue,
             title: announcement.title,
             description: announcement.description,
-            date: announcement.date)
+            date: announcement.date,
+            context: context,
+            announcementId: announcement.id,
+          )
+        else
+          announcementBox(
+              icon: Icons.announcement,
+              iconColor: AppColours.darkBlue,
+              title: announcement.title,
+              description: announcement.description,
+              date: announcement.date)
     ],
   );
 }

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:play_metrix/api_clients/announcement_api_client.dart';
 import 'package:play_metrix/constants.dart';
 
 Widget smallPill(String text) {
@@ -614,17 +615,15 @@ Widget announcementBox({
                     border: Border.all(
                       color: AppColours.darkBlue,
                       width: 2,
-                    ), // Border color
+                    ),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   constraints: const BoxConstraints(
-                    minHeight: 70, // Set your desired minHeight
+                    minHeight: 70,
                   ),
                   padding: const EdgeInsets.all(10),
                   child: Stack(
                     children: [
-                      // Icon on top left
-                      // Title and description
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -656,4 +655,126 @@ Widget announcementBox({
               ),
             ],
           )));
+}
+
+Widget dismissableAnnouncementBox(
+    {required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String description,
+    required String date,
+    required BuildContext context,
+    required int announcementId}) {
+  return Dismissible(
+      direction: DismissDirection.endToStart,
+      background: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15), color: AppColours.red),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text("Delete announcement",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFonts.gabarito)),
+            SizedBox(width: 20),
+            Icon(Icons.delete, color: Colors.white, size: 30),
+            SizedBox(width: 30),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text(
+                "Delete Announcement",
+                style: TextStyle(
+                  color: AppColours.darkBlue,
+                  fontFamily: AppFonts.gabarito,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: const Text(
+                "Are you sure you want to delete this announcement?",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                    deleteAnnouncement(announcementId);
+                  },
+                  child: const Text("Delete"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      key: Key(announcementId.toString()),
+      child: InkWell(
+          child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(icon, size: 30, color: iconColor),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColours.darkBlue,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      constraints: const BoxConstraints(
+                        minHeight: 70,
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Stack(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  DateFormat('d MMMM y HH:mm').format(
+                                      date.isNotEmpty
+                                          ? DateTime.parse(date)
+                                          : DateTime.now()),
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.black54)),
+                              const SizedBox(height: 5),
+                              Text(
+                                title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              // const SizedBox(height: 5),
+                              Text(
+                                description,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ))));
 }
