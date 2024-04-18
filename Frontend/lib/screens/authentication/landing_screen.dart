@@ -138,12 +138,17 @@ class LandingScreen extends ConsumerWidget {
                         getDetailsByEmail(googleUser.email)
                             .then((response) async {
                           print(response);
-                          if (response.toString() != "Error retrieving user") {
-                            int userId = const JsonDecoder()
-                                .convert(response)['user_id'];
-                            ref.read(userIdProvider.notifier).state = userId;
+                          if (response.toString() == "Error retrieving user") {
+                            
+                            showGoogleFail(context, ref);
+                          
+                          } else{
+                                  
+                            try {
+                                int userId = const JsonDecoder().convert(response)['user_id'];
+                                ref.read(userIdProvider.notifier).state = userId;
 
-                            UserRole userRole = stringToUserRole(
+                                UserRole userRole = stringToUserRole(
                                 const JsonDecoder()
                                     .convert(response)['user_type']);
 
@@ -160,9 +165,13 @@ class LandingScreen extends ConsumerWidget {
                               logInFunctionality(
                                   context, ref, userRole, userId);
                             }
-                          } else {
-                            showGoogleFail(context, ref);
-                          }
+                              } catch (e) {
+                                print("Error parsing response or accessing 'user_id': $e");
+                                showGoogleFail(context, ref);
+                              }
+
+                            
+                          } 
                         });
                       } else {
                         showGoogleFail(context, ref);
