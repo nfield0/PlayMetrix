@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -536,31 +535,21 @@ Future<String> changePassword(int userId, UserRole userRole, String oldPassword,
     print('Error: $error');
     return error.toString();
   }
-
-
-  
 }
 
 Future<String> getDetailsByEmail(String email) async {
-  final apiUrl =
-      '$apiBaseUrl/users?email=${Uri.encodeComponent(email)}';
+  final apiUrl = '$apiBaseUrl/users?email=${Uri.encodeComponent(email)}';
 
   try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      }
-
-    );
+    final response =
+        await http.get(Uri.parse(apiUrl), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
 
     if (response.statusCode == 200) {
-      
-        return response.body;
-      
+      return response.body;
     } else {
       return "Failed";
-      
     }
   } catch (error) {
     // Handle any network or other errors

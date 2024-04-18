@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
               fontFamily: AppFonts.gabarito),
         ),
       ),
-      home: OnBoardingScreen(), // Set your landing page here
+      home: OnBoardingScreen(),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_metrix/api_clients/authentication_api_client.dart';
@@ -16,7 +15,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:play_metrix/keys.dart';
 import 'package:play_metrix/screens/home_screen.dart';
 import 'package:play_metrix/providers/user_provider.dart';
-import 'package:play_metrix/screens/widgets_lib/buttons.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -137,42 +135,38 @@ class LandingScreen extends ConsumerWidget {
                         print(googleUser);
                         ref.read(userIdProvider.notifier).state = 0;
 
-
                         getDetailsByEmail(googleUser.email)
                             .then((response) async {
-                              print(response);
-                              if (response.toString() != "Error retrieving user") {
-                                int userId = const JsonDecoder().convert(response)['user_id'];
-                                ref.read(userIdProvider.notifier).state = userId;
+                          print(response);
+                          if (response.toString() != "Error retrieving user") {
+                            int userId = const JsonDecoder()
+                                .convert(response)['user_id'];
+                            ref.read(userIdProvider.notifier).state = userId;
 
-                                UserRole userRole = stringToUserRole(
-                                    const JsonDecoder()
-                                        .convert(response)['user_type']);
+                            UserRole userRole = stringToUserRole(
+                                const JsonDecoder()
+                                    .convert(response)['user_type']);
 
-                                if (userRole == UserRole.manager) {
-                                  logInFunctionality(context, ref, userRole, userId);
-                                } else if (userRole == UserRole.physio) {
-                                  logInFunctionality(context, ref, userRole, userId);
-                                } else if (userRole == UserRole.player) {
-                                  logInFunctionality(context, ref, userRole, userId);
-                                } else {
-                                  
-                                   logInFunctionality(context, ref, userRole, userId);
-                                }
-                                    }
-                                    else {
-                                      
-                                  showGoogleFail(context, ref);
-
-                                    }
-                              });
+                            if (userRole == UserRole.manager) {
+                              logInFunctionality(
+                                  context, ref, userRole, userId);
+                            } else if (userRole == UserRole.physio) {
+                              logInFunctionality(
+                                  context, ref, userRole, userId);
+                            } else if (userRole == UserRole.player) {
+                              logInFunctionality(
+                                  context, ref, userRole, userId);
+                            } else {
+                              logInFunctionality(
+                                  context, ref, userRole, userId);
                             }
-                            else {
-                       
-                            
+                          } else {
                             showGoogleFail(context, ref);
+                          }
+                        });
+                      } else {
+                        showGoogleFail(context, ref);
 
-  
                         print('Google Sign In Failed');
                       }
                     },
@@ -209,8 +203,6 @@ class LandingScreen extends ConsumerWidget {
     );
   }
 
-
-
   void logInFunctionality(BuildContext context, WidgetRef ref,
       UserRole userRole, int userId) async {
     ref.read(userRoleProvider.notifier).state = userRole;
@@ -246,11 +238,19 @@ class LandingScreen extends ConsumerWidget {
       MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
+
   Widget googleLogInFail(BuildContext context, WidgetRef ref) {
     return AlertDialog(
-      title: const Text('Google Sign In Failed'),
+      title: const Text('Google Sign In Failed',
+          style: TextStyle(
+              color: AppColours.darkBlue,
+              fontFamily: AppFonts.gabarito,
+              fontSize: 24,
+              fontWeight: FontWeight.bold)),
       content: const Text(
-          'Google Sign In Failed. Please register with your Google email first.'),
+        'Google Sign In Failed. Please register with your Google email first.',
+        style: TextStyle(fontSize: 16),
+      ),
       actions: <Widget>[
         TextButton(
           onPressed: () {
@@ -261,8 +261,8 @@ class LandingScreen extends ConsumerWidget {
       ],
     );
   }
-    void showGoogleFail(BuildContext context, WidgetRef ref) {
-   
+
+  void showGoogleFail(BuildContext context, WidgetRef ref) {
     print("Google Sign In Failed");
 
     showDialog(

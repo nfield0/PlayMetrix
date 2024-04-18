@@ -285,6 +285,53 @@ class ScheduleDetailsScreenState extends State<ScheduleDetailsScreen> {
                                   widget.userId,
                                   announcements,
                                   widget.teamId),
+                              const SizedBox(height: 25),
+                              if (widget.userRole == UserRole.manager)
+                                Center(
+                                  child: underlineButtonTransparentRed(
+                                      "Delete event", () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text("Delete event",
+                                                style: TextStyle(
+                                                    color: AppColours.darkBlue,
+                                                    fontFamily:
+                                                        AppFonts.gabarito,
+                                                    fontSize: 24,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            content: const Text(
+                                              "Are you sure you want to delete this event?",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text("Cancel"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  deleteSchedule(
+                                                      widget.scheduleId);
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const MonthlyScheduleScreen()),
+                                                  );
+                                                },
+                                                child: const Text("Delete"),
+                                              )
+                                            ],
+                                          );
+                                        });
+                                  }),
+                                )
                             ],
                           ),
                         ),

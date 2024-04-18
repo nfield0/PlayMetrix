@@ -176,6 +176,24 @@ Future<bool> editSchedule(
   }
 }
 
+Future<void> deleteSchedule(int scheduleId) async {
+  final String apiUrl = "$apiBaseUrl/schedules/$scheduleId";
+
+  try {
+    final response = await http.delete(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      print("Schedule deleted. Response: ${response.body}");
+    } else {
+      print("Schedule not deleted");
+      throw Exception("Schedule not deleted");
+    }
+  } catch (e) {
+    print(e);
+    throw Exception("Schedule not deleted");
+  }
+}
+
 Future<Schedule> getScheduleById(int scheduleId) async {
   final apiUrl = '$apiBaseUrl/schedules/$scheduleId';
   try {

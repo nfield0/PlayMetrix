@@ -15,6 +15,7 @@ import 'package:play_metrix/providers/user_provider.dart';
 import 'package:play_metrix/screens/injury/edit_injury_screen.dart';
 import 'package:play_metrix/screens/player/edit_player_profile_screen.dart';
 import 'package:play_metrix/screens/injury/injury_report_view.dart';
+import 'package:play_metrix/screens/player/player_profile_view_screen.dart';
 import 'package:play_metrix/screens/statistics/statistics_constants.dart';
 import 'package:play_metrix/screens/statistics/statistics_screen.dart';
 import 'package:play_metrix/screens/team/team_profile_screen.dart';
@@ -645,7 +646,44 @@ Widget playerInjuryDetails(
       const SizedBox(height: 10),
       ref.read(userRoleProvider.notifier).state == UserRole.physio
           ? underlineButtonTransparentRed("Delete player injury", () {
-              deletePlayerInjury(injury.playerInjuryId);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Delete Injury",
+                          style: TextStyle(
+                              color: AppColours.darkBlue,
+                              fontFamily: AppFonts.gabarito,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold)),
+                      content: const Text(
+                        "Are you sure you want to delete this injury?",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            deletePlayerInjury(injury.playerInjuryId);
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PlayerProfileViewScreen(
+                                          playerId: injury.playerId,
+                                        )));
+                          },
+                          child: const Text("Delete"),
+                        ),
+                      ],
+                    );
+                  });
             })
           : const SizedBox(),
     ],

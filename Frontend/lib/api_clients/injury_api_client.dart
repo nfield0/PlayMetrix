@@ -229,7 +229,7 @@ void printList(List<dynamic> list) {
 }
 
 Future<void> deletePlayerInjury(int playerInjuryId) async {
-  final apiUrl = '$apiBaseUrl/player_injuries/$playerInjuryId';
+  final apiUrl = '$apiBaseUrl/player_injuries/pid/$playerInjuryId';
 
   await http.delete(
     Uri.parse(apiUrl),
