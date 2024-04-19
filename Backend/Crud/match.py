@@ -37,6 +37,18 @@ def get_minutes_played_by_player_id(db, id):
     except Exception as e:
         return(f"Error retrieving matches: {e}")
     
+def get_matches_played_by_player_id(db, id):
+    try:
+        result = db.query(matches).filter_by(player_id=id).all()
+        matches_played = 0
+        for match in result:
+            if match.minutes_played > 0:
+                matches_played += 1
+        return matches_played
+    except Exception as e:
+        return(f"Error retrieving matches: {e}")
+
+
 def insert_match(db: Session, match: MatchBase):
     try:
         new_match = matches(**match.model_dump())

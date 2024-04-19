@@ -731,6 +731,9 @@ def get_matches_by_player(id:int, db:Session = Depends(get_db)):
 def get_minutes_by_player(id:int, db:Session = Depends(get_db)):
     return crud.get_minutes_played_by_player_id(db, id)
 
+@app.get("/match/player/{id}/matches_started")
+def get_matches_played_by_player(id:int, db:Session = Depends(get_db)):
+    return crud.get_matches_played_by_player_id(db, id)
 
 
 @app.post("/match")
