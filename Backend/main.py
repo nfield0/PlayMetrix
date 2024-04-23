@@ -66,7 +66,7 @@ def get_db():
 
 
 
-2
+
 GOOGLE_CLIENT_ID =  os.getenv("CLIENT_ID")
 GOOGLE_CLIENT_SECRET =  os.getenv("CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.getenv("REDIRECT_URI")
