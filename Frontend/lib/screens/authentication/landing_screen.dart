@@ -129,9 +129,10 @@ class LandingScreen extends ConsumerWidget {
                       final GoogleSignIn googleSignIn = GoogleSignIn(
                         clientId: CLIENT_ID,
                       );
-
+                      await googleSignIn.signOut();
                       final googleUser = await googleSignIn.signIn();
                       if (googleUser != null) {
+                        
                         print(googleUser);
                         ref.read(userIdProvider.notifier).state = 0;
 
